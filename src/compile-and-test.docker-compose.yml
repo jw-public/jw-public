@@ -1,0 +1,15 @@
+version: '3'
+services:
+  typescript:
+    build: build-utils/typescript
+    command: tsc -w
+    volumes:
+      - .:/app
+  node:
+    build: build-utils/node
+    command: npm run test:watch
+    tty: true
+    volumes:
+      - .:/app
+    depends_on:
+      - typescript

@@ -1,0 +1,87 @@
+<template name="assignmentForm">
+  {{#autoForm id="assignmentForm" type=formType doc=doc collection=assignmentsCollection resetOnSuccess=resetOnSuccess}}
+  <div class="panel {{panelClass}}">
+    <div class="panel-heading">
+      <h3 class="panel-title">
+        <i class="fa {{fontAwesomeLogo}} fa-fw"></i> {{headingText}}
+      </h3>
+    </div>
+    <div class="panel-body">
+      <fieldset>
+        <div class="form-group" data-required="true">
+
+          <label for="datetimepicker">Termin</label>
+          {{#if afFieldIsInvalid name='start'}}
+          <span class="help-block">{{{afFieldMessage name='start'}}}</span>
+          {{/if}}
+          <div class="datetimepicker"></div>
+
+        </div>
+
+
+        <div class="form-group" data-required="true">
+
+
+          <label for="durationDisplay">Dauer</label>
+          {{#if afFieldIsInvalid name='end'}}
+          <span class="help-block">{{{afFieldMessage name='end'}}}</span>
+          {{/if}}
+
+          <input id="durationDisplayMobile" style="text-align:center" type="text" value="{{selectedDuration}}" readonly class="form-control visible-xs-block">
+
+          <div class="btn-group visible-xs-block" style="width:100%" role="group">
+            <div class="btn-group" role="group">
+              <button class="btn btn-primary increase" data-increase-by="-30" type="button">-30 Min</button>
+            </div>
+            <div class="btn-group" role="group">
+              <button class="btn btn-info increase" data-increase-by="-15" type="button">-15 Min</button>
+            </div>
+            <div class="btn-group" role="group">
+              <button class="btn btn-info increase" data-increase-by="15" type="button">+15 Min</button>
+            </div>
+            <div class="btn-group" role="group">
+              <button class="btn btn-primary increase" data-increase-by="30" type="button">+30 Min</button>
+            </div>
+            <br>
+          </div>
+
+          <div class="input-group duration hidden-xs">
+            <span class="input-group-btn">
+              <button class="btn btn-primary increase" data-increase-by="-30" type="button">-30 Min</button>
+              <button class="btn btn-info increase" data-increase-by="-15" type="button">-15 Min</button>
+            </span>
+            <input id="durationDisplay" style="text-align:center" type="text" value="{{selectedDurationShort}}" readonly class="form-control">
+            <span class="input-group-btn">
+              <button class="btn btn-info increase" data-increase-by="15" type="button">+15 Min</button>
+              <button class="btn btn-primary increase" data-increase-by="30" type="button">+30 Min</button>
+            </span>
+          </div>
+          <!-- /input-group -->
+
+          <input id="duration" value="120" type="hidden" />
+        </div>
+
+
+        {{> afQuickField name="group" value=currentGroupId type="hidden"}}
+        {{> afQuickField name="start" value=selectedDateObject type="hidden"}}
+        {{> afQuickField name="end" value=calculatedEndDateObject type="hidden"}}
+        {{> afQuickField name="name"}}
+        {{> afQuickField name="state" label="Geschlossen" options=stateOption defaultValue="Online" type="select-radio-inline" disabled=isCanceled}}
+        {{> afQuickField name="userGoal" defaultValue="0"}}
+        {{> afQuickField name="pickup_point"}}
+        {{> afQuickField name="return_point"}}
+        {{#if Template.subscriptionsReady}}
+        {{> afQuickField name="contacts" options=contactOptions  type="select2" multiple=true}}
+        {{/if}}
+        {{> afQuickField name="note" label="Notiz" rows=5}}
+
+
+        <div class="form-group">
+          <button type="submit" class="btn {{buttonClass}} submit-change"><i class="fa {{fontAwesomeLogo}}"></i> {{submitButtonText}}
+          </button>
+        </div>
+      </fieldset>
+    </div>
+  </div>
+  {{/autoForm}}
+</template>

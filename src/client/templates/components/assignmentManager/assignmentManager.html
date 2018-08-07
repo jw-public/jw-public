@@ -1,0 +1,99 @@
+<template name="assignmentManager">
+
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <i class="fa fa-users fa-fw"></i> Bewerber
+        </div>
+        <!-- /.panel-heading -->
+        <ul class="list-group">
+          {{#if hasApplicants}} {{#each applicantEntries}} {{> applicantEntry}} {{/each}} {{else}}
+          <li class="list-group-item">Keine Bewerber vorhanden.</li>
+          {{/if}}
+        </ul>
+
+        <!-- /.panel-body -->
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <i class="fa fa-users fa-fw"></i> Teilnehmer
+        </div>
+        <!-- /.panel-heading -->
+        <ul class="list-group">
+          {{#if hasParticipants}} {{#each participantEntries}} {{> participantEntry}} {{/each}} {{else}}
+          <li class="list-group-item">Keine Teilnehmer vorhanden.</li>
+          {{/if}}
+
+          <li class="list-group-item">
+            {{#autoForm id="addUserAsParticipantForm" type="normal" schema=participantSchema resetOnSuccess=true additionalFormOptions=additionalFormOptions}}
+
+            <div class="input-group">
+              {{> afFieldInput id="userSelect2" name='userId' value="" type="select2" class="form-control" select2Options=s2Opts options=userList}}
+              <span class="input-group-btn">
+                <button type="submit" class="btn btn-success"><i class="fa fa-user-plus fa-fw"></i></button>
+              </span>
+            </div>
+            <!-- /input-group -->
+            {{#if afFieldIsInvalid name='userId'}}
+            <span class="help-block">{{{afFieldMessage name='userId'}}}</span>
+            {{/if}} {{/autoForm}}
+
+          </li>
+
+        </ul>
+
+        <!-- /.panel-body -->
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <button class="btn btn-primary close-application">
+        <i class="fa fa-lock"></i> Termin abschließen
+      </button>
+      {{#if onCancelIsDefined}}
+      <button class="btn btn-default cancel">
+        <i class="fa fa-times"></i> Abbrechen
+      </button>
+      {{/if}}
+    </div>
+
+
+
+  </div>
+</template>
+
+
+<template name="applicantEntry">
+
+  <li class="list-group-item"> {{user.fullName}}
+    <span class="pull-right">
+      {{#if user.carMostlyAvailable}}<i class="fa fa-car" title="{{user.fullName}} hat meistens ein Auto zur Verfügung"></i>{{/if}}
+      <span class="label label-default" rel="tooltip" title="{{user.fullName}} wohnt in {{user.placeName}} (PLZ: {{user.zip}}).">{{user.placeName}}</span>
+      <span class="label label-default" rel="tooltip" title="{{user.fullName}} wurde bereits {{user.assignmentsParticipatedCount}}x angenommen.">{{user.getAssignmentsParticipatedCount}}</span>
+      <button class="btn btn-xs btn-success toggle-application">
+        <i class="fa fa-chevron-right"></i>
+      </button>
+    </span>
+  </li>
+
+
+</template>
+
+<template name="participantEntry">
+
+  <li class="list-group-item"> {{user.fullName}}
+    <span class="pull-right">
+      {{#if user.carMostlyAvailable}}<i class="fa fa-car" title="{{user.fullName}} hat meistens ein Auto zur Verfügung"></i>{{/if}}
+      <span class="label label-default" rel="tooltip" title="{{user.fullName}} wurde bereits {{user.assignmentsParticipatedCount}}x angenommen.">{{user.getAssignmentsParticipatedCount}}</span>
+      <button class="btn btn-xs btn-danger toggle-application">
+        <i class="fa fa-chevron-left"></i>
+      </button>
+    </span>
+  </li>
+
+</template>

@@ -1,0 +1,67 @@
+@import "custom.bootstrap.import.less";
+@import "custom.bootstrap.less";
+
+
+.center-block
+{
+  display: block; margin-left: auto; margin-right: auto;
+}
+
+.badge-danger:extend(.badge)
+{
+  background-color: @brand-danger;
+}
+
+.badge-success:extend(.badge)
+{
+  background-color: @brand-success;
+}
+
+.badge-primary:extend(.badge)
+{
+  background-color: @brand-primary;
+}
+
+.badge-info:extend(.badge)
+{
+  background-color: @brand-info;
+}
+
+.badge-notify {
+  position: absolute;
+  margin-top: -13px;
+  margin-left: -6px;
+}
+
+
+.navbar-custom-brand:extend(.navbar-brand) {
+  background-color: @brand-primary;
+  color: #ffffff;
+  font-weight: 600;
+  width: 250px;
+
+  @media (max-width: @screen-xs-max) {
+    width: auto;
+    font-size: @font-size-base;
+  }
+
+  &:hover {
+    background-color: darken(@brand-primary,10%);
+    color: #ffffff;
+    text-decoration: none;
+  }
+  &:active, &:focus {
+    color: #ffffff;
+    text-decoration: none;
+  }
+}
+
+.zero-clipboard {
+    position: relative;
+}
+.btn-clipboard {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 990;
+}

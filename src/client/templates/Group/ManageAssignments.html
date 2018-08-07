@@ -1,0 +1,52 @@
+<template name="manageAssignments">
+	<div class="row">
+		<div class="col-lg-12">
+			<h1 class="page-header">Einsätze
+				<small>{{currentGroup.name}}</small>
+			</h1>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-lg-7">
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					<i class="fa fa-table"></i> Übersicht
+				</div>
+				<div class="panel-body table-responsive">
+					<div class="row">
+						<div class="col-lg-4 col-md-6">
+							{{> React component=DateRangeChooser startDate=filterStartDate endDate=filterEndDate}}
+						</div>
+					</div>
+					<div class="row" style="margin-top:15px">
+						<div class="col-lg-12">
+							{{> tabular table=TabularTables.Assignments class=" table table-responsive " selector=assignmentFilter}}
+						</div>
+					</div>
+				</div>
+			</div>
+
+			{{#with assignmentManagerContext}}
+			<div class="well ">{{> assignmentManager}}</div>
+			{{/with}}
+
+		</div>
+		<div class="col-lg-5 ">
+			{{#with currentAssignmentFormOptions}} {{> assignmentForm}} {{/with}}
+		</div>
+	</div>
+
+</template>
+
+<template name="assignmentOptions ">
+	<div class="btn-group ">
+		<button type="button " class="btn btn-sm {{deleteButtonClass}} remove-assignment " title="Termin löschen "><i class="fa
+						fa-fw fa-trash "></i></button>
+		<button type="button " class="btn btn-sm {{#if isClosed}}btn-warning{{else}}btn-danger{{/if}} manage-assignment
+						" title="{{#if isClosed}}Termin erneut abschließen{{else}}Termin abschließen{{/if}} "><i class="fa fa-fw {{#if isClosed}}fa-lock{{else}}fa-unlock{{/if}} "></i></button>
+		<button type="button " class="btn btn-sm btn-primary edit-assignment " title="Daten bearbeiten "><i class="fa fa-fw fa-pencil "></i></button>
+		<button type="button " class="btn btn-sm {{copyButtonClass}} copy-assignment " title="Als Kopiervorlage verwenden"><i class="fa fa-fw fa-clone "></i></button>
+
+	</div>
+</template>

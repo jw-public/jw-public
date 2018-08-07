@@ -1,0 +1,36 @@
+{
+    "version": "2.0",
+    "compilerOptions": {
+        "target": "es6",
+        "module": "commonjs",
+        "isolatedModules": false,
+        "jsx": "react",
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "declaration": false,
+        "noImplicitAny": false,
+        "removeComments": false,
+        "noLib": false,
+        "preserveConstEnums": true,
+        "suppressImplicitAnyIndexErrors": true,
+        "sourceMap": true,
+        "typeRoots": [ "node_modules/@types/" ],
+        "baseUrl": "."
+    },
+    "filesGlob": [
+        "./**/*.ts",
+        "./**/*.tsx",
+        "!./node_modules/**/*"
+    ],
+    "include": [
+        "**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        ".meteor",
+        "**/*.spec.ts"
+    ],
+    "atom": {
+        "rewriteTsconfig": false
+    }
+}

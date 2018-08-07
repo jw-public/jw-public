@@ -1,0 +1,35 @@
+<template name="manageApplicants">
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Bewerbungen
+        <small>{{currentGroup.name}}</small>
+        </h1>
+    </div>
+</div>
+<!--
+        <div class="list-group">
+                    {{#each users}}
+                        <a href="{{pathFor 'adminSingleUser' id=_id}}"
+                        class="list-group-item">{{#each emails}}{{address}} {{/each}}{{#unless underscore "isEmpty" profile.first_name}}{{#unless underscore "isEmpty" profile.last_name}}
+                            :{{/unless}}{{/unless}} {{profile.first_name}} {{profile.last_name}}</a>
+                    {{/each}}
+        </div>
+-->
+<div class="row">
+    <div class="col-lg-8">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <i class="fa fa-users fa-fw"></i> Übersicht
+            </div>
+            <div class="panel-body table-responsive">
+                {{> tabular table=TabularTables.GroupApplicants class="table table-responsive" selector=selectForGroup}}
+            </div>
+        </div>
+    </div>
+</div>
+</template>
+<template name="applicantsOptions">
+<button type="button" class="btn btn-success accept-user"><i class="fa fa-check"></i></button>
+<button type="button" title="Gruppenanfrage ablehnen" class="btn btn-danger deny-user"><i class="fa fa-times"></i></button>
+
+</template>

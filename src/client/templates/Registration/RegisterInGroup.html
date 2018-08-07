@@ -1,0 +1,95 @@
+<template name="RegisterInGroup">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel panel-primary">
+                <div class="panel-body">
+                    <h1 class="page-header">Registrierung für {{groupName}}</h1>
+                </div>
+            </div>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <div class="row">
+        <div class="col-md-3 col-md-offset-2">
+            <div class="panel panel-primary">
+                {{#if isStep 1}}
+                    <div class="panel-heading">
+                        <i class="fa fa-home"></i> Willkommen!
+                    </div>
+                    <div class="panel-body">
+                        <p>Hier kannst Du Dich für den Trolleydienst in der Gruppe {{groupName}} anmelden.</p>
+                        <p>Gib bitte Deine E-Mail Adresse ein und klicke dann auf weiter.</p>
+                    </div>
+                {{/if}}
+                {{#if isStep 2}}
+                    <div class="panel-heading">
+                        <i class="fa fa-user-plus"></i> Nur noch ein Schritt!
+                    </div>
+                    <div class="panel-body">
+                        <p>Wir würden noch gerne wissen, wer Du bist.</p>
+                        <p>Es hilft uns sehr bei der Organisation, wenn wir deine Kontaktdaten haben und diese für den Zweck der Organisation unserer Öffentlichkeitsarbeit verwenden dürfen.</p>
+                    </div>
+                {{/if}}
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="panel panel-primary">
+
+                {{#if isStep 1}}
+                    <div class="panel-heading">
+                        <i class="fa fa-envelope"></i> Meine E-Mail Adresse
+                    </div>
+                    <div class="panel-body">
+
+                        {{#autoForm id="register-firstStep-email" class="" type="normal" schema=emailSchema doc=lastInsertedData}}
+                            <fieldset>
+                                {{> afQuickField name="email" type="email" label=false}}
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary next-button-registration">Weiter <i
+                                            class="fa fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </fieldset>
+                        {{/autoForm}}
+                    </div>
+                {{/if}}
+
+                {{#if isStep 2}}
+
+                    <div class="panel-heading">
+                        <i class="fa fa-table"></i> Meine Daten
+                    </div>
+
+                    <div class="panel-body">
+
+                        {{#autoForm id=formId type="normal" schema=registrationSchema validation="blur" doc=lastInsertedData}}
+                            <fieldset>
+                                {{> afQuickField name="email" type="email" label="Meine E-Mail Adresse"}}
+                                {{> afQuickField name="profile.first_name" label="Vorname"}}
+                                {{> afQuickField name="profile.last_name" label="Nachname"}}
+                                {{> afQuickField name="profile.gender" label="Ich bin" options=genderOption type="select-radio-inline"}}
+                                {{> afQuickField name="profile.carMostlyAvailable" defaultValue=true label="Meistens habe ich ein Auto zur Verfügung" trueLabel="Ja" falseLabel="Nein" type="boolean-select"}}
+                                {{> afQuickField name="profile.pioneer" defaultValue=false label="Ich bin ein Pionier" trueLabel="Ja" falseLabel="Nein" type="boolean-select"}}
+                                {{> afQuickField name="profile.mobile" label="Handynummer (Für Österreich bitte die führende 0 mit +43 ersetzen)" defaultValue=""}}
+                                {{> afQuickField name="profile.placeName" label="Wohnort" defaultValue=""}}
+                                {{> afQuickField name="profile.zip" label="Postleitzahl" defaultValue=""}}
+                                {{> afQuickField name="password" label="Denk dir ein Passwort aus" type="password"}}
+                                {{> afQuickField name="passwordConfirmation" label="Tipp dein neues Passwort noch einmal ein" type="password"}}
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary submit-change"><i class="fa fa-sign-in"></i>
+                                        Anmelden
+                                    </button>
+                                    <a href="" id="backToStart" class="btn btn-default">
+                                        <i class="fa fa-arrow-left"></i> Zurück
+                                    </a>
+                                </div>
+                            </fieldset>
+                        {{/autoForm}}
+                    </div>
+                {{/if}}
+
+
+            </div>
+        </div>
+    </div>
+</template>

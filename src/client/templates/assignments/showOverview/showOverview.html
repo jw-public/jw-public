@@ -1,0 +1,121 @@
+<template name="showOverview">
+
+  <div class="row">
+    <div class="col-lg-12">
+      <h1 class="page-header">{{> backButton link=linkToDashboard}} Termine
+        <small>{{currentGroup.name}}</small>
+      </h1>
+
+    </div>
+    <!-- /.col-lg-12 -->
+  </div>
+
+  <div class="row">
+    <div class="col-lg-12 assignmentNav">
+      {{#with paginatorContext}} {{> paginator}} {{/with}}
+
+      <div class="pagination btn-group" data-toggle="buttons">
+        <label class="btn btn-primary {{#if currentFilter.all}}active{{/if}}">
+          <input type="radio" name="options" id="filter-all" autocomplete="off"> Alle Termine
+          {{#if currentFilter.all}}<i class="fa fa-check"></i>{{/if}}
+        </label>
+        <label class="btn btn-success {{#if currentFilter.own}}active{{/if}}">
+          <input type="radio" name="options" id="filter-mine" autocomplete="off">
+          {{#if currentFilter.own}}<i class="fa fa-check"></i>{{/if}} Meine Termine
+        </label>
+      </div>
+    </div>
+    <!-- /.col-lg-12 -->
+
+  </div>
+
+
+
+
+  <!-- /.row -->
+  {{#if currentFilter.own}}
+    <div class="row">
+      {{#if cachedSubsReady}}
+        {{#if hasAssignments}}
+          {{#each assignments}} {{> assignmentItem assignment=this}} {{/each}} {{else}}
+          <div class="col-lg-12">
+            <div class="alert alert-success" role="alert">
+              <strong><i class="fa fa-info-circle"></i> Kein eigener Termin vorhanden.</strong> Du hast dich im gewählten Monat auf keinen Termin beworben und nimmst noch an keinem teil.
+              <strong>Klicke oben auf "Alle Termine"</strong>, um dir einen Termin auszusuchen.
+            </div>
+          </div>
+
+        {{/if}}
+      {{/if}}
+    </div>
+  {{/if}}
+
+  {{#if currentFilter.all}}
+    <div class="row">
+      {{#unless hasAssignments}}
+        <div class="col-lg-12">
+          <div class="alert alert-info" role="alert">
+            <strong><i class="fa fa-exclamation-circle"></i> Keine Termine vorhanden.</strong> Im gewählten Monat sind keine Termine verfügbar.
+          </div>
+
+        </div>
+  {{else}}
+    <div class="panel-group" id="accordion">
+      {{#each weekViewContexts}} {{> assignmentWeekView}} {{/each}}
+    </div>
+      {{/unless}}
+
+    </div>
+  {{/if}}
+  {{#if Template.subscriptionsReady}}
+    {{#if hasAssignments}}
+      <div class="row">
+        <div class="col-lg-12">
+          {{#with paginatorContext}} {{> paginator}} {{/with}}
+        </div>
+        <!-- /.col-lg-12 -->
+      </div>
+    {{/if}}
+  {{/if}}
+
+</template>
+
+
+
+
+<template name="assignmentWeekView">
+  <div class="panel panel-primary">
+    <div class="panel-heading" style="cursor: pointer;">
+      <h4 class="panel-title">
+        <i class="fa {{#unless collapsed}}fa-chevron-circle-down{{else}}fa-chevron-circle-right{{/unless}}"></i> {{weekHeading}}
+      </h4>
+    </div>
+    <div id="{{htmlId}}" class="panel-collapse collapse weekViewCollapse">
+      <div class="panel-body">
+        {{#if render}}
+          <div class="row">
+            {{#if cachedSubsReady}}
+              {{#if hasAssignments}}
+                {{#each assignments}} {{> assignmentItem assignment=this}} {{/each}}
+              {{/if}} {{else}}
+              <div class="col-lg-12 huge text-center">
+                <i class="fa fa-circle-o faa-burst fa-3x animated"></i>
+              </div>
+            {{/if}}
+          </div>
+        {{else}}
+          <div class="col-lg-12 huge text-center">
+            <i class="fa fa-circle-o faa-burst fa-3x animated"></i>
+          </div>
+        {{/if}}
+
+      </div>
+    </div>
+  </div>
+</template>
+
+<template name="assignmentItem">
+  <div>
+    {{> React component=AssignmentPanel assignment=assignment}}
+  </div>
+</template>

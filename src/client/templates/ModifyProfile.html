@@ -1,0 +1,87 @@
+<template name="modifyProfile">
+{{#if currentUser}}
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Profil</h1>
+        {{#unless underscore "isEmpty" firstName}}<p>
+        Hallo {{firstName}}{{#unless underscore "isEmpty" lastName}} {{lastName}}{{/unless}}, hier kannst du dein Benutzerprofil einstellen.</p> {{/unless}}
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<div class="row">
+    <div class="col-md-5">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Daten ändern
+            </div>
+            <div class="panel-body">
+                {{#autoForm id=formId type="update"  collection="Meteor.users" doc=currentUser autosave=false validation="blur"}}
+                <fieldset>
+                    {{> afQuickField name="emails.0.address" label="Anmeldeadresse" disabled="true"}}
+                    {{> afQuickField name="profile.first_name" label="Vorname"}}
+                    {{> afQuickField name="profile.last_name" label="Nachname"}}
+                    {{> afQuickField name="profile.gender" label="Ich bin" options=genderOption type="select-radio-inline"}}
+                    {{> afQuickField name="profile.carMostlyAvailable" defaultValue=true label="Meistens habe ich ein Auto zur Verfügung" trueLabel="Ja" falseLabel="Nein" type="boolean-select"}}
+                    {{> afQuickField name="profile.pioneer" defaultValue=false label="Ich bin ein Pionier" trueLabel="Ja" falseLabel="Nein" type="boolean-select"}}
+                    {{> afQuickField name="profile.mobile" label="Handynummer (Hier kann ausnahmsweise auch die Festnetznummer eingetragen werden falls du kein Handy besitzt)" defaultValue=""}}
+                    {{> afQuickField name="profile.placeName" label="Wohnort" defaultValue=""}}
+                    {{> afQuickField name="profile.zip" label="Postleitzahl" defaultValue=""}}
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary submit-change"><i
+                        class="fa fa-floppy-o"></i> Speichern
+                        </button>
+                    </div>
+                </fieldset>
+                {{/autoForm}}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5">
+      <div class="panel panel-primary">
+          <div class="panel-heading">
+              Benachrichtigungen
+          </div>
+          <div class="panel-body">
+            {{#autoForm id="profileNotificationSettings" type="update"  collection="Meteor.users" doc=currentUser autosave=true validation="blur"}}
+            <fieldset>
+                {{> afQuickField name="profile.notificationAsEmail" defaultValue=true}}
+            </fieldset>
+            {{/autoForm}}
+          </div>
+      </div>
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    Sprache für E-Mail-Benachrichtigungen
+                </div>
+                <div class="panel-body">
+                    {{#autoForm id="profileLanguage" type="update" collection="Meteor.users" doc=currentUser autosave=true validation="blur"}}
+                    <fieldset>
+                        {{> afQuickField name="profile.language" options=languageOption }}
+                    </fieldset>
+                    {{/autoForm}}
+                </div>
+            </div>
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Passwort ändern
+            </div>
+            {{> bootstrapAlerts}}
+            <div class="panel-body">
+                {{#autoForm id="profileChangePassword" type="normal" schema=passwordSchema validation="blur" doc=lastInsertedData}}
+                <fieldset>
+                    {{> afQuickField name="oldpassword" label="Altes Passwort" type="password"}}
+                    {{> afQuickField name="password" label="Passwort" type="password"}}
+                    {{> afQuickField name="passwordConfirmation" type="password"}}
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary submit-change"><i class="fa fa-sign-in"></i>
+                        Ändern
+                        </button>
+                    </div>
+                </fieldset>
+                {{/autoForm}}
+            </div>
+        </div>
+    </div>
+</div>
+{{/if}}
+</template>

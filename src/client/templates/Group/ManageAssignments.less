@@ -1,0 +1,31 @@
+@import "../../lib/custom.bootstrap.mixins.import.less";
+@import "../../lib/custom.bootstrap.import.less";
+@import "../../lib/mixins.less";
+
+.user-entry-row {
+  @border-color: @gray-lighter;
+  @height: @input-height-base;
+
+  min-height: @height;
+  .bordered(@border-color, @border-color, @border-color, @border-color);
+  .rounded(@border-radius-base);
+
+  margin: 10px 15px 0px 0px;
+
+  > .action {
+    padding: 0;
+    height: 100%;
+    .btn {
+      display: block;
+      width: 100%;
+      min-height: @height - 2; // -2 because of border
+    }
+  }
+
+  > .info {
+    padding: 0;
+    line-height: @height;
+    text-align: center;
+  }
+
+}

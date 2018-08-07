@@ -1,0 +1,91 @@
+<template name="adminUsers">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Benutzerverwaltung</h1>
+        </div>
+    </div>
+    <!--
+        <div class="list-group">
+            {{#each users}}
+                <a href="{{pathFor 'adminSingleUser' id=_id}}"
+                   class="list-group-item">{{#each emails}}{{address}} {{/each}}{{#unless  underscore "isEmpty" profile.first_name}}{{#unless  underscore "isEmpty" profile.last_name}}
+                    :{{/unless}}{{/unless}} {{profile.first_name}} {{profile.last_name}}</a>
+            {{/each}}
+
+
+        </div>
+-->
+    <div class="row">
+        <div class="col-lg-8">
+
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <i class="fa fa-users fa-fw"></i> Übersicht
+                </div>
+                <div class="panel-body table-responsive">
+                    {{> tabular table=TabularTables.Users class="table table-responsive"}}
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-lg-4">
+            <div class="panel panel-primary edit-user-panel">
+                <div class="panel-heading">
+                  <div class="row">
+                    <div class="col-xs-10"><i class="fa fa-pencil-square-o fa-fw"></i> User bearbeiten</div>
+                    <div class="col-xs-2">
+                        <a href="#" class="btn btn-default  btn-xs cancel-update pull-right">
+                        <i class="fa  fa-times"></i>
+                        </a>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+
+                    {{#autoForm id="userUpdate" type="update" resetOnSuccess=false collection="Meteor.users" doc=selectedUser autosave=false}}
+                        <fieldset>
+
+                            {{> afQuickField name="profile.first_name"}}
+                            {{> afQuickField name="profile.last_name"}}
+                            {{> afQuickField name="profile.gender" label="Anrede" options=genderOption type="select-radio-inline"}}
+                            {{> afQuickField name="profile.mobile" defaultValue=""}}
+                            {{> afQuickField name="profile.placeName" defaultValue=""}}
+                            {{> afQuickField name="profile.zip" defaultValue=""}}
+                            {{> afQuickField name="profile.pendingGroups" options=groupsOptions  type="select2" multiple=true}}
+                            {{> afQuickField name="groups" options=groupsOptions  type="select2" multiple=true}}
+                            {{> afQuickField name="roles" options=rolesOptions  type="select2" multiple=true}}
+                            {{> afArrayField name="emails" minCount=1 maxCount=1 template="simplyShowEachElement"}}
+                            <!-- afQuickField name="banned"  label="User ist gesperrt worden" defaultValue=false -->
+                            {{> afQuickField name="profile.notificationAsEmail" defaultValue=true type="boolean-radios" trueLabel="Ja" falseLabel="Nein"}}
+                            {{> afQuickField name="notice"}}
+                            <!-- label="Gesperrt" trueLabel="Ja" falseLabel="Nein" type="boolean-radios" -->
+                            <div class="form-group">
+                              <button type="submit" class="btn btn-primary submit-change"><i class="fa fa-floppy-o"></i>Speichern</button>
+                              <button type="reset" class="btn btn-default cancel-update"><i class="fa  fa-times"></i>Abbruch</button>
+                            </div>
+                        </fieldset>
+                    {{/autoForm}}
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</template>
+
+<template name="afArrayField_simplyShowEachElement">
+    {{#afEachArrayItem name=this.atts.name minCount=this.atts.minCount maxCount=this.atts.maxCount}}
+        {{> afQuickField name=this.name label=false options=afOptionsFromSchema}}
+    {{/afEachArrayItem}}
+</template>
+
+<template name="userOptions">
+    <button type="button" class="btn btn-sm btn-trash remove-user"><i class="fa fa-trash"></i></button>
+    <button type="button" class="btn btn-primary edit-user"><i class="fa fa-pencil"></i></button>
+</template>

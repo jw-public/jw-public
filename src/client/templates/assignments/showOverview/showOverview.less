@@ -1,0 +1,121 @@
+@import "../../../lib/custom.bootstrap.mixins.import.less";
+@import "../../../lib/custom.bootstrap.import.less";
+@import "../../../lib/mixins.less";
+.assignment-panel {
+  .transition(0.8s);
+  .panel-heading,
+  .time {
+    .transition(0.8s);
+
+    //padding-top: @padding-xs-vertical;
+    //padding-bottom: @padding-xs-vertical;
+  }
+
+  margin-bottom: @line-height-computed !important;
+
+  .assignment-item {
+    padding-top: 0;
+    padding-bottom: 0;
+    .huge {
+      font-size: 25px;
+    }
+    .time {
+
+      //.border-radius(0,0,@border-radius-small, 0); // Links unten rund
+      margin-right: -2px;
+      background-color: @brand-primary;
+      color: #fff;
+    }
+  }
+  @media (min-width: @screen-md-min) {
+    .panel-heading {
+      @padding-top: 10px;
+      @padding-bottom: 10px;
+      padding-top: @padding-top;
+      padding-bottom: @padding-bottom;
+
+      // Die Gesamthöhe soll gleich bleiben, wenn ein Fortschrittsbalken da ist.
+      &.with-progress-bar {
+        padding-bottom: @padding-bottom - 10px;
+      }
+    }
+  }
+  @media (max-width: @screen-sm-max) {
+    .panel-heading {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+    .panel-body {
+      padding-bottom: 0;
+      .time {
+        .border-left-radius(0px);
+      }
+      .huge {
+        font-size: 27px;
+      }
+    }
+    .panel-footer {
+      padding-top: @padding-xs-vertical;
+      padding-bottom: @padding-xs-vertical;
+    }
+  }
+  &.panel-applied {
+    @bg-color: #eab116;
+    @color: #fff;
+    .panel-variant(@bg-color, @color, @bg-color, @bg-color);
+    .time {
+      background-color: @bg-color;
+      color: @color;
+    }
+    .panel-footer {
+      color: @gray-dark;
+    }
+  }
+  &.panel-accepted {
+    @bg-color: @brand-success;
+    @color: #fff;
+    .panel-variant(@bg-color, @color, @bg-color, @bg-color);
+    .time {
+      background-color: @bg-color;
+      color: @color;
+    }
+    .panel-footer {
+      color: @gray-dark;
+    }
+  }
+  &.panel-canceled {
+    @bg-color: @brand-danger;
+    @color: #fff;
+    .panel-variant(@bg-color, @color, @bg-color, @bg-color);
+    .time {
+      background-color: @bg-color;
+      color: @color;
+    }
+    .panel-footer {
+      color: @gray-dark;
+    }
+  }
+  &.panel-closed {
+    @bg-color: @gray-light;
+    @color: #fff;
+    .panel-variant(@bg-color, @color, @bg-color, @bg-color);
+    .time {
+      background-color: @bg-color;
+      color: @color;
+    }
+    .panel-footer {
+      color: @gray-dark;
+    }
+  }
+}
+
+.assignmentNav {
+  .pagination {
+    display: inline-block;
+    padding-left: 0;
+    position: relative;
+    margin: 0px 20px 20px 0px;
+    border-radius: 4px;
+    float: left;
+  }
+}

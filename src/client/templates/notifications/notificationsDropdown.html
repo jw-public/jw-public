@@ -1,0 +1,63 @@
+<template name="notificationsDropdown">
+  <li class="dropdown" id="notificationsDropdown">
+    <a class="dropdown-toggle {{#if hasUnreadNotifications}}dropdown-danger{{/if}}" data-toggle="dropdown" href="#">
+      <i class="fa fa-bell fa-fw faa-ring {{#if hasUnreadNotifications}}animated{{/if}}"></i>{{#if hasUnreadNotifications}}<span class="badge-danger badge-notify">{{unreadNotificationsCount}}</span>{{/if}}<i class="fa fa-caret-down"></i>
+    </a>
+
+    <ul class="dropdown-menu dropdown-alerts">
+      {{#if Template.subscriptionsReady}}
+        {{#unless hasNotifications}}
+            <li>
+              <div>
+                Du hast keine Benachrichtigungen.
+              </div>
+            </li>
+        {{/unless}}
+
+        {{#each notificationItems}} {{> notificationItem}} {{/each}}
+        <li class="divider"></li>
+        <li>
+          <div>
+            <button type="button" id="removeAll" class="btn btn-primary btn-sm btn-block" disabled="{{#unless hasNotifications}}disabled{{/unless}}"><i class="fa fa-trash-o"></i> Benachrichtigungen entfernen</button>
+          </div>
+        </li>
+      {{else}}
+        <li>
+          <div>
+            <i class="fa fa-circle-o-notch faa-spin animated"></i> Benachrichtigungen werden geladen...
+          </div>
+        </li>
+      {{/if}}
+    </ul>
+    <!-- /.dropdown-alerts -->
+  </li>
+</template>
+
+<template name="notificationItem">
+
+  {{#if divider}}
+  <li class="divider"></li>
+  {{/if}}
+  <li class="{{#unless notification.data.seen}}bg-danger{{/unless}}">
+    {{#if notification.hasLink}}
+      <a href="{{notification.link}}">
+          {{> notificationItemContent}}
+      </a>
+    {{else}}
+      {{> notificationItemContent}}
+    {{/if}}
+  </li>
+
+</template>
+
+
+<template name="notificationItemContent">
+  <div>
+    <i class="{{notification.icon}}"></i> {{notification.title}}
+    <span class="pull-right text-muted small" title="{{dateOfNotification}}">
+      {{relativeDateOfNotification}}
+    </span>
+    <br/>
+    <p class="small">{{breaklines notification.details}}</p>
+  </div>
+</template>

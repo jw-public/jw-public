@@ -1,0 +1,40 @@
+@import "custom.bootstrap.import.less";
+
+.user-row {
+  margin-bottom: 14px;
+
+  .dropdown-user {
+    margin: 13px 0;
+    padding: 5px;
+    height: 100%;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+}
+
+.user-infos {
+  display: none;
+}
+
+.table-user-information {
+  tbody {
+    tr {
+      border-top: 1px solid @gray-light;
+      td {
+        border-top: 0;
+      }
+
+      &:first-child {
+        border-top: 0;
+      }
+    }
+
+  }
+}

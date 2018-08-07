@@ -1,0 +1,38 @@
+@import "../../../lib/custom.bootstrap.mixins.import.less";
+@import "../../../lib/custom.bootstrap.import.less";
+@import "../../../lib/mixins.less";
+@element-height: 10px;
+.progress-small {
+  &.smooth-transition {
+    .transition(all, 0.8s);
+  }
+  background-color: @gray-light;
+  overflow: hidden;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+.smooth-transition {
+  .transition(all, 0.8s);
+}
+
+/** Glüh-Animation */
+@backgroundColor: #fff;
+@backgroundColorGlowing: lighten(@brand-primary,30%);
+@time: 2.8s;
+
+.bar-glow-effect {
+  background-color: @backgroundColorGlowing;
+  -webkit-animation: glowIt @time infinite;
+  -webkit-animation-timing-function: ease-in-out;
+}
+@-webkit-keyframes glowIt {
+  0% {
+    background-color: @backgroundColor;
+  }
+  50% {
+    background-color: @backgroundColorGlowing;
+  }
+  100% {
+    background-color: @backgroundColor;
+  }
+}

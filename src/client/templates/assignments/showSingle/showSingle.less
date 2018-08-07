@@ -1,0 +1,25 @@
+@import "../../../lib/custom.bootstrap.mixins.import.less";
+@import "../../../lib/custom.bootstrap.import.less";
+@import "../../../lib/mixins.less";
+
+@element-height: 80px;
+
+.assignment-head-element {
+
+  .rounded(@border-radius-small);
+
+  height: @element-height;
+
+  margin-bottom: 20px;
+
+  .icon {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    line-height: @element-height;
+  }
+
+  .info {
+    .center-vertically();
+  }
+
+}

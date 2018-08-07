@@ -1,0 +1,18 @@
+site_name: Public Assistant
+site_description: Online Tool zum öffentlichen Zeugnisgeben
+site_url: https://jw-public.org/
+
+
+pages:
+- Home: index.md
+- Für Benutzer: userguide.md
+- Über uns: about.md
+theme: material
+extra:
+  palette:
+    primary: 'indigo'
+    accent: 'grey'
+  i18n:
+    prev: 'Vorheriges'
+    next: 'Nächstes'
+  logo: 'img/logo.png'

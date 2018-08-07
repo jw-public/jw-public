@@ -1,0 +1,92 @@
+<template name="modifyGroups">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Gruppenverwaltung</h1>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <i class="fa fa-table fa-fw"></i> Übersicht
+                </div>
+                <div class="panel-body table-responsive">
+                    {{> tabular table=TabularTables.Groups class="table table-responsive"}}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="panel panel-primary insert-panel">
+                <div class="panel-heading">
+                    <i class="fa fa-plus-square fa-fw"></i> Gruppe hinzufügen
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    {{#autoForm collection=groupsCollection id="insertGroupForm" type="insert"}}
+                    <fieldset>
+                        <div class="form-group {{#if afFieldIsInvalid name='name'}}has-error{{/if}}">
+                            <label class="control-label">{{afFieldLabelText name='name'}}</label> {{> afFieldInput id="inputGroupName"
+                            name='name'}} {{#if afFieldIsInvalid name='name'}}
+                            <span class="help-block">{{{afFieldMessage name='name'}}}</span> {{/if}}
+                        </div>
+                        <div class="form-group {{#if afFieldIsInvalid name='additional'}}has-error{{/if}}">
+                            <label class="control-label">{{afFieldLabelText name='additional'}}</label> {{> afFieldInput
+                            name='additional' rows=6}} {{#if afFieldIsInvalid name='additional'}}
+                            <span class="help-block">{{{afFieldMessage name='additional'}}}</span> {{/if}}
+                        </div>
+                        <div class="form-group {{#if afFieldIsInvalid name='email'}}has-error{{/if}}">
+                            <label class="control-label">{{afFieldLabelText name='email'}}</label> {{> afFieldInput name='email'}}
+                            {{#if afFieldIsInvalid name='email'}}
+                            <span class="help-block">{{{afFieldMessage name='email'}}}</span> {{/if}}
+                        </div>
+                        {{> afQuickField name="coordinators" options=userListHelper type="select2" multiple=true}}
+                    </fieldset>
+                    <button type="submit" id="saveButton" class="btn btn-primary"><i class="fa fa-floppy-o"></i> Speichern</button>                    {{/autoForm}}
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <div class="panel panel-primary update-panel">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-10"><i class="fa fa-pencil-square-o fa-fw"></i> Gruppe bearbeiten</div>
+                        <div class="col-xs-2">
+                            <a href="#" class="btn btn-default  btn-xs cancel-update pull-right">
+                        <i class="fa  fa-times"></i>
+                        </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    {{#autoForm collection=groupsCollection id="updateGroupForm" type="update" doc=selectedGroup}}
+                    <fieldset>
+                        <div class="form-group {{#if afFieldIsInvalid name='name'}}has-error{{/if}}">
+                            <label class="control-label">{{afFieldLabelText name='name'}}</label> {{> afFieldInput id="updateGroupName"
+                            name='name'}} {{#if afFieldIsInvalid name='name'}}
+                            <span class="help-block">{{{afFieldMessage name='name'}}}</span> {{/if}}
+                        </div>
+                        <div class="form-group {{#if afFieldIsInvalid name='additional'}}has-error{{/if}}">
+                            <label class="control-label">{{afFieldLabelText name='additional'}}</label> {{> afFieldInput
+                            name='additional' rows=6}} {{#if afFieldIsInvalid name='additional'}}
+                            <span class="help-block">{{{afFieldMessage name='additional'}}}</span> {{/if}}
+                        </div>
+                        <div class="form-group {{#if afFieldIsInvalid name='email'}}has-error{{/if}}">
+                            <label class="control-label">{{afFieldLabelText name='email'}}</label> {{> afFieldInput name='email'}}
+                            {{#if afFieldIsInvalid name='email'}}
+                            <span class="help-block">{{{afFieldMessage name='email'}}}</span> {{/if}}
+                        </div>
+                        {{> afQuickField name="coordinators" options=userListHelper type="select2" multiple=true}}
+                    </fieldset>
+                    <button type="submit" id="updateSaveButton" class="btn btn-primary"><i class="fa fa-floppy-o"></i> Speichern</button>
+                    <button type="reset" class="btn btn-default cancel-update"><i class="fa  fa-times"></i> Abbruch</button>                    {{/autoForm}}
+                </div>
+                <!-- /.panel-body -->
+            </div>
+        </div>
+    </div>
+</template>
+<template name="groupOptions">
+    <a href="{{pathFor 'registerInGroup' groupId=this._id}}" class="btn btn-primary"><i class="fa fa-link"></i></a>
+    <button type="button" class="btn btn-primary edit-group"><i class="fa fa-pencil"></i></button>
+</template>
