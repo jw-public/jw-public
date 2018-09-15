@@ -75,3 +75,4 @@ meteor/typedefs/react-bootstrap/react-bootstrap-tests.jsx
 *.gz
 *.ppk
 userdocs/site/
+src/node_modules/

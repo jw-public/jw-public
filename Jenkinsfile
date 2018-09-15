@@ -1,92 +1,118 @@
-pipeline {
-    agent {
-        label "jenkins-nodejs"
-    }
-    environment {
-      ORG               = 'jw-public'
-      APP_NAME          = 'trolleyapp'
-      CHARTMUSEUM_CREDS = credentials('jenkins-x-chartmuseum')
-    }
-    stages {
-      stage('CI Build and push snapshot') {
-        when {
-          branch 'PR-*'
-        }
-        environment {
-          PREVIEW_VERSION = "0.0.0-SNAPSHOT-$BRANCH_NAME-$BUILD_NUMBER"
-          PREVIEW_NAMESPACE = "$APP_NAME-$BRANCH_NAME".toLowerCase()
-          HELM_RELEASE = "$PREVIEW_NAMESPACE".toLowerCase()
-        }
-        steps {
-          container('nodejs') {
-            sh "npm install"
-            sh "CI=true DISPLAY=:99 npm test"
+slackSend "Build Started - ${env.JOB_NAME} ${env.BUILD_NUMBER}"
 
-            sh 'export VERSION=$PREVIEW_VERSION && skaffold build -f skaffold.yaml'
+node('docker') {
+	checkout scm
 
+	dir "ansible", {
+		def scmUrl = 'git@bitbucket.org:icereed/infrastructure-as-code.git'
+		def credentials = 'bitbucket-ssh'
+		def branch = 'master'
+		git credentialsId: credentials, url: scmUrl, branch: branch
+	}
+	
+	def baseSite = "jw-public.org"
+	def versionNumber = "v.1.${env.BUILD_NUMBER}";
+	sh "git checkout -b release/${versionNumber}"
 
-            sh "jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:$PREVIEW_VERSION"
-          }
+	def commitMessage
+	def commitId
 
-          dir ('./charts/preview') {
-           container('nodejs') {
-             sh "make preview"
-             sh "jx preview --app $APP_NAME --dir ../.."
-           }
-          }
-        }
-      }
-      stage('Build Release') {
-        when {
-          branch 'master'
-        }
-        steps {
-          container('nodejs') {
-            // ensure we're not on a detached head
-            sh "git checkout master"
-            sh "git config --global credential.helper store"
+	stage "Compile and test", {
+		commitId = lib.getCommitId()
+		def versionFile = "export const version = { commit: \"${commitId}\", build: \"${env.BUILD_NUMBER}\" };"
+		def versionPath = "meteor/Version.ts"
 
-            sh "jx step git credentials"
-            // so we can retrieve the version in later steps
-            sh "echo \$(jx-release-version) > VERSION"
-          }
-          dir ('./charts/trolleyapp') {
-            container('nodejs') {
-              sh "make tag"
-            }
-          }
-          container('nodejs') {
-            sh "npm install"
-            sh "CI=true DISPLAY=:99 npm test"
+		sh "rm -f ${versionPath}"
+		writeFile file: versionPath, text: versionFile
+		commitMessage = "Version ${versionNumber}"
+		sh "git config user.email \"none@nowhere.com\""
+		sh "git config user.name \"Jenkins Bot\""
+		sh "git add ${versionPath} && git commit --m '${commitMessage}'"
+	}
 
-            sh 'export VERSION=`cat VERSION` && skaffold build -f skaffold.yaml'
+	stage "Create docs", {
+		withDockerContainer "icereed/mkdocs-material:latest", {
+			sh "cd userdocs && mkdocs build --clean"
+		}
+	}
 
-            sh "jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:\$(cat VERSION)"
-          }
-        }
-      }
-      stage('Promote to Environments') {
-        when {
-          branch 'master'
-        }
-        steps {
-          dir ('./charts/trolleyapp') {
-            container('nodejs') {
-              sh 'jx step changelog --version v\$(cat ../../VERSION)'
+	def jwPublicImage = null
+	def jwPublicDocsImage = null
 
-              // release the helm chart
-              sh 'jx step helm release'
+	stage "Create Docker image", {
+		jwPublicImage = docker.build "icereed/jw-public:ci-build"
+		dir('userdocs') {
+			jwPublicDocsImage = docker.build "icereed/jw-public-docs:ci-build"
+		}
+	}
 
-              // promote through all 'Auto' promotion Environments
-              sh 'jx promote -b --all-auto --timeout 1h --version \$(cat ../../VERSION)'
-            }
-          }
-        }
-      }
-    }
-    post {
-        always {
-            cleanWs()
-        }
-    }
-  }
+	stage "Push to registry", {
+		withCredentials(
+			[
+				[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-login-jw',
+				usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']
+			]
+		) {
+			sh "docker login -u ${env.USERNAME} -p ${env.PASSWORD}"
+		}
+
+		jwPublicImage.push(commitId);
+		jwPublicDocsImage.push(commitId);
+
+	}
+
+	stage "Redeploy on TEST", {
+		def webAppHostTest = "test.${baseSite}"
+		def docsHostTest = "docs-test.${baseSite}"
+		def stageName = "test"
+
+		jwPublicImage.push(stageName);
+		jwPublicDocsImage.push(stageName);
+
+		withDockerContainer(args: '--user root --privileged', image: "icereed/ansible-docker:latest") {
+			dir "ansible", {
+				ansibleScaleway "deployJwPublic.yml", "-e deployStages='[\"$stageName\"]'"
+			}
+		}
+	}
+
+	stage "Redeploy on INT", {
+		def webAppHostInt = "int.${baseSite}";
+		def docsHostInt = "docs-int.${baseSite}";
+		stageName = "integration"
+
+		jwPublicImage.push(stageName);
+		jwPublicDocsImage.push(stageName);
+
+		withDockerContainer(args: '--user root --privileged', image: "icereed/ansible-docker:latest") {
+			dir "ansible", {
+				ansibleScaleway "deployJwPublic.yml", "-e deployStages='[\"$stageName\"]'"
+			}
+		}
+	}
+
+	stage "Redeploy on PROD", {
+		timeout(5) {
+			input message: 'Deploy to PROD?', submitter: 'icereed'
+		}		
+		sshagent (credentials:['bitbucket-ssh']) {
+			sh "git push --set-upstream origin release/${versionNumber}\t"
+		}
+		def webAppHost = "${baseSite}";
+		def docsHost = "docs.${baseSite}";
+		stageName = "production"
+
+		jwPublicImage.push(stageName);
+		jwPublicDocsImage.push(stageName);
+
+		timeout(5) {
+			input message: 'Deploy now or nightly?', submitter: 'icereed'
+		}
+
+		withDockerContainer(args: '--user root --privileged', image: "icereed/ansible-docker:latest") {
+			dir "ansible", {
+				ansibleScaleway "deployJwPublic.yml", "-e deployStages='[\"$stageName\"]'"
+			}
+		}
+	}
+}
