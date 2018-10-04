@@ -23,6 +23,10 @@
           <input type="radio" name="options" id="filter-mine" autocomplete="off">
           {{#if currentFilter.own}}<i class="fa fa-check"></i>{{/if}} Meine Termine
         </label>
+        <label class="btn {{#if currentFilter.readyForClose}}active{{/if}}">
+          <input type="radio" name="options" id="filter-ready-for-close" autocomplete="off">
+          {{#if currentFilter.readyForClose}}<i class="fa fa-check"></i>{{/if}} Schließbare Termine
+        </label>
       </div>
     </div>
     <!-- /.col-lg-12 -->
