@@ -26,7 +26,7 @@
         {{#if isInRole 'admin'}}
         <label class="btn btn-info {{#if currentFilter.readyForClose}}active{{/if}}">
           <input type="radio" name="options" id="filter-ready-for-close" autocomplete="off">
-          {{#if currentFilter.readyForClose}}<i class="fa fa-check"></i>{{/if}} Schließbare Termine
+          {{#if currentFilter.readyForClose}}<i class="fa fa-check"></i>{{/if}} Volle Termine
         </label>
         {{/if}}
       </div>
@@ -35,7 +35,20 @@
 
   </div>
 
-
+  {{#if currentFilter.readyForClose}}
+    <div class="row">
+      {{#if cachedSubsReady}}
+        {{#if hasAssignments}}
+          {{#each assignments}} {{> assignmentItem assignment=this}} {{/each}} {{else}}
+          <div class="col-lg-12">
+            <div class="alert alert-success" role="alert">
+              <strong><i class="fa fa-info-circle"></i> Kein voller Termin für diesen Monat vorhanden.</strong>
+            </div>
+          </div>
+        {{/if}}
+      {{/if}}
+    </div>
+  {{/if}}
 
 
   <!-- /.row -->

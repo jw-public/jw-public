@@ -7,12 +7,13 @@ services:
       - 8080:8080
     volumes:
       - ./:/home/project:rw
+      - /root/.ssh/:/root/.ssh:ro
     links:
       - mongo
     environment:
       - MONGO_URL=mongodb://mongo/jwpublic
   mongo:
-    image: mongo:3.2.8
+    image: mongo:3.4
     volumes:
       - "./database:/data/db:rw"
     restart: always

@@ -1,3 +1,9 @@
+import { Meteor } from "meteor/meteor";
+import { Template } from "meteor/templating";
+import { Session } from "meteor/session";
+import { Roles } from "meteor/alanning:roles";
+import ResizeSensor from "./lib/ResizeSensor";
+
 // Es folgt der Code, der Client-Seitig im Browser ausgeführt wird.
 if (Meteor.isClient) {
 
@@ -39,12 +45,5 @@ if (Meteor.isClient) {
                 $("#page-wrapper").css("min-height", height + "px");
             }
         });
-
-
-
-
-
     });
-
-
 }

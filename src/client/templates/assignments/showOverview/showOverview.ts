@@ -100,7 +100,8 @@ namespace AssignmentOverview {
     if (filterStateVar.get() === FilterState.ReadyForClose) {
       let selectorReadyForClose: Mongo.Selector =
       {
-        $where: "(this.applicants.length + this.participants.length) >= this.userGoal"
+        $where: "(this.applicants.length + this.participants.length) >= this.userGoal",
+        state: "Online"
       };
 
       selector = _.extend(selector, selectorReadyForClose);

@@ -19,7 +19,7 @@ RUN chmod +x /scripts/install-meteor.sh && /scripts/install-meteor.sh
 COPY --from=compile /src /src
 RUN export METEOR_PROFILE=100 && mkdir /build && meteor build --allow-superuser --architecture=os.linux.x86_64 /build
 
-FROM kadirahq/meteord:base
+FROM abernix/meteord:node-8-base
 COPY --from=package /build/src.tar.gz /bundle/meteor.tar.gz
 EXPOSE 80
 ENV PORT 80
