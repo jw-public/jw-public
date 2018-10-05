@@ -100,9 +100,7 @@ namespace AssignmentOverview {
     if (filterStateVar.get() === FilterState.ReadyForClose) {
       let selectorReadyForClose: Mongo.Selector =
       {
-        $expr: {
-          $gt: ["$applicants.count", "$userGoal"]
-        }
+        $where: "(this.applicants.length + this.participants.length) >= this.userGoal"
       };
 
       selector = _.extend(selector, selectorReadyForClose);
@@ -116,7 +114,7 @@ namespace AssignmentOverview {
 
       selector = _.extend(selector, selectorForWeek);
     }
-
+    console.log(selector)
     return selector;
   }
 
@@ -452,6 +450,7 @@ Template["assignmentWeekView"].helpers({
 });
 
 import AssignmentPanel from "./AssignmentPanel";
+import { getApplicantsArray } from "client/templates/components/assignmentManager/AssignmentManager";
 
 Template["assignmentItem"].helpers({
   AssignmentPanel(): any {
