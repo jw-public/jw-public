@@ -1,3 +1,5 @@
+database/
+.Trash*
 meteor/build/
 meteor/client/lib/Color.js
 meteor/collections/lib/classes/Assignment.js
