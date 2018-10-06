@@ -21,12 +21,15 @@
         </label>
         <label class="btn btn-success {{#if currentFilter.own}}active{{/if}}">
           <input type="radio" name="options" id="filter-mine" autocomplete="off">
-          Meine <i class="fa fa-calendar"></i> {{#if currentFilter.own}}<i class="fa fa-check"></i>{{/if}}
+          {{#if currentFilter.own}}<i class="fa fa-check"></i>{{/if}}
+          Meine <i class="fa fa-calendar"></i>
         </label>
-        <label class="btn btn-info {{#if currentFilter.readyForClose}}active{{/if}}">
-          <input type="radio" name="options" id="filter-ready-for-close" autocomplete="off">
-          Volle <i class="fa fa-calendar"></i> {{#if currentFilter.readyForClose}}<i class="fa fa-check"></i>{{/if}}
-        </label>
+        {{#if isCoordinator}}
+            <label class="btn btn-info {{#if currentFilter.readyForClose}}active{{/if}}">
+            <input type="radio" name="options" id="filter-ready-for-close" autocomplete="off">
+            Volle <i class="fa fa-calendar"></i> {{#if currentFilter.readyForClose}}<i class="fa fa-check"></i>{{/if}}
+            </label>
+        {{/if}}
       </div>
     </div>
     <!-- /.col-lg-12 -->

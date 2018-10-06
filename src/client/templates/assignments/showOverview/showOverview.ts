@@ -1,6 +1,8 @@
 import * as _ from "underscore";
 
 import Assignment from "../../../../collections/lib/classes/Assignment";
+import User from "../../../../collections/lib/classes/User";
+import Group from "../../../../collections/lib/classes/Group";
 
 import { Meteor } from "meteor/meteor";
 import { Template } from "meteor/templating";
@@ -218,6 +220,11 @@ Template["showOverview"].helpers({
   },
   currentGroup: function (): GroupDAO {
     return Groups.findOne({ "_id": AssignmentOverview.getSelectedGroupId() });
+  },
+  isCoordinator: function (): boolean {  
+    let group = new Group(AssignmentOverview.getSelectedGroupId());
+    let user = new User(Meteor.userId());
+    return user.isGroupCoordinator(group)
   },
   assignments: function (): Mongo.Cursor<AssignmentDAO> {
     return AssignmentOverview.getAssignmentCursor();
@@ -453,6 +460,7 @@ Template["assignmentWeekView"].helpers({
 
 import AssignmentPanel from "./AssignmentPanel";
 import { getApplicantsArray } from "client/templates/components/assignmentManager/AssignmentManager";
+
 
 Template["assignmentItem"].helpers({
   AssignmentPanel(): any {
