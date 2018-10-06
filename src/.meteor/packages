@@ -58,7 +58,6 @@ react-template-helper@0.2.11
 standard-minifier-css@1.4.1
 standard-minifier-js@2.3.4
 react-meteor-data
-meteorhacks:kadira
 stylus@2.513.9
 meteortoys:allthings
 browser-policy@1.1.0
