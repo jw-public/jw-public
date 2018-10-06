@@ -1,3 +1,4 @@
+import * as _ from "underscore";
 import {Meteor, Subscription} from "meteor/meteor";
 import {Tracker} from "meteor/tracker";
 

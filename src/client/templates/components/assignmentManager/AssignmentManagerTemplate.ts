@@ -1,3 +1,4 @@
+import * as _ from "underscore";
 
 import * as AssignmentManager from "./AssignmentManager";
 import Assignment from "../../../../collections/lib/classes/Assignment";

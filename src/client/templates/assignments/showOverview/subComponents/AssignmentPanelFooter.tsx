@@ -1,3 +1,4 @@
+import * as _ from "underscore";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import MeteorComponent from "../../../../react/lib/MeteorComponent";

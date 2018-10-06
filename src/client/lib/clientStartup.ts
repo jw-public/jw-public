@@ -1,4 +1,5 @@
-// Wir wollen im Folgendem �berpr�fen, ob sich der Benutzer ausgeloggt hat.
+import * as underscore from "underscore";
+import * as s from "underscore.string";
 
 import {Meteor} from "meteor/meteor";
 import {Tracker} from "meteor/tracker";
@@ -6,9 +7,7 @@ import {Accounts} from "meteor/accounts-base";
 import {Template} from "meteor/templating";
 import {Routes} from "../../lib/client/routes";
 
-
 declare var accountsUIBootstrap3:any;
-
 
 Meteor.startup(function () {
 
@@ -30,8 +29,6 @@ Meteor.startup(function () {
         Routes.go(Routes.Def.Home);
       }
     });
-
-
 });
 
 /*
@@ -39,12 +36,12 @@ Meteor.startup(function () {
  */
 
 Template.registerHelper('underscore', function(...args: Array<any>) {
-    args = _.toArray(args);
+    args = underscore.toArray(args);
     var self = this,
         fn = arguments[0];
     args.shift();
     args.pop();
-    return _[fn].apply(self, arguments);
+    return underscore[fn].apply(self, arguments);
 });
 
 declare var Spacebars: any;

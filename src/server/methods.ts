@@ -1,3 +1,4 @@
+import * as _ from "underscore";
 import {app} from "./App";
 
 import {Meteor} from "meteor/meteor";

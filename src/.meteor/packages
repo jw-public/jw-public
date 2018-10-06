@@ -26,7 +26,6 @@ aldeed:tabular
 dburles:collection-helpers
 mizzao:jquery-ui
 email@1.2.3
-underscore@1.0.10
 service-configuration@1.0.11
 pahans:reactive-modal
 natestrauser:jquery-scrollto
@@ -68,3 +67,4 @@ dynamic-import@0.4.2
 simple:rest-accounts-password
 simple:rest
 sevki:prometheus-exporter
+underscore

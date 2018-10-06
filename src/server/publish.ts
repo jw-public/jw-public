@@ -1,3 +1,4 @@
+import * as _ from "underscore";
 import { Blueprints } from './../collections/lib/BlueprintCollection';
 import { BlueprintAssignmentDAO } from './../imports/blueprint/interfaces/WeekBlueprint.d';
 

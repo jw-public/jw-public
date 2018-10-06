@@ -1,3 +1,4 @@
+import * as _ from "underscore";
 import {AssignmentEventType} from "../../../imports/assignments/interfaces/AssignmentEventType";
 import Group from "./Group";
 

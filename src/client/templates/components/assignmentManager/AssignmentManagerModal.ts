@@ -1,3 +1,4 @@
+import * as _ from "underscore";
 import * as AssignmentManager from "./AssignmentManager";
 
 import {Meteor} from "meteor/meteor";

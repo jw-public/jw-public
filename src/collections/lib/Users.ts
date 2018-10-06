@@ -1,3 +1,4 @@
+import * as _ from "underscore";
 import { SUPPORTED_LANGUAGES } from '../../imports/i18n/classes/I18nProvider';
 import { Meteor } from "meteor/meteor";
 import { Mongo } from "meteor/mongo";

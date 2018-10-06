@@ -1,3 +1,4 @@
+import * as _ from "underscore";
 import {Meteor} from "meteor/meteor";
 import {Mongo} from "meteor/mongo";
 import {Random} from "meteor/random";
