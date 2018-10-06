@@ -16,19 +16,17 @@
 
       <div class="pagination btn-group" data-toggle="buttons">
         <label class="btn btn-primary {{#if currentFilter.all}}active{{/if}}">
-          <input type="radio" name="options" id="filter-all" autocomplete="off"> Alle Termine
+          <input type="radio" name="options" id="filter-all" autocomplete="off"> Alle <i class="fa fa-calendar"></i>
           {{#if currentFilter.all}}<i class="fa fa-check"></i>{{/if}}
         </label>
         <label class="btn btn-success {{#if currentFilter.own}}active{{/if}}">
           <input type="radio" name="options" id="filter-mine" autocomplete="off">
-          {{#if currentFilter.own}}<i class="fa fa-check"></i>{{/if}} Meine Termine
+          Meine <i class="fa fa-calendar"></i> {{#if currentFilter.own}}<i class="fa fa-check"></i>{{/if}}
         </label>
-        {{#if isInRole 'admin'}}
         <label class="btn btn-info {{#if currentFilter.readyForClose}}active{{/if}}">
           <input type="radio" name="options" id="filter-ready-for-close" autocomplete="off">
-          {{#if currentFilter.readyForClose}}<i class="fa fa-check"></i>{{/if}} Volle Termine
+          Volle <i class="fa fa-calendar"></i> {{#if currentFilter.readyForClose}}<i class="fa fa-check"></i>{{/if}}
         </label>
-        {{/if}}
       </div>
     </div>
     <!-- /.col-lg-12 -->
@@ -41,8 +39,8 @@
         {{#if hasAssignments}}
           {{#each assignments}} {{> assignmentItem assignment=this}} {{/each}} {{else}}
           <div class="col-lg-12">
-            <div class="alert alert-success" role="alert">
-              <strong><i class="fa fa-info-circle"></i> Kein voller Termin für diesen Monat vorhanden.</strong>
+            <div class="alert alert-info" role="alert">
+              <strong><i class="fa fa-info-circle"></i> Kein voller und offener Termin für diesen Monat vorhanden.</strong>
             </div>
           </div>
         {{/if}}
@@ -60,7 +58,7 @@
           <div class="col-lg-12">
             <div class="alert alert-success" role="alert">
               <strong><i class="fa fa-info-circle"></i> Kein eigener Termin vorhanden.</strong> Du hast dich im gewählten Monat auf keinen Termin beworben und nimmst noch an keinem teil.
-              <strong>Klicke oben auf "Alle Termine"</strong>, um dir einen Termin auszusuchen.
+              <strong>Klicke oben auf "Alle <i class="fa fa-calendar"></i>"</strong>, um dir einen Termin auszusuchen.
             </div>
           </div>
 
