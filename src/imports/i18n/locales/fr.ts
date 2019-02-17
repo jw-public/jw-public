@@ -38,8 +38,9 @@ const assignmentLocale: IAssignmentEmailLocale = {
     linkToAssignment: "Voici le lien pour plus d’information",
     footer: {
         closing: "Tes frères responsables du service présentoir",
-        additionalInformation: `Ne réponds pas à ce message, s’il te plaît.
-Si tu veux contacter ton responsable, clique sur le lien ci-dessus pour y trouver ses coordonnées.`
+        noReplyInformation: `Ne réponds pas à ce message, s’il te plaît.
+Si tu veux contacter ton responsable, clique sur le lien ci-dessus pour y trouver ses coordonnées.`,
+        replyInformation: `Si tu veux contacter ton responsable, clique sur le lien ci-dessus pour y trouver ses coordonnées.`
     }
 
 };

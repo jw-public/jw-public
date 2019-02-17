@@ -38,9 +38,10 @@ const assignmentLocale: IAssignmentEmailLocale = {
     linkToAssignment: "Link to assignment",
     footer: {
         closing: "Brotherly love from your cart planning team.",
-        additionalInformation: `Please don't reply to this email!
+        noReplyInformation: `Please don't reply to this email!
 If you want to contact the assigned contact person please click on the upper link.
-There you will find the contact details.`
+There you will find the contact details.`,
+        replyInformation: `Please send us report of given copies to this address: `
     }
 
 };

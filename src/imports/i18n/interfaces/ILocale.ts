@@ -10,7 +10,8 @@ export interface IAssignmentEmailLocale {
     linkToAssignment: string,
     footer: {
         closing: string,
-        additionalInformation: string
+        noReplyInformation: string,
+        replyInformation: string
     }
 }
 

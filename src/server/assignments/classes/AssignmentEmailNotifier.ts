@@ -89,6 +89,7 @@ export class AssignmentEmailNotifier extends AssignmentAction implements IAssign
     let dateTime = i18nProvider.getDateParser().getLongDateTimeAsString(assignment.start);
     let emailLocale = i18nProvider.getI18n().assignmentEmail;
     let emailMessageLocale = emailLocale.message;
+    let replyToAddress = this.getGroupEmail(options);
     switch (options.eventType) {
       case AssignmentEventType.Accept:
         message = emailMessageLocale.accepted(assignment.name, dateTime);
@@ -105,21 +106,20 @@ export class AssignmentEmailNotifier extends AssignmentAction implements IAssign
       case AssignmentEventType.Reenable:
         message = emailMessageLocale.reenabled(assignment.name, dateTime, options.reenablingReason);
         break;
-
-
     }
-
 
     if (options.eventType !== AssignmentEventType.Removed) {
       let assignmentUrl = `${process.env.ROOT_URL}/einsatz/${options.assignmentId}`
-      message = `${message}
-
-${emailLocale.linkToAssignment}: ${assignmentUrl}`;
+      message = `${message}\n\n${emailLocale.linkToAssignment}: ${assignmentUrl}`;
     }
 
     let greeting = this.createGreeting(options, i18nProvider.getI18n());
+    let footerMessage = emailLocale.footer.replyInformation.concat(replyToAddress);
+    if (replyToAddress == null ){
+        footerMessage = emailLocale.footer.noReplyInformation;
+    }
 
-    return `${greeting},
+    let email = `${greeting},
 
 ${message}
 
@@ -127,7 +127,9 @@ ${emailLocale.footer.closing}
 
 ---
 
-${emailLocale.footer.additionalInformation}`;
+${footerMessage}`;
+
+    return email;
   }
 
   private createGreeting(options: IAssignmentSingleNotifierOptions, locale: ILocale) {
