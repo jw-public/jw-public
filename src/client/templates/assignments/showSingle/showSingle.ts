@@ -25,6 +25,7 @@ import {Routes} from "../../../../lib/client/routes";
 
 import {Helper} from "../../../../lib/HelperDecorator";
 import {TemplateDefinition} from "../../../../lib/TemplateDefinitionDecorator";
+import Group from "collections/lib/classes/Group";
 
 
 namespace SingleAssignmentView {
@@ -78,6 +79,7 @@ Template["singleAssignmentView"].created = function() {
 
   instance.autorun(function() {
     subsCache.subscribe("singleAssignment", SingleAssignmentView.getAssignmentId());
+    subsCache.subscribe("ownUserData");
   });
 };
 
@@ -135,6 +137,12 @@ class SingleAssignmentViewData {
   static isCoordinator(): boolean {
     let assignment = new Assignment(SingleAssignmentView.getAssignmentId());
     return assignment.getGroup().isCoordinatorById(Meteor.userId());
+  }
+  @Helper
+  static replyEmailAddress(): string {
+    let assignment = new Assignment(SingleAssignmentView.getAssignmentId());;
+    let email = assignment.getGroup().getReplyEmailAddress();
+    return email;
   }
   @Helper
   static assignmentFormOptions(): AssignmentForm.TemplateOptions {

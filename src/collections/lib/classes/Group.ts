@@ -174,6 +174,10 @@ export default class Group {
     return users;
   }
 
+  public getReplyEmailAddress(): string {
+      return Groups.findOne({ _id: this.id }, { fields: { _id: 1, email: 1 }, reactive: false }).email;
+  }
+
   public sendNotificationToMembers(title: string, message: string) {
     var members = this.getMembers();
 

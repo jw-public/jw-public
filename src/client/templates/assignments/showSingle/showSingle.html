@@ -101,12 +101,28 @@
 
 
         </ul>
+        <!-- /.panel-body -->     
+      </div>
+      
+      {{#if replyEmailAddress}}  
+        <div class="panel panel-default">
+        <div class="panel-heading">
+          <i class="fa fa-users fa-fw"></i> Bericht senden
+        </div>
+        <!-- /.panel-heading -->
+        <div class="panel-body">
+          Sende uns bitte den Bericht als E-Mail: 
+          <span class="pull-right">
+              <a href="mailto:{{replyEmailAddress}}" title="Bericht an {{replyEmailAddress}} senden" class="btn btn-xs btn-primary toggle-application">
+                <i class="fa fa-envelope"></i>
+              </a>
+          </span>
+        </div>
         <!-- /.panel-body -->
       </div>
+      {{/if}}
 
       {{#unless underscore "isEmpty" assignmentInfos}}
-
-
       <div class="panel panel-default">
         <div class="panel-heading">
           <i class="fa fa-info fa-fw"></i> Informationen
