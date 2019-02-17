@@ -48,9 +48,8 @@ Deine Brüder der Trolleyorganisation.
 
 ---
 
-Bitte antworte nicht direkt auf diese E-Mail!
 Wenn du mit der zugeteilten Ansprechperson Kontakt aufnehmen möchtest, klicke auf den oben genannten Link. 
-Dort findest du die Kontaktdaten.`
+Dort findest du die Kontaktdaten. Bitte sende uns deinen Bericht dieser Schicht an diese Adresse: test-group@jw-public.org`
     });
   });
 
@@ -80,9 +79,8 @@ Deine Brüder der Trolleyorganisation.
 
 ---
 
-Bitte antworte nicht direkt auf diese E-Mail!
 Wenn du mit der zugeteilten Ansprechperson Kontakt aufnehmen möchtest, klicke auf den oben genannten Link. 
-Dort findest du die Kontaktdaten.`
+Dort findest du die Kontaktdaten. Bitte sende uns deinen Bericht dieser Schicht an diese Adresse: test-group@jw-public.org`
     });
   });
 
@@ -116,9 +114,8 @@ Deine Brüder der Trolleyorganisation.
 
 ---
 
-Bitte antworte nicht direkt auf diese E-Mail!
 Wenn du mit der zugeteilten Ansprechperson Kontakt aufnehmen möchtest, klicke auf den oben genannten Link. 
-Dort findest du die Kontaktdaten.`
+Dort findest du die Kontaktdaten. Bitte sende uns deinen Bericht dieser Schicht an diese Adresse: test-group@jw-public.org`
     });
 
   });
@@ -151,9 +148,8 @@ Deine Brüder der Trolleyorganisation.
 
 ---
 
-Bitte antworte nicht direkt auf diese E-Mail!
 Wenn du mit der zugeteilten Ansprechperson Kontakt aufnehmen möchtest, klicke auf den oben genannten Link. 
-Dort findest du die Kontaktdaten.`
+Dort findest du die Kontaktdaten. Bitte sende uns deinen Bericht dieser Schicht an diese Adresse: test-group@jw-public.org`
     });
 
   });
@@ -187,9 +183,8 @@ Deine Brüder der Trolleyorganisation.
 
 ---
 
-Bitte antworte nicht direkt auf diese E-Mail!
 Wenn du mit der zugeteilten Ansprechperson Kontakt aufnehmen möchtest, klicke auf den oben genannten Link. 
-Dort findest du die Kontaktdaten.`
+Dort findest du die Kontaktdaten. Bitte sende uns deinen Bericht dieser Schicht an diese Adresse: test-group@jw-public.org`
     });
   });
 

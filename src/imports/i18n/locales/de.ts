@@ -41,14 +41,12 @@ Der Grund: ${reason}.`;
     linkToAssignment: "Link zum Termin",
     footer: {
         closing: "Deine Brüder der Trolleyorganisation.",
-        additionalInformation: `Bitte antworte nicht direkt auf diese E-Mail!
+        noReplyInformation: `Bitte antworte nicht direkt auf diese E-Mail!
 Wenn du mit der zugeteilten Ansprechperson Kontakt aufnehmen möchtest, klicke auf den oben genannten Link. 
-Dort findest du die Kontaktdaten.`
+Dort findest du die Kontaktdaten.`,
+        replyInformation: `Wenn du mit der zugeteilten Ansprechperson Kontakt aufnehmen möchtest, klicke auf den oben genannten Link. 
+Dort findest du die Kontaktdaten. Bitte sende uns deinen Bericht dieser Schicht an diese Adresse: `
     }
-
-
-
-
 }
 
 export const messages: ILocale = {
