@@ -23,7 +23,7 @@
     "i18n-2": "^0.7.1",
     "inversify": "^2.0.0-rc.10",
     "inversify-inject-decorators": "^1.0.0-beta.1",
-    "jquery": "^2.2.2",
+    "jquery": "^3.4.0",
     "jsnlog": "^2.22.0",
     "marked": "^0.3.6",
     "meteor-node-stubs": "^0.4.1",
