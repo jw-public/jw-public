@@ -1,4 +1,5 @@
 FROM node:8.1.2-alpine as typescriptnode
+RUN npm config set unsafe-perm true
 RUN npm install -g typescript@2.3.4 mocha@2.5.3 babel-istanbul@0.11.0 typedoc
 
 FROM typescriptnode as compile
