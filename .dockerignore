@@ -5,3 +5,6 @@ scripts
 stages
 userAcceptanceTest
 userdocs
+.git
+src/node_modules
+src/.meteor/local

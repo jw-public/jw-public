@@ -15,7 +15,7 @@ on:
 
 env:
   # TODO: Change variable to your image's name.
-  IMAGE_NAME: image
+  IMAGE_NAME: jw-public
 
 jobs:
   # Run tests.
@@ -25,7 +25,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-
+      - uses: meteorengineer/setup-meteor@v1
+        with:
+          meteor-release: "1.12"
+      - run: cd src && meteor npm install
+      - run: cd src && meteor npm run compile
+      - run: cd src && meteor build --allow-superuser --architecture=os.linux.x86_64 ./build
       - name: Run tests
         run: |
           if [ -f docker-compose.test.yml ]; then
@@ -43,7 +48,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-
+      - uses: meteorengineer/setup-meteor@v1
+        with:
+          meteor-release: "1.12"
+      - run: cd src && meteor npm install
+      - run: cd src && meteor npm run compile
+      - run: cd src && meteor build --allow-superuser --architecture=os.linux.x86_64 ./build
       - name: Build image
         run: docker build . --file Dockerfile --tag image
 
