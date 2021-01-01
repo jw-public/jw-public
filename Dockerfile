@@ -10,7 +10,7 @@ RUN npm install
 COPY ./src /src
 RUN npm install && tsc
 
-FROM ubuntu:trusty-20180807 as package
+FROM ubuntu:21.04 as package
 WORKDIR /src
 ENV APP_SOURCE_DIR /src
 ENV METEOR_ALLOW_SUPERUSER true
@@ -19,9 +19,9 @@ ADD ./install-meteor.sh /scripts/install-meteor.sh
 COPY --from=compile /src/.meteor/release /src/.meteor/release
 RUN chmod +x /scripts/install-meteor.sh && /scripts/install-meteor.sh
 COPY --from=compile /src /src
-RUN mkdir /build && meteor build --allow-superuser --architecture=os.linux.x86_64 /build
+RUN mkdir /build && meteor build --allow-superuser --architecture=os.linux.x86_64 /build && rm -rf /src
 
-FROM abernix/meteord:node-8-base
+FROM abernix/meteord:node-12-base
 COPY --from=package /build/src.tar.gz /bundle/meteor.tar.gz
 EXPOSE 80
 ENV PORT 80

@@ -4,11 +4,10 @@
 # 'meteor add' and 'meteor remove' will edit this file for you,
 # but you can also edit it by hand.
 
-nemo64:bootstrap
 less@2.7.12
-accounts-password@1.5.1
+accounts-password@1.6.3
 alanning:roles
-ecmascript@0.11.1
+ecmascript@0.14.4
 pfafman:font-awesome-4
 reactive-var@1.0.11
 kadira:flow-router
@@ -25,11 +24,10 @@ aldeed:autoform-select2
 aldeed:tabular
 dburles:collection-helpers
 mizzao:jquery-ui
-email@1.2.3
+email@2.0.0
 service-configuration@1.0.11
 pahans:reactive-modal
 natestrauser:jquery-scrollto
-meteorhacks:unblock
 peppelg:bootstrap-3-modal
 underscorestring:underscore.string
 ian:accounts-ui-bootstrap-3
@@ -42,28 +40,28 @@ msavin:mongol
 reywood:publish-composite
 tmeasday:publish-counts
 meteor-base@1.4.0
-mobile-experience@1.0.5
-mongo@1.5.0
+mobile-experience@1.1.0
+mongo@1.10.1
 blaze-html-templates@1.0.4
-session@1.1.7
+session@1.2.0
 jquery@1.11.10
 tracker@1.2.0
 logging@1.1.20
-reload@1.2.0
-random@1.1.0
-ejson@1.1.0
+reload@1.3.1
+random@1.2.0
+ejson@1.1.1
 spacebars@1.0.12
 check@1.3.1
 react-template-helper@0.2.11
-standard-minifier-css@1.4.1
-standard-minifier-js@2.3.4
+standard-minifier-css@1.7.1
+standard-minifier-js@2.6.0
 react-meteor-data
 stylus@2.513.9
-meteortoys:allthings
 browser-policy@1.1.0
-shell-server@0.3.1
-dynamic-import@0.4.2
+shell-server@0.5.0
+dynamic-import@0.5.4
 simple:rest-accounts-password
 simple:rest
 sevki:prometheus-exporter
-underscore
+underscore@1.0.10
+twbs:bootstrap

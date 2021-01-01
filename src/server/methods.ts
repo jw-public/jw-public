@@ -1,19 +1,19 @@
 import * as _ from "underscore";
-import {app} from "./App";
+import { app } from "./App";
 
-import {Meteor} from "meteor/meteor";
-import {Template} from "meteor/templating";
-import {Mongo} from "meteor/mongo";
-import {Accounts} from "meteor/accounts-base";
-import {Roles} from "meteor/alanning:roles";
-import {check, Match} from "meteor/check";
+import { Meteor } from "meteor/meteor";
+import { Template } from "meteor/templating";
+import { Mongo } from "meteor/mongo";
+import { Accounts } from "meteor/accounts-base";
+import { Roles } from "meteor/alanning:roles";
+import { check, Match } from "meteor/check";
 
-import {Email} from "meteor/email";
+import { Email } from "meteor/email";
 import * as EmailSettingsManager from "./EmailSettingsManager";
 import * as PhoneValidator from "../collections/lib/ValidationFunctions/PhoneValidator";
 
 import Group from "../collections/lib/classes/Group";
-import {Groups, GroupDAO} from "../collections/lib/GroupCollection";
+import { Groups, GroupDAO } from "../collections/lib/GroupCollection";
 
 import User from "../collections/lib/classes/User";
 import * as UserCollection from "../collections/lib/UserCollection";
@@ -21,18 +21,18 @@ import * as UserNotification from "../collections/lib/classes/UserNotification";
 
 
 import Assignment from "../collections/lib/classes/Assignment";
-import {AssignmentState} from "../collections/lib/classes/AssignmentState";
-import {UserEntry, AssignmentDAO} from "../collections/lib/AssignmentsCollection";
+import { AssignmentState } from "../collections/lib/classes/AssignmentState";
+import { UserEntry, AssignmentDAO } from "../collections/lib/AssignmentsCollection";
 
 
 
-Meteor.startup(function() {
+Meteor.startup(function () {
   Meteor.methods({
     /**
      * Gesamtzahl aller Nutzer einsehen.
      */
-    getAllUsersCount: function(): number {
-      this.unblock();
+    getAllUsersCount: function (): number {
+
       if (this.userId && Roles.userIsInRole(this.userId, ["admin"])) {
         return Meteor.users.find({}, { fields: { "_id": 1 } }).count();
       } else {
@@ -42,8 +42,8 @@ Meteor.startup(function() {
     /**
      * Gesamtzahl aller Nutzer einer Gruppe einsehen.
      */
-    getUsersInGroupCount: function(groupId: string): number {
-      this.unblock();
+    getUsersInGroupCount: function (groupId: string): number {
+
       check(groupId, String);
 
       let user: UserCollection.UserDAO = Meteor.users.findOne({ "_id": this.userId }, { fields: { "_id": 1 } });
@@ -62,8 +62,8 @@ Meteor.startup(function() {
      * @param username Einen Usernamen oder eine E-Mail-Adresse
      * @returns {boolean} Wenn TRUE, dann existiert der Benutzer bereits.
      */
-    userExists: function(username: string): boolean {
-      this.unblock();
+    userExists: function (username: string): boolean {
+
       check(username, String);
 
       return User.userExists(username);
@@ -73,8 +73,8 @@ Meteor.startup(function() {
      * @param groupId Eine ID einer Gruppe
      * @returns {boolean} Wenn TRUE, dann existiert die Gruppe.
      */
-    groupExists: function(groupId: string): boolean {
-      this.unblock();
+    groupExists: function (groupId: string): boolean {
+
       check(groupId, String);
       // Check if group exists.
       let groupCount = Groups.find({
@@ -87,8 +87,8 @@ Meteor.startup(function() {
      * @param userToBeAddedId ID des Benutzers, der hinzugefügt werden soll
      * @param groupId ID der Gruppe, in die der Nutzer eingefügt werden soll
      */
-    addToGroup: function(userToBeAddedId: string, groupId: string): void {
-      this.unblock();
+    addToGroup: function (userToBeAddedId: string, groupId: string): void {
+
 
       // Checking types of parameters
       check(groupId, String);
@@ -117,8 +117,8 @@ Meteor.startup(function() {
      * @param userToDenyId ID des Benutzers, der gelöscht werden soll
      * @param groupId ID der Gruppe, in die sich der Nutzer befindet
      */
-    denyUser: function(userToDenyId: string, groupId: string): void {
-      this.unblock();
+    denyUser: function (userToDenyId: string, groupId: string): void {
+
 
       // Checking types of parameters
       check(userToDenyId, String);
@@ -159,7 +159,7 @@ Meteor.startup(function() {
      * Trägt den eingeloggten User als Bewerben in einen Trolley-Einsatz seiner Gruppe ein.
      * @param assignmentId Die ID des Trolleyeinsatzes.
      */
-    applyOnAssignment: function(assignmentId: string): void {
+    applyOnAssignment: function (assignmentId: string): void {
       check(assignmentId, String);
 
       if (!this.userId) {
@@ -175,28 +175,28 @@ Meteor.startup(function() {
         throw new Meteor.Error("403", "Access denied.");
       }
 
-      this.unblock();
+
     },
     /**
      * Zieht die Bewerbung auf einen Trolley-Einsatz des eingeloggten User zurück.
      * @param assignmentId Die ID des Trolleyeinsatzes.
      */
-    cancelApplicationAssignment: function(assignmentId: string): void {
+    cancelApplicationAssignment: function (assignmentId: string): void {
       check(assignmentId, String);
       if (!this.userId) {
         throw new Meteor.Error("403", "Access denied.");
       }
       let assignment = new Assignment(assignmentId);
       app.assignmentApplicationControllerFactory(assignmentId).removeUserAsApplicantById(this.userId);
-      this.unblock();
+
     },
     /**
      * Überprüft, ob User ein Bewerber ist.
      * @param assignmentId Die ID des Trolleyeinsatzes.
      */
-    userIsApplicant: function(assignmentId: string): boolean {
+    userIsApplicant: function (assignmentId: string): boolean {
       check(assignmentId, String);
-      this.unblock();
+
 
       if (!Meteor.user()) {
         throw new Meteor.Error("403", "Access denied.");
@@ -210,8 +210,8 @@ Meteor.startup(function() {
      * @param userToBeAddedId Benutzer, der als Teilnehmer hinzugefügt werden soll.
      * @param assignmentId Die ID des Einsatzes.
      */
-    addUserAsAssignmentParticipant: function(userToBeAddedId: string, assignmentId: string): void {
-      this.unblock();
+    addUserAsAssignmentParticipant: function (userToBeAddedId: string, assignmentId: string): void {
+
       check(assignmentId, String);
       check(userToBeAddedId, String);
       let userToBeAdded = new User(userToBeAddedId);
@@ -236,8 +236,8 @@ Meteor.startup(function() {
      * @param userToBeRemovedId Benutzer, der entfernt werden soll.
      * @param assignmentId Die ID des Einsatzes.
      */
-    removeUserAsAssignmentParticipant: function(userToBeRemovedId: string, assignmentId: string): void {
-      this.unblock();
+    removeUserAsAssignmentParticipant: function (userToBeRemovedId: string, assignmentId: string): void {
+
       check(assignmentId, String);
       check(userToBeRemovedId, String);
       let userToBeRemoved = new User(userToBeRemovedId);
@@ -255,8 +255,8 @@ Meteor.startup(function() {
       }
     },
 
-    closeAssignment: function(participantIds: Array<string>, assignmentId: string): void {
-      this.unblock();
+    closeAssignment: function (participantIds: Array<string>, assignmentId: string): void {
+
       check(assignmentId, String);
       check(participantIds, [String]);
       let initiator: User = new User(this.userId);
@@ -275,8 +275,8 @@ Meteor.startup(function() {
         });
       }
     },
-    cancelAssignment: function(assignmentId: string, reason: string): void {
-      this.unblock();
+    cancelAssignment: function (assignmentId: string, reason: string): void {
+
       check(assignmentId, String);
       check(reason, String);
       let initiator: User = new User(this.userId);
@@ -292,8 +292,8 @@ Meteor.startup(function() {
         app.assignmentCanceler.cancelAssignment(assignmentId, reason);
       }
     },
-    reenableAssignment: function(assignmentId: string, reason: string): void {
-      this.unblock();
+    reenableAssignment: function (assignmentId: string, reason: string): void {
+
       check(assignmentId, String);
       check(reason, String);
       let initiator: User = new User(this.userId);
@@ -309,8 +309,8 @@ Meteor.startup(function() {
         app.assignmentReenabler.reenableAssignment(assignmentId, reason);
       }
     },
-    removeAssignment: function(assignmentId: string): void {
-      this.unblock();
+    removeAssignment: function (assignmentId: string): void {
+
       check(assignmentId, String);
       let initiator: User = new User(this.userId);
       let assignment: Assignment = new Assignment(assignmentId);
@@ -326,7 +326,7 @@ Meteor.startup(function() {
       }
     },
 
-    sendEmail: function(to: string, from: string, subject: string, text: string): void {
+    sendEmail: function (to: string, from: string, subject: string, text: string): void {
       check([to, from, subject, text], [String]);
 
       let initiator: User = new User(this.userId);
@@ -341,7 +341,7 @@ Meteor.startup(function() {
       }
     },
 
-    validatePhoneNumber: function(phoneNumber: string): boolean {
+    validatePhoneNumber: function (phoneNumber: string): boolean {
       return PhoneValidator.isValidNumber(phoneNumber);
     },
 
@@ -349,8 +349,8 @@ Meteor.startup(function() {
      * Löscht einen Benutzer ohne Rücksicht auf Mitgliedschaft, außer er ist ein Administrator
      * @param userToRemoveId ID des Benutzers, der gelöscht werden soll
      */
-    removeUser: function(userToRemoveId: string): void {
-      this.unblock();
+    removeUser: function (userToRemoveId: string): void {
+
 
       // Checking types of parameters
       check(userToRemoveId, String);
@@ -367,7 +367,7 @@ Meteor.startup(function() {
       if (hasRight && !isUserToRemoveAnAdmin) {
         // Remove user
         console.error(userToRemoveId);
-          Meteor.users.remove({ "_id": userToRemoveId });
+        Meteor.users.remove({ "_id": userToRemoveId });
       } else {
         throw new Meteor.Error("403", "Access denied");
       }
