@@ -51,6 +51,18 @@ jobs:
       - uses: meteorengineer/setup-meteor@v1
         with:
           meteor-release: "1.12"
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - uses: actions/cache@v2
+        with:
+          path: src/.meteor/local
+          key: ${{ runner.os }}-node-${{ hashFiles('src/.meteor/versions') }}
+          restore-keys: |
+            ${{ runner.os }}-meteor-
       - run: cd src && meteor npm install
       - run: cd src && meteor npm run compile
       - run: cd src && meteor build --allow-superuser --architecture=os.linux.x86_64 ./build
