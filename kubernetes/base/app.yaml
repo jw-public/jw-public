@@ -27,3 +27,17 @@ spec:
               value: mongodb://mongo/jwpublic
             - name: ROOT_URL
               value: http://localhost:8080
+          readinessProbe:
+            httpGet:
+              path: /status
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 3
+            timeoutSeconds: 1
+          livenessProbe:
+            httpGet:
+              path: /status
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 3
+            timeoutSeconds: 3
