@@ -1,0 +1,10 @@
+namespace: jw-public
+
+bases:
+  - ../base
+
+resources:
+  - pvc.yaml
+
+patches:
+  - mongo-patch.yaml
