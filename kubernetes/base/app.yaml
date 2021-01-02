@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jw-public
+spec:
+  selector:
+    matchLabels:
+      app: jw-public
+  template:
+    metadata:
+      labels:
+        app: jw-public
+    spec:
+      imagePullSecrets:
+        - name: dockerconfigjson-github-com
+      containers:
+        - name: jw-public
+          image: docker.pkg.github.com/jw-public/jw-public/jw-public:latest
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 8080
+          env:
+            - name: MONGO_URL
+              value: mongodb://mongo/jwpublic
+            - name: ROOT_URL
+              value: http://localhost:8080

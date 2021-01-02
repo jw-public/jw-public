@@ -1,0 +1,6 @@
+namespace: jw-public
+
+resources:
+  - app.yaml
+  - service.yaml
+  - mongodb.yaml

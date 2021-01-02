@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: jw-public
+spec:
+  selector:
+    app: jw-public
+  ports:
+    - port: 8080
+      targetPort: 8080
