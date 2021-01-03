@@ -78,3 +78,5 @@ meteor/typedefs/react-bootstrap/react-bootstrap-tests.jsx
 *.ppk
 userdocs/site/
 src/node_modules/
+aws-secret.yaml
+.envrc

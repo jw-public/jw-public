@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jw-public
+spec:
+  template:
+    spec:
+      containers:
+        - name: jw-public
+          env:
+            - name: ROOT_URL
+              value: https://next.jw-public.org

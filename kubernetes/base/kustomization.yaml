@@ -4,3 +4,4 @@ resources:
   - app.yaml
   - service.yaml
   - mongodb.yaml
+  - namespace.yaml

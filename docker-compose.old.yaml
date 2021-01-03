@@ -1,0 +1,47 @@
+jw-public:
+  build: .
+  links:
+    - mongo
+    - mail
+  environment:
+    - MONGO_URL=mongodb://mongo/jwpublic
+    - ROOT_URL=https://jw-public.org
+    - MAIL_URL=smtp://mail:25
+    - VIRTUAL_HOST=jw-public.org
+  restart: always
+
+mongo:
+  image: mongo:3.2
+  container_name: jw-mongo-production
+  volumes:
+    - "./database:/data/db:rw"
+  restart: always
+
+mail:
+  image: namshi/smtp
+  restart: always
+  environment:
+    MAILNAME: "jw-public.org"
+backup:
+  image: istepanov/mongodump
+  links:
+    - mongo
+  volumes:
+    - "./backup:/backup:rw"
+  environment:
+    - CRON_SCHEDULE=0 */1 * * *
+  restart: always
+
+s3-backup:
+  image: "mondora/mongo-s3-backup:latest"
+  links:
+    - mongo:mongodb-backup
+  environment:
+    #CRON_SCHEDULE: "0/30 * * * *" # every 30 minutes
+    CRON_SCHEDULE: "*/5 * * * *" # every 5 minutes
+    BACKUP_FILENAME_PREFIX: "dev"
+    BACKUP_FILENAME_DATE_FORMAT: "%Y%m%d-%H_%M"
+    MONGO_HOST: "mongodb-backup"
+    MONGO_PORT: "27017"
+  command: backup
+  restart: always

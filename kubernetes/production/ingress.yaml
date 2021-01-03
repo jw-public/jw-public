@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: jw-public
+  namespace: jw-public
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/read-timeout: "3600" # Because of Websockets
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600" # Because of Websockets
+spec:
+  tls:
+    - hosts:
+        - next.jw-public.org
+      secretName: jw-public-icereed-ingress-tls
+  rules:
+    - host: next.jw-public.org
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: jw-public
+              servicePort: 8080
