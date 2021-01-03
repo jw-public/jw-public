@@ -27,6 +27,18 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - uses: actions/cache@v2
+        with:
+          path: src/.meteor/local
+          key: ${{ runner.os }}-node-${{ hashFiles('src/.meteor/versions') }}
+          restore-keys: |
+            ${{ runner.os }}-meteor-
       - uses: meteorengineer/setup-meteor@v1
         with:
           meteor-release: "1.12"
