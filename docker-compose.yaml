@@ -9,6 +9,7 @@ services:
     environment:
       - MONGO_URL=mongodb://mongo/jwpublic
       - ROOT_URL=http://localhost:8080
+    restart: always
   mongo:
     image: mongo:3.4
     volumes:
