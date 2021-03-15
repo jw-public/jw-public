@@ -16,7 +16,7 @@
     "@types/react-dom": "^0.14.18",
     "@types/react-mixin": "^2.0.28",
     "@types/underscore": "^1.8.9",
-    "@types/underscore.string": "0.0.32",
+    "@types/underscore.string": "0.0.38",
     "babel-istanbul": "^0.11.0",
     "bootstrap": "^3.4.1",
     "bootstrap-datepicker": "^1.6.1",
