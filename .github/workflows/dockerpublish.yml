@@ -29,6 +29,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: Run hadolint with reviewdog
         uses: reviewdog/action-hadolint@v1
+        with:
+          filter_mode: file
       - uses: actions/cache@v2
         with:
           path: ~/.npm
