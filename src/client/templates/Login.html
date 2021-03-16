@@ -8,28 +8,28 @@
                 <div class="panel-body">
                     {{#unless loggingIn}}
 
-                        {{> bootstrapAlerts}}
-                        <form accept-charset="UTF-8" role="form" class="login">
-                            <fieldset>
-                                <div class="form-group">
-                                    <input class="form-control" placeholder="E-mail Adresse" name="user"
-                                           type="email">
-                                </div>
-                                <div class="form-group">
-                                    <input class="form-control" placeholder="Passwort" name="password"
-                                           type="password" value="">
-                                </div>
+                    {{> bootstrapAlerts}}
+                    <form accept-charset="UTF-8" role="form" class="login">
+                        <fieldset>
+                            <div class="form-group">
+                                <input id="user" class="form-control" placeholder="E-mail Adresse" name="user"
+                                    type="email">
+                            </div>
+                            <div class="form-group">
+                                <input id="password" class="form-control" placeholder="Passwort" name="password"
+                                    type="password" value="">
+                            </div>
 
-                                <input class="btn btn-lg btn-success btn-block" type="submit" value="Login">
-                            </fieldset>
-                        </form>
-                        <div class="form-actions">
-                          {{> forgottenPasswordLink}}
-                        </div>
+                            <input id="login" class="btn btn-lg btn-success btn-block" type="submit" value="Login">
+                        </fieldset>
+                    </form>
+                    <div class="form-actions">
+                        {{> forgottenPasswordLink}}
+                    </div>
                     {{else}}
-                        <div class="span4 center-block text-center">
-                            <i class="fa fa-spinner fa-pulse fa-5x "></i>
-                        </div>
+                    <div class="span4 center-block text-center">
+                        <i class="fa fa-spinner fa-pulse fa-5x "></i>
+                    </div>
                     {{/unless}}
                 </div>
 
@@ -40,7 +40,7 @@
 </template>
 
 <template name="forgottenPasswordLink">
-  <a class="forgot_link" href="/forgot">Passwort vergessen?</a>
+    <a class="forgot_link" href="/forgot">Passwort vergessen?</a>
 </template>
 
 
@@ -52,25 +52,27 @@
                 <div class="modal-header">
                     <h4 class="modal-title">Passwort vergessen?</h4>
 
-                    <p>Hier kannst du an deine Emailadresse einen Link versenden lassen. Nach dem Klick auf diesen Link in
+                    <p>Hier kannst du an deine Emailadresse einen Link versenden lassen. Nach dem Klick auf diesen Link
+                        in
                         deiner Email wirst du aufgefordert dein Passwort zu ändern.</p>
                 </div>
 
                 <div class="modal-body">
                     {{#unless loggingIn}}
-                        {{> bootstrapAlerts}}
-                        <form accept-charset="UTF-8" role="form" class="forgotPassword" method="post">
+                    {{> bootstrapAlerts}}
+                    <form accept-charset="UTF-8" role="form" class="forgotPassword" method="post">
 
-                            <div class="input-group">
-                                <input id="email" type="text" name="email" placeholder="Deine Email Addresse"
-                                       class="form-control"/>
-                                  <span class="input-group-btn">
-                                    <button class="btn btn-success" type="submit"><i class="fa fa-envelope"></i> Absenden</button>
-                                  </span>
-                            </div>
-                            <!-- /input-group -->
+                        <div class="input-group">
+                            <input id="email" type="text" name="email" placeholder="Deine Email Addresse"
+                                class="form-control" />
+                            <span class="input-group-btn">
+                                <button class="btn btn-success" type="submit"><i class="fa fa-envelope"></i>
+                                    Absenden</button>
+                            </span>
+                        </div>
+                        <!-- /input-group -->
 
-                        </form>
+                    </form>
                     {{/unless}}
                 </div>
 

@@ -49,6 +49,25 @@ jobs:
       - run: cd src && meteor npm install
       - run: cd src && meteor npm run compile
       - run: cd src && meteor npm test
+      - uses: cypress-io/github-action@v2
+        with:
+          project: ./src
+          start: cd src && meteor
+          # wait for all services to respond
+          command: cd src && meteor npm run cypress:headless
+          wait-on: "http://localhost:3000"
+      - uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: src/cypress/screenshots
+      # Test run video was always captured, so this action uses "always()" condition
+      - uses: actions/upload-artifact@v1
+        if: always()
+        with:
+          name: cypress-videos
+          path: src/cypress/videos
+      - run: cd src && meteor npm run cypress:headless
       - run: cd src && meteor build --allow-superuser ./build
       - name: Run tests
         run: |
