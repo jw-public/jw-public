@@ -1,6 +1,6 @@
 FROM alpine:3 as prepare
 COPY src/build/src.tar.gz /bundle/meteor.tar.gz
-RUN cd /tmp/ && tar xvf /bundle/meteor.tar.gz && find .
+RUN cd /tmp/ && tar xvf /bundle/meteor.tar.gz
 FROM node:12-alpine
 COPY --from=prepare /tmp/bundle /bundle
 WORKDIR /bundle
