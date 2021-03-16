@@ -67,6 +67,7 @@
     "babel-preset-es2016": "6.24.1",
     "babel-register": "6.26.0",
     "chai": "3.5.0",
+    "cypress": "^6.7.1",
     "inversify-dts": "2.2.0",
     "isparta": "4.1.0",
     "istanbul": "0.4.5",
@@ -88,7 +89,9 @@
     "test:remap-typescript": "./node_modules/.bin/remap-istanbul -i coverage/coverage.json -o ../coverage-report -t html",
     "docs": "typedoc --out ../typedoc/ --mode file --tsconfig ./tsconfig.json --exclude **/node_modules/** .",
     "start": "meteor run",
-    "compile": "./node_modules/.bin/tsc"
+    "compile": "./node_modules/.bin/tsc",
+    "cypress:gui": "cypress open",
+    "cypress:headless": "cypress run"
   },
   "author": "",
   "license": "ISC"

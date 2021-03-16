@@ -1,7 +1,7 @@
 <template name="dashboard">
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header">{{greeting}}</h1>
+            <h1 class="page-header" id="greeting">{{greeting}}</h1>
         </div>
         <!-- /.col-lg-12 -->
     </div>
@@ -11,23 +11,23 @@
 
         {{! Panel für Gruppenbewerbungen}}
         {{#each pendingApplicationsForGroupCoordinator}}
-            {{> dashboardPanel}}
+        {{> dashboardPanel}}
         {{/each}}
 
         {{#each ownPendingApplicationsForGroupPanels}}
-            {{> dashboardPanel}}
+        {{> dashboardPanel}}
         {{/each}}
 
         {{! Panel für neue Termine, auf die sich ein Verkündiger bewerben kann.}}
         {{#each trolleyAssignmentPanels}}
-            {{> dashboardPanel}}
+        {{> dashboardPanel}}
         {{/each}}
 
         {{#if isInRole 'admin'}}
-          {{#with adminUserPanel}}
-          {{! Panel für Benutzerzahl}}
-              {{> dashboardPanel}}
-          {{/with}}
+        {{#with adminUserPanel}}
+        {{! Panel für Benutzerzahl}}
+        {{> dashboardPanel}}
+        {{/with}}
         {{/if}}
 
 
@@ -44,10 +44,11 @@
                     </div>
                     <div class="col-xs-9 text-right">
                         <div class="huge">
-                            {{#if underscore "isEmpty" hugeContent}} {{! Falls der Inhalt noch leer ist, dann soll eine Ladeanzeige erscheinen. }}
-                                <i class="fa fa-spinner fa-pulse"></i>
+                            {{#if underscore "isEmpty" hugeContent}} {{! Falls der Inhalt noch leer ist, dann soll eine
+                            Ladeanzeige erscheinen. }}
+                            <i class="fa fa-spinner fa-pulse"></i>
                             {{else}}
-                                {{hugeContent}}
+                            {{hugeContent}}
                             {{/if}}
                         </div>
                         <div>{{smallContent}}</div>
@@ -55,9 +56,8 @@
                 </div>
             </div>
             {{#if showLink}}
-            <a href="{{#unless underscore "isNull" link}} {{! Falls ein Link gesetzt ist, dann soll der Link als href verwendet werden. }}
-                {{link}}
-            {{/unless}}">
+            <a href="{{#unless underscore " isNull" link}} {{! Falls ein Link gesetzt ist, dann soll der Link als href
+                verwendet werden. }} {{link}} {{/unless}}">
                 <div class="panel-footer">
                     <span class="pull-left">{{footerDescription}}</span>
                     <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -65,11 +65,11 @@
                     <div class="clearfix"></div>
                 </div>
             </a>
-                {{else}}
-                <div class="panel-footer">
-                    <span class="pull-left">{{footerDescription}}</span>
-                    <div class="clearfix"></div>
-                </div>
+            {{else}}
+            <div class="panel-footer">
+                <span class="pull-left">{{footerDescription}}</span>
+                <div class="clearfix"></div>
+            </div>
             {{/if}}
         </div>
     </div>

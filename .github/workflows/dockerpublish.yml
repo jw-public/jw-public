@@ -20,9 +20,52 @@ env:
   IMAGE_NAME: jw-public
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - uses: actions/cache@v2
+        with:
+          path: src/.meteor/local
+          key: ${{ runner.os }}-node-${{ hashFiles('src/.meteor/versions') }}
+          restore-keys: |
+            ${{ runner.os }}-meteor-
+      - uses: meteorengineer/setup-meteor@v1
+        with:
+          meteor-release: "1.12"
+      - run: cd src && meteor npm install
+      - run: cd src && meteor npm run compile
+      - run: cd src && meteor npm test
+      - uses: cypress-io/github-action@v2
+        with:
+          project: ./src
+          working-directory: ./src
+          start: meteor
+          # wait for all services to respond
+          install-command: echo "skipped"
+          command: meteor npm run cypress:headless
+          wait-on: "http://localhost:3000"
+          record: true
+      - uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: src/cypress/screenshots
+      # Test run video was always captured, so this action uses "always()" condition
+      - uses: actions/upload-artifact@v1
+        if: always()
+        with:
+          name: cypress-videos
+          path: src/cypress/videos
   # Run tests.
   # See also https://docs.docker.com/docker-hub/builds/automated-testing/
-  test:
+  docker:
     runs-on: ubuntu-latest
 
     steps:
@@ -48,7 +91,6 @@ jobs:
           meteor-release: "1.12"
       - run: cd src && meteor npm install
       - run: cd src && meteor npm run compile
-      - run: cd src && meteor npm test
       - run: cd src && meteor build --allow-superuser ./build
       - name: Run tests
         run: |
