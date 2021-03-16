@@ -1,10 +1,10 @@
-describe('Test signup', function () {
+describe('Test login', function () {
 
   beforeEach(function () {
     cy.visit('http://localhost:3000/')
   })
 
-  it('.should() - assert that signup panel has every input field needed', function () {
+  it('.should() - assert that login panel has every input field needed', function () {
 
     cy.get('div.panel').within(function () {
 
@@ -14,17 +14,14 @@ describe('Test signup', function () {
       isEnabledAndVisible('input#user')
       isEnabledAndVisible('input#password')
 
-      // // Enter some data
+      // Enter some data
 
       cy.get('input#user').type("admin@trolley.com")
       cy.get('input#password').type("admin3210")
 
-      // // Click the button
+      // Click the button
 
       cy.get('#login').click()
-
-      // Validate the new url
-
     })
 
     cy.get('div#page-wrapper').within(function () {
