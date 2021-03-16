@@ -31,8 +31,8 @@ describe('Test group', function () {
 
     cy.get('#saveButton').click()
 
-    cy.get('.dataTables_wrapper').within(function () {
-      cy.get("tr > td").contains('test-group')
-    })
+    // Group should be visible above
+    cy.get(".dataTables_wrapper").contains('test-group')
+
   })
 })
