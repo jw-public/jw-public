@@ -49,7 +49,7 @@
     "react-mixin": "^4.0.0",
     "reflect-metadata": "^0.1.8",
     "remove-markdown": "^0.3.0",
-    "smart-mixin": "^1.2.1",
+    "smart-mixin": "^2.0.0",
     "typedoc": "^0.20.7",
     "typescript": "^2.3.4",
     "underscore": "^1.9.1",
