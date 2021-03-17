@@ -20,7 +20,7 @@
     "babel-istanbul": "^0.11.0",
     "bootstrap": "^3.4.1",
     "bootstrap-datepicker": "^1.6.1",
-    "core-js": "^2.5.7",
+    "core-js": "^3.0.0",
     "create-react-class": "^15.5.3",
     "graphql": "^14.7.0",
     "i18n-2": "^0.7.1",
