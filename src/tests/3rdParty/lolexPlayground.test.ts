@@ -18,6 +18,6 @@ describe("Lolex", function () {
   });
 
   afterEach(function () {
-    lolexHandle.uninstall();
+    lolexHandle.reset();
   });
 });
