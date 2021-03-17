@@ -18,7 +18,7 @@
     "@types/underscore": "^1.8.9",
     "@types/underscore.string": "0.0.38",
     "babel-istanbul": "^0.11.0",
-    "bootstrap": "^3.4.1",
+    "bootstrap": "^4.0.0",
     "bootstrap-datepicker": "^1.6.1",
     "core-js": "^3.0.0",
     "create-react-class": "^15.5.3",
