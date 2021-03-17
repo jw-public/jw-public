@@ -13,7 +13,7 @@
     "@types/node": "^6.0.45",
     "@types/react": "^0.14.41",
     "@types/react-bootstrap": "0.0.33",
-    "@types/react-dom": "^0.14.18",
+    "@types/react-dom": "^17.0.0",
     "@types/react-mixin": "^2.0.28",
     "@types/underscore": "^1.8.9",
     "@types/underscore.string": "0.0.38",
