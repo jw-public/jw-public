@@ -7,8 +7,8 @@ describe('Test group', function () {
   it('should be able to create a group', function () {
 
     cy.get('ul#side-menu').within(function () {
-      cy.get('#adminMenu > [href="#"]').click()
-      cy.get('#toGroupManagement').click()
+      cy.get('#adminMenu > [href="#"]').trigger('mouseover').click();
+      cy.get('#toGroupManagement').trigger('mouseover').click();
       cy.url().should('include', '/admin/groups')
     })
     cy.get('.page-header').should('contain', 'Gruppenverwaltung')
