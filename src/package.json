@@ -69,7 +69,7 @@
     "chai": "3.5.0",
     "cypress": "6.7.1",
     "inversify-dts": "2.2.0",
-    "isparta": "4.1.0",
+    "isparta": "4.1.1",
     "istanbul": "0.4.5",
     "js-base64": "2.4.9",
     "lolex": "1.6.0",
