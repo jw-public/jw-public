@@ -95,7 +95,7 @@ describe("AssignmentDateParser", function () {
 
 
     afterEach(function () {
-        lolexHandle.uninstall();
+        lolexHandle.reset();
     });
 
 });
