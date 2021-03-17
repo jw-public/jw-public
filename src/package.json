@@ -57,7 +57,7 @@
   },
   "devDependencies": {
     "@types/chai": "3.5.2",
-    "@types/lolex": "1.5.32",
+    "@types/lolex": "5.1.0",
     "@types/mocha": "8.2.1",
     "@types/node": "6.14.13",
     "babel-cli": "6.26.0",
@@ -72,7 +72,7 @@
     "isparta": "4.1.0",
     "istanbul": "0.4.5",
     "js-base64": "3.6.0",
-    "lolex": "1.6.0",
+    "lolex": "5.1.2",
     "mocha": "8.3.2",
     "mocha-jenkins-reporter": "0.4.5",
     "mock-require": "3.0.3",
