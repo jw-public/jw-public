@@ -1,4 +1,4 @@
-FROM node:8.1.2-alpine
+FROM node:8.17.0-alpine
 
 # Set up the application directory
 VOLUME ["/app"]
