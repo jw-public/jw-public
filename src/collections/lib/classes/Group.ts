@@ -1,18 +1,18 @@
 import * as _ from "underscore";
-import {Meteor} from "meteor/meteor";
-import {Template} from "meteor/templating";
-import {Session} from "meteor/session";
-import {Mongo} from "meteor/mongo";
-import {Blaze} from "meteor/blaze";
-import {Counts} from "meteor/tmeasday:publish-counts";
+import { Meteor } from "meteor/meteor";
+import { Template } from "meteor/templating";
+import { Session } from "meteor/session";
+import { Mongo } from "meteor/mongo";
+import { Blaze } from "meteor/blaze";
+import { Counts } from "meteor/tmeasday:publish-counts";
 
 
 import * as UserCollection from "../../../collections/lib/UserCollection";
 import User from "../../../collections/lib/classes/User";
 
-import {Groups, GroupDAO} from "../GroupCollection";
+import { Groups, GroupDAO } from "../GroupCollection";
 
-import {UserEntry, AssignmentDAO, Assignments} from "../AssignmentsCollection";
+import { UserEntry, AssignmentDAO, Assignments } from "../AssignmentsCollection";
 
 import * as moment from "moment";
 
@@ -93,10 +93,10 @@ export default class Group {
       Meteor.users.update({
         _id: user._id
       }, {
-          $push: {
-            "profile.pendingGroups": this.id
-          }
-        });
+        $push: {
+          "profile.pendingGroups": this.id
+        }
+      });
     }
   }
 
@@ -111,22 +111,24 @@ export default class Group {
       Meteor.users.update({
         _id: user.getId()
       }, {
-          $pull: {
-            "profile.pendingGroups": this.id
-          },
-          $push: {
-            "groups": this.id
-          }
-        });
+        $pull: {
+          "profile.pendingGroups": this.id
+        },
+        $push: {
+          "groups": this.id
+        }
+      });
 
       // User benachrichtigen
-
+      console.log("Added user " + user.email + " to group " + this.name)
       user.notificationManager.notify({
         title: "Willkommen!",
         details: "Herzlich Willkommen in der Gruppe " + this.name + ".",
         icon: "fa fa-thumbs-o-up faa-bounce animated-hover",
         hasLink: false
       });
+    } else {
+      console.warn("Failed to add user " + user.email + " to group " + this.name)
     }
   }
 
@@ -167,7 +169,7 @@ export default class Group {
     }, { fields: { "_id": 1 }, reactive: reactive });
 
 
-    var users: Array<User> = cursor.map<User>(function(userDao: UserCollection.UserDAO) {
+    var users: Array<User> = cursor.map<User>(function (userDao: UserCollection.UserDAO) {
       return User.createFromDAO(userDao);
     });
 
@@ -175,13 +177,13 @@ export default class Group {
   }
 
   public getReplyEmailAddress(): string {
-      return Groups.findOne({ _id: this.id }, { fields: { _id: 1, email: 1 }, reactive: false }).email;
+    return Groups.findOne({ _id: this.id }, { fields: { _id: 1, email: 1 }, reactive: false }).email;
   }
 
   public sendNotificationToMembers(title: string, message: string) {
     var members = this.getMembers();
 
-    _.forEach(members, function(member: User) {
+    _.forEach(members, function (member: User) {
       member.notificationManager.notify({
         title: title,
         details: message,
@@ -203,7 +205,7 @@ export default class Group {
     }, { fields: { "emails.address": 1 }, reactive: reactive });
 
 
-    var emailAddresses: Array<string> = cursor.map<string>(function(userDao: UserCollection.UserDAO) {
+    var emailAddresses: Array<string> = cursor.map<string>(function (userDao: UserCollection.UserDAO) {
       return userDao.emails[0].address;
     });
 
@@ -250,10 +252,10 @@ export default class Group {
     Meteor.users.update({
       _id: userId
     }, {
-        $pull: {
-          "profile.pendingGroups": this.id
-        }
-      });
+      $pull: {
+        "profile.pendingGroups": this.id
+      }
+    });
   }
 
   /**
@@ -272,10 +274,10 @@ export default class Group {
     Meteor.users.update({
       _id: userId
     }, {
-        $pull: {
-          "groups": this.id
-        }
-      });
+      $pull: {
+        "groups": this.id
+      }
+    });
   }
 
   /**
@@ -287,10 +289,10 @@ export default class Group {
       Groups.update({
         _id: this.id
       }, {
-          $push: {
-            "coordinators": user.getId()
-          }
-        });
+        $push: {
+          "coordinators": user.getId()
+        }
+      });
     }
   }
 
@@ -303,10 +305,10 @@ export default class Group {
     Groups.update({
       _id: this.id
     }, {
-        $pull: {
-          "coordinators": user.getId()
-        }
-      });
+      $pull: {
+        "coordinators": user.getId()
+      }
+    });
 
   }
 

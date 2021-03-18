@@ -100,8 +100,7 @@ Groups.attachSchema(new SimpleSchema({
         },
         autoValue: function (): any {
 
-            if (Meteor.isServer && CollectionConf.IS_TEST) {
-                this.unset();
+            if (Meteor.isServer && this.isSet) {
                 return;
             }
 
