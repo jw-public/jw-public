@@ -22,12 +22,12 @@ declare module "meteor/check" {
 }
 
 declare module "meteor/meteor" {
-	import {Mongo} from "meteor/mongo";
-	import {Blaze} from "meteor/blaze";
-	import {EJSON} from "meteor/ejson";
+	import { Mongo } from "meteor/mongo";
+	import { Blaze } from "meteor/blaze";
+	import { EJSON } from "meteor/ejson";
 
 	export module Meteor {
-  	/** Global props **/
+		/** Global props **/
 		var isClient: boolean;
 		var isCordova: boolean;
 		var isServer: boolean;
@@ -130,7 +130,7 @@ declare module "meteor/meteor" {
 		/** Error **/
 		var Error: ErrorStatic;
 		interface ErrorStatic {
-			new (error: string | number, reason?: string, details?: string): Error;
+			new(error: string | number, reason?: string, details?: string): Error;
 		}
 		interface Error {
 			error: string | number;
@@ -198,21 +198,21 @@ declare module "meteor/meteor" {
 		/** utils **/
 	}
 
-  interface Subscription {
-    added(collection: string, id: string, fields: Object): void;
-    changed(collection: string, id: string, fields: Object): void;
-    connection: Meteor.Connection;
-    error(error: Error): void;
-    onStop(func: Function): void;
-    ready(): void;
-    removed(collection: string, id: string): void;
-    stop(): void;
-    userId: string;
-  }
+	interface Subscription {
+		added(collection: string, id: string, fields: Object): void;
+		changed(collection: string, id: string, fields: Object): void;
+		connection: Meteor.Connection;
+		error(error: Error): void;
+		onStop(func: Function): void;
+		ready(): void;
+		removed(collection: string, id: string): void;
+		stop(): void;
+		userId: string;
+	}
 }
 
 declare module "meteor/ddp" {
-	import {Meteor} from "meteor/meteor";
+	import { Meteor } from "meteor/meteor";
 
 	export module DDP {
 		interface DDPStatic {
@@ -230,7 +230,7 @@ declare module "meteor/ddp" {
 			connected: boolean;
 			status: Meteor.StatusEnum;
 			retryCount: number;
- 		  retryTime?: number;
+			retryTime?: number;
 			reason?: string;
 		}
 
@@ -241,7 +241,7 @@ declare module "meteor/ddp" {
 declare module "meteor/ddp-common" {
 	export module DDPCommon {
 		interface MethodInvocation {
-			new (options: {}): MethodInvocation;
+			new(options: {}): MethodInvocation;
 
 			unblock(): void;
 
@@ -253,7 +253,7 @@ declare module "meteor/ddp-common" {
 
 
 declare module "meteor/mongo" {
-  import {Meteor, Subscription} from "meteor/meteor";
+	import { Meteor, Subscription } from "meteor/meteor";
 
 	export module Mongo {
 		interface Selector {
@@ -332,20 +332,20 @@ declare module "meteor/mongo" {
 		interface CursorStatic {
 			new <T>(): Cursor<T>;
 		}
-    interface ObserveCallbacks {
-      added?(document: Object): void
-      addedAt?(document: Object, atIndex: number, before: Object): void
-      changed?(newDocument: Object, oldDocument: Object): void
-      changedAt?(newDocument: Object, oldDocument: Object, indexAt: number): void
-      removed?(oldDocument: Object): void
-      removedAt?(oldDocument: Object, atIndex: number): void
-      movedTo?(document: Object, fromIndex: number, toIndex: number, before: Object): void
-    }
+		interface ObserveCallbacks {
+			added?(document: Object): void
+			addedAt?(document: Object, atIndex: number, before: Object): void
+			changed?(newDocument: Object, oldDocument: Object): void
+			changedAt?(newDocument: Object, oldDocument: Object, indexAt: number): void
+			removed?(oldDocument: Object): void
+			removedAt?(oldDocument: Object, atIndex: number): void
+			movedTo?(document: Object, fromIndex: number, toIndex: number, before: Object): void
+		}
 		interface ObserveChangesCallbacks {
-      added?(id: string, fields: Object): void
-      addedBefore?(id: string, fields: Object, before: Object): void
-      changed?(id: string, fields: Object): void
-      movedBefore?(id: string, before: Object): void
+			added?(id: string, fields: Object): void
+			addedBefore?(id: string, fields: Object, before: Object): void
+			changed?(id: string, fields: Object): void
+			movedBefore?(id: string, before: Object): void
 			removed?(id: string): void
 		}
 		interface Cursor<T> {
@@ -353,15 +353,15 @@ declare module "meteor/mongo" {
 			fetch(): Array<T>;
 			forEach(callback: <T>(doc: T, index: number, cursor: Cursor<T>) => void, thisArg?: any): void;
 			map<U>(callback: (doc: T, index: number, cursor: Cursor<T>) => U, thisArg?: any): Array<U>;
-      observe(callbacks: ObserveCallbacks): Meteor.LiveQueryHandle;
-      observeChanges(callbacks: ObserveChangesCallbacks): Meteor.LiveQueryHandle;
+			observe(callbacks: ObserveCallbacks): Meteor.LiveQueryHandle;
+			observeChanges(callbacks: ObserveChangesCallbacks): Meteor.LiveQueryHandle;
 		}
 
 		var ObjectID: ObjectIDStatic;
 		interface ObjectIDStatic {
-			new (hexString?: string): ObjectID;
+			new(hexString?: string): ObjectID;
 		}
-		interface ObjectID {}
+		interface ObjectID { }
 	}
 }
 
@@ -417,15 +417,15 @@ declare module "meteor/random" {
 }
 
 interface MeteorMap<V> {
-  [index: string]: V;
+	[index: string]: V;
 }
 
 declare module "meteor/blaze" {
-	import {Meteor} from "meteor/meteor";
+	import { Meteor } from "meteor/meteor";
 
 	export module Blaze {
 		class View {
-      new (name?: string, renderFunction?: Function): View;
+			new(name?: string, renderFunction?: Function): View;
 			name: string;
 			parentView: View;
 			isCreated: boolean;
@@ -439,37 +439,37 @@ declare module "meteor/blaze" {
 			firstNode(): Node;
 			lastNode(): Node;
 			template: Template;
-      templateInstance(): TemplateInstance;
+			templateInstance(): TemplateInstance;
 		}
 		var currentView: View;
 
 		function isTemplate(value: any): boolean;
 
 		class Template {
-      new(viewName?: string, renderFunction?: Function): Template;
-      viewName: string;
-      renderFunction: Function;
-      constructView(): View;
+			new(viewName?: string, renderFunction?: Function): Template;
+			viewName: string;
+			renderFunction: Function;
+			constructView(): View;
 			head: Template;
 			find(selector: string): Template;
 			findAll(selector: string): Template[];
 			$: any;
-      onCreated(cb: Function): void;
-      onRendered(cb: Function): void;
-      onDestroyed(cb: Function): void;
-      created: Function;
-      rendered: Function;
-      destroyed: Function;
-      helpers(helpersMap: MeteorMap<Function>): void;
-      events(eventsMap: MeteorMap<Function>): void
-      static registerHelper(name: string, func: Function): void;
-      static instance(): TemplateInstance;
-      static currentData(): any
-      static parentData(numLevels: number): any
+			onCreated(cb: Function): void;
+			onRendered(cb: Function): void;
+			onDestroyed(cb: Function): void;
+			created: Function;
+			rendered: Function;
+			destroyed: Function;
+			helpers(helpersMap: MeteorMap<Function>): void;
+			events(eventsMap: MeteorMap<Function>): void
+			static registerHelper(name: string, func: Function): void;
+			static instance(): TemplateInstance;
+			static currentData(): any
+			static parentData(numLevels: number): any
 		}
 
 		class TemplateInstance {
-			new (view: View): TemplateInstance;
+			new(view: View): TemplateInstance;
 			$(selector: string): any;
 			autorun(runFunc: Function): Object;
 			data: Object;
@@ -577,7 +577,7 @@ declare module "meteor/tiny-test" {
 }
 
 declare module "meteor/accounts-base" {
-	import {Meteor} from "meteor/meteor";
+	import { Meteor } from "meteor/meteor";
 
 	export module Accounts {
 		function addEmail(userId: string, newEmail: string, verified?: boolean): void;
@@ -587,6 +587,7 @@ declare module "meteor/accounts-base" {
 			email?: string;
 			password?: string;
 			profile?: Object;
+			groups?: [string];
 		}, callback?: Function): string;
 		var emailTemplates: Meteor.EmailTemplates;
 		function findUserByEmail(email: string): Object;
@@ -659,22 +660,22 @@ declare module App {
 
 
 interface EJSONableCustomType {
-  clone(): EJSONableCustomType;
-  equals(other: Object): boolean;
-  toJSONValue(): JSONable;
-  typeName(): string;
+	clone(): EJSONableCustomType;
+	equals(other: Object): boolean;
+	toJSONValue(): JSONable;
+	typeName(): string;
 }
 interface EJSONable {
-  [key: string]: number | string | boolean | Object | number[] | string[] | Object[] | Date | Uint8Array | EJSONableCustomType;
+	[key: string]: number | string | boolean | Object | number[] | string[] | Object[] | Date | Uint8Array | EJSONableCustomType;
 }
 interface JSONable {
-  [key: string]: number | string | boolean | Object | number[] | string[] | Object[];
+	[key: string]: number | string | boolean | Object | number[] | string[] | Object[];
 }
 interface EJSON extends EJSONable { }
 
 declare module "meteor/ejson" {
 	export module EJSON {
-    function addType(name: string, factory: (val: JSONable) => EJSONableCustomType): void;
+		function addType(name: string, factory: (val: JSONable) => EJSONableCustomType): void;
 		function clone<T>(val: T): T;
 		function equals(a: EJSON, b: EJSON, options?: {
 			keyOrderSensitive?: boolean;
@@ -706,7 +707,7 @@ declare module "meteor/tracker" {
 
 		var Dependency: DependencyStatic;
 		interface DependencyStatic {
-			new (): Dependency;
+			new(): Dependency;
 		}
 		interface Dependency {
 			changed(): void;
@@ -727,7 +728,7 @@ declare module "meteor/tracker" {
 }
 
 declare module "meteor/session" {
-	import {EJSON} from "meteor/ejson";
+	import { EJSON } from "meteor/ejson";
 
 	export module Session {
 		function equals(key: string, value: string | number | boolean | any): boolean;
@@ -762,7 +763,7 @@ declare module "meteor/email" {
 		}
 		var MailComposer: MailComposerStatic;
 		interface MailComposerStatic {
-			new (options: MailComposerOptions): MailComposer;
+			new(options: MailComposerOptions): MailComposer;
 		}
 		interface MailComposer {
 			addHeader(name: string, value: string): void;
@@ -785,13 +786,13 @@ declare module "meteor/reactive-var" {
 }
 
 declare module "meteor/templating" {
-	import {Blaze} from "meteor/blaze";
-	import {Meteor} from "meteor/meteor";
+	import { Blaze } from "meteor/blaze";
+	import { Meteor } from "meteor/meteor";
 
 	//export var Template: Map<string, TemplateStatic>;
 	class Template extends Blaze.Template {
-    static body: Template;
-    [index: string]: any | Template;
+		static body: Template;
+		[index: string]: any | Template;
 	}
 }
 
@@ -846,7 +847,7 @@ declare module Package {
 
 declare var PackageAPI: PackageAPI;
 interface PackageAPI {
-	new (): PackageAPI;
+	new(): PackageAPI;
 	addAssets(filenames: string | string[], architecture: string | string[]): void;
 	addFiles(filenames: string | string[], architecture?: string | string[], options?: {
 		bare?: boolean;

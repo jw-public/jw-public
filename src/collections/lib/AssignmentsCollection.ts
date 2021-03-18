@@ -266,8 +266,7 @@ export const AssignmentSchema = new SimpleSchema({
     },
     autoValue: function () {
 
-      if (Meteor.isServer && CollectionConf.IS_TEST) {
-        this.unset();
+      if (Meteor.isServer && this.isSet) {
         return;
       }
 
