@@ -9,4 +9,8 @@ spec:
         - name: jw-public
           env:
             - name: ROOT_URL
-              value: https://next.jw-public.org
+              value: https://jw-public.org
+            - name: MAIL_URL
+              value: smtp://ses-relay.ses-relay.svc.cluster.local:25
+            - name: VIRTUAL_HOST
+              value: jw-public.org

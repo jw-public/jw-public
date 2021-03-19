@@ -11,10 +11,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - next.jw-public.org
+        - jw-public.org
       secretName: jw-public-icereed-ingress-tls
   rules:
-    - host: next.jw-public.org
+    - host: jw-public.org
       http:
         paths:
           - path: /
