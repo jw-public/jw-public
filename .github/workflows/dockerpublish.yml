@@ -38,7 +38,7 @@ jobs:
             ${{ runner.os }}-meteor-
       - uses: meteorengineer/setup-meteor@v1
         with:
-          meteor-release: "1.12"
+          meteor-release: "2.1"
       - run: cd src && meteor npm install
       - run: cd src && meteor npm run compile
       - run: cd src && meteor npm test
@@ -51,6 +51,7 @@ jobs:
           install-command: echo "skipped"
           command: meteor npm run cypress:headless
           wait-on: "http://localhost:3000"
+          wait-on-timeout: 300 # 5 minutes
           record: true
       - uses: actions/upload-artifact@v2
         if: failure()
@@ -88,7 +89,7 @@ jobs:
             ${{ runner.os }}-meteor-
       - uses: meteorengineer/setup-meteor@v1
         with:
-          meteor-release: "1.12"
+          meteor-release: "2.1"
       - run: cd src && meteor npm install
       - run: cd src && meteor npm run compile
       - run: cd src && meteor build --allow-superuser ./build
@@ -111,7 +112,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: meteorengineer/setup-meteor@v1
         with:
-          meteor-release: "1.12"
+          meteor-release: "2.1"
       - uses: actions/cache@v2
         with:
           path: ~/.npm

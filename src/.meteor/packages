@@ -5,9 +5,9 @@
 # but you can also edit it by hand.
 
 less@2.7.12
-accounts-password@1.6.3
+accounts-password@1.7.0
 alanning:roles
-ecmascript@0.14.4
+ecmascript@0.15.0
 pfafman:font-awesome-4
 reactive-var@1.0.11
 kadira:flow-router
@@ -46,20 +46,20 @@ blaze-html-templates@1.0.4
 session@1.2.0
 jquery@1.11.10
 tracker@1.2.0
-logging@1.1.20
+logging@1.2.0
 reload@1.3.1
 random@1.2.0
 ejson@1.1.1
 spacebars@1.0.12
 check@1.3.1
 react-template-helper@0.2.11
-standard-minifier-css@1.7.1
+standard-minifier-css@1.7.2
 standard-minifier-js@2.6.0
 react-meteor-data
 stylus@2.513.9
 browser-policy@1.1.0
 shell-server@0.5.0
-dynamic-import@0.5.4
+dynamic-import@0.6.0
 simple:rest-accounts-password
 simple:rest
 sevki:prometheus-exporter
