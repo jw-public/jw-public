@@ -58,7 +58,7 @@
   "devDependencies": {
     "@types/chai": "3.5.2",
     "@types/lolex": "5.1.0",
-    "@types/mocha": "8.2.1",
+    "@types/mocha": "8.2.2",
     "@types/node": "6.14.13",
     "babel-cli": "6.26.0",
     "babel-core": "6.26.3",
