@@ -78,7 +78,7 @@
     "mock-require": "3.0.3",
     "remap-istanbul": "0.13.0",
     "sinon": "10.0.0",
-    "sinon-chai": "3.5.0",
+    "sinon-chai": "3.6.0",
     "typemoq": "0.3.3"
   },
   "scripts": {
