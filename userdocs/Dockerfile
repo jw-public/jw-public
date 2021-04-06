@@ -4,5 +4,5 @@ COPY . /src
 WORKDIR /src
 RUN mkdocs build --clean
 
-FROM nginx:1.19.8
+FROM nginx:1.19.9
 COPY --from=build /src/site /usr/share/nginx/html
