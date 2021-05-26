@@ -77,7 +77,7 @@
     "mocha-jenkins-reporter": "0.4.5",
     "mock-require": "3.0.3",
     "remap-istanbul": "0.13.0",
-    "sinon": "10.0.0",
+    "sinon": "11.1.1",
     "sinon-chai": "3.6.0",
     "typemoq": "0.3.3"
   },
