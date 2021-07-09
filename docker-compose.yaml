@@ -11,7 +11,7 @@ services:
       - ROOT_URL=http://localhost:8080
     restart: always
   mongo:
-    image: mongo:3.4
+    image: mongo:4.4
     volumes:
       - "./database:/data/db:rw"
     restart: always
