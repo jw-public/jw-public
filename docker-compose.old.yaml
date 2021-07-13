@@ -11,7 +11,7 @@ jw-public:
   restart: always
 
 mongo:
-  image: mongo:3.2
+  image: mongo:5.0
   container_name: jw-mongo-production
   volumes:
     - "./database:/data/db:rw"
