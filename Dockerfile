@@ -1,4 +1,4 @@
-FROM alpine:3 as prepare
+FROM alpine:20210212 as prepare
 COPY src/build/src.tar.gz /bundle/meteor.tar.gz
 RUN cd /tmp/ && tar xvf /bundle/meteor.tar.gz
 FROM node:12-alpine
