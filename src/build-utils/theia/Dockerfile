@@ -1,4 +1,4 @@
-FROM theiaide/theia-full:0.16.1
+FROM theiaide/theia-full:1.17.2
 USER root
 RUN npm install -g typescript@2.3.4 mocha@2.5.3 typings babel-istanbul@0.11.0 typedoc
 RUN apt-get update && apt-get install curl -y
