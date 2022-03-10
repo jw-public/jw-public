@@ -4,5 +4,6 @@
   "pluginsFile": "cypress/plugins/index.js",
   "screenshotsFolder": "cypress/screenshots",
   "supportFile": "cypress/support/index.js",
+  "videoCompression": 8,
   "videosFolder": "cypress/videos"
 }
