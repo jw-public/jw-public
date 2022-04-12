@@ -1,7 +1,7 @@
 FROM alpine:20210804 as prepare
 COPY src/build/src.tar.gz /bundle/meteor.tar.gz
 RUN cd /tmp/ && tar xvf /bundle/meteor.tar.gz
-FROM node:12-alpine
+FROM node:17-alpine
 COPY --from=prepare /tmp/bundle /bundle
 WORKDIR /bundle
 RUN apk add --no-cache --virtual .build-deps python3 make g++ && cd programs/server/ && npm install && apk del .build-deps
