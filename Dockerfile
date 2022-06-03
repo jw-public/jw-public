@@ -1,10 +1,13 @@
 FROM alpine:20210804 as prepare
 COPY src/build/src.tar.gz /bundle/meteor.tar.gz
-RUN cd /tmp/ && tar xvf /bundle/meteor.tar.gz
-FROM node:12-alpine
+WORKDIR /tmp
+RUN tar xvf /bundle/meteor.tar.gz
+
+FROM node:14
 COPY --from=prepare /tmp/bundle /bundle
+WORKDIR /bundle/programs/server/
+RUN npm install fibers && npm install
 WORKDIR /bundle
-RUN apk add --no-cache --virtual .build-deps python3 make g++ && cd programs/server/ && npm install && apk del .build-deps
 CMD [ "node", "main.js" ]
 EXPOSE 8080
 ENV PORT 8080
