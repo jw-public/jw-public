@@ -93,6 +93,11 @@ jobs:
       - run: cd src && meteor npm install
       - run: cd src && meteor npm run compile
       - run: cd src && meteor build --allow-superuser ./build
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: build_package
+          path: src/build/src.tar.gz
       - name: Run tests
         run: |
           if [ -f docker-compose.test.yml ]; then
