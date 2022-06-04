@@ -14,7 +14,9 @@
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true,
         "sourceMap": true,
-        "typeRoots": [ "node_modules/@types/" ],
+        "typeRoots": [
+            "node_modules/@types/"
+        ],
         "baseUrl": "."
     },
     "filesGlob": [
@@ -28,7 +30,8 @@
     "exclude": [
         "node_modules",
         ".meteor",
-        "**/*.spec.ts"
+        "**/*.spec.ts",
+        "cypress.config.ts"
     ],
     "atom": {
         "rewriteTsconfig": false
