@@ -6,7 +6,10 @@ RUN tar xvf /bundle/meteor.tar.gz
 FROM node:14
 COPY --from=prepare /tmp/bundle /bundle
 WORKDIR /bundle/programs/server/
-RUN npm install fibers && npm install
+
+# renovate: datasource=npm depName=fibers
+ENV FIBERS_VERSION=4.0.3
+RUN npm install fibers@${FIBERS_VERSION} && npm install
 WORKDIR /bundle
 CMD [ "node", "main.js" ]
 EXPOSE 8080
