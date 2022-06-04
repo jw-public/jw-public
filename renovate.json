@@ -21,6 +21,6 @@
       ],
       "datasourceTemplate": "docker"
     }
-  ]
+  ],
   "rebaseWhen": "behind-base-branch"
 }
