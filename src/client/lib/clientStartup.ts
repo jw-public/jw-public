@@ -6,6 +6,8 @@ import { Tracker } from "meteor/tracker";
 import { Accounts } from "meteor/accounts-base";
 import { Template } from "meteor/templating";
 import { Routes } from "../../lib/client/routes";
+import * as moment from "moment";
+require('moment/locale/de');
 
 Meteor.startup(function () {
 
@@ -19,6 +21,7 @@ Meteor.startup(function () {
    * #### Layout initialisieren ####
    */
   BlazeLayout.setRoot('body');
+  moment.locale("de");
   bootbox.setLocale("de");
 
   Accounts.onLogin(function () {

@@ -5,6 +5,8 @@ import { Accounts } from "meteor/accounts-base";
 import * as EmailSettingsManager from "./EmailSettingsManager";
 import { initData } from "./InitialData";
 
+import * as moment from "moment";
+require('moment/locale/de');
 
 // Erstellt User, wenn keine im System vorhanden sind. Dies ist vorallem für Tests notwendig.
 Meteor.startup(function () {
@@ -17,5 +19,7 @@ Meteor.startup(function () {
         initData();
     }
     EmailSettingsManager.initEmailSettings();
+    moment.locale("de"); // moment.js auf Deutsch stellen
+    console.log("MOMENT LOCALES IS " + moment.locale());
     console.log("Meteor started up.");
 });
