@@ -46,7 +46,7 @@
     "react-bootstrap": "^0.28.5",
     "react-bootstrap-daterangepicker": "^3.2.2",
     "react-dom": "^15.7.0",
-    "react-mixin": "^4.0.0",
+    "react-mixin": "^5.0.0",
     "reflect-metadata": "^0.1.8",
     "remove-markdown": "^0.3.0",
     "smart-mixin": "^2.0.0",
