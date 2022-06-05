@@ -6,6 +6,8 @@ import { Tracker } from "meteor/tracker";
 import { Accounts } from "meteor/accounts-base";
 import { Template } from "meteor/templating";
 import { Routes } from "../../lib/client/routes";
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
+
 import * as moment from "moment";
 require('moment/locale/de');
 

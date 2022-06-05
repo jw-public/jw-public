@@ -15,6 +15,7 @@ export enum Type { Assignment, Simple };
 
 export const NotificationNames = EnumUtil.getNames(Type);
 export const AssignmentTypeNames = EnumUtil.getNames(AssignmentType);
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 
 // @see interface AssignmentOptions
 export const AssignmentOptionsSchema = new SimpleSchema({

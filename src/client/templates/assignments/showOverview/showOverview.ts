@@ -12,6 +12,7 @@ import { Blaze } from "meteor/blaze";
 import { ReactiveVar } from "meteor/reactive-var";
 import { subsCache } from "../../../lib/subscription-cache";
 import { PaginatorComponent } from "../../components/paginator/paginator";
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 
 import * as moment from "moment";
 
@@ -221,7 +222,7 @@ Template["showOverview"].helpers({
   currentGroup: function (): GroupDAO {
     return Groups.findOne({ "_id": AssignmentOverview.getSelectedGroupId() });
   },
-  isCoordinator: function (): boolean {  
+  isCoordinator: function (): boolean {
     let group = new Group(AssignmentOverview.getSelectedGroupId());
     let user = new User(Meteor.userId());
     return user.isGroupCoordinator(group)

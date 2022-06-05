@@ -1,10 +1,10 @@
 import * as _ from "underscore";
-import {Meteor} from "meteor/meteor";
-import {Template} from "meteor/templating";
-import {Session} from "meteor/session";
-import {Mongo} from "meteor/mongo";
-import {Blaze} from "meteor/blaze";
-import {ReactiveVar} from "meteor/reactive-var";
+import { Meteor } from "meteor/meteor";
+import { Template } from "meteor/templating";
+import { Session } from "meteor/session";
+import { Mongo } from "meteor/mongo";
+import { Blaze } from "meteor/blaze";
+import { ReactiveVar } from "meteor/reactive-var";
 
 import Assignment from "../../collections/lib/classes/Assignment";
 import AssignmentCountAccessor from "../../collections/lib/classes/AssignmentCountAccessor";
@@ -12,15 +12,16 @@ import User from "../../collections/lib/classes/User";
 import * as UserCollection from "../../collections/lib/UserCollection";
 
 import Group from "../../collections/lib/classes/Group";
-import {GroupApplicationController} from "../../collections/lib/classes/Group";
-import {Groups} from "../../collections/lib/GroupCollection";
+import { GroupApplicationController } from "../../collections/lib/classes/Group";
+import { Groups } from "../../collections/lib/GroupCollection";
 
-import {Helper} from "../../lib/HelperDecorator";
-import {TemplateDefinition} from "../../lib/TemplateDefinitionDecorator";
+import { Helper } from "../../lib/HelperDecorator";
+import { TemplateDefinition } from "../../lib/TemplateDefinitionDecorator";
 
-import {getUserDataSubscription} from "../../subscribe";
+import { getUserDataSubscription } from "../../subscribe";
 
 import * as moment from "moment";
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 
 
 interface DashboardPanel {
@@ -76,7 +77,7 @@ class DashboardAdminData {
 
 
 Template["dashboard"].helpers({
-  profile: function(): UserCollection.UserProfile {
+  profile: function (): UserCollection.UserProfile {
     let user = Meteor.user();
 
     if (_.isUndefined(user) || _.isNull(user)) {
@@ -85,7 +86,7 @@ Template["dashboard"].helpers({
 
     return user.profile;
   },
-  groups: function() {
+  groups: function () {
 
     /**
      * Ein Objekt, das den Eintrag des eingeloggten Users enthält.
@@ -102,7 +103,7 @@ Template["dashboard"].helpers({
       { sort: { name: 1 } });
   },
 
-  trolleyAssignmentPanels: function(): Array<DashboardPanel> {
+  trolleyAssignmentPanels: function (): Array<DashboardPanel> {
     let userDAO = Meteor.user();
     let user = User.createFromDAO(userDAO);
 
@@ -120,12 +121,12 @@ Template["dashboard"].helpers({
     let panels: Array<DashboardPanel> = new Array();
 
 
-    _.forEach(groupIds, function(groupId) {
-    let group = new Group(groupId);
-    let singleObject: DashboardPanel = null;
-    let countAccessor = new AssignmentCountAccessor(groupId);
-    let assignmentCount: number = countAccessor.count;
-    let hasAssignments = assignmentCount > 0;
+    _.forEach(groupIds, function (groupId) {
+      let group = new Group(groupId);
+      let singleObject: DashboardPanel = null;
+      let countAccessor = new AssignmentCountAccessor(groupId);
+      let assignmentCount: number = countAccessor.count;
+      let hasAssignments = assignmentCount > 0;
 
       if (hasAssignments) {
         singleObject = {
@@ -155,7 +156,7 @@ Template["dashboard"].helpers({
     return panels;
   },
 
-  pendingApplicationsForGroupCoordinator: function(): Array<DashboardPanel> {
+  pendingApplicationsForGroupCoordinator: function (): Array<DashboardPanel> {
 
     let userDAO = Meteor.user();
 
@@ -171,7 +172,7 @@ Template["dashboard"].helpers({
 
     let panels: Array<DashboardPanel> = new Array();
 
-    _.forEach(groups, function(group: Group) {
+    _.forEach(groups, function (group: Group) {
       let applicationController = new GroupApplicationController(group.getId());
 
       let applicationsCount: number = applicationController.applicationsCount;
@@ -191,7 +192,7 @@ Template["dashboard"].helpers({
     return panels;
   },
 
-  ownPendingApplicationsForGroupPanels: function(): Array<DashboardPanel> {
+  ownPendingApplicationsForGroupPanels: function (): Array<DashboardPanel> {
     let userDAO = Meteor.user();
 
     if (!userDAO) {
@@ -206,7 +207,7 @@ Template["dashboard"].helpers({
 
     let panels: Array<DashboardPanel> = new Array();
 
-    _.forEach(groups, function(group) {
+    _.forEach(groups, function (group) {
       panels.push({
         panelClass: "panel-green",
         fontAwesomeIcon: "fa-check",
@@ -229,7 +230,7 @@ Template["dashboard"].helpers({
 namespace Dashboard {
 
   export function loadUserCountInto(ReactiveVar: ReactiveVar<string>): void {
-    Meteor.call("getAllUsersCount", function(err, asyncValue) {
+    Meteor.call("getAllUsersCount", function (err, asyncValue) {
       if (err)
         console.log(err);
       else
@@ -250,7 +251,7 @@ namespace Dashboard {
 
 }
 
-Template["dashboard"].created = function() {
+Template["dashboard"].created = function () {
   let instance = Template.instance();
   this.userCount = new ReactiveVar("");
 

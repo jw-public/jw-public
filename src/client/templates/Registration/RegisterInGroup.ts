@@ -1,27 +1,28 @@
-import {Meteor} from "meteor/meteor";
-import {Template} from "meteor/templating";
-import {Session} from "meteor/session";
-import {Mongo} from "meteor/mongo";
-import {Accounts} from "meteor/accounts-base";
+import { Meteor } from "meteor/meteor";
+import { Template } from "meteor/templating";
+import { Session } from "meteor/session";
+import { Mongo } from "meteor/mongo";
+import { Accounts } from "meteor/accounts-base";
 
 import * as UserCollection from "../../../collections/lib/UserCollection";
-import {Groups, GroupDAO} from "../../../collections/lib/GroupCollection";
+import { Groups, GroupDAO } from "../../../collections/lib/GroupCollection";
 
 
 import * as Registration from "../../../collections/lib/Registration";
 
-import {JustEmail} from "../../../collections/lib/Users";
+import { JustEmail } from "../../../collections/lib/Users";
 
-import {AutoForm} from "meteor/aldeed:autoform";
+import { AutoForm } from "meteor/aldeed:autoform";
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 
 Template["RegisterInGroup"].helpers({
-  genderOption: function() {
+  genderOption: function () {
     return [
       { label: "ein Bruder", value: "Male" },
       { label: "eine Schwester", value: "Female" }
     ];
   },
-  groupName: function() {
+  groupName: function () {
     return Groups.findOne({ "_id": FlowRouter.getParam("groupId") }).name; // Wir bekommen die Daten aus dem Subscribe in routes.js
   },
 
@@ -30,7 +31,7 @@ Template["RegisterInGroup"].helpers({
    * @param step  Der zu prüfende Schritt.
    * @returns {boolean} step stimmt mit dem aktuellen Schritt überein
    */
-  isStep: function(step) {
+  isStep: function (step) {
 
     // Falls die Session-Variable noch nicht initialisiert wurde, wird sie auf 1 gesetzt
     if (!Session.get("currentStep")) {
@@ -40,10 +41,10 @@ Template["RegisterInGroup"].helpers({
     return Session.get("currentStep") === step;
   },
 
-  lastInsertedData: function() {
+  lastInsertedData: function () {
     return Session.get("lastInsertedData");
   },
-  formId: function(): string {
+  formId: function (): string {
     return Registration.CONTEXT_NAME_STEP_TWO;
   },
   emailSchema() {
@@ -55,7 +56,7 @@ Template["RegisterInGroup"].helpers({
 });
 
 Template["RegisterInGroup"].events({
-  "click #backToStart": function() {
+  "click #backToStart": function () {
     Session.set("currentStep", 1); // Wir gehen zurück zu Schritt 1
     AutoForm.resetForm(Registration.CONTEXT_NAME_STEP_TWO);
   }
@@ -72,7 +73,7 @@ Template["RegisterInGroup"].events({
  */
 function registerStepTwo(given_email) {
   // Über einen Aufruf einer Servermethode ("/server/methods.js") finden wir heraus, ober der User existiert
-  Meteor.call('userExists', given_email, function(err, userExists) {
+  Meteor.call('userExists', given_email, function (err, userExists) {
 
     if (userExists) {
       console.log("Benutzer ist bereits registriert!");
@@ -93,7 +94,7 @@ function registerStepTwo(given_email) {
  */
 AutoForm.hooks({
   "register-firstStep-email": { // Die ID des Formulars in Schritt 1
-    onSubmit: function(doc: any) {
+    onSubmit: function (doc: any) {
       // Sicherstellen, dass die eingebenen Daten dem Schema entsprechen
       JustEmail.clean(doc);
 
@@ -118,7 +119,7 @@ AutoForm.hooks({
     }
   },
   "register-secondStep-register": { // === Registration.CONTEXT_NAME_STEP_TWO
-    onSubmit: function(doc: Registration.INewUser) {
+    onSubmit: function (doc: Registration.INewUser) {
       var self = <AutoForm.HookMethodContext<Registration.INewUser>>this;
       doc.profile.pendingGroups = [FlowRouter.getParam("groupId")];
 
@@ -135,7 +136,7 @@ AutoForm.hooks({
       });
 
 
-      Accounts.createUser(doc, function(err) {
+      Accounts.createUser(doc, function (err) {
         if (err) {
           alert(err.details);
           console.error(err);

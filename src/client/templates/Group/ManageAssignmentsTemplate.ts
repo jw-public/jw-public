@@ -21,7 +21,7 @@ import { DateRangeChooser } from "../../../imports/ui/assignments/DateRangeChoos
 import { ReactiveVar } from "meteor/reactive-var";
 import { ReactiveVarWrapper } from '../../../imports/common/ReactiveVarWrapper';
 import { Helper } from "../../../lib/HelperDecorator";
-import { TemplateDefinition } from "../../../lib/TemplateDefinitionDecorator";
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 
 
 

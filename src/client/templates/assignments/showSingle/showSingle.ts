@@ -2,18 +2,18 @@ import * as _ from "underscore";
 
 
 import Assignment from "../../../../collections/lib/classes/Assignment";
-import {AssignmentState} from "../../../../collections/lib/classes/AssignmentState";
+import { AssignmentState } from "../../../../collections/lib/classes/AssignmentState";
 import * as AssignmentForm from "../../components/assignmentForm/AssignmentForm";
 import * as AssignmentManagerModal from "../../components/assignmentManager/AssignmentManagerModal";
-import {Assignments, AssignmentDAO} from "../../../../collections/lib/AssignmentsCollection";
+import { Assignments, AssignmentDAO } from "../../../../collections/lib/AssignmentsCollection";
 
-import {Meteor} from "meteor/meteor";
-import {Template} from "meteor/templating";
-import {Session} from "meteor/session";
-import {Mongo} from "meteor/mongo";
-import {Blaze} from "meteor/blaze";
-import {ReactiveVar} from "meteor/reactive-var";
-import {subsCache} from "../../../lib/subscription-cache";
+import { Meteor } from "meteor/meteor";
+import { Template } from "meteor/templating";
+import { Session } from "meteor/session";
+import { Mongo } from "meteor/mongo";
+import { Blaze } from "meteor/blaze";
+import { ReactiveVar } from "meteor/reactive-var";
+import { subsCache } from "../../../lib/subscription-cache";
 
 import * as AccordionTemplateStorage from "../../helperModules/AccordionTemplateStorage";
 import * as AssignmentCancelModal from "../../components/assignmentCancelModal/AssignmentCancelModal";
@@ -21,11 +21,11 @@ import * as AssignmentCancelModal from "../../components/assignmentCancelModal/A
 import * as moment from "moment";
 
 
-import {Routes} from "../../../../lib/client/routes";
+import { Routes } from "../../../../lib/client/routes";
 
-import {Helper} from "../../../../lib/HelperDecorator";
-import {TemplateDefinition} from "../../../../lib/TemplateDefinitionDecorator";
-import Group from "collections/lib/classes/Group";
+import { Helper } from "../../../../lib/HelperDecorator";
+import { TemplateDefinition } from "../../../../lib/TemplateDefinitionDecorator";
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 
 
 namespace SingleAssignmentView {
@@ -38,34 +38,34 @@ namespace SingleAssignmentView {
   }
 
   export interface AssignmentPreviewContext {
-  assignmentDao: AssignmentDAO;
-}
+    assignmentDao: AssignmentDAO;
+  }
 
-export function createHtmlId(context: SingleAssignmentView.AssignmentPreviewContext) {
-  return context.assignmentDao._id;
-}
+  export function createHtmlId(context: SingleAssignmentView.AssignmentPreviewContext) {
+    return context.assignmentDao._id;
+  }
 
-export function assignmentsOnSameDay(): Mongo.Cursor<AssignmentDAO> {
-  let assignmentDao = getAssignmentDAO();
+  export function assignmentsOnSameDay(): Mongo.Cursor<AssignmentDAO> {
+    let assignmentDao = getAssignmentDAO();
 
-  let startOfDay = moment(assignmentDao.start).startOf("day");
-  let endOfDay = startOfDay.clone().endOf("day");
+    let startOfDay = moment(assignmentDao.start).startOf("day");
+    let endOfDay = startOfDay.clone().endOf("day");
 
-  return Assignments.find(
-    /*
-    *  Termine einer Gruppe, die am gleichen Tag stattfinden,
-    *  müssen alle den gleichen Namen haben, geschlossen sein
-    *  und mindestens einen Teilnehmer haben.
-    */
-    {
-      "_id": { $not: assignmentDao._id },
-      "group": assignmentDao.group,
-      "state": AssignmentState[AssignmentState.Closed],
-      "name": assignmentDao.name,
-      "start": { "$gte": startOfDay.toDate(), "$lt": endOfDay.toDate() },
-      "participants": { $exists: true, $not: { $size: 0 } }
-    }, { sort: { start: 1, _id: 1 } });
-}
+    return Assignments.find(
+      /*
+      *  Termine einer Gruppe, die am gleichen Tag stattfinden,
+      *  müssen alle den gleichen Namen haben, geschlossen sein
+      *  und mindestens einen Teilnehmer haben.
+      */
+      {
+        "_id": { $not: assignmentDao._id },
+        "group": assignmentDao.group,
+        "state": AssignmentState[AssignmentState.Closed],
+        "name": assignmentDao.name,
+        "start": { "$gte": startOfDay.toDate(), "$lt": endOfDay.toDate() },
+        "participants": { $exists: true, $not: { $size: 0 } }
+      }, { sort: { start: 1, _id: 1 } });
+  }
 }
 
 interface AssignmentInfo {
@@ -74,10 +74,10 @@ interface AssignmentInfo {
 }
 
 
-Template["singleAssignmentView"].created = function() {
+Template["singleAssignmentView"].created = function () {
   let instance = Template.instance();
 
-  instance.autorun(function() {
+  instance.autorun(function () {
     subsCache.subscribe("singleAssignment", SingleAssignmentView.getAssignmentId());
     subsCache.subscribe("ownUserData");
   });
@@ -200,7 +200,7 @@ class SingleAssignmentViewData {
 
     let cursor = SingleAssignmentView.assignmentsOnSameDay();
 
-    return cursor.map<SingleAssignmentView.AssignmentPreviewContext>(function(assignmentDao: AssignmentDAO): SingleAssignmentView.AssignmentPreviewContext {
+    return cursor.map<SingleAssignmentView.AssignmentPreviewContext>(function (assignmentDao: AssignmentDAO): SingleAssignmentView.AssignmentPreviewContext {
       return {
         assignmentDao: assignmentDao
       };
@@ -249,20 +249,20 @@ class AssignmentPreviewViewData {
 
 
 Template["singleAssignmentView"].events({
-  "click .manage-assignment": function(e: Event, template: Blaze.TemplateInstance) {
+  "click .manage-assignment": function (e: Event, template: Blaze.TemplateInstance) {
     e.preventDefault();
     AssignmentManagerModal.dialog({
       assignmentId: SingleAssignmentView.getAssignmentId()
     });
 
   },
-  "click .cancel-assignment": function(e: Event, template: Blaze.TemplateInstance) {
+  "click .cancel-assignment": function (e: Event, template: Blaze.TemplateInstance) {
     e.preventDefault();
 
     AssignmentCancelModal.cancelDialog(SingleAssignmentView.getAssignmentId());
 
   },
-  "click .reenable-assignment": function(e: Event, template: Blaze.TemplateInstance) {
+  "click .reenable-assignment": function (e: Event, template: Blaze.TemplateInstance) {
     e.preventDefault();
 
     AssignmentCancelModal.reenableDialog(SingleAssignmentView.getAssignmentId());
@@ -271,11 +271,11 @@ Template["singleAssignmentView"].events({
 });
 
 
-Template["assignmentPreview"].onRendered(function() {
+Template["assignmentPreview"].onRendered(function () {
   let instance = Template.instance();
   AccordionTemplateStorage.setCollapsed(instance, true);
 
-  instance.autorun(function() {
+  instance.autorun(function () {
 
     let context = <SingleAssignmentView.AssignmentPreviewContext>Template.currentData();
 
@@ -283,9 +283,9 @@ Template["assignmentPreview"].onRendered(function() {
     $("#" + SingleAssignmentView.createHtmlId(context)).collapse({
       toggle: false,
       parent: "#accordion"
-    }).on("hide.bs.collapse", function() {
+    }).on("hide.bs.collapse", function () {
       AccordionTemplateStorage.setCollapsed(instance, true);
-    }).on("show.bs.collapse", function() {
+    }).on("show.bs.collapse", function () {
       AccordionTemplateStorage.setCollapsed(instance, false);
     });
   });
@@ -296,16 +296,16 @@ Template["assignmentPreview"].onRendered(function() {
 
 
 Template["assignmentPreview"].helpers({
-  htmlId: function(): string {
+  htmlId: function (): string {
     let context = <SingleAssignmentView.AssignmentPreviewContext>Template.currentData();
     return SingleAssignmentView.createHtmlId(context);
   },
-  collapsed: function(): boolean {
+  collapsed: function (): boolean {
     let instance = Template.instance();
 
     return AccordionTemplateStorage.isCollapsed(instance);
   },
-  assignment: function(): Assignment {
+  assignment: function (): Assignment {
     let context = <SingleAssignmentView.AssignmentPreviewContext>Template.currentData();
     return Assignment.createFromDAO(context.assignmentDao);
   }
@@ -314,14 +314,14 @@ Template["assignmentPreview"].helpers({
 
 Template["assignmentPreview"].events({
 
-  "click .panel-heading": function(e: Event, template: Blaze.TemplateInstance) {
+  "click .panel-heading": function (e: Event, template: Blaze.TemplateInstance) {
     e.preventDefault();
     let instance = Template.instance();
     let context = <SingleAssignmentView.AssignmentPreviewContext>Template.currentData();
 
     // Erst Collapse Event auslösen, wenn die reaktiven Berechnungen durchgeführt werden.
     // Dies wird erreicht, in dem das Collapsing in einer Extra-Berechnung (oder Thread) ausgeführt wird.
-    _.defer(function() {
+    _.defer(function () {
 
       $("#" + SingleAssignmentView.createHtmlId(context)).collapse("toggle");
     }, 5);

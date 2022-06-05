@@ -1,28 +1,29 @@
 import * as _ from "underscore";
-import {Meteor, Subscription} from "meteor/meteor";
-import {Template} from "meteor/templating";
-import {Mongo} from "meteor/mongo";
-import {Accounts} from "meteor/accounts-base";
-import {Roles} from "meteor/alanning:roles";
-import {check, Match} from "meteor/check";
+import { Meteor, Subscription } from "meteor/meteor";
+import { Template } from "meteor/templating";
+import { Mongo } from "meteor/mongo";
+import { Accounts } from "meteor/accounts-base";
+import { Roles } from "meteor/alanning:roles";
+import { check, Match } from "meteor/check";
 
 import Group from "./lib/classes/Group";
-import {GroupApplicationController} from "./lib/classes/Group";
-import {Groups, GroupDAO} from "./lib/GroupCollection";
+import { GroupApplicationController } from "./lib/classes/Group";
+import { Groups, GroupDAO } from "./lib/GroupCollection";
 
 import User from "./lib/classes/User";
 import * as UserCollection from "./lib/UserCollection";
 import * as UserNotification from "./lib/classes/UserNotification";
 
 import Assignment from "./lib/classes/Assignment";
-import {AssignmentState} from "./lib/classes/AssignmentState";
-import {UserEntry, AssignmentDAO, Assignments} from "./lib/AssignmentsCollection";
+import { AssignmentState } from "./lib/classes/AssignmentState";
+import { UserEntry, AssignmentDAO, Assignments } from "./lib/AssignmentsCollection";
 
-import {Tabular} from "meteor/aldeed:tabular";
+import { Tabular } from "meteor/aldeed:tabular";
 
 import * as ManageAssignments from "../imports/templateModules/ManageAssignments";
 
 import * as moment from "moment";
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 
 
 
@@ -47,10 +48,10 @@ TabularTables["Groups"] = new Tabular.Table({
         return Roles.userIsInRole(userId, ["admin"]); // Zugriffsberechtigung nur für Administratoren
     },
     "autoWidth": false,
-    createdRow: function( row, data, dataIndex ) {
-      var instance = Template.instance();
+    createdRow: function (row, data, dataIndex) {
+        var instance = Template.instance();
 
-      instance.subscribe("groupMembers", data._id);
+        instance.subscribe("groupMembers", data._id);
     }
 });
 TabularTables["Users"] = new Tabular.Table({
@@ -105,10 +106,11 @@ TabularTables["GroupApplicants"] = new Tabular.Table({
                 $in: [userId]
             }
         }, {
-          sort:
-          {
-            "_id": 1
-          }        });
+            sort:
+            {
+                "_id": 1
+            }
+        });
         /**
          * Wir wandeln den Cursor in einen Array von Group-Objekten um.
          * Die Array-Elemente haben das Format: {"_id": "oASvwiu33872r827..."}
@@ -129,10 +131,10 @@ TabularTables["GroupApplicants"] = new Tabular.Table({
                 $in: [userId]
             }
         }, {
-          sort:
-          {
-            "_id": 1
-          }
+            sort:
+            {
+                "_id": 1
+            }
 
         });
         /**
@@ -201,10 +203,10 @@ TabularTables["GroupMembers"] = new Tabular.Table({
                 $in: [userId]
             }
         }, {
-          sort:
-          {
-            "_id": 1
-          }
+            sort:
+            {
+                "_id": 1
+            }
         });
         /**
          * Wir wandeln den Cursor in einen Array von Group-Objekten um.
@@ -226,10 +228,10 @@ TabularTables["GroupMembers"] = new Tabular.Table({
                 $in: [userId]
             }
         }, {
-          sort:
-          {
-            "_id": 1
-          }
+            sort:
+            {
+                "_id": 1
+            }
         });
         /**
          * Wir wandeln den Cursor in einen Array von Group-Objekten um.
@@ -265,47 +267,47 @@ TabularTables["Assignments"] = new Tabular.Table({
         data: "name",
         title: "Name"
     },
-        {
-            data: "start",
-            title: "Termin",
-            render: function (val, type, doc) {
-                if (val instanceof Date) {
-                    return moment(val).format("L LT");
-                } else {
-                    return "";
-                }
-            },
-        },
-        {
-            data: "applicants.length",
-            title: "Bew.",
-            orderable: false
-        },
-        {
-            data: "participants.length",
-            title: "Teiln.",
-            orderable: false
-        },
-
-        {
-            data: "state",
-            title: "Zustand",
-            orderable: false,
-            render: function (val, type, doc) {
-                if (val == "Hidden") {
-                    return "Versteckt";
-                } else {
-                    return val;
-                }
+    {
+        data: "start",
+        title: "Termin",
+        render: function (val, type, doc) {
+            if (val instanceof Date) {
+                return moment(val).format("L LT");
+            } else {
+                return "";
             }
-
         },
-        {
-            tmpl: Meteor.isClient && Template["assignmentOptions"]
+    },
+    {
+        data: "applicants.length",
+        title: "Bew.",
+        orderable: false
+    },
+    {
+        data: "participants.length",
+        title: "Teiln.",
+        orderable: false
+    },
+
+    {
+        data: "state",
+        title: "Zustand",
+        orderable: false,
+        render: function (val, type, doc) {
+            if (val == "Hidden") {
+                return "Versteckt";
+            } else {
+                return val;
+            }
         }
+
+    },
+    {
+        tmpl: Meteor.isClient && Template["assignmentOptions"]
+    }
     ],
     "order": [[1, 'desc']], // Nach Start-Datum sortieren
-    extraFields: ['end',"pickup_point","return_point","note","userGoal","contacts"],
+    extraFields: ['end', "pickup_point", "return_point", "note", "userGoal", "contacts"],
     allow: function (userId) {
         // Wir holen uns einen Cursor auf alle Group-Objekte, in denen wir als Coordinator eingetragen sind
         var coordinatingGroupsCursor = Groups.find({
@@ -313,10 +315,10 @@ TabularTables["Assignments"] = new Tabular.Table({
                 $in: [userId]
             }
         }, {
-          sort:
-          {
-            "_id": 1
-          }
+            sort:
+            {
+                "_id": 1
+            }
         });
         /**
          * Wir wandeln den Cursor in einen Array von Group-Objekten um.
@@ -338,10 +340,10 @@ TabularTables["Assignments"] = new Tabular.Table({
                 $in: [userId]
             }
         }, {
-          sort:
-          {
-            "_id": 1
-          }
+            sort:
+            {
+                "_id": 1
+            }
         });
         /**
          * Wir wandeln den Cursor in einen Array von Group-Objekten um.
@@ -370,11 +372,12 @@ TabularTables["Assignments"] = new Tabular.Table({
         };
     },
     "autoWidth": false,
-    createdRow: function( row, data, dataIndex ) {
-      var id = ManageAssignments.getSelectedAssignmentId(FlowRouter.getParam("groupId"));
+    createdRow: function (row, data, dataIndex) {
+        // @ts-ignore
+        var id = ManageAssignments.getSelectedAssignmentId(FlowRouter.getParam("groupId"));
 
-      if(id == data._id) {
-        $(row).addClass( 'active' );
-      }
+        if (id == data._id) {
+            $(row).addClass('active');
+        }
     }
 });

@@ -11,6 +11,7 @@ import { Roles } from "meteor/alanning:roles";
 import { subsCache } from "../../client/lib/subscription-cache";
 
 import * as MainLayout from "../../client/templates/MainLayout";
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 
 export namespace Routes {
 

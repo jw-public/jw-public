@@ -7,6 +7,7 @@ import { Meteor } from "meteor/meteor";
 
 import { WeekBlueprintSchema, Blueprints } from "../../../collections/lib/BlueprintCollection"
 import { WeekBlueprint } from "../../../imports/blueprint/interfaces/WeekBlueprint";
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 
 
 

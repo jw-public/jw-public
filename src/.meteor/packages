@@ -10,9 +10,8 @@ alanning:roles
 ecmascript@0.16.1
 pfafman:font-awesome-4
 reactive-var@1.0.11
-kadira:flow-router
+ostrio:flow-router-extra
 kadira:blaze-layout
-arillo:flow-router-helpers
 mrt:gsap
 mrt:bootstrap-alerts
 ongoworks:security

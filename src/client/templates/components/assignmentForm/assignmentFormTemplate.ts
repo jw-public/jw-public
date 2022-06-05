@@ -1,29 +1,30 @@
 
 
 import Assignment from "../../../../collections/lib/classes/Assignment";
-import {AssignmentState} from "../../../../collections/lib/classes/AssignmentState";
+import { AssignmentState } from "../../../../collections/lib/classes/AssignmentState";
 
 import * as AssignmentForm from "./AssignmentForm";
 
-import {Meteor} from "meteor/meteor";
-import {Template} from "meteor/templating";
-import {Session} from "meteor/session";
-import {Mongo} from "meteor/mongo";
-import {Blaze} from "meteor/blaze";
-import {ReactiveVar} from "meteor/reactive-var";
+import { Meteor } from "meteor/meteor";
+import { Template } from "meteor/templating";
+import { Session } from "meteor/session";
+import { Mongo } from "meteor/mongo";
+import { Blaze } from "meteor/blaze";
+import { ReactiveVar } from "meteor/reactive-var";
 
 import User from "../../../../collections/lib/classes/User";
 
 import Group from "../../../../collections/lib/classes/Group";
-import {Groups, GroupDAO} from "../../../../collections/lib/GroupCollection";
-import {Assignments, AssignmentDAO} from "../../../../collections/lib/AssignmentsCollection";
+import { Groups, GroupDAO } from "../../../../collections/lib/GroupCollection";
+import { Assignments, AssignmentDAO } from "../../../../collections/lib/AssignmentsCollection";
 
-import {AutoForm} from "meteor/aldeed:autoform";
+import { AutoForm } from "meteor/aldeed:autoform";
 
 import * as moment from "moment";
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 
 
-Template["assignmentForm"].onCreated(function() {
+Template["assignmentForm"].onCreated(function () {
 
     let instance = Template.instance();
 
@@ -39,7 +40,7 @@ Template["assignmentForm"].onCreated(function() {
 /**
  * ------------ onRendered() ------------
  */
-Template["assignmentForm"].onRendered(function() {
+Template["assignmentForm"].onRendered(function () {
 
     var instance = Template.instance();
 
@@ -57,7 +58,7 @@ Template["assignmentForm"].onRendered(function() {
 
     // Bei einer Änderung des Datums informieren wir Meteor, dass sich die Selektion geändert hat.
     // Hierbei wird mit dem Modul Tracker (https://atmospherejs.com/meteor/tracker) interagiert.
-    datepicker.on("dp.change", function(e) {
+    datepicker.on("dp.change", function (e) {
         console.log("Date hat sich geändert", e.date.calendar());
         AssignmentForm.dateSelectionDep.changed(); // Der Abhängigkeit bescheid geben, dass sich die Datums-Auswahl geändert hat.
     });
@@ -78,7 +79,7 @@ Template["assignmentForm"].onRendered(function() {
 });
 
 Template["assignmentForm"].events({
-    'click button.increase': function(e: Event, template: Blaze.TemplateInstance) {
+    'click button.increase': function (e: Event, template: Blaze.TemplateInstance) {
         e.preventDefault();
         var increaseBy: number = Number($(e.target).data("increase-by"));
         AssignmentForm.increaseDurationBy(increaseBy);
@@ -132,9 +133,9 @@ Template["assignmentForm"].helpers({
             label: "Nein",
             value: "Online"
         }, {
-                label: "Ja",
-                value: "Closed"
-            }];
+            label: "Ja",
+            value: "Closed"
+        }];
     },
     contactOptions(): Array<Object> {
 
@@ -152,7 +153,7 @@ Template["assignmentForm"].helpers({
             _id: {
                 $in: group.getCoordinatorIds(),
             }
-        }, {fields: { "profile.first_name": 1, "profile.last_name": 1 }}).map(function(c: Meteor.User) {
+        }, { fields: { "profile.first_name": 1, "profile.last_name": 1 } }).map(function (c: Meteor.User) {
             return {
                 label: User.createFromDAO(c).fullName,
                 value: c._id
@@ -160,11 +161,11 @@ Template["assignmentForm"].helpers({
         });
     },
     isCanceled(): boolean {
-      let data = <AssignmentForm.TemplateOptions>Template.currentData();
-      return data.doc != null && AssignmentState[data.doc.state] == AssignmentState.Canceled;
+        let data = <AssignmentForm.TemplateOptions>Template.currentData();
+        return data.doc != null && AssignmentState[data.doc.state] == AssignmentState.Canceled;
     },
     assignmentsCollection() {
-      return Assignments;
+        return Assignments;
     }
 
 
@@ -177,7 +178,7 @@ Template["assignmentForm"].helpers({
  */
 AutoForm.hooks<AssignmentDAO>({
     "assignmentForm": { // Die ID des Formulars
-        docToForm: function(doc: AssignmentDAO, ss: SimpleSchema): Object {
+        docToForm: function (doc: AssignmentDAO, ss: SimpleSchema): Object {
             AssignmentForm.setSelectedStartDate(moment(doc.start));
             AssignmentForm.setSelectedEndDate(moment(doc.start), moment(doc.end));
 
