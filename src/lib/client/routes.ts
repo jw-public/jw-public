@@ -18,7 +18,8 @@ export namespace Routes {
   export const ParamNames = {
     GroupId: "groupId",
     YearMonth: "yearMonth",
-    AssignmentId: "assignmentId"
+    AssignmentId: "assignmentId",
+    Token: "token"
   }
 
   export class Def {
@@ -41,7 +42,7 @@ export namespace Routes {
     static GroupMembers = new Def("groupMembers", "/group/:" + ParamNames.GroupId + "/mitglieder");
     static InfoSite = new Def("infoSite", "/info");
     static BlueprintManagement = new Def("manage-blueprints", "/group/:" + ParamNames.GroupId + "/manage-blueprints");
-
+    static ResetPassword = new Def("resetPassword", "/reset-password/:" + ParamNames.Token);
   }
 
 
@@ -353,5 +354,19 @@ Routes.route(Routes.Def.InfoSite, {
   // do some action for this route
   action: function (params, queryParams) {
     BlazeLayout.render<MainLayout.Context>("MainLayout", { main: "infoSite" });
+  }
+});
+
+Routes.route(Routes.Def.ResetPassword, {
+  // an array of triggersEnter
+  triggersEnter: [],
+
+  // define your subscriptions
+  subscriptions: function (params, queryParams) {
+  },
+
+  // do some action for this route
+  action: function (params, queryParams) {
+    BlazeLayout.render("ParallaxScreen", { main: "resetPassword" });
   }
 });

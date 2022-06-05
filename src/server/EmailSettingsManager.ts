@@ -10,9 +10,9 @@ export function initEmailSettings() {
     Accounts.emailTemplates.from = `no-reply@${process.env.VIRTUAL_HOST}`;
     Accounts.emailTemplates.siteName = "Public Assistant";
 
-    (<any>Accounts).urls.resetPassword = function(token) {
-      return `${process.env.ROOT_URL}/#/reset-password/${token}`;
-    };
+  (<any>Accounts).urls.resetPassword = function (token) {
+    return `${process.env.ROOT_URL}/reset-password/${token}`;
+  };
 
     let resetPasswordTemplate: Meteor.EmailFields = {
       subject(user: UserCollection.UserDAO) {
