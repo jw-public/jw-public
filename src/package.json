@@ -48,7 +48,7 @@
     "react-dom": "^15.7.0",
     "react-mixin": "^5.0.0",
     "reflect-metadata": "^0.1.8",
-    "remove-markdown": "^0.3.0",
+    "remove-markdown": "^0.5.0",
     "smart-mixin": "^2.0.0",
     "typedoc": "^0.22.0",
     "typescript": "^2.3.4",
