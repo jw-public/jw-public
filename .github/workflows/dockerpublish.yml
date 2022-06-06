@@ -38,7 +38,7 @@ jobs:
             ${{ runner.os }}-meteor-
       - uses: meteorengineer/setup-meteor@v1
         with:
-          meteor-release: "2.6.1" # TODO: automate with Renovate
+          meteor-release: "2.7.3" # TODO: automate with Renovate
       - run: cd src && meteor npm install
       - run: cd src && meteor npm run compile
       - run: cd src && meteor npm test
@@ -89,7 +89,7 @@ jobs:
             ${{ runner.os }}-meteor-
       - uses: meteorengineer/setup-meteor@v1
         with:
-          meteor-release: "2.6.1" # TODO: automate with Renovate
+          meteor-release: "2.7.3" # TODO: automate with Renovate
       - run: cd src && meteor npm install
       - run: cd src && meteor npm run compile
       - run: cd src && meteor build --allow-superuser ./build
@@ -117,7 +117,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: meteorengineer/setup-meteor@v1
         with:
-          meteor-release: "2.6.1" # TODO: automate with Renovate
+          meteor-release: "2.7.3" # TODO: automate with Renovate
       - uses: actions/cache@v2
         with:
           path: ~/.npm
