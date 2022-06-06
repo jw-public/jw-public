@@ -1,4 +1,4 @@
-FROM alpine:20210804 as prepare
+FROM alpine:20220328 as prepare
 COPY src/build/src.tar.gz /bundle/meteor.tar.gz
 WORKDIR /tmp
 RUN tar xvf /bundle/meteor.tar.gz
