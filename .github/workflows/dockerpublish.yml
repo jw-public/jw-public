@@ -53,13 +53,13 @@ jobs:
           wait-on: "http://localhost:3000"
           wait-on-timeout: 600 # 10 minutes
           record: true
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: failure()
         with:
           name: cypress-screenshots
           path: src/cypress/screenshots
       # Test run video was always captured, so this action uses "always()" condition
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: always()
         with:
           name: cypress-videos
@@ -93,7 +93,7 @@ jobs:
       - run: cd src && meteor npm install
       - run: cd src && meteor npm run compile
       - run: cd src && meteor build --allow-superuser ./build
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: always()
         with:
           name: build_package
