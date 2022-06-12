@@ -24,13 +24,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: src/.meteor/local
           key: ${{ runner.os }}-node-${{ hashFiles('src/.meteor/versions') }}
@@ -75,13 +75,13 @@ jobs:
         uses: reviewdog/action-hadolint@v1
         with:
           filter_mode: file
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: src/.meteor/local
           key: ${{ runner.os }}-node-${{ hashFiles('src/.meteor/versions') }}
@@ -118,7 +118,7 @@ jobs:
       - uses: meteorengineer/setup-meteor@v1
         with:
           meteor-release: "2.7.3" # TODO: automate with Renovate
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -133,7 +133,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: src/.meteor/local
           key: ${{ runner.os }}-node-${{ hashFiles('src/.meteor/versions') }}
