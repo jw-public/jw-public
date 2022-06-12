@@ -17,6 +17,24 @@ Template["assignmentManager"].helpers({
     let participantIds = AssignmentManager.getParticipantsArray(Template.instance()).list();
     return participantIds.length > 0;
   },
+  disabledIfNotValid(): string {
+    let participantIds = AssignmentManager.getParticipantsArray(Template.instance()).list();
+    let valid = participantIds.length > 0
+    if (valid) {
+      return "";
+    } else {
+      return "disabled";
+    }
+  },
+  tooltipCloseButton(): string {
+    let participantIds = AssignmentManager.getParticipantsArray(Template.instance()).list();
+    let valid = participantIds.length > 0
+    if (valid) {
+      return "Termin abschließen und Teilnehmer bestätigen";
+    } else {
+      return "Bitte zuerst Teilnehmer auswählen";
+    }
+  },
   participantEntries(): Array<AssignmentManager.UserItem> {
     let context = (<any>this) as AssignmentManager.TemplateOptions;
     let assignment = new Assignment(context.assignmentId);

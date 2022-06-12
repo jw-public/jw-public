@@ -52,8 +52,13 @@
     </div>
 
     <div class="col-md-12">
-      <button class="btn btn-primary close-application">
-        <i class="fa fa-lock"></i> Termin abschließen
+      <button
+        {{ disabledIfNotValid }}
+        class="btn btn-primary close-application"
+        title="{{ tooltipCloseButton }}"
+        >
+        <i class="fa fa-lock"></i>
+         Termin abschließen
       </button>
       {{#if onCancelIsDefined}}
       <button class="btn btn-default cancel">
@@ -61,9 +66,6 @@
       </button>
       {{/if}}
     </div>
-
-
-
   </div>
 </template>
 
