@@ -1,13 +1,8 @@
+import { Blaze } from "meteor/blaze";
+import { Template } from "meteor/templating";
 import * as _ from "underscore";
-import {Meteor} from "meteor/meteor";
-import {Template} from "meteor/templating";
-import {Session} from "meteor/session";
-import {Mongo} from "meteor/mongo";
-import {Blaze} from "meteor/blaze";
-import {ReactiveVar} from "meteor/reactive-var";
 
 import Assignment from "../../../../collections/lib/classes/Assignment";
-import {AssignmentState} from "../../../../collections/lib/classes/AssignmentState";
 
 import * as ServerMethodsWrapper from "../../../../lib/classes/ServerMethodsWrapper";
 
@@ -53,11 +48,11 @@ export function init() {
   participantsArray.clear();
 
   // Reaktive Arrays neu befüllen
-  _.forEach(assignment.getApplicantIds(), function(applicantId) {
+  _.forEach(assignment.getApplicantIds(), function (applicantId) {
     applicantsArray.push(applicantId);
   });
 
-  _.forEach(assignment.getParticipantIds(), function(participantId) {
+  _.forEach(assignment.getParticipantIds(), function (participantId) {
     participantsArray.push(participantId);
   });
 }
@@ -151,7 +146,7 @@ export function closeAndSubmitAssignment(templateInstance: Blaze.TemplateInstanc
 
   let participantsArray = getParticipantsArray(templateInstance).array();
 
-  assignmentProxy.close(participantsArray, function(error) {
+  assignmentProxy.close(participantsArray, function (error) {
     if (error) {
       console.error(error);
       alert(error);

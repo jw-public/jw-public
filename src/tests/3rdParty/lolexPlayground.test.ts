@@ -1,6 +1,6 @@
-import * as moment from 'moment';
-import { expect, assert } from "chai";
+import { assert } from "chai";
 import * as lolex from 'lolex';
+import * as moment from 'moment';
 
 
 

@@ -1,17 +1,15 @@
-import * as _ from "underscore";
-import {Meteor} from "meteor/meteor";
-import {Template} from "meteor/templating";
-import {Session} from "meteor/session";
-import {Mongo} from "meteor/mongo";
-import {Blaze} from "meteor/blaze";
+import { Blaze } from "meteor/blaze";
+import { Meteor } from "meteor/meteor";
+import { Template } from "meteor/templating";
 import * as moment from "moment";
+import * as _ from "underscore";
 
 import User from "../../../collections/lib/classes/User";
 
 import * as UserNotification from "../../../collections/lib/classes/UserNotification";
 
-import {Helper} from "../../../lib/HelperDecorator";
-import {TemplateDefinition} from "../../../lib/TemplateDefinitionDecorator";
+import { Helper } from "../../../lib/HelperDecorator";
+import { TemplateDefinition } from "../../../lib/TemplateDefinitionDecorator";
 
 module NotificationDropdown {
   export interface ItemTemplateOptions {
@@ -24,19 +22,19 @@ module NotificationDropdown {
 
 let instance = Template.instance();
 
-Template["notificationsDropdown"].onCreated(function() {
+Template["notificationsDropdown"].onCreated(function () {
 
   let instance = Template.instance();
 
-  instance.autorun(function() {
+  instance.autorun(function () {
     instance.subscribe("notifications");
   });
 
 });
 
-Template["notificationsDropdown"].onRendered(function() {
+Template["notificationsDropdown"].onRendered(function () {
 
-  $('#notificationsDropdown').on('hidden.bs.dropdown', function() {
+  $('#notificationsDropdown').on('hidden.bs.dropdown', function () {
     let user = new User(Meteor.userId());
     user.notificationManager.markAllNotificationsAsSeen();
   });
@@ -48,7 +46,7 @@ Template["notificationsDropdown"].onRendered(function() {
 Template["notificationsDropdown"].helpers({
 
   /** Alle Notification Objekte */
-  notificationItems: function(): Array<NotificationDropdown.ItemTemplateOptions> {
+  notificationItems: function (): Array<NotificationDropdown.ItemTemplateOptions> {
     let instance = Template.instance();
 
     if (!instance.subscriptionsReady()) {
@@ -62,7 +60,7 @@ Template["notificationsDropdown"].helpers({
 
     // Umbauen zu Items
     let isFirstEntry = true;
-    _.forEach(notifications, function(notification) {
+    _.forEach(notifications, function (notification) {
       items.push({
         divider: !isFirstEntry,
         notification: UserNotification.wrap(notification)
@@ -122,14 +120,14 @@ class ItemContentData {
   }
 
   private static getNotificationDAO(): UserNotification.NotificationDAO {
-    return (<NotificationDropdown.ItemTemplateOptions> Template.instance().data).notification.data;
+    return (<NotificationDropdown.ItemTemplateOptions>Template.instance().data).notification.data;
   }
 }
 
 
 
 Template["notificationsDropdown"].events({
-  'click #removeAll': function(e: Event, template: Blaze.TemplateInstance) {
+  'click #removeAll': function (e: Event, template: Blaze.TemplateInstance) {
     e.preventDefault();
     let user = new User(Meteor.userId());
 

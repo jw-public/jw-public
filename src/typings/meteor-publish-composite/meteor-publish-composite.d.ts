@@ -3,13 +3,13 @@
 // Definitions by: Robert Van Gorkom <https://github.com/vangorra>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 declare module "meteor/meteor" {
-  import {Mongo} from "meteor/mongo";
+  import { Mongo } from "meteor/mongo";
   export module Meteor {
     interface PublishCompositeConfigN {
       children?: PublishCompositeConfigN[];
       find(
         ...args: any[]
-        ): Mongo.Cursor<any>;
+      ): Mongo.Cursor<any>;
     }
 
     interface PublishCompositeConfig4<InLevel1, InLevel2, InLevel3, InLevel4, OutLevel> {
@@ -19,7 +19,7 @@ declare module "meteor/meteor" {
         arg3: InLevel3,
         arg2: InLevel2,
         arg1: InLevel1
-        ): Mongo.Cursor<OutLevel>;
+      ): Mongo.Cursor<OutLevel>;
     }
 
     interface PublishCompositeConfig3<InLevel1, InLevel2, InLevel3, OutLevel> {
@@ -28,7 +28,7 @@ declare module "meteor/meteor" {
         arg3: InLevel3,
         arg2: InLevel2,
         arg1: InLevel1
-        ): Mongo.Cursor<OutLevel>;
+      ): Mongo.Cursor<OutLevel>;
     }
 
     interface PublishCompositeConfig2<InLevel1, InLevel2, OutLevel> {
@@ -36,14 +36,14 @@ declare module "meteor/meteor" {
       find(
         arg2: InLevel2,
         arg1: InLevel1
-        ): Mongo.Cursor<OutLevel>;
+      ): Mongo.Cursor<OutLevel>;
     }
 
     interface PublishCompositeConfig1<InLevel1, OutLevel> {
       children?: PublishCompositeConfig2<InLevel1, OutLevel, any>[];
       find(
         arg1: InLevel1
-        ): Mongo.Cursor<OutLevel>;
+      ): Mongo.Cursor<OutLevel>;
     }
 
     interface PublishCompositeConfig<OutLevel> {
@@ -54,13 +54,13 @@ declare module "meteor/meteor" {
 
     export function publishComposite(
       name: string,
-      config: PublishCompositeConfig<any>|PublishCompositeConfig<any>[]
-      ): void;
+      config: PublishCompositeConfig<any> | PublishCompositeConfig<any>[]
+    ): void;
 
     export function publishComposite(
       name: string,
       configFunc: (...args: any[]) =>
-      PublishCompositeConfig<any>|PublishCompositeConfig<any>[]
-      ): void;
+        PublishCompositeConfig<any> | PublishCompositeConfig<any>[]
+    ): void;
   }
 }

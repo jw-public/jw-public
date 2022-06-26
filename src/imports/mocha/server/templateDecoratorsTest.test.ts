@@ -1,6 +1,5 @@
-import {Helper} from "../../../lib/HelperDecorator";
-import {TemplateDefinition} from "../../../lib/TemplateDefinitionDecorator";
-import {EventHandler} from "../../../lib/EventHandlerDecorator";
+import { Helper } from "../../../lib/HelperDecorator";
+import { TemplateDefinition } from "../../../lib/TemplateDefinitionDecorator";
 
 declare var MochaWeb: any;
 
@@ -19,8 +18,8 @@ class TestTemplate {
 
 
 
-describe("TemplateDecoratorTester - Server-Side", function() {
-  it("is able to compile on server side", function() {
+describe("TemplateDecoratorTester - Server-Side", function () {
+  it("is able to compile on server side", function () {
     chai.assert.equal(TestTemplate.testHelper(), "TestOutput");
   });
 });

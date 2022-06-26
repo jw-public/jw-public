@@ -1,13 +1,13 @@
 import * as _ from "underscore";
 
-import {Meteor} from "meteor/meteor";
-import {Session} from "meteor/session";
+import { Meteor } from "meteor/meteor";
+import { Session } from "meteor/session";
 
-import {Assignments, AssignmentDAO} from "../../../../../../collections/lib/AssignmentsCollection";
+import { AssignmentDAO } from "../../../../../../collections/lib/AssignmentsCollection";
 
 import * as ServerMethodsWrapper from "../../../../../../lib/classes/ServerMethodsWrapper";
+import { Routes } from "../../../../../../lib/client/routes";
 import * as ResponsiveHelper from "../../../../../lib/plugins/responsive-toolkit/ResponsiveHelper";
-import {Routes} from "../../../../../../lib/client/routes";
 
 export default class AssignmentInteraction {
 
@@ -47,7 +47,7 @@ export default class AssignmentInteraction {
   }
 
   public applyWithConfirmation() {
-    if (this.isMobileScreen() ) {
+    if (this.isMobileScreen()) {
       this.confirmAndApplyOnYes();
     } else {
       this.apply();
@@ -80,7 +80,7 @@ export default class AssignmentInteraction {
   }
 
   public goToAssignment(): void {
-    Routes.go(Routes.Def.AssignmentSingleView, {assignmentId: this.assignmentId} );
+    Routes.go(Routes.Def.AssignmentSingleView, { assignmentId: this.assignmentId });
   }
 
 }

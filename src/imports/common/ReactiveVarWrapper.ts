@@ -1,5 +1,5 @@
-import { Session } from "meteor/session";
 import { ReactiveVar } from "meteor/reactive-var";
+import { Session } from "meteor/session";
 
 export interface ReactiveVarWrapperOptions<T> {
     nameOfSessionVar: string;

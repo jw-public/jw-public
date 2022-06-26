@@ -1,18 +1,15 @@
-import * as _ from "underscore";
-import { Meteor } from "meteor/meteor";
-import { Template } from "meteor/templating";
-import { Session } from "meteor/session";
-import { Mongo } from "meteor/mongo";
 import { Blaze } from "meteor/blaze";
+import { Meteor } from "meteor/meteor";
 import { ReactiveVar } from "meteor/reactive-var";
+import { Template } from "meteor/templating";
+import * as _ from "underscore";
 
 import Assignment from "../../collections/lib/classes/Assignment";
 import AssignmentCountAccessor from "../../collections/lib/classes/AssignmentCountAccessor";
 import User from "../../collections/lib/classes/User";
 import * as UserCollection from "../../collections/lib/UserCollection";
 
-import Group from "../../collections/lib/classes/Group";
-import { GroupApplicationController } from "../../collections/lib/classes/Group";
+import Group, { GroupApplicationController } from "../../collections/lib/classes/Group";
 import { Groups } from "../../collections/lib/GroupCollection";
 
 import { Helper } from "../../lib/HelperDecorator";
@@ -20,8 +17,8 @@ import { TemplateDefinition } from "../../lib/TemplateDefinitionDecorator";
 
 import { getUserDataSubscription } from "../../subscribe";
 
-import * as moment from "moment";
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
+import * as moment from "moment";
 
 
 interface DashboardPanel {

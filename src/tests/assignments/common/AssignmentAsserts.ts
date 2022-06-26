@@ -1,6 +1,6 @@
-import {UserEntry, AssignmentDAO} from "../../../collections/lib/AssignmentsCollection";
-import {assert} from "chai";
+import { assert } from "chai";
 import * as _ from "underscore";
+import { AssignmentDAO, UserEntry } from "../../../collections/lib/AssignmentsCollection";
 
 
 
@@ -32,5 +32,5 @@ function containsUserEntry(userEntryArray: Array<UserEntry>, userId: string): bo
 }
 
 function assertContainsUserEntry(userEntryArray: Array<UserEntry>, userId: string, message?: string): void {
-  return assert.isTrue(containsUserEntry(userEntryArray, userId), `${message}\nThe user ${userId} is not part of ${JSON.stringify(userEntryArray) }.`);
+  return assert.isTrue(containsUserEntry(userEntryArray, userId), `${message}\nThe user ${userId} is not part of ${JSON.stringify(userEntryArray)}.`);
 }

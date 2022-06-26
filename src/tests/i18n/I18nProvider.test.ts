@@ -1,6 +1,5 @@
-import { I18nProvider, Locale } from '../../imports/i18n/classes/I18nProvider';
-import * as moment from 'moment';
-import { expect, assert } from "chai";
+import { assert } from "chai";
+import { I18nProvider } from '../../imports/i18n/classes/I18nProvider';
 
 
 describe("I18nProvider", function () {

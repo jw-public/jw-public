@@ -1,3 +1,5 @@
+import { assert } from 'chai';
+import * as TypeMoq from 'typemoq';
 import { AssignmentEventType } from '../../imports/assignments/interfaces/AssignmentEventType';
 import { AssignmentServiceTypes } from '../../server/assignments/AssignmentServiceTypes';
 import { IAssignmentEmailNotifier } from '../../server/assignments/interfaces/IAssignmentEmailNotifier';
@@ -5,8 +7,6 @@ import { UserMailer } from '../../server/mailing/classes/UserMailer';
 import { IUserMailer, IUserMailerOptions } from '../../server/mailing/interfaces/IUserMailer';
 import { MailingTypes } from '../../server/mailing/MailingTypes';
 import { TestCase } from '../common/TestCase';
-import { assert } from 'chai';
-import * as TypeMoq from 'typemoq';
 
 
 describe("AssignmentEmailNotifier", function () {

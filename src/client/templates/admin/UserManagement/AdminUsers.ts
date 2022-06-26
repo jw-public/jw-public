@@ -5,20 +5,20 @@
  * von Benutzern im System durch den Admin ermöglicht.
  ************************************************************/
 
- import {Meteor} from "meteor/meteor";
- import {Template} from "meteor/templating";
- import {Session} from "meteor/session";
- import {Groups, GroupDAO} from "../../../../collections/lib/GroupCollection";
- import {AutoForm} from "meteor/aldeed:autoform";
- import * as ServerMethodsWrapper from "../../../../lib/classes/ServerMethodsWrapper";
+import { AutoForm } from "meteor/aldeed:autoform";
+import { Meteor } from "meteor/meteor";
+import { Session } from "meteor/session";
+import { Template } from "meteor/templating";
+import { Groups } from "../../../../collections/lib/GroupCollection";
+import * as ServerMethodsWrapper from "../../../../lib/classes/ServerMethodsWrapper";
 
 
- Template["adminUsers"].onCreated(function () {
-     let instance = Template.instance();
+Template["adminUsers"].onCreated(function () {
+    let instance = Template.instance();
 
-     instance.subscribe("coordinatingGroups");
-     instance.subscribe("roles");
- });
+    instance.subscribe("coordinatingGroups");
+    instance.subscribe("roles");
+});
 
 Template["adminUsers"].helpers({
     users: function () {
@@ -35,12 +35,12 @@ Template["adminUsers"].helpers({
     },
     genderOption: function () {
         return [{
-                label: "Bruder",
-                value: "Male"
-            }, {
-                label: "Schwester",
-                value: "Female"
-            }];
+            label: "Bruder",
+            value: "Male"
+        }, {
+            label: "Schwester",
+            value: "Female"
+        }];
     },
     groupsOptions: function () {
         return Groups.find({}, {}).map(function (c) {
@@ -64,7 +64,7 @@ Template["adminUsers"].onRendered(function () {
 });
 Template["adminUsers"].events({
     'click .cancel-update': function () {
-      var panel = $(".edit-user-panel"); // Das Panel
+        var panel = $(".edit-user-panel"); // Das Panel
         //$(".edit-user-panel").hide();
         panel.hide('slide', {
             direction: 'right',
@@ -123,19 +123,19 @@ Template["userOptions"].events({
         var userId = this._id; // Die ID des zu bearbeitenden Users
 
         bootbox.confirm({
-          message: "Den User wirklich löschen?",
-          callback(result: boolean) {
-            if (!result) {
-              return;
+            message: "Den User wirklich löschen?",
+            callback(result: boolean) {
+                if (!result) {
+                    return;
+                }
+                var proxy = new ServerMethodsWrapper.AdminUserProxy(userId);
+                proxy.removeUser(function (error) {
+                    if (error) {
+                        console.error("Was trying to remove an user: ", error);
+                        alert("Fehler: " + error.toString());
+                    }
+                });
             }
-            var proxy = new ServerMethodsWrapper.AdminUserProxy(userId);
-            proxy.removeUser(function(error) {
-              if (error) {
-                console.error("Was trying to remove an user: ", error);
-                alert("Fehler: " + error.toString());
-              }
-            });
-          }
         });
     }
 });

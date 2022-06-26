@@ -22,9 +22,8 @@ declare module "meteor/check" {
 }
 
 declare module "meteor/meteor" {
-	import { Mongo } from "meteor/mongo";
 	import { Blaze } from "meteor/blaze";
-	import { EJSON } from "meteor/ejson";
+	import { Mongo } from "meteor/mongo";
 
 	export module Meteor {
 		/** Global props **/
@@ -253,7 +252,7 @@ declare module "meteor/ddp-common" {
 
 
 declare module "meteor/mongo" {
-	import { Meteor, Subscription } from "meteor/meteor";
+	import { Meteor } from "meteor/meteor";
 
 	export module Mongo {
 		interface Selector {
@@ -728,7 +727,6 @@ declare module "meteor/tracker" {
 }
 
 declare module "meteor/session" {
-	import { EJSON } from "meteor/ejson";
 
 	export module Session {
 		function equals(key: string, value: string | number | boolean | any): boolean;
@@ -787,7 +785,6 @@ declare module "meteor/reactive-var" {
 
 declare module "meteor/templating" {
 	import { Blaze } from "meteor/blaze";
-	import { Meteor } from "meteor/meteor";
 
 	//export var Template: Map<string, TemplateStatic>;
 	class Template extends Blaze.Template {

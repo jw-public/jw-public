@@ -1,5 +1,5 @@
-import {IAssignmentNotifierOptions} from "./IAssignmentNotifier";
-import {AssignmentDAO} from "../../../collections/lib/AssignmentsCollection";
+import { AssignmentDAO } from "../../../collections/lib/AssignmentsCollection";
+import { IAssignmentNotifierOptions } from "./IAssignmentNotifier";
 
 export interface IAssignmentMultiNotifierOptions extends IAssignmentNotifierOptions {
   assignment: AssignmentDAO

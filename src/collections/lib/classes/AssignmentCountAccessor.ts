@@ -1,12 +1,10 @@
-import {Meteor} from "meteor/meteor";
-import {Template} from "meteor/templating";
-import {Session} from "meteor/session";
-import {Mongo} from "meteor/mongo";
-import {Blaze} from "meteor/blaze";
+import { Blaze } from "meteor/blaze";
+import { Meteor } from "meteor/meteor";
+import { Mongo } from "meteor/mongo";
 
-import {AssignmentDAO, Assignments} from "../AssignmentsCollection";
+import { AssignmentDAO, Assignments } from "../AssignmentsCollection";
 
-import {Counts} from "meteor/tmeasday:publish-counts";
+import { Counts } from "meteor/tmeasday:publish-counts";
 
 import * as moment from "moment";
 
@@ -41,7 +39,7 @@ export default class AssignmentCountAccessor {
 
   public getAssignmentsCursor(): Mongo.Cursor<AssignmentDAO> {
     return Assignments.find(this.getAvailableAssignmentsSelector(), {
-      fields: { _id: 1}
+      fields: { _id: 1 }
     });
   }
 

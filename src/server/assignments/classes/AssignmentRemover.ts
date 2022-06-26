@@ -1,21 +1,21 @@
-import {AssignmentEventType} from "../../../imports/assignments/interfaces/AssignmentEventType";
-import {SimpleCollection} from "../../../imports/interfaces/SimpleCollection";
-import {Types} from "../../Types";
-import {AssignmentServiceTypes} from "../AssignmentServiceTypes";
+import { AssignmentEventType } from "../../../imports/assignments/interfaces/AssignmentEventType";
+import { SimpleCollection } from "../../../imports/interfaces/SimpleCollection";
+import { Types } from "../../Types";
+import { AssignmentServiceTypes } from "../AssignmentServiceTypes";
 
 
-import {IAssignmentRemover} from "../interfaces/IAssignmentRemover";
-import { injectable, inject, named } from "inversify";
-import {UserEntry, AssignmentDAO} from "../../../collections/lib/AssignmentsCollection";
-import {IAssignmentDaoNotifier} from "../interfaces/IAssignmentDaoNotifier";
+import { inject, injectable, named } from "inversify";
+import { AssignmentDAO } from "../../../collections/lib/AssignmentsCollection";
+import { IAssignmentDaoNotifier } from "../interfaces/IAssignmentDaoNotifier";
+import { IAssignmentRemover } from "../interfaces/IAssignmentRemover";
 
-import {AssignmentAction} from "./AssignmentAction";
+import { AssignmentAction } from "./AssignmentAction";
 
 @injectable()
 export class AssignmentRemover extends AssignmentAction implements IAssignmentRemover {
 
 
-    constructor( @inject(Types.Collection) @named("assignment") collection: SimpleCollection<AssignmentDAO>,
+    constructor(@inject(Types.Collection) @named("assignment") collection: SimpleCollection<AssignmentDAO>,
         @inject(AssignmentServiceTypes.IAssignmentDaoNotifier) private assignmentNotifier: IAssignmentDaoNotifier) {
         super(collection);
     }
@@ -25,8 +25,8 @@ export class AssignmentRemover extends AssignmentAction implements IAssignmentRe
 
         this.removeFromDatabase(assignment);
         this.assignmentNotifier.notifyUsersOfAssignment({
-          assignment,
-          eventType: AssignmentEventType.Removed
+            assignment,
+            eventType: AssignmentEventType.Removed
         });
     }
 

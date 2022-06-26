@@ -1,23 +1,22 @@
-import { ILocale } from '../../../imports/i18n/interfaces/ILocale';
-import { I18nProvider } from '../../../imports/i18n/classes/I18nProvider';
-import { II18nProvider } from '../../../imports/i18n/interfaces/II18nProvider';
+import { inject, injectable, named } from "inversify";
+import * as moment from 'moment';
+import { AssignmentDAO } from "../../../collections/lib/AssignmentsCollection";
+import { GroupDAO } from "../../../collections/lib/GroupCollection";
+import { UserDAO } from "../../../collections/lib/UserCollection";
 import { AssignmentEventType } from "../../../imports/assignments/interfaces/AssignmentEventType";
+import { II18nProvider } from '../../../imports/i18n/interfaces/II18nProvider';
+import { ILocale } from '../../../imports/i18n/interfaces/ILocale';
+import { SimpleCollection } from "../../../imports/interfaces/SimpleCollection";
+import { IUserMailer } from "../../mailing/interfaces/IUserMailer";
+import { MailingTypes } from "../../mailing/MailingTypes";
 import { Types } from "../../Types";
+import { IUserSettingsReaderFactory } from "../../user/interfaces/IUserSettingsReaderFactory";
 import { UserTypes } from "../../user/UserTypes";
 import { AssignmentServiceTypes } from "../AssignmentServiceTypes";
-import { MailingTypes } from "../../mailing/MailingTypes";
-import { IAssignmentSingleNotifierOptions } from "../interfaces/IAssignmentNotifier";
 import { IAssignmentDateParser } from "../interfaces/IAssignmentDateParser";
 import { IAssignmentEmailNotifier } from "../interfaces/IAssignmentEmailNotifier";
-import { IUserMailer } from "../../mailing/interfaces/IUserMailer";
-import { IUserSettingsReaderFactory } from "../../user/interfaces/IUserSettingsReaderFactory";
-import { injectable, inject, named } from "inversify";
-import { UserEntry, AssignmentDAO } from "../../../collections/lib/AssignmentsCollection";
-import { SimpleCollection } from "../../../imports/interfaces/SimpleCollection";
+import { IAssignmentSingleNotifierOptions } from "../interfaces/IAssignmentNotifier";
 import { AssignmentAction } from "./AssignmentAction";
-import { UserDAO } from "../../../collections/lib/UserCollection";
-import * as moment from 'moment';
-import { GroupDAO } from "../../../collections/lib/GroupCollection";
 
 @injectable()
 export class AssignmentEmailNotifier extends AssignmentAction implements IAssignmentEmailNotifier {
@@ -115,8 +114,8 @@ export class AssignmentEmailNotifier extends AssignmentAction implements IAssign
 
     let greeting = this.createGreeting(options, i18nProvider.getI18n());
     let footerMessage = emailLocale.footer.replyInformation.concat(replyToAddress);
-    if (replyToAddress == null ){
-        footerMessage = emailLocale.footer.noReplyInformation;
+    if (replyToAddress == null) {
+      footerMessage = emailLocale.footer.noReplyInformation;
     }
 
     let email = `${greeting},

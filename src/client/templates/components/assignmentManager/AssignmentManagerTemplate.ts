@@ -192,8 +192,6 @@ Template["assignmentManager"].events({
         }
       });
     }
-
-
   },
   "click .cancel": function (event: Event) {
     event.preventDefault();

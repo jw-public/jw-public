@@ -1,21 +1,20 @@
-import {AssignmentEventType} from "../../../imports/assignments/interfaces/AssignmentEventType";
-import {SimpleCollection} from "../../../imports/interfaces/SimpleCollection";
-import {Types} from "../../Types";
-import {AssignmentServiceTypes} from "../AssignmentServiceTypes";
-import {IAssignmentReenabler} from "../interfaces/IAssignmentReenabler";
-import {AssignmentAction} from "./AssignmentAction";
-import { injectable, inject, named } from "inversify";
-import {UserEntry, AssignmentDAO} from "../../../collections/lib/AssignmentsCollection";
-import {IAssignmentDaoNotifier} from "../interfaces/IAssignmentDaoNotifier";
-import {AssignmentState} from "../../../collections/lib/classes/AssignmentState";
+import { inject, injectable, named } from "inversify";
+import { AssignmentDAO } from "../../../collections/lib/AssignmentsCollection";
+import { AssignmentState } from "../../../collections/lib/classes/AssignmentState";
+import { AssignmentEventType } from "../../../imports/assignments/interfaces/AssignmentEventType";
+import { SimpleCollection } from "../../../imports/interfaces/SimpleCollection";
+import { Types } from "../../Types";
+import { AssignmentServiceTypes } from "../AssignmentServiceTypes";
+import { IAssignmentDaoNotifier } from "../interfaces/IAssignmentDaoNotifier";
+import { IAssignmentReenabler } from "../interfaces/IAssignmentReenabler";
+import { AssignmentAction } from "./AssignmentAction";
 
-import * as _ from "underscore";
 
 @injectable()
 export class AssignmentReenabler extends AssignmentAction implements IAssignmentReenabler {
 
 
-  constructor( @inject(Types.Collection) @named("assignment") collection: SimpleCollection<AssignmentDAO>,
+  constructor(@inject(Types.Collection) @named("assignment") collection: SimpleCollection<AssignmentDAO>,
     @inject(AssignmentServiceTypes.IAssignmentDaoNotifier) private assignmentNotifier: IAssignmentDaoNotifier) {
     super(collection);
   }
@@ -44,7 +43,7 @@ export class AssignmentReenabler extends AssignmentAction implements IAssignment
   private determineDesiredState(assignment: AssignmentDAO): AssignmentState {
     let state;
 
-    if(this.isValidState(assignment.stateBeforeLastClose)) {
+    if (this.isValidState(assignment.stateBeforeLastClose)) {
       state = AssignmentState[assignment.stateBeforeLastClose];
     } else {
       state = AssignmentState.Closed;

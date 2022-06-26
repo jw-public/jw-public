@@ -1,7 +1,7 @@
-import { Meteor } from "meteor/meteor";
-import { Template } from "meteor/templating";
-import { Session } from "meteor/session";
 import { Roles } from "meteor/alanning:roles";
+import { Meteor } from "meteor/meteor";
+import { Session } from "meteor/session";
+import { Template } from "meteor/templating";
 import ResizeSensor from "./lib/ResizeSensor";
 
 // Es folgt der Code, der Client-Seitig im Browser ausgeführt wird.
@@ -21,12 +21,12 @@ if (Meteor.isClient) {
 
 
 
-    Meteor.startup(function() {
+    Meteor.startup(function () {
         Session.set('signUpErrorMessage', false);
         Session.set('signUpSuccessMessage', false);
         Session.set('loginErrorMessage', false);
         new ResizeSensor();
-        $(window).bind("load resize", function() {
+        $(window).bind("load resize", function () {
             var height, topOffset, width;
             topOffset = 50;
             width = (this.window.innerWidth > 0 ? this.window.innerWidth : this.screen.width);

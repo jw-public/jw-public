@@ -1,7 +1,5 @@
-import { ManageBlueprintsComponent } from './ManageBlueprintsComponent';
 import { Template } from "meteor/templating";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import { ManageBlueprintsComponent } from './ManageBlueprintsComponent';
 
 
 Template["manageBlueprints"].helpers({

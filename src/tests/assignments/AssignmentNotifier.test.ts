@@ -1,3 +1,5 @@
+import { assert, expect } from 'chai';
+import * as TypeMoq from 'typemoq';
 import { AssignmentEventType } from '../../imports/assignments/interfaces/AssignmentEventType';
 import { AssignmentServiceTypes } from '../../server/assignments/AssignmentServiceTypes';
 import { AssignmentEmailNotifier } from '../../server/assignments/classes/AssignmentEmailNotifier';
@@ -7,8 +9,6 @@ import {
   IAssignmentSingleNotifierOptions
 } from '../../server/assignments/interfaces/IAssignmentNotifier';
 import { TestCase } from '../common/TestCase';
-import { assert, expect } from 'chai';
-import * as TypeMoq from 'typemoq';
 
 
 

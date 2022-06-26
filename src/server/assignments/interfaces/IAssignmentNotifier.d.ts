@@ -1,13 +1,13 @@
-import {AssignmentEventType} from "../../../imports/assignments/interfaces/AssignmentEventType";
+import { AssignmentEventType } from "../../../imports/assignments/interfaces/AssignmentEventType";
 
 export interface IAssignmentNotifierOptions {
-    eventType: AssignmentEventType,
-    reenablingReason?: string
+  eventType: AssignmentEventType,
+  reenablingReason?: string
 }
 
-export interface IAssignmentSingleNotifierOptions extends IAssignmentNotifierOptions{
-    userId: string,
-    assignmentId: string
+export interface IAssignmentSingleNotifierOptions extends IAssignmentNotifierOptions {
+  userId: string,
+  assignmentId: string
 }
 
 

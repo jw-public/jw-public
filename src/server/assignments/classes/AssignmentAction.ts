@@ -1,7 +1,7 @@
 require("../../Types");
 import { injectable } from 'inversify';
-import { SimpleCollection } from '../../../imports/interfaces/SimpleCollection';
 import { AssignmentDAO } from '../../../collections/lib/AssignmentsCollection';
+import { SimpleCollection } from '../../../imports/interfaces/SimpleCollection';
 
 
 

@@ -1,14 +1,12 @@
 import { Meteor } from "meteor/meteor";
 import { Template } from "meteor/templating";
-import { Session } from "meteor/session";
-import { Mongo } from "meteor/mongo";
 
 
 import User from "../../../collections/lib/classes/User";
-import { Groups, GroupDAO } from "../../../collections/lib/GroupCollection";
+import { GroupDAO, Groups } from "../../../collections/lib/GroupCollection";
 
-import * as ServerMethodsWrapper from "../../../lib/classes/ServerMethodsWrapper";
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
+import * as ServerMethodsWrapper from "../../../lib/classes/ServerMethodsWrapper";
 
 Template["manageApplicants"].helpers({
   selectForGroup: function (): any { // Zusätzlicher Selektor für die Tabelle, damit nur Bewerber für die spezielle Gruppe angezeigt werden.

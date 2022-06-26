@@ -1,19 +1,19 @@
 import * as _ from "underscore";
-import {AssignmentEventType} from "../../../imports/assignments/interfaces/AssignmentEventType";
+import { AssignmentEventType } from "../../../imports/assignments/interfaces/AssignmentEventType";
 import Group from "./Group";
 
+import { Roles } from "meteor/alanning:roles";
+import { Meteor } from "meteor/meteor";
+import { Mongo } from "meteor/mongo";
 import Assignment from "./Assignment";
-import {Meteor} from "meteor/meteor";
-import {Mongo} from "meteor/mongo";
-import {Roles} from "meteor/alanning:roles";
 
 import * as UserCollection from "../UserCollection";
 import * as UserNotification from "./UserNotification";
 
 
-import {Groups, GroupDAO} from "../GroupCollection";
-import {Notifications} from "../NotificationCollection";
-import {UserEntry, AssignmentDAO, Assignments} from "../AssignmentsCollection";
+import { Assignments } from "../AssignmentsCollection";
+import { GroupDAO, Groups } from "../GroupCollection";
+import { Notifications } from "../NotificationCollection";
 
 
 /**
@@ -33,8 +33,8 @@ export default class User {
       "$or": [{
         "username": username
       }, {
-          "emails.address": username
-        }]
+        "emails.address": username
+      }]
     }, { fields: { "_id": 1 } }).count();
     return userCount > 0;
   }
@@ -123,7 +123,7 @@ export default class User {
   }
 
   public getAssignmentsParticipatedCount(reactive?: boolean): number {
-    return Assignments.find({ "participants.user": this.id }, {reactive}).count();
+    return Assignments.find({ "participants.user": this.id }, { reactive }).count();
   }
 
   /**
@@ -252,7 +252,7 @@ export default class User {
 
     let pendingGroups: Array<Group> = new Array();
 
-    _.forEach(groupIds, function(groupId: string) {
+    _.forEach(groupIds, function (groupId: string) {
       pendingGroups.push(new Group(groupId));
     });
 
@@ -285,7 +285,7 @@ export default class User {
 
     let coordinatingGroups: Array<Group> = new Array();
 
-    _.forEach(groupDAOs, function(groupDAO) {
+    _.forEach(groupDAOs, function (groupDAO) {
       coordinatingGroups.push(Group.createFromDAO(groupDAO));
     });
 
@@ -352,7 +352,7 @@ class UserNotificationManager {
   public markAllNotificationsAsSeen(): void {
     let unread: Array<UserNotification.NotificationDAO> = this.getUnreadNotifications().fetch();
 
-    _.forEach(unread, function(notfification) {
+    _.forEach(unread, function (notfification) {
       Notifications.update({ "_id": notfification._id }, {
         $set: {
           "seen": true
@@ -365,7 +365,7 @@ class UserNotificationManager {
   public removeSeen(): void {
     let read: Array<UserNotification.NotificationDAO> = this.getReadNotifications().fetch();
 
-    _.forEach(read, function(notfification) {
+    _.forEach(read, function (notfification) {
       Notifications.remove({ "_id": notfification._id });
     });
   }
@@ -373,7 +373,7 @@ class UserNotificationManager {
   public removeAll(): void {
     let allNotifications: Array<UserNotification.NotificationDAO> = this.getAllNotifications().fetch();
 
-    _.forEach(allNotifications, function(notfification) {
+    _.forEach(allNotifications, function (notfification) {
       Notifications.remove({ "_id": notfification._id });
     });
   }

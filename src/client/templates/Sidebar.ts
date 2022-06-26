@@ -1,17 +1,15 @@
 import { Meteor } from "meteor/meteor";
-import { Template } from "meteor/templating";
-import { Session } from "meteor/session";
 import { Mongo } from "meteor/mongo";
-import { Accounts } from "meteor/accounts-base";
+import { Template } from "meteor/templating";
 
 import { GroupApplicationController } from "../../collections/lib/classes/Group";
-import { Groups, GroupDAO } from "../../collections/lib/GroupCollection";
+import { GroupDAO, Groups } from "../../collections/lib/GroupCollection";
 
 import { Helper } from "../../lib/HelperDecorator";
 import { TemplateDefinition } from "../../lib/TemplateDefinitionDecorator";
 
-import { version } from "../../Version"
 import User from "../../collections/lib/classes/User";
+import { version } from "../../Version";
 
 namespace SideBar {
 

@@ -1,13 +1,12 @@
 import { BlueprintTypes } from './BlueprintTypes';
-import { IBlueprintMaterializer } from './interfaces/IBlueprintMaterializer';
 import { BlueprintMaterializer } from './classes/BlueprintMaterializer';
+import { IBlueprintMaterializer } from './interfaces/IBlueprintMaterializer';
 
-import { KernelModule, interfaces } from "inversify";
+import { interfaces, KernelModule } from "inversify";
 
 
 
 
-import { SimpleCollection } from "../../imports/interfaces/SimpleCollection";
 
 
 

@@ -1,8 +1,8 @@
+import { assert } from 'chai';
 import { AssignmentEventType } from '../../imports/assignments/interfaces/AssignmentEventType';
 import { IAssignmentCloser } from '../../server/assignments/interfaces/IAssignmentCloser';
 import { Types } from '../../server/Types';
 import { AssignmentTestCaseWithNotifications } from './common/AssignmentTestCaseWithNotifications';
-import { assert } from 'chai';
 
 
 

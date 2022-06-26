@@ -1,13 +1,13 @@
-import {LocalCollection} from "./3rdParty/minimongo-standalone/minimongo-standalone";
 import * as chai from "chai";
+import { LocalCollection } from "./3rdParty/minimongo-standalone/minimongo-standalone";
 
 interface TestDAO {
   bla: string;
 }
 
-describe("Minimongo Standalone integrates", function() {
+describe("Minimongo Standalone integrates", function () {
 
-  it("Test insert", function() {
+  it("Test insert", function () {
     // Arrange
     let collection = new LocalCollection<TestDAO>("test");
 
@@ -25,7 +25,7 @@ describe("Minimongo Standalone integrates", function() {
 
   });
 
-  it("Test remove", function() {
+  it("Test remove", function () {
     // Arrange
     let collection = new LocalCollection<TestDAO>("test");
     collection.insert({ "bla": "blub" });
@@ -40,14 +40,14 @@ describe("Minimongo Standalone integrates", function() {
     chai.assert.equal(secondCount, 0, "Removal of data failed.");
   });
 
-  it("Test update", function() {
+  it("Test update", function () {
     // Arrange
     let collection = new LocalCollection<TestDAO>("test");
     let id = collection.insert({ "bla": "blub" });
 
     // Act
     collection.update({ "_id": id }, {
-      "$set": {"bla": "yep"}
+      "$set": { "bla": "yep" }
     });
 
 

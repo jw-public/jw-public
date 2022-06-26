@@ -1,28 +1,21 @@
 import * as _ from "underscore";
 import { app } from "./App";
 
-import { Meteor } from "meteor/meteor";
-import { Template } from "meteor/templating";
-import { Mongo } from "meteor/mongo";
-import { Accounts } from "meteor/accounts-base";
 import { Roles } from "meteor/alanning:roles";
-import { check, Match } from "meteor/check";
+import { check } from "meteor/check";
+import { Meteor } from "meteor/meteor";
 
 import { Email } from "meteor/email";
-import * as EmailSettingsManager from "./EmailSettingsManager";
 import * as PhoneValidator from "../collections/lib/ValidationFunctions/PhoneValidator";
 
 import Group from "../collections/lib/classes/Group";
-import { Groups, GroupDAO } from "../collections/lib/GroupCollection";
+import { Groups } from "../collections/lib/GroupCollection";
 
 import User from "../collections/lib/classes/User";
 import * as UserCollection from "../collections/lib/UserCollection";
-import * as UserNotification from "../collections/lib/classes/UserNotification";
 
 
 import Assignment from "../collections/lib/classes/Assignment";
-import { AssignmentState } from "../collections/lib/classes/AssignmentState";
-import { UserEntry, AssignmentDAO } from "../collections/lib/AssignmentsCollection";
 
 
 

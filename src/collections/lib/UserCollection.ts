@@ -1,6 +1,6 @@
+import { Meteor } from "meteor/meteor";
+import { Mongo } from "meteor/mongo";
 import { Locale } from '../../imports/i18n/classes/I18nProvider';
-import {Meteor} from "meteor/meteor";
-import {Mongo} from "meteor/mongo";
 
 export interface UserProfile {
   first_name?: string;
@@ -34,4 +34,4 @@ export interface UserDAO extends Meteor.User {
   notice?: string;
 }
 
-export const users: Mongo.Collection<UserDAO> = <Mongo.Collection<UserDAO>> (<any>Meteor.users);
+export const users: Mongo.Collection<UserDAO> = <Mongo.Collection<UserDAO>>(<any>Meteor.users);

@@ -1,35 +1,35 @@
 
-import { KernelModule, interfaces } from "inversify";
+import { interfaces, KernelModule } from "inversify";
 
-import { IAssignmentApplicationController } from "./interfaces/IAssignmentApplicationController";
 import { AssignmentApplicationController } from "./classes/AssignmentApplicationController";
+import { IAssignmentApplicationController } from "./interfaces/IAssignmentApplicationController";
 import { IAssignmentApplicationControllerFactory } from "./interfaces/IAssignmentApplicationControllerFactory";
 
-import { IAssignmentParticipantController } from "./interfaces/IAssignmentParticipantController";
 import { AssignmentParticipantController } from "./classes/AssignmentParticipantController";
+import { IAssignmentParticipantController } from "./interfaces/IAssignmentParticipantController";
 import { IAssignmentParticipantControllerFactory } from "./interfaces/IAssignmentParticipantControllerFactory";
 
-import { IAssignmentParticipationNotifier } from "./interfaces/IAssignmentParticipationNotifier";
 import { AssignmentParticipationNotifier } from "./classes/AssignmentParticipationNotifier";
+import { IAssignmentParticipationNotifier } from "./interfaces/IAssignmentParticipationNotifier";
 
-import { IAssignmentRemover } from "./interfaces/IAssignmentRemover";
 import { AssignmentRemover } from "./classes/AssignmentRemover";
+import { IAssignmentRemover } from "./interfaces/IAssignmentRemover";
 
-import { IAssignmentDateParser } from "./interfaces/IAssignmentDateParser";
 import { AssignmentDateParser } from "./classes/AssignmentDateParser";
+import { IAssignmentDateParser } from "./interfaces/IAssignmentDateParser";
 
-import { IAssignmentCloser } from "./interfaces/IAssignmentCloser";
 import { AssignmentCloser } from "./classes/AssignmentCloser";
+import { IAssignmentCloser } from "./interfaces/IAssignmentCloser";
 
-import { IAssignmentCanceler } from "./interfaces/IAssignmentCanceler";
 import { AssignmentCanceler } from "./classes/AssignmentCanceler";
+import { IAssignmentCanceler } from "./interfaces/IAssignmentCanceler";
 
-import { IAssignmentReenabler } from "./interfaces/IAssignmentReenabler";
 import { AssignmentReenabler } from "./classes/AssignmentReenabler";
+import { IAssignmentReenabler } from "./interfaces/IAssignmentReenabler";
 
-import { IAssignmentContext } from "./interfaces/IAssignmentContext";
 import { Types } from "../Types";
 import { AssignmentServiceTypes } from "./AssignmentServiceTypes";
+import { IAssignmentContext } from "./interfaces/IAssignmentContext";
 
 import { AssignmentEmailNotifier } from "./classes/AssignmentEmailNotifier";
 import { IAssignmentEmailNotifier } from "./interfaces/IAssignmentEmailNotifier";
@@ -40,9 +40,7 @@ import { IAssignmentNotifier } from "./interfaces/IAssignmentNotifier";
 import { AssignmentDaoNotifier } from "./classes/AssignmentDaoNotifier";
 import { IAssignmentDaoNotifier } from "./interfaces/IAssignmentDaoNotifier";
 
-import { SimpleCollection } from "../../imports/interfaces/SimpleCollection";
 
-import { AssignmentDAO } from "../../collections/lib/AssignmentsCollection";
 
 
 export const kernelModule = new KernelModule((bind: interfaces.Bind) => {

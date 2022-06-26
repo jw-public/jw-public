@@ -1,6 +1,6 @@
+import { expect } from "chai";
+import { inject, injectable, Kernel } from "inversify";
 import "reflect-metadata";
-import { injectable, inject, Kernel } from "inversify";
-import {expect} from "chai";
 
 
 interface IWarrior {
@@ -47,7 +47,7 @@ class Ninja implements Ninja {
   public constructor(
     @inject(TYPES.Weapon) katana: IWeapon,
     @inject(TYPES.ThrowableWeapon) shuriken: IThrowableWeapon
-    ) {
+  ) {
     this._katana = katana;
     this._shuriken = shuriken;
   }
@@ -65,8 +65,8 @@ kernel.bind<IThrowableWeapon>(TYPES.ThrowableWeapon).to(Shuriken);
 
 
 
-describe("InversifyJS", function() {
-  it("integrates", function() {
+describe("InversifyJS", function () {
+  it("integrates", function () {
     var ninja = kernel.get<IWarrior>(TYPES.Warrior);
 
     expect(ninja.fight()).eql("cut!"); // true

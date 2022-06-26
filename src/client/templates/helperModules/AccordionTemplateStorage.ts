@@ -1,10 +1,6 @@
+import { Blaze } from "meteor/blaze";
+import { ReactiveVar } from "meteor/reactive-var";
 import * as _ from "underscore";
-import {Meteor} from "meteor/meteor";
-import {Template} from "meteor/templating";
-import {Session} from "meteor/session";
-import {Mongo} from "meteor/mongo";
-import {Blaze} from "meteor/blaze";
-import {ReactiveVar} from "meteor/reactive-var";
 
 const KEY_COLLAPSED_VAR = "_col_var";
 

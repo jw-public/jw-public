@@ -1,14 +1,13 @@
 import { I18nProvider } from '../../../imports/i18n/classes/I18nProvider';
 import { II18nProvider } from '../../../imports/i18n/interfaces/II18nProvider';
 import { Types } from "../../Types";
-import { UserTypes } from "../UserTypes";
 
-import { IUserSettingsReaderFactory } from "../interfaces/IUserSettingsReaderFactory";
 import { IUserSettingsReader } from "../interfaces/IUserSettingsReader";
+import { IUserSettingsReaderFactory } from "../interfaces/IUserSettingsReaderFactory";
 
-import { injectable, inject, named } from "inversify";
-import { SimpleCollection } from "../../../imports/interfaces/SimpleCollection";
+import { inject, injectable, named } from "inversify";
 import { UserDAO } from "../../../collections/lib/UserCollection";
+import { SimpleCollection } from "../../../imports/interfaces/SimpleCollection";
 
 @injectable()
 export class UserSettingsReaderFactory implements IUserSettingsReaderFactory {

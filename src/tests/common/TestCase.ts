@@ -1,29 +1,27 @@
-import { Types } from "../../server/Types";
 import { MailingTypes } from "../../server/mailing/MailingTypes";
-import { assert } from "chai";
+import { Types } from "../../server/Types";
 
 import * as TypeMoq from "typemoq";
-import { kernelModule as mailingKernelModule } from "../../server/mailing/KernelModule";
-import { kernelModule as userKernelModule } from "../../server/user/KernelModule";
+import { AssignmentDAO } from "../../collections/lib/AssignmentsCollection";
 import { kernelModule as assignmentKernelModule } from "../../server/assignments/KernelModule";
 import { kernelModule as loggingKernelModule } from "../../server/logging/KernelModule";
 import { IEmailSender, IEmailSendOptions } from "../../server/mailing/interfaces/IEmailSender";
+import { kernelModule as mailingKernelModule } from "../../server/mailing/KernelModule";
+import { kernelModule as userKernelModule } from "../../server/user/KernelModule";
 import { NullEmailSender } from "./NullEmailSender";
-import { IUserMailer } from "../../server/mailing/interfaces/IUserMailer";
-import { UserEntry, AssignmentDAO } from "../../collections/lib/AssignmentsCollection";
 
 
-import { injectable, inject, Kernel, interfaces } from "inversify";
+import { interfaces, Kernel } from "inversify";
 
-import { LocalCollection } from "../3rdParty/minimongo-standalone/minimongo-standalone";
 import { SimpleCollection } from "../../imports/interfaces/SimpleCollection";
+import { LocalCollection } from "../3rdParty/minimongo-standalone/minimongo-standalone";
 
 import { Meteor } from "meteor/meteor";
 import { NotificationDAO } from "../../collections/lib/classes/UserNotification";
 
-import { NotificationsAsserts } from "./NotificationsAsserts";
-import { UserDAO } from "../../collections/lib/UserCollection";
 import { GroupDAO } from "../../collections/lib/GroupCollection";
+import { UserDAO } from "../../collections/lib/UserCollection";
+import { NotificationsAsserts } from "./NotificationsAsserts";
 
 
 

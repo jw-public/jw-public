@@ -1,17 +1,15 @@
-import {Types} from "../../server/Types";
+import { Types } from "../../server/Types";
 
-import {AssignmentEventType} from "../../imports/assignments/interfaces/AssignmentEventType";
-import {IAssignmentSingleNotifierOptions} from "../../server/assignments/interfaces/IAssignmentNotifier";
-import {UserEntry, AssignmentDAO} from "../../collections/lib/AssignmentsCollection";
-import {AssignmentTestCaseWithNotifications} from "./common/AssignmentTestCaseWithNotifications";
+import { AssignmentEventType } from "../../imports/assignments/interfaces/AssignmentEventType";
+import { AssignmentTestCaseWithNotifications } from "./common/AssignmentTestCaseWithNotifications";
 
-import {assert} from "chai";
+import { assert } from "chai";
 
-import {IAssignmentReenabler} from "../../server/assignments/interfaces/IAssignmentReenabler";
+import { IAssignmentReenabler } from "../../server/assignments/interfaces/IAssignmentReenabler";
 
-describe("AssignmentReenabler", function() {
+describe("AssignmentReenabler", function () {
 
-  it("should not be null or undefined", function() {
+  it("should not be null or undefined", function () {
     // Arrange
     let testCase = new AssignmentReenablerTestCase();
 
@@ -23,7 +21,7 @@ describe("AssignmentReenabler", function() {
   });
 
 
-  it("should set state to Closed by default", function() {
+  it("should set state to Closed by default", function () {
     // Arrange
     let testCase = new AssignmentReenablerTestCase();
     let toBeReenabledId = testCase.collection.insert({
@@ -39,7 +37,7 @@ describe("AssignmentReenabler", function() {
     assert.equal(actualAssignment.state, "Closed", "Did not reenable the assignment.");
   });
 
-  it("should restore valid state before cancelment", function() {
+  it("should restore valid state before cancelment", function () {
     // Arrange
     let testCase = new AssignmentReenablerTestCase();
     let toBeReenabledId = testCase.collection.insert({
@@ -56,7 +54,7 @@ describe("AssignmentReenabler", function() {
     assert.equal(actualAssignment.state, "Closed", "Did not reenable the assignment with desired state.");
   });
 
-  it("should not restore invalid state before cancelment", function() {
+  it("should not restore invalid state before cancelment", function () {
     // Arrange
     let testCase = new AssignmentReenablerTestCase();
     let toBeReenabledId = testCase.collection.insert({
@@ -73,7 +71,7 @@ describe("AssignmentReenabler", function() {
     assert.equal(actualAssignment.state, "Closed", "Did not reenable the assignment with desired state.");
   });
 
-  it("should notify participants", function() {
+  it("should notify participants", function () {
     // Arrange
     let testCase = new AssignmentReenablerTestCase();
     let toBeReenabledId = testCase.collection.insert({
@@ -82,8 +80,8 @@ describe("AssignmentReenabler", function() {
       participants: [{
         user: "pleaseNotifyMe"
       }, {
-          user: "meToo"
-        }]
+        user: "meToo"
+      }]
     });
 
     // Act
@@ -106,7 +104,7 @@ describe("AssignmentReenabler", function() {
     });
   });
 
-  it("should not notify applicants", function() {
+  it("should not notify applicants", function () {
     // Arrange
     let testCase = new AssignmentReenablerTestCase();
     let toBeReenabledId = testCase.collection.insert({
@@ -115,8 +113,8 @@ describe("AssignmentReenabler", function() {
       applicants: [{
         user: "pleaseDontNotifyMe"
       }, {
-          user: "meToo"
-        }]
+        user: "meToo"
+      }]
     });
 
     // Act

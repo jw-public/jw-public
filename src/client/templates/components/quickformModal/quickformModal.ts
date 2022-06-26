@@ -1,10 +1,7 @@
-import {Meteor} from "meteor/meteor";
-import {Template} from "meteor/templating";
-import {Session} from "meteor/session";
-import {Mongo} from "meteor/mongo";
-import {Blaze} from "meteor/blaze";
+import { Blaze } from "meteor/blaze";
+import { Template } from "meteor/templating";
 
-import {AutoForm} from "meteor/aldeed:autoform";
+import { AutoForm } from "meteor/aldeed:autoform";
 
 const HTML_ID = "QuickformModalDialogNode";
 
@@ -21,5 +18,5 @@ export function dialog<T>(quickformOptions: AutoForm.QuickFormOptions<T>, bootbo
     Template["quickForm"],
     quickformOptions,
     $("#" + HTML_ID).get(0)
-    );
+  );
 };

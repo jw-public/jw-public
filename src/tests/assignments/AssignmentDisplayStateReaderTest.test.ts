@@ -1,17 +1,15 @@
-import {AssignmentDisplayStateReader} from "../../lib/classes/AssignmentDisplayStateReader";
-import { DisplayState, IAssignmentDisplayStateReader} from "../../lib/classes/AssignmentDisplayStateReader";
-import { IAssignmentStateReader, AssignmentStateForUser} from "../../lib/classes/AssignmentStateReader";
-import * as _ from "underscore";
 import * as chai from "chai";
+import { AssignmentDisplayStateReader, DisplayState, IAssignmentDisplayStateReader } from "../../lib/classes/AssignmentDisplayStateReader";
+import { AssignmentStateForUser, IAssignmentStateReader } from "../../lib/classes/AssignmentStateReader";
 
 
-describe("AssignmentDisplayStateReader UnitTest", function() {
+describe("AssignmentDisplayStateReader UnitTest", function () {
 
-  it("State Default", function() {
+  it("State Default", function () {
     assertDisplayStateOf(defaultState).is(DisplayState.Default);
   });
 
-  it("State Canceled, if closed", function() {
+  it("State Canceled, if closed", function () {
     assertDisplayStateOf({
       closed: false,
       canceled: true,
@@ -20,7 +18,7 @@ describe("AssignmentDisplayStateReader UnitTest", function() {
     }).is(DisplayState.Canceled);
   });
 
-  it("State Canceled, if closed and participant", function() {
+  it("State Canceled, if closed and participant", function () {
     assertDisplayStateOf({
       closed: true,
       canceled: true,
@@ -29,7 +27,7 @@ describe("AssignmentDisplayStateReader UnitTest", function() {
     }).is(DisplayState.Canceled);
   });
 
-  it("State Canceled, if not closed and participant", function() {
+  it("State Canceled, if not closed and participant", function () {
     assertDisplayStateOf({
       closed: false,
       canceled: true,
@@ -38,7 +36,7 @@ describe("AssignmentDisplayStateReader UnitTest", function() {
     }).is(DisplayState.Canceled);
   });
 
-  it("State Canceled, if not closed and applicant", function() {
+  it("State Canceled, if not closed and applicant", function () {
     assertDisplayStateOf({
       closed: false,
       canceled: true,
@@ -47,7 +45,7 @@ describe("AssignmentDisplayStateReader UnitTest", function() {
     }).is(DisplayState.Canceled);
   });
 
-  it("State Canceled, if not closed", function() {
+  it("State Canceled, if not closed", function () {
     assertDisplayStateOf({
       closed: false,
       canceled: true,
@@ -56,7 +54,7 @@ describe("AssignmentDisplayStateReader UnitTest", function() {
     }).is(DisplayState.Canceled);
   });
 
-  it("State Closed, when not participant and not applicant", function() {
+  it("State Closed, when not participant and not applicant", function () {
     assertDisplayStateOf({
       closed: true,
       canceled: false,
@@ -65,7 +63,7 @@ describe("AssignmentDisplayStateReader UnitTest", function() {
     }).is(DisplayState.Closed);
   });
 
-  it("State Closed, when not participant but is applicant", function() {
+  it("State Closed, when not participant but is applicant", function () {
     assertDisplayStateOf({
       closed: true,
       canceled: false,
@@ -74,7 +72,7 @@ describe("AssignmentDisplayStateReader UnitTest", function() {
     }).is(DisplayState.Closed);
   });
 
-  it("State UserAccepted, when participant and closed", function() {
+  it("State UserAccepted, when participant and closed", function () {
     assertDisplayStateOf({
       closed: true,
       canceled: false,
@@ -83,7 +81,7 @@ describe("AssignmentDisplayStateReader UnitTest", function() {
     }).is(DisplayState.UserAccepted);
   });
 
-  it("State UserAccepted, when participant and not closed", function() {
+  it("State UserAccepted, when participant and not closed", function () {
     assertDisplayStateOf({
       closed: false,
       canceled: false,
@@ -92,7 +90,7 @@ describe("AssignmentDisplayStateReader UnitTest", function() {
     }).is(DisplayState.UserAccepted);
   });
 
-  it("State UserApplicant, when applicant and not closed", function() {
+  it("State UserApplicant, when applicant and not closed", function () {
     assertDisplayStateOf({
       closed: false,
       canceled: false,

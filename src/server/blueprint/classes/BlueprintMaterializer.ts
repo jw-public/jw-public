@@ -1,19 +1,19 @@
-import { BlueprintMaterializerOptions, IBlueprintMaterializer } from './../interfaces/IBlueprintMaterializer';
+import { AssignmentDAO } from 'collections/lib/AssignmentsCollection';
+import { WeekBlueprint } from 'imports/blueprint/interfaces/WeekBlueprint.d';
 import { BlueprintAssignmentDAO } from './../../../imports/blueprint/interfaces/WeekBlueprint.d';
 import { Logger } from './../../../imports/logging/Logger.d';
-import { WeekBlueprint } from 'imports/blueprint/interfaces/WeekBlueprint.d';
-import { AssignmentDAO } from 'collections/lib/AssignmentsCollection';
+import { BlueprintMaterializerOptions, IBlueprintMaterializer } from './../interfaces/IBlueprintMaterializer';
 
-import { injectable, inject, named } from "inversify";
-import { Types } from "../../Types";
 import { LoggerFactory } from 'imports/logging/LoggerFactory';
+import { inject, injectable } from "inversify";
 import * as moment from 'moment';
+import { Types } from "../../Types";
 
 @injectable()
 export class BlueprintMaterializer implements IBlueprintMaterializer {
     private logger: Logger;
 
-    public constructor( @inject(Types.LoggerFactory) loggerFactory: LoggerFactory) {
+    public constructor(@inject(Types.LoggerFactory) loggerFactory: LoggerFactory) {
         this.logger = loggerFactory.createLogger("BlueprintMaterializer");
     }
 

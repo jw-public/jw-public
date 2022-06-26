@@ -1,8 +1,10 @@
-import { Logger } from '../../../imports/logging/Logger';
+import { inject, injectable, named } from 'inversify';
+import * as _ from 'underscore';
 import { AssignmentDAO } from '../../../collections/lib/AssignmentsCollection';
 import { AssignmentState } from '../../../collections/lib/classes/AssignmentState';
 import { AssignmentEventType } from '../../../imports/assignments/interfaces/AssignmentEventType';
 import { SimpleCollection } from '../../../imports/interfaces/SimpleCollection';
+import { Logger } from '../../../imports/logging/Logger';
 import { LoggerFactory } from '../../../imports/logging/LoggerFactory';
 import { Types } from '../../Types';
 import { AssignmentServiceTypes } from '../AssignmentServiceTypes';
@@ -11,8 +13,6 @@ import { IAssignmentNotifier } from '../interfaces/IAssignmentNotifier';
 import { IAssignmentParticipantControllerFactory } from '../interfaces/IAssignmentParticipantControllerFactory';
 import { extractIdsFromUserEntryArray } from '../utils/UserEntryHelper';
 import { AssignmentAction } from './AssignmentAction';
-import { inject, injectable, named } from 'inversify';
-import * as _ from 'underscore';
 
 
 
@@ -20,7 +20,7 @@ import * as _ from 'underscore';
 export class AssignmentCloser extends AssignmentAction implements IAssignmentCloser {
     private logger: Logger;
 
-    constructor( @inject(Types.Collection) @named("assignment") collection: SimpleCollection<AssignmentDAO>,
+    constructor(@inject(Types.Collection) @named("assignment") collection: SimpleCollection<AssignmentDAO>,
         @inject(AssignmentServiceTypes.IAssignmentNotifier) private assignmentNotifier: IAssignmentNotifier,
         @inject(Types.IAssignmentParticipantControllerFactory) private assignmentParticipantController: IAssignmentParticipantControllerFactory,
         @inject(Types.LoggerFactory) loggerFactory: LoggerFactory,

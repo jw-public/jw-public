@@ -1,29 +1,19 @@
-import * as _ from "underscore";
-import { Meteor, Subscription } from "meteor/meteor";
-import { Template } from "meteor/templating";
-import { Mongo } from "meteor/mongo";
-import { Accounts } from "meteor/accounts-base";
 import { Roles } from "meteor/alanning:roles";
-import { check, Match } from "meteor/check";
+import { Meteor } from "meteor/meteor";
+import { Template } from "meteor/templating";
+import * as _ from "underscore";
 
-import Group from "./lib/classes/Group";
-import { GroupApplicationController } from "./lib/classes/Group";
-import { Groups, GroupDAO } from "./lib/GroupCollection";
+import { Groups } from "./lib/GroupCollection";
 
-import User from "./lib/classes/User";
-import * as UserCollection from "./lib/UserCollection";
-import * as UserNotification from "./lib/classes/UserNotification";
 
-import Assignment from "./lib/classes/Assignment";
-import { AssignmentState } from "./lib/classes/AssignmentState";
-import { UserEntry, AssignmentDAO, Assignments } from "./lib/AssignmentsCollection";
+import { Assignments } from "./lib/AssignmentsCollection";
 
 import { Tabular } from "meteor/aldeed:tabular";
 
 import * as ManageAssignments from "../imports/templateModules/ManageAssignments";
 
-import * as moment from "moment";
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
+import * as moment from "moment";
 
 
 

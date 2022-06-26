@@ -1,12 +1,11 @@
 import * as underscore from "underscore";
 import * as s from "underscore.string";
 
-import { Meteor } from "meteor/meteor";
-import { Tracker } from "meteor/tracker";
 import { Accounts } from "meteor/accounts-base";
+import { Meteor } from "meteor/meteor";
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 import { Template } from "meteor/templating";
 import { Routes } from "../../lib/client/routes";
-import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 
 import * as moment from "moment";
 require('moment/locale/de');

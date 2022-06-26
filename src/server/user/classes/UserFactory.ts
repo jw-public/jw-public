@@ -1,12 +1,11 @@
 import { Types } from "../../Types";
-import { UserTypes } from "../UserTypes";
 
-import { IUserFactory } from "../interfaces/IUserFactory";
 import { IUserBE } from "../interfaces/IUserBE";
+import { IUserFactory } from "../interfaces/IUserFactory";
 
-import { injectable, inject, named } from "inversify";
-import { SimpleCollection } from "../../../imports/interfaces/SimpleCollection";
+import { inject, injectable, named } from "inversify";
 import { UserDAO } from "../../../collections/lib/UserCollection";
+import { SimpleCollection } from "../../../imports/interfaces/SimpleCollection";
 
 @injectable()
 export class UserFactory implements IUserFactory {

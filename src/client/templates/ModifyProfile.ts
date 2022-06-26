@@ -1,14 +1,11 @@
+import { Accounts } from "meteor/accounts-base";
+import { Meteor } from "meteor/meteor";
+import { Template } from "meteor/templating";
 import { Locale } from '../../imports/i18n/classes/I18nProvider';
-import {Meteor} from "meteor/meteor";
-import {Template} from "meteor/templating";
-import {Session} from "meteor/session";
-import {Mongo} from "meteor/mongo";
-import {Accounts} from "meteor/accounts-base";
-import * as UserCollection from '../../collections/lib/UserCollection';
 
 import * as ProfileEdit from '../../collections/lib/ProfileEdit';
 
-import {AutoForm} from "meteor/aldeed:autoform";
+import { AutoForm } from "meteor/aldeed:autoform";
 
 
 interface LanguageOption {
@@ -77,16 +74,16 @@ Template["modifyProfile"].helpers({
         }, {
             value: "en-en",
             label: "Englisch"
-        },{
+        }, {
             value: "fr-fr",
             label: "Französisch"
         }];
     },
     formId(): string {
-      return ProfileEdit.FORM_ID;
+        return ProfileEdit.FORM_ID;
     },
     passwordSchema() {
-      return ChangePwd;
+        return ChangePwd;
     }
 });
 

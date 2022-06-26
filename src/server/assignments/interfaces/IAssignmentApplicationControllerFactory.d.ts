@@ -1,4 +1,4 @@
-import {IAssignmentApplicationController} from "./IAssignmentApplicationController";
+import { IAssignmentApplicationController } from "./IAssignmentApplicationController";
 
 /**
 * I provide you with a fresh instance of an IAssignmentApplicationController.

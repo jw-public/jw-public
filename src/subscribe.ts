@@ -1,10 +1,7 @@
-import {Meteor, Subscription} from "meteor/meteor";
-import {Tracker} from "meteor/tracker";
+import { Meteor } from "meteor/meteor";
+import { Tracker } from "meteor/tracker";
 
 
-import User from "./collections/lib/classes/User";
-import * as UserCollection from "./collections/lib/UserCollection";
-import * as UserNotification from "./collections/lib/classes/UserNotification";
 
 import * as SubscriptionHelper from "./Subscription";
 
