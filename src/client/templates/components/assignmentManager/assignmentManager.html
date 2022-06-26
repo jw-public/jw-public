@@ -53,7 +53,6 @@
 
     <div class="col-md-12">
       <button
-        {{ disabledIfNotValid }}
         class="btn btn-primary close-application"
         title="{{ tooltipCloseButton }}"
         >
@@ -77,7 +76,10 @@
       {{#if user.carMostlyAvailable}}<i class="fa fa-car" title="{{user.fullName}} hat meistens ein Auto zur Verfügung"></i>{{/if}}
       <span class="label label-default" rel="tooltip" title="{{user.fullName}} wohnt in {{user.placeName}} (PLZ: {{user.zip}}).">{{user.placeName}}</span>
       <span class="label label-default" rel="tooltip" title="{{user.fullName}} wurde bereits {{user.assignmentsParticipatedCount}}x angenommen.">{{user.getAssignmentsParticipatedCount}}</span>
-      <button class="btn btn-xs btn-success toggle-application">
+      <button
+        class="btn btn-xs btn-success toggle-application"
+        rel="tooltip"
+        title="Bewerber als Teilnehmer vormerken." >
         <i class="fa fa-chevron-right"></i>
       </button>
     </span>

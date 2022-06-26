@@ -1,30 +1,19 @@
 import * as _ from "underscore";
 
-import * as AssignmentManager from "./AssignmentManager";
 import Assignment from "../../../../collections/lib/classes/Assignment";
 import User from "../../../../collections/lib/classes/User";
+import * as AssignmentManager from "./AssignmentManager";
 
-import {Meteor} from "meteor/meteor";
-import {Template} from "meteor/templating";
-import {Session} from "meteor/session";
-import {Mongo} from "meteor/mongo";
+import { Meteor } from "meteor/meteor";
+import { Template } from "meteor/templating";
 
-import {AutoForm} from "meteor/aldeed:autoform";
+import { AutoForm } from "meteor/aldeed:autoform";
 
 
 Template["assignmentManager"].helpers({
   hasParticipants(): boolean {
     let participantIds = AssignmentManager.getParticipantsArray(Template.instance()).list();
     return participantIds.length > 0;
-  },
-  disabledIfNotValid(): string {
-    let participantIds = AssignmentManager.getParticipantsArray(Template.instance()).list();
-    let valid = participantIds.length > 0
-    if (valid) {
-      return "";
-    } else {
-      return "disabled";
-    }
   },
   tooltipCloseButton(): string {
     let participantIds = AssignmentManager.getParticipantsArray(Template.instance()).list();
@@ -42,7 +31,7 @@ Template["assignmentManager"].helpers({
     let participantIds = AssignmentManager.getParticipantsArray(Template.instance()).list();
     let userItems: Array<AssignmentManager.UserItem> = new Array();
 
-    _.forEach(participantIds.array(), function(participant) {
+    _.forEach(participantIds.array(), function (participant) {
       userItems.push({
         userId: participant,
         assignmentId: assignment.getAssignmentId(),
@@ -64,7 +53,7 @@ Template["assignmentManager"].helpers({
     let applicantIds = AssignmentManager.getApplicantsArray(Template.instance()).list();
     let userItems: Array<AssignmentManager.UserItem> = new Array();
 
-    _.forEach(applicantIds.array(), function(applicantId) {
+    _.forEach(applicantIds.array(), function (applicantId) {
       userItems.push({
         userId: applicantId,
         assignmentId: assignment.getAssignmentId(),
@@ -111,7 +100,7 @@ Template["assignmentManager"].helpers({
       groups: {
         $in: [groupId],
       }
-    }, { fields: { "profile.first_name": 1, "profile.last_name": 1 }, sort: { "profile.last_name": 1 } }).map(function(c: Meteor.User) {
+    }, { fields: { "profile.first_name": 1, "profile.last_name": 1 }, sort: { "profile.last_name": 1 } }).map(function (c: Meteor.User) {
       let user: User = new User(c._id);
 
       return {
@@ -130,15 +119,15 @@ Template["assignmentManager"].helpers({
 
 
 
-Template["assignmentManager"].created = function() {
+Template["assignmentManager"].created = function () {
   let instance = Template.instance();
   let assignmentSubscription: Meteor.SubscriptionHandle = null;
-  instance.autorun(function() {
+  instance.autorun(function () {
     let context = Template.currentData() as AssignmentManager.TemplateOptions;
     assignmentSubscription = instance.subscribe("singleAssignment", context.assignmentId);
   });
 
-  instance.autorun(function() {
+  instance.autorun(function () {
     let context = Template.currentData() as AssignmentManager.TemplateOptions;
     if (assignmentSubscription != null && assignmentSubscription.ready()) {
       AssignmentManager.init();
@@ -147,38 +136,66 @@ Template["assignmentManager"].created = function() {
 };
 
 Template["assignmentManager"].events({
-  "click .close-application": function(event: Event) {
+  "click .close-application": function (event: Event) {
     event.preventDefault();
 
-    let context = Template.currentData() as AssignmentManager.TemplateOptions;
-    let templateInstance = Template.instance();
+    const context = Template.currentData() as AssignmentManager.TemplateOptions;
+    const templateInstance = Template.instance();
 
-    // Confirm action
-    let dialog = bootbox.dialog({
-      title: "Abschließen bestätigen",
-      message: "Der Termin wird geschlossen und den restlichen Bewerbern wird abgesagt.\nAktion durchführen?",
-      backdrop: true,
-      buttons: {
-        "yesButton": {
-          label: "Ja",
-          className: "btn-primary",
-          callback: function() {
-            dialog.modal('hide');
-            AssignmentManager.closeAndSubmitAssignment(templateInstance, context.assignmentId);
-          }
-        },
-        "noButton": {
-          label: "Nein",
-          className: "btn-default",
-          callback: function() {
-            dialog.modal('hide');
+    const participantIds = AssignmentManager.getParticipantsArray(Template.instance()).list();
+    const hasNoParticipants = participantIds.length > 0
+
+    if (hasNoParticipants) {
+      const dialog = bootbox.dialog({
+        title: "Abschließen bestätigen",
+        message: "Der Termin wird geschlossen und den restlichen Bewerbern wird abgesagt.\nAktion durchführen?",
+        backdrop: true,
+        buttons: {
+          "yesButton": {
+            label: "Ja",
+            className: "btn-primary",
+            callback: function () {
+              dialog.modal('hide');
+              AssignmentManager.closeAndSubmitAssignment(templateInstance, context.assignmentId);
+            }
+          },
+          "noButton": {
+            label: "Nein",
+            className: "btn-default",
+            callback: function () {
+              dialog.modal('hide');
+            }
           }
         }
-      }
-    });
+      });
+    } else {
+      const dialog = bootbox.dialog({
+        title: "Leeren Termin schließen",
+        message: "Der Termin wird <b>ohne Teilnehmer</b> geschlossen. Allen Bewerbern wird abgesagt.",
+        backdrop: true,
+        buttons: {
+          "yesButton": {
+            label: "Ohne Teilnehmer schließen",
+            className: "btn-warning",
+            callback: function () {
+              dialog.modal('hide');
+              AssignmentManager.closeAndSubmitAssignment(templateInstance, context.assignmentId);
+            }
+          },
+          "noButton": {
+            label: "Abbrechen",
+            className: "btn-default",
+            callback: function () {
+              dialog.modal('hide');
+            }
+          }
+        }
+      });
+    }
+
 
   },
-  "click .cancel": function(event: Event) {
+  "click .cancel": function (event: Event) {
     event.preventDefault();
 
     let context = Template.currentData() as AssignmentManager.TemplateOptions;
@@ -190,7 +207,7 @@ Template["assignmentManager"].events({
 });
 
 Template["applicantEntry"].helpers({
-  user: function() {
+  user: function () {
     return User.createFromId(this.userId);
   }
 });
@@ -200,7 +217,7 @@ Template["applicantEntry"].events({
 });
 
 Template["participantEntry"].helpers({
-  user: function() {
+  user: function () {
     return User.createFromId(this.userId);
   }
 });
@@ -211,7 +228,7 @@ Template["participantEntry"].events({
 
 AutoForm.hooks<{ userId: string }>({
   "addUserAsParticipantForm": { // Die ID des Formulars
-    onSubmit: function(toBeInserted) {
+    onSubmit: function (toBeInserted) {
       let context = this as AutoForm.HookMethodContext<{ userId: string }>;
       context.event.preventDefault();
       let additionalOptions = context.template.data["additionalFormOptions"] as AssignmentManager.NestedTemplate;
