@@ -1,6 +1,6 @@
-import * as _ from "underscore";
-import { Meteor, Subscription } from "meteor/meteor";
 import { Accounts } from "meteor/accounts-base";
+import { Meteor } from "meteor/meteor";
+import * as _ from "underscore";
 
 import * as EmailSettingsManager from "./EmailSettingsManager";
 import { initData } from "./InitialData";

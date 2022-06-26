@@ -3,9 +3,9 @@ declare var Modal: any;
 
 import { Routes } from "../../lib/client/routes";
 
-import { TemplateDefinition } from "../../lib/TemplateDefinitionDecorator";
-import { EventHandler } from "../../lib/EventHandlerDecorator";
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
+import { EventHandler } from "../../lib/EventHandlerDecorator";
+import { TemplateDefinition } from "../../lib/TemplateDefinitionDecorator";
 
 
 export class ResetController {

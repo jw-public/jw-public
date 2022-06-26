@@ -1,4 +1,4 @@
-import {IAssignmentSingleNotifierOptions} from "./IAssignmentNotifier";
+import { IAssignmentSingleNotifierOptions } from "./IAssignmentNotifier";
 
 /**
 * I am a notifier, which notifies user via email, when something at a assignment happens.

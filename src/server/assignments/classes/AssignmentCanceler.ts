@@ -1,13 +1,13 @@
-import {AssignmentEventType} from "../../../imports/assignments/interfaces/AssignmentEventType";
-import {SimpleCollection} from "../../../imports/interfaces/SimpleCollection";
-import {Types} from "../../Types";
-import {AssignmentServiceTypes} from "../AssignmentServiceTypes";
-import {IAssignmentCanceler} from "../interfaces/IAssignmentCanceler";
-import {AssignmentAction} from "./AssignmentAction";
-import { injectable, inject, named } from "inversify";
-import {UserEntry, AssignmentDAO} from "../../../collections/lib/AssignmentsCollection";
-import {IAssignmentDaoNotifier} from "../interfaces/IAssignmentDaoNotifier";
-import {AssignmentState} from "../../../collections/lib/classes/AssignmentState";
+import { inject, injectable, named } from "inversify";
+import { AssignmentDAO } from "../../../collections/lib/AssignmentsCollection";
+import { AssignmentState } from "../../../collections/lib/classes/AssignmentState";
+import { AssignmentEventType } from "../../../imports/assignments/interfaces/AssignmentEventType";
+import { SimpleCollection } from "../../../imports/interfaces/SimpleCollection";
+import { Types } from "../../Types";
+import { AssignmentServiceTypes } from "../AssignmentServiceTypes";
+import { IAssignmentCanceler } from "../interfaces/IAssignmentCanceler";
+import { IAssignmentDaoNotifier } from "../interfaces/IAssignmentDaoNotifier";
+import { AssignmentAction } from "./AssignmentAction";
 
 
 
@@ -15,7 +15,7 @@ import {AssignmentState} from "../../../collections/lib/classes/AssignmentState"
 export class AssignmentCanceler extends AssignmentAction implements IAssignmentCanceler {
 
 
-    constructor( @inject(Types.Collection) @named("assignment") collection: SimpleCollection<AssignmentDAO>,
+    constructor(@inject(Types.Collection) @named("assignment") collection: SimpleCollection<AssignmentDAO>,
         @inject(AssignmentServiceTypes.IAssignmentDaoNotifier) private assignmentNotifier: IAssignmentDaoNotifier) {
         super(collection);
     }
@@ -25,8 +25,8 @@ export class AssignmentCanceler extends AssignmentAction implements IAssignmentC
 
         this.updateDatabaseEntry(assignment, reason);
         this.assignmentNotifier.notifyParticipantsOfAssignment({
-          assignment,
-          eventType: AssignmentEventType.Cancel
+            assignment,
+            eventType: AssignmentEventType.Cancel
         });
     }
 

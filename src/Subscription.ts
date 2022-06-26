@@ -1,15 +1,11 @@
 import * as _ from "underscore";
-import {Meteor, Subscription} from "meteor/meteor";
-import {Tracker} from "meteor/tracker";
 
 import Group from "./collections/lib/classes/Group";
-import {Groups, GroupDAO} from "./collections/lib/GroupCollection";
 
 import User from "./collections/lib/classes/User";
 import * as UserCollection from "./collections/lib/UserCollection";
-import * as UserNotification from "./collections/lib/classes/UserNotification";
 
-import {GroupApplicationController} from "./collections/lib/classes/Group";
+import { GroupApplicationController } from "./collections/lib/classes/Group";
 
 
 export function subscribeToApplicationCountOfAllCoordinatingGroupsOf(user: UserCollection.UserDAO) {

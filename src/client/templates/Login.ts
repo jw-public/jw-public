@@ -1,17 +1,13 @@
+import { Accounts } from "meteor/accounts-base";
 import { Meteor } from "meteor/meteor";
 import { Template } from "meteor/templating";
-import { Session } from "meteor/session";
-import { Mongo } from "meteor/mongo";
-import { Blaze } from "meteor/blaze";
-import { Accounts } from "meteor/accounts-base";
 declare var Modal: any;
 
 import { Routes } from "../../lib/client/routes";
 
-import { Helper } from "../../lib/HelperDecorator";
-import { TemplateDefinition } from "../../lib/TemplateDefinitionDecorator";
-import { EventHandler } from "../../lib/EventHandlerDecorator";
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
+import { EventHandler } from "../../lib/EventHandlerDecorator";
+import { TemplateDefinition } from "../../lib/TemplateDefinitionDecorator";
 
 namespace Login {
 

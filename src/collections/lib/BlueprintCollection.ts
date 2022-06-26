@@ -1,7 +1,5 @@
-import { defaults } from './../../client/react/components/SmallProgressbar/SmallProgressbar';
-import { BlueprintAssignmentDAO, WeekBlueprint } from './../../imports/blueprint/interfaces/WeekBlueprint.d';
-import { Meteor } from "meteor/meteor";
 import { Mongo } from "meteor/mongo";
+import { WeekBlueprint } from './../../imports/blueprint/interfaces/WeekBlueprint.d';
 
 export const Blueprints = new Mongo.Collection<WeekBlueprint>("blueprints");
 

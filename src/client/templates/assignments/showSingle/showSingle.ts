@@ -1,31 +1,29 @@
 import * as _ from "underscore";
 
 
+import { AssignmentDAO, Assignments } from "../../../../collections/lib/AssignmentsCollection";
 import Assignment from "../../../../collections/lib/classes/Assignment";
 import { AssignmentState } from "../../../../collections/lib/classes/AssignmentState";
 import * as AssignmentForm from "../../components/assignmentForm/AssignmentForm";
 import * as AssignmentManagerModal from "../../components/assignmentManager/AssignmentManagerModal";
-import { Assignments, AssignmentDAO } from "../../../../collections/lib/AssignmentsCollection";
 
-import { Meteor } from "meteor/meteor";
-import { Template } from "meteor/templating";
-import { Session } from "meteor/session";
-import { Mongo } from "meteor/mongo";
 import { Blaze } from "meteor/blaze";
-import { ReactiveVar } from "meteor/reactive-var";
+import { Meteor } from "meteor/meteor";
+import { Mongo } from "meteor/mongo";
+import { Template } from "meteor/templating";
 import { subsCache } from "../../../lib/subscription-cache";
 
-import * as AccordionTemplateStorage from "../../helperModules/AccordionTemplateStorage";
 import * as AssignmentCancelModal from "../../components/assignmentCancelModal/AssignmentCancelModal";
+import * as AccordionTemplateStorage from "../../helperModules/AccordionTemplateStorage";
 
 import * as moment from "moment";
 
 
 import { Routes } from "../../../../lib/client/routes";
 
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 import { Helper } from "../../../../lib/HelperDecorator";
 import { TemplateDefinition } from "../../../../lib/TemplateDefinitionDecorator";
-import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 
 
 namespace SingleAssignmentView {

@@ -1,15 +1,13 @@
 
-import {Meteor} from "meteor/meteor";
-import {Tracker} from "meteor/tracker";
-import {Accounts} from "meteor/accounts-base";
-import {Template} from "meteor/templating";
-import {Session} from "meteor/session";
-import {AutoForm} from "meteor/aldeed:autoform";
+import { AutoForm } from "meteor/aldeed:autoform";
+import { Meteor } from "meteor/meteor";
+import { Session } from "meteor/session";
+import { Template } from "meteor/templating";
 
-import {Groups, GroupDAO} from "../../../../collections/lib/GroupCollection";
+import { GroupDAO, Groups } from "../../../../collections/lib/GroupCollection";
 
-import {Helper} from "../../../../lib/HelperDecorator";
-import {TemplateDefinition} from "../../../../lib/TemplateDefinitionDecorator";
+import { Helper } from "../../../../lib/HelperDecorator";
+import { TemplateDefinition } from "../../../../lib/TemplateDefinitionDecorator";
 
 
 @TemplateDefinition("modifyGroups")
@@ -17,7 +15,7 @@ class ModifyGroupsData {
 
   @Helper
   static userListHelper() {
-    return Meteor.users.find({}, {}).map(function(c) {
+    return Meteor.users.find({}, {}).map(function (c) {
       return {
         label: (c.profile.first_name + " " + c.profile.last_name),
         value: c._id
@@ -37,16 +35,16 @@ class ModifyGroupsData {
 }
 
 
-Template["modifyGroups"].onRendered(function() {
+Template["modifyGroups"].onRendered(function () {
   let updatePanel = $(".update-panel"); // Das Panel
   updatePanel.hide();
 });
-Template["modifyGroups"].onCreated(function() {
+Template["modifyGroups"].onCreated(function () {
   Session.set("groupOptions_selected_group", null);
 });
 
 Template["groupOptions"].events({
-  "click .edit-group": function() {
+  "click .edit-group": function () {
     let panel = $(".update-panel"); // Das Panel
     let insertPanel = $(".insert-panel");
     let panelIsVisible = panel.is(":visible"); // Zeigt an, ob das Panel gerade sichtbar ist
@@ -58,7 +56,7 @@ Template["groupOptions"].events({
     /**
      *  Diese Funktion sorgt dafür, dass das Panel mit den Richtigen Daten angezeigt wird.
      */
-    let showPanelAndFillWithData = function() {
+    let showPanelAndFillWithData = function () {
       if (!newSelectionIsEqualToLastSelection) {
         console.log("Reset form");
         AutoForm.resetForm("updateGroupForm"); // Nur resetten, wenn ein anderer Eintrag ausgewählt wird.
@@ -71,9 +69,9 @@ Template["groupOptions"].events({
       panel.show("slide", {
         direction: "right",
         easing: "easeInOutCubic"
-      }, 400, function() {
-          $("body").scrollTo(panel, { duration: "slow" }); // Scrollt die Anzeige zum Panel
-        });
+      }, 400, function () {
+        $("body").scrollTo(panel, { duration: "slow" }); // Scrollt die Anzeige zum Panel
+      });
     };
     // Fallunterscheidung: Wenn das Panel schon sichtbar ist, dann muss es erst verborgen werden
     if (panelIsVisible && !newSelectionIsEqualToLastSelection) {
@@ -95,34 +93,34 @@ Template["groupOptions"].events({
 
 
 Template["modifyGroups"].events({
-  "click .cancel-update": function() {
+  "click .cancel-update": function () {
     let panel = $(".update-panel"); // Das Panel
     let insertPanel = $(".insert-panel");
     panel.hide("slide", {
       direction: "right",
       easing: "easeInOutCubic"
-    }, 400, function() {
-        insertPanel.show("slide", {
-          direction: "right",
-          easing: "easeInOutCubic"
-        }, 400);
-      });
+    }, 400, function () {
+      insertPanel.show("slide", {
+        direction: "right",
+        easing: "easeInOutCubic"
+      }, 400);
+    });
   }
 });
 // Wenn das userUpdate Formular abgeschickt wurde, dann soll das Panel versteckt werden.
 AutoForm.hooks({
   updateGroupForm: {
-    onSuccess: function(formType, result) {
+    onSuccess: function (formType, result) {
       let panel = $(".update-panel");
       let insertPanel = $(".insert-panel");
       panel.hide("slide", {
         direction: "right"
-      }, 200, function() {
-          insertPanel.show("slide", {
-            direction: "right",
-            easing: "easeInOutCubic"
-          }, 400);
-        });
+      }, 200, function () {
+        insertPanel.show("slide", {
+          direction: "right",
+          easing: "easeInOutCubic"
+        }, 400);
+      });
     }
   }
 });

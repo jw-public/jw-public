@@ -1,3 +1,6 @@
+import { assert } from 'chai';
+import { interfaces, Kernel } from 'inversify';
+import * as TypeMoq from 'typemoq';
 import { NotificationDAO } from '../../collections/lib/classes/UserNotification';
 import { AssignmentEventType } from '../../imports/assignments/interfaces/AssignmentEventType';
 import { SimpleCollection } from '../../imports/interfaces/SimpleCollection';
@@ -14,9 +17,6 @@ import { kernelModule } from '../../server/assignments/KernelModule';
 import { Types } from '../../server/Types';
 import { LocalCollection } from '../3rdParty/minimongo-standalone/minimongo-standalone';
 import { NotificationsAsserts } from '../common/NotificationsAsserts';
-import { assert } from 'chai';
-import { interfaces, Kernel } from 'inversify';
-import * as TypeMoq from 'typemoq';
 
 
 

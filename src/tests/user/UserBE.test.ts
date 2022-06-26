@@ -1,23 +1,20 @@
-import {Types} from "../../server/Types";
-import {UserTypes} from "../../server/user/UserTypes";
-import {IUserFactory} from "../../server/user/interfaces/IUserFactory";
-import {IUserBE} from "../../server/user/interfaces/IUserBE";
+import { IUserBE } from "../../server/user/interfaces/IUserBE";
+import { IUserFactory } from "../../server/user/interfaces/IUserFactory";
+import { UserTypes } from "../../server/user/UserTypes";
 
 
-import {assert} from "chai";
+import { assert } from "chai";
 
-import * as TypeMoq from "typemoq";
-import { injectable, inject, Kernel, interfaces } from "inversify";
 
-import {TestCase} from "../common/TestCase";
-import {UserDAO} from "../../collections/lib/UserCollection";
+import { UserDAO } from "../../collections/lib/UserCollection";
+import { TestCase } from "../common/TestCase";
 
 
 
 
-describe("UserBE", function() {
+describe("UserBE", function () {
 
-  it("should not be null or undefined", function() {
+  it("should not be null or undefined", function () {
     // Arrange
     let testCase = new UserBETestCase({
       // Empty User
@@ -31,7 +28,7 @@ describe("UserBE", function() {
     assert.isNotNull(testCase.user);
   });
 
-  it("should determine existing state of user", function() {
+  it("should determine existing state of user", function () {
     // Arrange
     let testCase = new UserBETestCase({
       profile: {
@@ -49,7 +46,7 @@ describe("UserBE", function() {
   });
 
 
-  it("should determine correct E-Mail address", function() {
+  it("should determine correct E-Mail address", function () {
     // Arrange
     let testCase = new UserBETestCase({
       emails: [

@@ -1,27 +1,23 @@
 
 
-import Assignment from "../../../../collections/lib/classes/Assignment";
 import { AssignmentState } from "../../../../collections/lib/classes/AssignmentState";
 
 import * as AssignmentForm from "./AssignmentForm";
 
+import { Blaze } from "meteor/blaze";
 import { Meteor } from "meteor/meteor";
 import { Template } from "meteor/templating";
-import { Session } from "meteor/session";
-import { Mongo } from "meteor/mongo";
-import { Blaze } from "meteor/blaze";
-import { ReactiveVar } from "meteor/reactive-var";
 
 import User from "../../../../collections/lib/classes/User";
 
+import { AssignmentDAO, Assignments } from "../../../../collections/lib/AssignmentsCollection";
 import Group from "../../../../collections/lib/classes/Group";
-import { Groups, GroupDAO } from "../../../../collections/lib/GroupCollection";
-import { Assignments, AssignmentDAO } from "../../../../collections/lib/AssignmentsCollection";
+import { GroupDAO, Groups } from "../../../../collections/lib/GroupCollection";
 
 import { AutoForm } from "meteor/aldeed:autoform";
 
-import * as moment from "moment";
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
+import * as moment from "moment";
 
 
 Template["assignmentForm"].onCreated(function () {

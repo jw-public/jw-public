@@ -6,7 +6,7 @@
 
 // TODO: Unit-Test für Konsistenzprüfung mit der less Datei
 
-import {Meteor} from "meteor/meteor";
+import { Meteor } from "meteor/meteor";
 
 
 export default class Color {

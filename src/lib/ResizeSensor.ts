@@ -2,7 +2,7 @@ import { Session } from "meteor/session";
 
 export default class ResizeSensor {
     static toSense: any[];
-    
+
     static initClass() {
         this.toSense = [];
     }

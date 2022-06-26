@@ -1,4 +1,4 @@
-import {Match} from "meteor/check";
+import { Match } from "meteor/check";
 import "../../../collections/lib/ValidationFunctions/requiredFor";
 
 let TestTypes = {
@@ -29,8 +29,8 @@ const customValidatorTestSchema = new SimpleSchema({
 });
 
 
-describe("requiredFor Custom Validation", function() {
-  it("muss gültig sein, wenn für den richtigen Typ das richtige Feld gesetzt ist.", function() {
+describe("requiredFor Custom Validation", function () {
+  it("muss gültig sein, wenn für den richtigen Typ das richtige Feld gesetzt ist.", function () {
 
 
     let matchTest1 = Match.test({
@@ -50,7 +50,7 @@ describe("requiredFor Custom Validation", function() {
       "ein anderes Feld definiert ist, das eigentlich garnicht müsste.");
   });
 
-  it("darf nicht gültig sein, wenn für einen Typ falsche Feld gesetzt ist oder garnichts.", function() {
+  it("darf nicht gültig sein, wenn für einen Typ falsche Feld gesetzt ist oder garnichts.", function () {
 
 
     let matchTest1 = Match.test({
@@ -69,7 +69,7 @@ describe("requiredFor Custom Validation", function() {
       "obwohl garkein Wert angegeben ist.");
   });
 
-  it("darf nicht auslösen, wenn das type Feld nicht gesetzt ist.", function() {
+  it("darf nicht auslösen, wenn das type Feld nicht gesetzt ist.", function () {
 
     let mySchema = new SimpleSchema({ name: { type: String, requiredFor: 'GibtEsNicht' } });
     let matchTest1 = Match.test({ name: "Steve" }, mySchema); // Return true

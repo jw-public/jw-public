@@ -1,13 +1,13 @@
-import {AssignmentEventType} from "../../../imports/assignments/interfaces/AssignmentEventType";
-import {IAssignmentNotifier} from "../interfaces/IAssignmentNotifier";
-import {IAssignmentParticipationNotifier, IAssignmentNotifierOptions} from "../interfaces/IAssignmentParticipationNotifier";
-import { injectable, inject, named } from "inversify";
-import {AssignmentServiceTypes} from "../AssignmentServiceTypes";
+import { inject, injectable } from "inversify";
+import { AssignmentEventType } from "../../../imports/assignments/interfaces/AssignmentEventType";
+import { AssignmentServiceTypes } from "../AssignmentServiceTypes";
+import { IAssignmentNotifier } from "../interfaces/IAssignmentNotifier";
+import { IAssignmentNotifierOptions, IAssignmentParticipationNotifier } from "../interfaces/IAssignmentParticipationNotifier";
 
 @injectable()
 export class AssignmentParticipationNotifier implements IAssignmentParticipationNotifier {
 
-    constructor( @inject(AssignmentServiceTypes.IAssignmentNotifier) private assignmentNotifier: IAssignmentNotifier) {
+    constructor(@inject(AssignmentServiceTypes.IAssignmentNotifier) private assignmentNotifier: IAssignmentNotifier) {
 
     }
 
@@ -25,13 +25,13 @@ export class AssignmentParticipationNotifier implements IAssignmentParticipation
 
 
     notifyUsersAreNotAccepted(options: IAssignmentNotifierOptions) {
-      for (const userId of options.userIds) {
-          this.assignmentNotifier.notifyUserAboutAssignment({
-              userId,
-              assignmentId: options.assignmentId,
-              eventType: AssignmentEventType.Removed
-          });
-      }
+        for (const userId of options.userIds) {
+            this.assignmentNotifier.notifyUserAboutAssignment({
+                userId,
+                assignmentId: options.assignmentId,
+                eventType: AssignmentEventType.Removed
+            });
+        }
     }
 
 

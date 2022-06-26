@@ -1,17 +1,15 @@
-import {Types} from "../../server/Types";
+import { Types } from "../../server/Types";
 
-import {AssignmentEventType} from "../../imports/assignments/interfaces/AssignmentEventType";
-import {IAssignmentSingleNotifierOptions} from "../../server/assignments/interfaces/IAssignmentNotifier";
-import {UserEntry, AssignmentDAO} from "../../collections/lib/AssignmentsCollection";
-import {AssignmentTestCaseWithNotifications} from "./common/AssignmentTestCaseWithNotifications";
+import { AssignmentEventType } from "../../imports/assignments/interfaces/AssignmentEventType";
+import { AssignmentTestCaseWithNotifications } from "./common/AssignmentTestCaseWithNotifications";
 
-import {assert} from "chai";
+import { assert } from "chai";
 
-import {IAssignmentRemover} from "../../server/assignments/interfaces/IAssignmentRemover";
+import { IAssignmentRemover } from "../../server/assignments/interfaces/IAssignmentRemover";
 
-describe("AssignmentRemover", function() {
+describe("AssignmentRemover", function () {
 
-    it("should not be null or undefined", function() {
+    it("should not be null or undefined", function () {
         // Arrange
         let testCase = new AssignmentRemoverTestCase();
 
@@ -22,7 +20,7 @@ describe("AssignmentRemover", function() {
         assert.isNotNull(testCase.remover);
     });
 
-    it("should remove assignment", function() {
+    it("should remove assignment", function () {
         // Arrange
         let testCase = new AssignmentRemoverTestCase();
         let toBeDeletedId = testCase.collection.insert({
@@ -41,7 +39,7 @@ describe("AssignmentRemover", function() {
         assert.equal(testCase.collection.findOne().name, "NOT to be deleted", "Did remove the wrong one.");
     });
 
-    it("should notify participants", function() {
+    it("should notify participants", function () {
         // Arrange
         let testCase = new AssignmentRemoverTestCase();
         let toBeDeletedId = testCase.collection.insert({
@@ -49,8 +47,8 @@ describe("AssignmentRemover", function() {
             participants: [{
                 user: "pleaseNotifyMe"
             }, {
-                    user: "meToo"
-                }]
+                user: "meToo"
+            }]
         });
 
         // Act
@@ -72,7 +70,7 @@ describe("AssignmentRemover", function() {
         });
     });
 
-    it("should notify applicants", function() {
+    it("should notify applicants", function () {
         // Arrange
         let testCase = new AssignmentRemoverTestCase();
         let toBeDeletedId = testCase.collection.insert({
@@ -80,8 +78,8 @@ describe("AssignmentRemover", function() {
             applicants: [{
                 user: "pleaseNotifyMe"
             }, {
-                    user: "meToo"
-                }]
+                user: "meToo"
+            }]
         });
 
         // Act

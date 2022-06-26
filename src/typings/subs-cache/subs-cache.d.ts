@@ -1,6 +1,6 @@
 
 declare module "meteor/ccorcos:subs-cache" {
-  import {ReactiveVar} from "meteor/reactive-var";
+  import { ReactiveVar } from "meteor/reactive-var";
 
   class CachedSubscription {
     /** will cache a subscription and stop after expireAfter unless restarted with sub.restart() */

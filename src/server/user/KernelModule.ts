@@ -1,17 +1,15 @@
 
-import { KernelModule, interfaces } from "inversify";
+import { interfaces, KernelModule } from "inversify";
 
 
-import {Types} from "../Types";
-import {UserTypes} from "./UserTypes";
+import { UserTypes } from "./UserTypes";
 
-import {SimpleCollection} from "../../imports/interfaces/SimpleCollection";
 
-import {IUserFactory} from "./interfaces/IUserFactory";
-import {UserFactory} from "./classes/UserFactory";
+import { UserFactory } from "./classes/UserFactory";
+import { IUserFactory } from "./interfaces/IUserFactory";
 
-import {IUserSettingsReaderFactory} from "./interfaces/IUserSettingsReaderFactory";
-import {UserSettingsReaderFactory} from "./classes/UserSettingsReaderFactory";
+import { UserSettingsReaderFactory } from "./classes/UserSettingsReaderFactory";
+import { IUserSettingsReaderFactory } from "./interfaces/IUserSettingsReaderFactory";
 
 
 export const kernelModule = new KernelModule((bind: interfaces.Bind) => {

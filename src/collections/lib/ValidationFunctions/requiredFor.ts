@@ -1,4 +1,4 @@
-import {Match} from "meteor/check";
+import { Match } from "meteor/check";
 
 // Extend the schema options allowed by SimpleSchema
 SimpleSchema.extendOptions({
@@ -47,6 +47,6 @@ export default function requiredForValidator(context: CustomValidatorContext) {
  *
  */
 
-SimpleSchema.addValidator(function() {
+SimpleSchema.addValidator(function () {
   requiredForValidator(<CustomValidatorContext>this);
 });

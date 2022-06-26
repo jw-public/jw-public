@@ -1,27 +1,24 @@
-import { AssignmentEventType } from "../../../imports/assignments/interfaces/AssignmentEventType";
 
 import { AssignmentNotifier } from "../../../server/assignments/classes/AssignmentNotifier";
 import { IAssignmentNotifier, IAssignmentSingleNotifierOptions } from "../../../server/assignments/interfaces/IAssignmentNotifier";
 
 import { Types } from "../../../server/Types";
 
-import { IAssignmentCloser } from "../../../server/assignments/interfaces/IAssignmentCloser";
 
-import { LocalCollection } from "../../3rdParty/minimongo-standalone/minimongo-standalone";
 import { SimpleCollection } from "../../../imports/interfaces/SimpleCollection";
+import { LocalCollection } from "../../3rdParty/minimongo-standalone/minimongo-standalone";
 
-import { UserEntry, AssignmentDAO } from "../../../collections/lib/AssignmentsCollection";
+import { AssignmentDAO } from "../../../collections/lib/AssignmentsCollection";
 import { NotificationDAO } from "../../../collections/lib/classes/UserNotification";
 
 import * as TypeMoq from "typemoq";
 
-import { injectable, inject, Kernel, interfaces } from "inversify";
+import { interfaces, Kernel } from "inversify";
+import { AssignmentServiceTypes } from "../../../server/assignments/AssignmentServiceTypes";
 import { kernelModule as assignmentKernelModule } from "../../../server/assignments/KernelModule";
 import { kernelModule as loggingKernelModule } from "../../../server/logging/KernelModule";
-import { AssignmentServiceTypes } from "../../../server/assignments/AssignmentServiceTypes";
 import { AssignmentAsserts } from "./AssignmentAsserts";
 
-import { assert } from "chai";
 
 
 const testData = {

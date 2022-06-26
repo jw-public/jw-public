@@ -1,6 +1,6 @@
 declare module "meteor/ongoworks:security" {
 
-  import {Mongo} from "meteor/mongo";
+  import { Mongo } from "meteor/mongo";
 
   interface PermittedChain {
     collections: (collections: Array<Mongo.Collection<any>> | Mongo.Collection<any>) => any;
@@ -14,7 +14,7 @@ declare module "meteor/ongoworks:security" {
   }
 
   export namespace Security {
-    function permit(types: Array<"insert" | "update" | "upsert" | "remove" > ): PermittedChain;
+    function permit(types: Array<"insert" | "update" | "upsert" | "remove">): PermittedChain;
     function defineMethod<T>(name: string, definition: MethodDefinition<T>): void;
   }
 

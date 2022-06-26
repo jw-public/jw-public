@@ -1,33 +1,26 @@
 import * as _ from "underscore";
 import { Blueprints } from './../collections/lib/BlueprintCollection';
-import { BlueprintAssignmentDAO } from './../imports/blueprint/interfaces/WeekBlueprint.d';
 
-import { Meteor, Subscription } from "meteor/meteor";
-import { Template } from "meteor/templating";
-import { Mongo } from "meteor/mongo";
-import { Accounts } from "meteor/accounts-base";
 import { Roles } from "meteor/alanning:roles";
-import { check, Match } from "meteor/check";
+import { check } from "meteor/check";
+import { Meteor, Subscription } from "meteor/meteor";
+import { Mongo } from "meteor/mongo";
 
 import { Counts } from "meteor/tmeasday:publish-counts";
 
-import { Email } from "meteor/email";
-import * as EmailSettingsManager from "./EmailSettingsManager";
-import * as PhoneValidator from "../collections/lib/ValidationFunctions/PhoneValidator";
 
-import Group from "../collections/lib/classes/Group";
-import { GroupApplicationController } from "../collections/lib/classes/Group";
-import { Groups, GroupDAO } from "../collections/lib/GroupCollection";
+import Group, { GroupApplicationController } from "../collections/lib/classes/Group";
+import { Groups } from "../collections/lib/GroupCollection";
 
 import User from "../collections/lib/classes/User";
-import * as UserCollection from "../collections/lib/UserCollection";
 import * as UserNotification from "../collections/lib/classes/UserNotification";
+import * as UserCollection from "../collections/lib/UserCollection";
 
 import { Notifications } from "../collections/lib/NotificationCollection";
 
+import { AssignmentDAO, Assignments } from "../collections/lib/AssignmentsCollection";
 import Assignment from "../collections/lib/classes/Assignment";
 import { AssignmentState } from "../collections/lib/classes/AssignmentState";
-import { UserEntry, AssignmentDAO, Assignments } from "../collections/lib/AssignmentsCollection";
 
 
 import AssignmentCountAccessor from "../collections/lib/classes/AssignmentCountAccessor";
@@ -400,22 +393,22 @@ Meteor.publish("assignmentsInMonthPerGroup", function (groupId: string, monthYea
       month: date.month(),
       end: { $gte: moment().startOf("day").toDate() }
     }, {
-        fields: {
-          _id: 1,
-          group: 1,
-          start: 1,
-          end: 1,
-          name: 1,
-          state: 1,
-          applicants: 1,
-          participants: 1,
-          userGoal: 1,
-          yearOfIsoWeek: 1,
-          year: 1,
-          month: 1,
-          isoWeek: 1,
-        }
-      });
+      fields: {
+        _id: 1,
+        group: 1,
+        start: 1,
+        end: 1,
+        name: 1,
+        state: 1,
+        applicants: 1,
+        participants: 1,
+        userGoal: 1,
+        yearOfIsoWeek: 1,
+        year: 1,
+        month: 1,
+        isoWeek: 1,
+      }
+    });
   } else {
     return null;
   }

@@ -1,6 +1,6 @@
 import { injectable } from 'inversify';
-import { LoggerFactory } from './LoggerFactory';
 import { Logger } from './Logger';
+import { LoggerFactory } from './LoggerFactory';
 
 @injectable()
 export class SimpleConsoleLoggerFactory implements LoggerFactory {

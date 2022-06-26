@@ -1,8 +1,6 @@
-import { IAssignmentStateReader, AssignmentStateForUser} from "./AssignmentStateReader";
-import {AssignmentStateReader} from "./AssignmentStateReader";
+import { IAssignmentStateReader } from "./AssignmentStateReader";
 
 
-import {AssignmentDAO} from "../../collections/lib/AssignmentsCollection";
 
 export enum DisplayState {
   Canceled, UserAccepted, Closed, UserApplicant, Default
@@ -15,7 +13,7 @@ export interface IAssignmentDisplayStateReader {
 
 }
 
- class AssignmentDisplayStateReaderFactorySecondStep {
+class AssignmentDisplayStateReaderFactorySecondStep {
 
 
   constructor(private stateReader: IAssignmentStateReader) {

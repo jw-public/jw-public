@@ -1,12 +1,9 @@
-import { Meteor } from "meteor/meteor";
-import { Template } from "meteor/templating";
 import { Session } from "meteor/session";
-import { Mongo } from "meteor/mongo";
-import * as AssignmentForm from "./AssignmentForm";
 import * as moment from 'moment';
+import * as AssignmentForm from "./AssignmentForm";
 
-import { AssignmentDAO, Assignments } from "../../collections/lib/AssignmentsCollection";
 import { ReactiveVar } from "meteor/reactive-var";
+import { AssignmentDAO, Assignments } from "../../collections/lib/AssignmentsCollection";
 import { ReactiveVarWrapper } from '../common/ReactiveVarWrapper';
 
 const ASSIGNMENT_SELECTION_NAME = "assignmentOptions_selected_assignment";

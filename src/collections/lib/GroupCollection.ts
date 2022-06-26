@@ -1,11 +1,8 @@
 import { Meteor } from "meteor/meteor";
-import { Template } from "meteor/templating";
-import { Session } from "meteor/session";
 import { Mongo } from "meteor/mongo";
 
-import Group from "./classes/Group";
+import { Assignments } from "./AssignmentsCollection";
 import { GroupApplicationController } from "./classes/Group";
-import { UserEntry, AssignmentDAO, Assignments } from "./AssignmentsCollection";
 import { CollectionConf } from "./collectionConfig/CollectionConf";
 
 

@@ -1,13 +1,9 @@
-import {Meteor} from "meteor/meteor";
-import {Template} from "meteor/templating";
-import {Session} from "meteor/session";
-import {Mongo} from "meteor/mongo";
-import {Accounts} from "meteor/accounts-base";
+import { Meteor } from "meteor/meteor";
 
 export const CONTEXT_NAME_STEP_TWO = "register-secondStep-register";
 
-import {JustEmail, UserProfileSchema} from "./Users";
 import * as UserCollection from "./UserCollection";
+import { UserProfileSchema } from "./Users";
 
 
 /**
@@ -23,10 +19,10 @@ export const NewUserSchema = new SimpleSchema({
     // this must be optional if you also use other login services like facebook,
     // but if you use only accounts-password, then it can be required
     optional: false,
-    custom: function() {
+    custom: function () {
       // Überprüft, ob der Nutzer schon im System ist und gibt ggf. eine Fehlermeldung aus.
       if (Meteor.isClient && this.isSet) {
-        Meteor.call("userExists", this.value, function(error, result) {
+        Meteor.call("userExists", this.value, function (error, result) {
           if (result) {
             getStepTwoContext().addInvalidKeys([{
               name: "email",
@@ -36,7 +32,7 @@ export const NewUserSchema = new SimpleSchema({
         });
       }
     },
-    autoValue: function() {
+    autoValue: function () {
       if (this.isSet) {
         return this.value.trim().toLowerCase(); // Alles kleinschreiben
       }
@@ -54,7 +50,7 @@ export const NewUserSchema = new SimpleSchema({
   passwordConfirmation: {
     type: String,
     label: "Passwort bestätigen",
-    custom: function() {
+    custom: function () {
       if (this.value !== this.field('password').value) {
         return "passwordMissmatch";
       }

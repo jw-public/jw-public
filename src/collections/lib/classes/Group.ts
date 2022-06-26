@@ -1,18 +1,16 @@
-import * as _ from "underscore";
-import { Meteor } from "meteor/meteor";
-import { Template } from "meteor/templating";
-import { Session } from "meteor/session";
-import { Mongo } from "meteor/mongo";
 import { Blaze } from "meteor/blaze";
+import { Meteor } from "meteor/meteor";
+import { Mongo } from "meteor/mongo";
 import { Counts } from "meteor/tmeasday:publish-counts";
+import * as _ from "underscore";
 
 
-import * as UserCollection from "../../../collections/lib/UserCollection";
 import User from "../../../collections/lib/classes/User";
+import * as UserCollection from "../../../collections/lib/UserCollection";
 
-import { Groups, GroupDAO } from "../GroupCollection";
+import { GroupDAO, Groups } from "../GroupCollection";
 
-import { UserEntry, AssignmentDAO, Assignments } from "../AssignmentsCollection";
+import { AssignmentDAO, Assignments } from "../AssignmentsCollection";
 
 import * as moment from "moment";
 

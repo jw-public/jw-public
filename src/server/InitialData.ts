@@ -1,13 +1,8 @@
-import * as _ from "underscore";
-import { Meteor, Subscription } from "meteor/meteor";
-import { Template } from "meteor/templating";
-import { Mongo } from "meteor/mongo";
 import { Accounts } from "meteor/accounts-base";
 import { Roles } from "meteor/alanning:roles";
-import { GroupDAO, Groups } from "../collections/lib/GroupCollection";
-import User from "../collections/lib/classes/User";
-import Group from "../collections/lib/classes/Group";
 import { Assignments } from "../collections/lib/AssignmentsCollection";
+import Group from "../collections/lib/classes/Group";
+import { GroupDAO, Groups } from "../collections/lib/GroupCollection";
 
 const adminUser = {
   vorname: "Admin",

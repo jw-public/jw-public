@@ -1,32 +1,32 @@
 import { Types } from "./Types";
 
 import { NotificationDAO } from "../collections/lib/classes/UserNotification";
-import { IAssignmentParticipantControllerFactory } from "./assignments/interfaces/IAssignmentParticipantControllerFactory";
-import { IAssignmentRemover } from "./assignments/interfaces/IAssignmentRemover";
 import { IAssignmentCanceler } from "./assignments/interfaces/IAssignmentCanceler";
 import { IAssignmentCloser } from "./assignments/interfaces/IAssignmentCloser";
+import { IAssignmentParticipantControllerFactory } from "./assignments/interfaces/IAssignmentParticipantControllerFactory";
 import { IAssignmentReenabler } from "./assignments/interfaces/IAssignmentReenabler";
+import { IAssignmentRemover } from "./assignments/interfaces/IAssignmentRemover";
 
 
-import { injectable, Kernel, interfaces } from "inversify";
+import { Kernel } from "inversify";
 import getDecorators from "inversify-inject-decorators";
 
 
 import { kernelModule as assignmentKernelModule } from "./assignments/KernelModule";
+import { kernelModule as loggingModule } from "./logging/KernelModule";
 import { kernelModule as mailingKernelModule } from "./mailing/KernelModule";
 import { kernelModule as userKernelModule } from "./user/KernelModule";
-import { kernelModule as loggingModule } from "./logging/KernelModule";
 
-import { meteorSpecificBindings as mailingMeteorSpecificBindings } from "./mailing/MeteorSpecificBindings";
-import { SimpleCollection } from "../imports/interfaces/SimpleCollection";
 import { AssignmentDAO, Assignments } from "../collections/lib/AssignmentsCollection";
 import { Notifications } from "../collections/lib/NotificationCollection";
+import { SimpleCollection } from "../imports/interfaces/SimpleCollection";
+import { meteorSpecificBindings as mailingMeteorSpecificBindings } from "./mailing/MeteorSpecificBindings";
 
 import { IAssignmentApplicationControllerFactory } from "./assignments/interfaces/IAssignmentApplicationControllerFactory";
 
 import { Meteor } from "meteor/meteor";
-import { UserDAO } from "../collections/lib/UserCollection";
 import { GroupDAO, Groups } from "../collections/lib/GroupCollection";
+import { UserDAO } from "../collections/lib/UserCollection";
 
 let kernel = new Kernel();
 

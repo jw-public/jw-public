@@ -1,21 +1,12 @@
+import { Meteor } from "meteor/meteor";
 import * as _ from "underscore";
-import {Meteor} from "meteor/meteor";
-import {Mongo} from "meteor/mongo";
-import {Random} from "meteor/random";
-import {Roles} from "meteor/alanning:roles";
-import {Accounts} from "meteor/accounts-base";
 
 import Group from "../../../collections/lib/classes/Group";
-import {Groups, GroupDAO} from "../../../collections/lib/GroupCollection";
+import { GroupDAO, Groups } from "../../../collections/lib/GroupCollection";
 
 import User from "../../../collections/lib/classes/User";
 import * as UserCollection from "../../../collections/lib/UserCollection";
-import * as UserNotification from "../../../collections/lib/classes/UserNotification";
-import {Notifications} from "../../../collections/lib/NotificationCollection";
 
-import Assignment from "../../../collections/lib/classes/Assignment";
-import {AssignmentState} from "../../../collections/lib/classes/AssignmentState";
-import {UserEntry, AssignmentDAO, Assignments} from "../../../collections/lib/AssignmentsCollection";
 
 if (!(typeof MochaWeb === 'undefined')) {
 
@@ -25,10 +16,10 @@ if (!(typeof MochaWeb === 'undefined')) {
 
         describe("Group Unit Test", function () {
             it("[User] Bewerbung, Teilnahme und Entfernen als Zyklus", function (done) {
-                var exampleUser:UserCollection.UserDAO = Meteor.users.findOne({});
-                var testGroupDao:GroupDAO = Groups.findOne({name: "Test"});
+                var exampleUser: UserCollection.UserDAO = Meteor.users.findOne({});
+                var testGroupDao: GroupDAO = Groups.findOne({ name: "Test" });
 
-                var group:Group = Group.createFromDAO(testGroupDao);
+                var group: Group = Group.createFromDAO(testGroupDao);
 
                 chai.assert.isDefined(testGroupDao, "Es gibt keine Gruppe \"Test\"");
                 chai.assert.isNotNull(testGroupDao, "Es gibt keine Gruppe \"Test\"");
@@ -96,18 +87,18 @@ if (!(typeof MochaWeb === 'undefined')) {
                 chai.assert(members.length > 0, "Die Gruppe gibt keine Mitglieder zurück. (.getMembers())");
                 var notificationCount = new Object;
 
-                _.forEach(members, function(member: User) {
-                  chai.assert(group.isMember(member), "Der User " + member.fullName + " sollte nicht in der Mitgliederauflistung sein.");
-                  var count: number = member.notificationManager.getAllNotifications().count();
-                  notificationCount[member.getId()] = count;
+                _.forEach(members, function (member: User) {
+                    chai.assert(group.isMember(member), "Der User " + member.fullName + " sollte nicht in der Mitgliederauflistung sein.");
+                    var count: number = member.notificationManager.getAllNotifications().count();
+                    notificationCount[member.getId()] = count;
                 });
 
 
                 group.sendNotificationToMembers("Test", "Dies ist eine Testbenachrichtigung.");
 
-                _.forEach(members, function(member: User) {
-                  var count: number = member.notificationManager.getAllNotifications().count();
-                  chai.assert.equal(count, (notificationCount[member.getId()] + 1), "Der User " + member.fullName + " hat keine Gruppennotification bekommen.");
+                _.forEach(members, function (member: User) {
+                    var count: number = member.notificationManager.getAllNotifications().count();
+                    chai.assert.equal(count, (notificationCount[member.getId()] + 1), "Der User " + member.fullName + " hat keine Gruppennotification bekommen.");
                 });
 
 
@@ -115,11 +106,11 @@ if (!(typeof MochaWeb === 'undefined')) {
             });
 
             it("[User] Koordinator hinzufügen und entfernen als Zyklus", function (done) {
-                var user:User = User.createFromEmail("to_be_upgraded@user.com");
-                var userDAO:UserCollection.UserDAO = user.getDAO();
-                var testGroupDao:GroupDAO = Groups.findOne({name: "Test"});
+                var user: User = User.createFromEmail("to_be_upgraded@user.com");
+                var userDAO: UserCollection.UserDAO = user.getDAO();
+                var testGroupDao: GroupDAO = Groups.findOne({ name: "Test" });
 
-                var group:Group = new Group(testGroupDao._id);
+                var group: Group = new Group(testGroupDao._id);
 
                 chai.assert.isDefined(testGroupDao, "Es gibt keine Gruppe \"Test\"");
                 chai.assert.isNotNull(testGroupDao, "Es gibt keine Gruppe \"Test\"");

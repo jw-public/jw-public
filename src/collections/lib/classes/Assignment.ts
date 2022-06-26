@@ -1,16 +1,12 @@
+import { Meteor } from "meteor/meteor";
+import { Mongo } from "meteor/mongo";
 import * as _ from "underscore";
-import {Meteor} from "meteor/meteor";
-import {Template} from "meteor/templating";
-import {Session} from "meteor/session";
-import {Mongo} from "meteor/mongo";
 
-import {AssignmentState} from "./AssignmentState";
 import User from "../../../collections/lib/classes/User";
-import * as UserCollection from "../../../collections/lib/UserCollection";
+import { AssignmentState } from "./AssignmentState";
 import Group from "./Group";
 
-import * as UserNotification from "./UserNotification";
-import {UserEntry, AssignmentDAO, Assignments} from "../AssignmentsCollection";
+import { AssignmentDAO, Assignments, UserEntry } from "../AssignmentsCollection";
 
 import * as moment from "moment";
 
@@ -105,11 +101,11 @@ export default class Assignment {
   }
 
   public get applicantsCount(): number {
-    return this.getDAO({"applicants.user":1}, true).applicants.length;
+    return this.getDAO({ "applicants.user": 1 }, true).applicants.length;
   }
 
   public get participantsCount(): number {
-    return this.getDAO({"participants.user":1}, true).participants.length;
+    return this.getDAO({ "participants.user": 1 }, true).participants.length;
   }
 
 
@@ -172,7 +168,7 @@ export default class Assignment {
       reactive = false;
     }
 
-    _.forEach(Assignments.findOne({ _id: this.getAssignmentId() }, { fields: { "participants": 1 }, "reactive": reactive }).participants, function(participant: UserEntry) {
+    _.forEach(Assignments.findOne({ _id: this.getAssignmentId() }, { fields: { "participants": 1 }, "reactive": reactive }).participants, function (participant: UserEntry) {
       participantIds.push(participant.user);
     });
 
@@ -196,7 +192,7 @@ export default class Assignment {
       return [];
     }
 
-    _.forEach(assignmentDAO.participants, function(participant: UserEntry) {
+    _.forEach(assignmentDAO.participants, function (participant: UserEntry) {
       participants.push(new User(participant.user));
     });
 
@@ -230,7 +226,7 @@ export default class Assignment {
       reactive = false;
     }
 
-    _.forEach(Assignments.findOne({ _id: this.getAssignmentId() }, { fields: { "applicants": 1 }, "reactive": reactive }).applicants, function(applicant: UserEntry) {
+    _.forEach(Assignments.findOne({ _id: this.getAssignmentId() }, { fields: { "applicants": 1 }, "reactive": reactive }).applicants, function (applicant: UserEntry) {
       applicantIds.push(applicant.user);
     });
 
@@ -250,7 +246,7 @@ export default class Assignment {
 
     let contacts = new Array<User>();
 
-    _.forEach(ids, function(id: string) {
+    _.forEach(ids, function (id: string) {
       contacts.push(new User(id));
     });
 
@@ -310,7 +306,7 @@ export default class Assignment {
     if (!reactive) {
       reactive = false;
     }
-    let stateString:string = this.getDAO({"state": 1}, reactive).state;
+    let stateString: string = this.getDAO({ "state": 1 }, reactive).state;
 
     return AssignmentState[stateString];
   }

@@ -1,5 +1,5 @@
-import {IEmailSender, IEmailSendOptions} from "../../server/mailing/interfaces/IEmailSender";
-import { injectable, inject, Kernel, interfaces } from "inversify";
+import { injectable } from "inversify";
+import { IEmailSender, IEmailSendOptions } from "../../server/mailing/interfaces/IEmailSender";
 
 /** Does nothing **/
 injectable()

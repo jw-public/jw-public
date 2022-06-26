@@ -1,14 +1,12 @@
 
-import { KernelModule, interfaces } from "inversify";
+import { interfaces, KernelModule } from "inversify";
 
 
-import {Types} from "../Types";
-import {MailingTypes} from "./MailingTypes";
+import { MailingTypes } from "./MailingTypes";
 
-import {SimpleCollection} from "../../imports/interfaces/SimpleCollection";
 
-import {IUserMailer} from "./interfaces/IUserMailer";
-import {UserMailer} from "./classes/UserMailer";
+import { UserMailer } from "./classes/UserMailer";
+import { IUserMailer } from "./interfaces/IUserMailer";
 
 
 

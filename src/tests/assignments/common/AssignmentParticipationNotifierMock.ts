@@ -1,7 +1,7 @@
-import { IAssignmentContext } from "../../../server/assignments/interfaces/IAssignmentContext";
-import { IAssignmentParticipationNotifier, IAssignmentNotifierOptions } from "../../../server/assignments/interfaces/IAssignmentParticipationNotifier";
 import { assert } from "chai";
-import { injectable, inject } from "inversify";
+import { injectable } from "inversify";
+import { IAssignmentContext } from "../../../server/assignments/interfaces/IAssignmentContext";
+import { IAssignmentNotifierOptions, IAssignmentParticipationNotifier } from "../../../server/assignments/interfaces/IAssignmentParticipationNotifier";
 
 @injectable()
 export class AssignmentParticipationNotifierMock implements IAssignmentParticipationNotifier {

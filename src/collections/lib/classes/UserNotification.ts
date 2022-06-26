@@ -1,12 +1,10 @@
-import { AssignmentEventType as AssignmentType } from "../../../imports/assignments/interfaces/AssignmentEventType";
-import { Meteor } from "meteor/meteor";
-import { Template } from "meteor/templating";
-import { Mongo } from "meteor/mongo";
 import { check } from "meteor/check";
+import { AssignmentEventType as AssignmentType } from "../../../imports/assignments/interfaces/AssignmentEventType";
 
 import Assignment from "./Assignment";
 import * as EnumUtil from "./EnumUtil";
 
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 import * as moment from "moment";
 import "../ValidationFunctions/requiredFor";
 
@@ -15,7 +13,6 @@ export enum Type { Assignment, Simple };
 
 export const NotificationNames = EnumUtil.getNames(Type);
 export const AssignmentTypeNames = EnumUtil.getNames(AssignmentType);
-import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 
 // @see interface AssignmentOptions
 export const AssignmentOptionsSchema = new SimpleSchema({

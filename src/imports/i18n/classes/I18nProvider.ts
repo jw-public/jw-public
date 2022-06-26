@@ -1,10 +1,10 @@
-import { IDateParser } from '../interfaces/IDateParser';
-import { ILocale } from '../interfaces/ILocale';
-import { II18nProvider } from '../interfaces/II18nProvider';
-import { messages as de } from '../locales/de'
-import { messages as en } from '../locales/en'
-import { messages as fr } from '../locales/fr'
 import * as moment from 'moment-timezone';
+import { IDateParser } from '../interfaces/IDateParser';
+import { II18nProvider } from '../interfaces/II18nProvider';
+import { ILocale } from '../interfaces/ILocale';
+import { messages as de } from '../locales/de';
+import { messages as en } from '../locales/en';
+import { messages as fr } from '../locales/fr';
 
 export type Locale =
     "de-de"

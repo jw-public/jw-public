@@ -1,23 +1,20 @@
-import {Types} from "../../server/Types";
-import {UserTypes} from "../../server/user/UserTypes";
-import {IUserSettingsReaderFactory} from "../../server/user/interfaces/IUserSettingsReaderFactory";
-import {IUserSettingsReader} from "../../server/user/interfaces/IUserSettingsReader";
+import { IUserSettingsReader } from "../../server/user/interfaces/IUserSettingsReader";
+import { IUserSettingsReaderFactory } from "../../server/user/interfaces/IUserSettingsReaderFactory";
+import { UserTypes } from "../../server/user/UserTypes";
 
 
-import {assert} from "chai";
+import { assert } from "chai";
 
-import * as TypeMoq from "typemoq";
-import { injectable, inject, Kernel, interfaces } from "inversify";
 
-import {TestCase} from "../common/TestCase";
-import {UserDAO} from "../../collections/lib/UserCollection";
+import { UserDAO } from "../../collections/lib/UserCollection";
+import { TestCase } from "../common/TestCase";
 
 
 
 
-describe("UserSettingsReader", function() {
+describe("UserSettingsReader", function () {
 
-  it("should not be null or undefined", function() {
+  it("should not be null or undefined", function () {
     // Arrange
     let testCase = new UserSettingsReaderTestCase({
       // Empty User
@@ -32,7 +29,7 @@ describe("UserSettingsReader", function() {
   });
 
 
-  it("should determine whether user wants to receive notification emails, when property is undefined", function() {
+  it("should determine whether user wants to receive notification emails, when property is undefined", function () {
     // Arrange
     let testCase = new UserSettingsReaderTestCase({
       profile: {
@@ -45,7 +42,7 @@ describe("UserSettingsReader", function() {
     assert.isTrue(testCase.reader.wantsToReceiveNotificationAsEmail());
   });
 
-  it("should determine whether user wants to receive notification emails, when property is false", function() {
+  it("should determine whether user wants to receive notification emails, when property is false", function () {
     // Arrange
     let testCase = new UserSettingsReaderTestCase({
       profile: {
@@ -59,7 +56,7 @@ describe("UserSettingsReader", function() {
     assert.isFalse(testCase.reader.wantsToReceiveNotificationAsEmail());
   });
 
-  it("should determine whether user wants to receive notification emails, when property is true", function() {
+  it("should determine whether user wants to receive notification emails, when property is true", function () {
     // Arrange
     let testCase = new UserSettingsReaderTestCase({
       profile: {
@@ -73,7 +70,7 @@ describe("UserSettingsReader", function() {
     assert.isTrue(testCase.reader.wantsToReceiveNotificationAsEmail());
   });
 
-  it("should determine language when german", function() {
+  it("should determine language when german", function () {
     // Arrange
     let testCase = new UserSettingsReaderTestCase({
       profile: {
@@ -87,7 +84,7 @@ describe("UserSettingsReader", function() {
     assert.equal(testCase.reader.getI18nProvider().getLanguageIdentifier(), "de-de");
   });
 
-  it("should determine language when french", function() {
+  it("should determine language when french", function () {
     // Arrange
     let testCase = new UserSettingsReaderTestCase({
       profile: {

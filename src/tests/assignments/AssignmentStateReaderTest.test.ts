@@ -1,16 +1,15 @@
-import {UserEntry, AssignmentDAO} from "../../collections/lib/AssignmentsCollection";
+import { AssignmentDAO, UserEntry } from "../../collections/lib/AssignmentsCollection";
 
-import {AssignmentState} from "../../collections/lib/classes/AssignmentState";
-import {AssignmentStateReader} from "../../lib/classes/AssignmentStateReader";
-import { IAssignmentStateReader, AssignmentStateForUser} from "../../lib/classes/AssignmentStateReader";
-import * as _ from "underscore";
 import * as chai from "chai";
+import * as _ from "underscore";
+import { AssignmentState } from "../../collections/lib/classes/AssignmentState";
+import { AssignmentStateForUser, AssignmentStateReader } from "../../lib/classes/AssignmentStateReader";
 
 
 
-describe("AssignmentStateReader UnitTest", function() {
+describe("AssignmentStateReader UnitTest", function () {
 
-  it("Empty and closed assignment", function() {
+  it("Empty and closed assignment", function () {
     assertAssignment({
       participants: [],
       applicants: [],
@@ -23,7 +22,7 @@ describe("AssignmentStateReader UnitTest", function() {
     });
   });
 
-  it("User is participant and closed assignment", function() {
+  it("User is participant and closed assignment", function () {
     assertAssignment({
       participants: ["fioashbdfioasbofb", randomUser, "goujanrpogbüobgng"],
       applicants: [],
@@ -36,7 +35,7 @@ describe("AssignmentStateReader UnitTest", function() {
     });
   });
 
-  it("User is applicant and open assignment", function() {
+  it("User is applicant and open assignment", function () {
     assertAssignment({
       applicants: ["fioashbdfioasbofb", randomUser, "goujanrpogbüobgng"],
       participants: ["donfonsdanobndfdsf"],
@@ -49,7 +48,7 @@ describe("AssignmentStateReader UnitTest", function() {
     });
   });
 
-  it("Canceled assignment", function() {
+  it("Canceled assignment", function () {
     assertAssignment({
       applicants: [],
       participants: [],
@@ -75,9 +74,9 @@ const randomUser = "fifb83bf2bp9u2b39w4twzbg";
 
 
 function getAssertMessage(assignment: AssignmentDAO, actualState: Object, expectedState: Object) {
-  return `State of assignment ${JSON.stringify(assignment) }
-        should be ${JSON.stringify(expectedState) }
-        but was ${JSON.stringify(actualState) }`;
+  return `State of assignment ${JSON.stringify(assignment)}
+        should be ${JSON.stringify(expectedState)}
+        but was ${JSON.stringify(actualState)}`;
 }
 
 function mapToUserEntries(userIds: Array<string>): Array<UserEntry> {

@@ -1,24 +1,15 @@
+import { Meteor } from "meteor/meteor";
 import { Blueprints } from './../collections/lib/BlueprintCollection';
-import { Meteor, Subscription } from "meteor/meteor";
-import { Template } from "meteor/templating";
-import { Mongo } from "meteor/mongo";
-import { Accounts } from "meteor/accounts-base";
-import { Roles } from "meteor/alanning:roles";
-import { check, Match } from "meteor/check";
 
 import Group from "../collections/lib/classes/Group";
-import { GroupApplicationController } from "../collections/lib/classes/Group";
-import { Groups, GroupDAO } from "../collections/lib/GroupCollection";
+import { GroupDAO, Groups } from "../collections/lib/GroupCollection";
 
 import User from "../collections/lib/classes/User";
-import * as UserCollection from "../collections/lib/UserCollection";
 import * as UserNotification from "../collections/lib/classes/UserNotification";
 
 import { Notifications } from "../collections/lib/NotificationCollection";
 
-import Assignment from "../collections/lib/classes/Assignment";
-import { AssignmentState } from "../collections/lib/classes/AssignmentState";
-import { UserEntry, AssignmentDAO, Assignments } from "../collections/lib/AssignmentsCollection";
+import { AssignmentDAO, Assignments } from "../collections/lib/AssignmentsCollection";
 
 import { Security } from "meteor/ongoworks:security";
 

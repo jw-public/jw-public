@@ -1,4 +1,4 @@
-import {IAssignmentParticipantController} from "./IAssignmentParticipantController";
+import { IAssignmentParticipantController } from "./IAssignmentParticipantController";
 
 /**
 * I provide you with a fresh instance of an IAssignmentParticipantController.

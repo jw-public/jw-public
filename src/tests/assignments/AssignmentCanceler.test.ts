@@ -1,8 +1,6 @@
 import { Types } from "../../server/Types";
 
 import { AssignmentEventType } from "../../imports/assignments/interfaces/AssignmentEventType";
-import { IAssignmentSingleNotifierOptions } from "../../server/assignments/interfaces/IAssignmentNotifier";
-import { UserEntry, AssignmentDAO } from "../../collections/lib/AssignmentsCollection";
 import { AssignmentTestCaseWithNotifications } from "./common/AssignmentTestCaseWithNotifications";
 
 import { assert } from "chai";

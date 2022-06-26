@@ -1,8 +1,7 @@
 import { injectable } from 'inversify';
-import { SimpleCollection } from '../../../imports/interfaces/SimpleCollection';
+import * as moment from 'moment-timezone';
 import { AssignmentDAO } from '../../../collections/lib/AssignmentsCollection';
 import { IAssignmentDateParser } from "../interfaces/IAssignmentDateParser";
-import * as moment from 'moment-timezone';
 
 
 

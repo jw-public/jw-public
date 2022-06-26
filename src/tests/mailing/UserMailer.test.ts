@@ -1,11 +1,7 @@
-import { Types } from "../../server/Types";
-import { MailingTypes } from "../../server/mailing/MailingTypes";
 import { assert } from "chai";
+import { MailingTypes } from "../../server/mailing/MailingTypes";
 
-import * as TypeMoq from "typemoq";
-import { IEmailSender } from "../../server/mailing/interfaces/IEmailSender";
 import { IUserMailer } from "../../server/mailing/interfaces/IUserMailer";
-import { injectable, inject, Kernel, interfaces } from "inversify";
 
 import { MailTestCase } from "./common/MailTestCase";
 

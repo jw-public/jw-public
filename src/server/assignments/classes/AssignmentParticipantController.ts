@@ -1,3 +1,5 @@
+import { inject, injectable, named } from 'inversify';
+import * as _ from 'underscore';
 import { AssignmentDAO } from '../../../collections/lib/AssignmentsCollection';
 import { SimpleCollection } from '../../../imports/interfaces/SimpleCollection';
 import { Types } from '../../Types';
@@ -7,8 +9,6 @@ import { IAssignmentParticipantController } from '../interfaces/IAssignmentParti
 import { IAssignmentParticipationNotifier } from '../interfaces/IAssignmentParticipationNotifier';
 import { extractIdsFromUserEntryArray } from '../utils/UserEntryHelper';
 import { AssignmentAction } from './AssignmentAction';
-import { inject, injectable, named } from 'inversify';
-import * as _ from 'underscore';
 
 
 @injectable()
@@ -16,7 +16,7 @@ export class AssignmentParticipantController extends AssignmentAction implements
 
     private assignmentContext: IAssignmentContext;
 
-    constructor( @inject(Types.Collection) @named("assignment") protected collection: SimpleCollection<AssignmentDAO>,
+    constructor(@inject(Types.Collection) @named("assignment") protected collection: SimpleCollection<AssignmentDAO>,
         @inject(AssignmentServiceTypes.IAssignmentParticipationNotifier) private participationNotifier: IAssignmentParticipationNotifier) {
         super(collection);
     }
@@ -57,17 +57,17 @@ export class AssignmentParticipantController extends AssignmentAction implements
                 $ne: userId
             }
         }, {
-                $push: {
-                    participants: {
-                        user: userId
-                    }
-                },
-                $pull: {
-                    applicants: {
-                        user: userId
-                    }
+            $push: {
+                participants: {
+                    user: userId
                 }
-            });
+            },
+            $pull: {
+                applicants: {
+                    user: userId
+                }
+            }
+        });
     }
 
     public removeUserAsParticipantAndNotify(userId: string): boolean {
@@ -77,12 +77,12 @@ export class AssignmentParticipantController extends AssignmentAction implements
             this.collection.update({
                 _id: this.assignmentId
             }, {
-                    $pull: {
-                        "participants": {
-                            "user": userId
-                        } // Wird als Teilnehmer entfernt.
-                    }
-                });
+                $pull: {
+                    "participants": {
+                        "user": userId
+                    } // Wird als Teilnehmer entfernt.
+                }
+            });
 
             this.participationNotifier.notifyUsersAreNotAccepted({
                 assignmentId: this.assignmentId,

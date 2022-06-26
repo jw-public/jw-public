@@ -1,26 +1,25 @@
 import * as _ from "underscore";
 
 import Assignment from "../../../../collections/lib/classes/Assignment";
-import User from "../../../../collections/lib/classes/User";
 import Group from "../../../../collections/lib/classes/Group";
+import User from "../../../../collections/lib/classes/User";
 
-import { Meteor } from "meteor/meteor";
-import { Template } from "meteor/templating";
-import { Session } from "meteor/session";
-import { Mongo } from "meteor/mongo";
 import { Blaze } from "meteor/blaze";
+import { Meteor } from "meteor/meteor";
+import { Mongo } from "meteor/mongo";
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 import { ReactiveVar } from "meteor/reactive-var";
+import { Template } from "meteor/templating";
 import { subsCache } from "../../../lib/subscription-cache";
 import { PaginatorComponent } from "../../components/paginator/paginator";
-import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 
 import * as moment from "moment";
 
 
 import * as AccordionTemplateStorage from "../../helperModules/AccordionTemplateStorage";
 
-import { Groups, GroupDAO } from "../../../../collections/lib/GroupCollection";
-import { Assignments, AssignmentDAO } from "../../../../collections/lib/AssignmentsCollection";
+import { AssignmentDAO, Assignments } from "../../../../collections/lib/AssignmentsCollection";
+import { GroupDAO, Groups } from "../../../../collections/lib/GroupCollection";
 
 import * as ServerMethodsWrapper from "../../../../lib/classes/ServerMethodsWrapper";
 
@@ -460,7 +459,6 @@ Template["assignmentWeekView"].helpers({
 });
 
 import AssignmentPanel from "./AssignmentPanel";
-import { getApplicantsArray } from "client/templates/components/assignmentManager/AssignmentManager";
 
 
 Template["assignmentItem"].helpers({

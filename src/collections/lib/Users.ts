@@ -1,18 +1,17 @@
+import { Meteor } from "meteor/meteor";
 import * as _ from "underscore";
 import { SUPPORTED_LANGUAGES } from '../../imports/i18n/classes/I18nProvider';
-import { Meteor } from "meteor/meteor";
-import { Mongo } from "meteor/mongo";
 
 import Group from "./classes/Group";
 
-import * as Registration from './Registration';
 import * as ProfileEdit from './ProfileEdit';
+import * as Registration from './Registration';
 
 import { CollectionConf } from "./collectionConfig/CollectionConf";
 
 
-import * as PhoneValidator from './ValidationFunctions/PhoneValidator';
 import * as ServerMethodsWrapper from '../../lib/classes/ServerMethodsWrapper';
+import * as PhoneValidator from './ValidationFunctions/PhoneValidator';
 
 export const UserProfileSchema = new SimpleSchema({
   first_name: {

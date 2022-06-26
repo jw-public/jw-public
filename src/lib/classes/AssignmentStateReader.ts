@@ -1,13 +1,13 @@
-import {AssignmentState} from "../../collections/lib/classes/AssignmentState";
-import {UserEntry, AssignmentDAO} from "../../collections/lib/AssignmentsCollection";
 import * as _ from "underscore";
+import { AssignmentDAO, UserEntry } from "../../collections/lib/AssignmentsCollection";
+import { AssignmentState } from "../../collections/lib/classes/AssignmentState";
 
 
 export interface AssignmentStateForUser {
-    canceled: boolean;
-    closed: boolean;
-    isParticipant: boolean;
-    isApplicant: boolean;
+  canceled: boolean;
+  closed: boolean;
+  isParticipant: boolean;
+  isApplicant: boolean;
 }
 
 export interface IAssignmentStateReader {
@@ -34,11 +34,11 @@ export class AssignmentStateReader implements IAssignmentStateReader {
   }
 
   private initParticipantIds(): void {
-      this.participantIds = this.mapUserEntriesToIdArray(this.assignment.participants);
+    this.participantIds = this.mapUserEntriesToIdArray(this.assignment.participants);
   }
 
   private initApplicantIds(): void {
-      this.applicantIds = this.mapUserEntriesToIdArray(this.assignment.applicants);
+    this.applicantIds = this.mapUserEntriesToIdArray(this.assignment.applicants);
   }
 
   private mapUserEntriesToIdArray(userEntries: Array<UserEntry>): Array<string> {

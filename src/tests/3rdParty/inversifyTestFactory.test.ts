@@ -1,6 +1,6 @@
+import { expect } from "chai";
+import { inject, injectable, Kernel } from "inversify";
 import "reflect-metadata";
-import { injectable, inject, Kernel, interfaces } from "inversify";
-import {expect} from "chai";
 
 let TYPES = {
     IWarrior: Symbol("IWarrior"),
@@ -8,14 +8,14 @@ let TYPES = {
     IWarriorFactory: Symbol("IWarriorFactory")
 }
 
-interface IWarriorFactory extends Function{
-  (rank: string): IWarrior;
+interface IWarriorFactory extends Function {
+    (rank: string): IWarrior;
 }
 
-interface IWeapon {}
+interface IWeapon { }
 
 @injectable()
-class Katana implements IWeapon {}
+class Katana implements IWeapon { }
 
 interface IWarrior {
     weapon: IWeapon;
@@ -50,13 +50,13 @@ kernel.bind<IWarriorFactory>(TYPES.IWarriorFactory)
 
 
 
-describe("InversifyJS - Factory", function() {
-  it("integrates", function() {
-    let warriorFactory = kernel.get<IWarriorFactory>(TYPES.IWarriorFactory);
-    let master = warriorFactory("master");
-    let student = warriorFactory("student");
+describe("InversifyJS - Factory", function () {
+    it("integrates", function () {
+        let warriorFactory = kernel.get<IWarriorFactory>(TYPES.IWarriorFactory);
+        let master = warriorFactory("master");
+        let student = warriorFactory("student");
 
-    expect(master.rank).eql("master");
-    expect(student.rank).eql("student");
-  });
+        expect(master.rank).eql("master");
+        expect(student.rank).eql("student");
+    });
 });

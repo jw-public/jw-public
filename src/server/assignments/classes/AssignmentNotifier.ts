@@ -1,13 +1,13 @@
-import { Logger } from '../../../imports/logging/Logger';
-import { LoggerFactory } from '../../../imports/logging/LoggerFactory';
+import { inject, injectable, named } from "inversify";
+import { NotificationDAO } from "../../../collections/lib/classes/UserNotification";
 import { AssignmentEventType } from "../../../imports/assignments/interfaces/AssignmentEventType";
 import { SimpleCollection } from "../../../imports/interfaces/SimpleCollection";
+import { Logger } from '../../../imports/logging/Logger';
+import { LoggerFactory } from '../../../imports/logging/LoggerFactory';
 import { Types } from "../../Types";
-import { IAssignmentNotifier, IAssignmentSingleNotifierOptions } from "../interfaces/IAssignmentNotifier";
-import { IAssignmentEmailNotifier } from "../interfaces/IAssignmentEmailNotifier";
-import { injectable, inject, named } from "inversify";
-import { NotificationDAO } from "../../../collections/lib/classes/UserNotification";
 import { AssignmentServiceTypes } from "../AssignmentServiceTypes";
+import { IAssignmentEmailNotifier } from "../interfaces/IAssignmentEmailNotifier";
+import { IAssignmentNotifier, IAssignmentSingleNotifierOptions } from "../interfaces/IAssignmentNotifier";
 
 
 @injectable()

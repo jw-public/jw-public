@@ -1,11 +1,11 @@
-import { LoggerFactory } from '../../../imports/logging/LoggerFactory';
-import { Logger } from '../../../imports/logging/Logger';
-import { IAssignmentApplicationController } from "../interfaces/IAssignmentApplicationController";
-import { IAssignmentContext } from "../interfaces/IAssignmentContext";
+import { inject, injectable, named } from "inversify";
 import { AssignmentDAO } from "../../../collections/lib/AssignmentsCollection";
 import { SimpleCollection } from "../../../imports/interfaces/SimpleCollection";
-import { injectable, inject, named } from "inversify";
+import { Logger } from '../../../imports/logging/Logger';
+import { LoggerFactory } from '../../../imports/logging/LoggerFactory';
 import { Types } from "../../Types";
+import { IAssignmentApplicationController } from "../interfaces/IAssignmentApplicationController";
+import { IAssignmentContext } from "../interfaces/IAssignmentContext";
 
 @injectable()
 export class AssignmentApplicationController implements IAssignmentApplicationController {
@@ -13,7 +13,7 @@ export class AssignmentApplicationController implements IAssignmentApplicationCo
   private assignmentContext: IAssignmentContext;
   private logger: Logger;
 
-  constructor( @inject(Types.Collection) @named("assignment") private collection: SimpleCollection<AssignmentDAO>,
+  constructor(@inject(Types.Collection) @named("assignment") private collection: SimpleCollection<AssignmentDAO>,
     @inject(Types.LoggerFactory) loggerFactory: LoggerFactory,
   ) {
     this.logger = loggerFactory.createLogger("AssignmentApplicationController");
@@ -36,12 +36,12 @@ export class AssignmentApplicationController implements IAssignmentApplicationCo
         $ne: userId
       }
     }, {
-        $push: {
-          applicants: {
-            user: userId
-          }
+      $push: {
+        applicants: {
+          user: userId
         }
-      });
+      }
+    });
   };
 
   public removeUserAsApplicantById(userId: string): void {
@@ -50,12 +50,12 @@ export class AssignmentApplicationController implements IAssignmentApplicationCo
     this.collection.update({
       _id: this.assignmentId
     }, {
-        $pull: {
-          "applicants": {
-            "user": userId
-          } // Wird als Bewerber entfernt.
-        }
-      });
+      $pull: {
+        "applicants": {
+          "user": userId
+        } // Wird als Bewerber entfernt.
+      }
+    });
 
   };
 

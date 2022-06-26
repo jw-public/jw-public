@@ -1,27 +1,21 @@
-import * as moment from 'moment';
-import { Meteor } from "meteor/meteor";
-import { Template } from "meteor/templating";
-import { Session } from "meteor/session";
 import { Mongo } from "meteor/mongo";
+import { Template } from "meteor/templating";
 
+import { AssignmentState } from '../../../collections/lib/classes/AssignmentState';
 import * as TemplateFunctionality from "../../../imports/templateModules/ManageAssignments";
 import * as AssignmentForm from "../components/assignmentForm/AssignmentForm";
 import * as AssignmentManager from "../components/assignmentManager/AssignmentManager";
 import * as AssignmentManagerModal from "../components/assignmentManager/AssignmentManagerModal";
-import { AssignmentState } from '../../../collections/lib/classes/AssignmentState';
 
 import Group from "../../../collections/lib/classes/Group";
-import { GroupApplicationController } from "../../../collections/lib/classes/Group";
 
 import { AssignmentDAO } from '../../../collections/lib/AssignmentsCollection';
 //import * as QuickFormModal from "../components/quickformModal/quickformModal";
-import * as ServerMethodsWrapper from "../../../lib/classes/ServerMethodsWrapper";
 import { DateRangeChooser } from "../../../imports/ui/assignments/DateRangeChooser";
+import * as ServerMethodsWrapper from "../../../lib/classes/ServerMethodsWrapper";
 
-import { ReactiveVar } from "meteor/reactive-var";
-import { ReactiveVarWrapper } from '../../../imports/common/ReactiveVarWrapper';
-import { Helper } from "../../../lib/HelperDecorator";
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
+import { ReactiveVar } from "meteor/reactive-var";
 
 
 

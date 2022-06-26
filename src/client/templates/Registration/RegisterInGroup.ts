@@ -1,11 +1,9 @@
-import { Meteor } from "meteor/meteor";
-import { Template } from "meteor/templating";
-import { Session } from "meteor/session";
-import { Mongo } from "meteor/mongo";
 import { Accounts } from "meteor/accounts-base";
+import { Meteor } from "meteor/meteor";
+import { Session } from "meteor/session";
+import { Template } from "meteor/templating";
 
-import * as UserCollection from "../../../collections/lib/UserCollection";
-import { Groups, GroupDAO } from "../../../collections/lib/GroupCollection";
+import { Groups } from "../../../collections/lib/GroupCollection";
 
 
 import * as Registration from "../../../collections/lib/Registration";

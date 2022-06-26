@@ -1,10 +1,9 @@
 import { Meteor } from "meteor/meteor";
 import { Mongo } from "meteor/mongo";
 
-import { AssignmentState } from "./classes/AssignmentState";
 import Assignment from "./classes/Assignment";
+import { AssignmentState } from "./classes/AssignmentState";
 
-import { Groups, GroupDAO } from "./GroupCollection";
 import * as EnumUtil from "./classes/EnumUtil";
 
 import { CollectionConf } from "./collectionConfig/CollectionConf";
