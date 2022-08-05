@@ -5,7 +5,8 @@
 
                 {{#if isInRole 'admin'}}
                 <li>
-                    <i class="fa fa-code-fork fa-fw"></i> Version {{version.commit}} #{{version.build}}</li>
+                    <i class="fa fa-code-fork fa-fw"></i> Version {{version.commit}} #{{version.build}}
+                </li>
                 {{/if}}
 
                 <li>
@@ -76,13 +77,10 @@
                     <i class="fa fa-link fa-fw"></i> Registrierungs-Link</a>
             </li>
 
-            {{#if isInRole 'admin'}}
             <li>
-                <a href="{{pathFor 'manage-blueprints' groupId=this._id}}">
-                    <i class="fa fa-clone fa-fw"></i> Wochenschablonen</a>
+                <a href="{{pathFor 'copyAssignments' groupId=this._id}}">
+                    <i class="fa fa-clone fa-fw"></i> Einsätze wochenweise kopieren</a>
             </li>
-            {{/if}}
-
         </ul>
     </li>
 

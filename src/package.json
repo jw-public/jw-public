@@ -82,8 +82,8 @@
     "typemoq": "0.3.3"
   },
   "scripts": {
-    "test:watch": "mocha --compilers js:babel-core/register --watch --reporter spec --recursive tests/",
-    "test:debug": "mocha --debug --compilers js:babel-register --debug-brk --recursive tests/",
+    "test:watch": "mocha -require babel-core/register --watch --reporter spec --recursive tests/",
+    "test:debug": "mocha --debug -require babel-core/register --debug-brk --recursive tests/",
     "test": "npm run test:coverage && npm run test:remap-typescript && rm -rf coverage/",
     "test:coverage": "JUNIT_REPORT_PATH=TEST-report.xml JUNIT_REPORT_STACK=1 node_modules/.bin/babel-node -r node_modules/.bin/istanbul cover node_modules/.bin/_mocha -- --reporter mocha-jenkins-reporter --recursive tests/",
     "test:remap-typescript": "./node_modules/.bin/remap-istanbul -i coverage/coverage.json -o ../coverage-report -t html",

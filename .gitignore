@@ -80,3 +80,6 @@ userdocs/site/
 src/node_modules/
 aws-secret.yaml
 .envrc
+coverage-report/
+src/TEST-report.xml
+src/coverage

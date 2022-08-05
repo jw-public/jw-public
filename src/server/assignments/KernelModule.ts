@@ -40,8 +40,7 @@ import { IAssignmentNotifier } from "./interfaces/IAssignmentNotifier";
 import { AssignmentDaoNotifier } from "./classes/AssignmentDaoNotifier";
 import { IAssignmentDaoNotifier } from "./interfaces/IAssignmentDaoNotifier";
 
-
-
+import { AssignmentWeekCopyPaster } from "./classes/AssignmentWeekCopyPaster";
 
 export const kernelModule = new KernelModule((bind: interfaces.Bind) => {
   bind<IAssignmentApplicationController>(Types.IAssignmentApplicationController).to(AssignmentApplicationController);
@@ -88,6 +87,5 @@ export const kernelModule = new KernelModule((bind: interfaces.Bind) => {
   bind<IAssignmentReenabler>(Types.IAssignmentReenabler).to(AssignmentReenabler);
   bind<IAssignmentCloser>(Types.IAssignmentCloser).to(AssignmentCloser);
   bind<IAssignmentDateParser>(AssignmentServiceTypes.IAssignmentDateParser).to(AssignmentDateParser);
-
-
+  bind<AssignmentWeekCopyPaster>(Types.AssignmentWeekCopyPaster).to(AssignmentWeekCopyPaster);
 });

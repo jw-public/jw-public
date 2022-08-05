@@ -1,0 +1,38 @@
+<template name="copyAssignments">
+    <div class="col-lg-10">
+        <h1 class="page-header">Einsätze von Kalenderwoche kopieren (in Entwicklung)</h1>
+
+        <div class="modal-body">
+            <p>
+                Kalenderwochen können kopiert werden, indem Sie die Kalenderwoche auswählen, die Sie kopieren möchten.
+            </p>
+            <p>
+                Diese Funktion ist noch in Entwicklung, funktioniert aber.
+            </p>
+            <p>
+                <a href="https://kalender.digital/kalenderwochen/2022" target="_blank" rel="noopener noreferrer">Link zu
+                    einer Kalenderwochenübersicht</a>
+            </p>
+
+            <p>
+                Aktuelle Kalenderwoche: {{currentIsoWeek}}
+            </p>
+            <form accept-charset="UTF-8" role="form" id="copy">
+                <fieldset>
+                    <div class="form-group">
+                        <input type="number" class="form-control" name="fromWeek" placeholder="Von Kalenderwoche"
+                            aria-label="Von Kalenderwoche">
+                    </div>
+                    <div class="form-group">
+                        <input type="number" class="form-control" name="toWeek" placeholder="Nach Kalenderwoche"
+                            aria-label="Nach Kalenderwoche">
+                    </div>
+
+                    <input id="copy" class="btn btn-lg btn-success btn-block" type="submit" value="Kopieren">
+                </fieldset>
+            </form>
+
+            {{> bootstrapAlerts}}
+        </div>
+    </div>
+</template>

@@ -1,11 +1,5 @@
 import { Meteor } from "meteor/meteor";
 
-
-
-
-
-
-
 export class AssignmentProxy {
   private _id: string;
   constructor(id: string) {
@@ -71,6 +65,25 @@ export class GroupProxy {
 
   public isGroupMember(userId: string, callback: (err: Meteor.Error, isMember: boolean) => void) {
     Meteor.call('isGroupMember', userId, this._id, callback);
+  }
+
+  public copyAssignmentWeek({ from, to }: {
+    from: {
+      calendarWeek: number;
+      year: number;
+    };
+    to: {
+      calendarWeek: number;
+      year: number;
+    };
+  }, callback: (err: Meteor.Error, totalCopied: number) => void) {
+    Meteor.call('copyAssignmentWeek',
+      this._id,
+      from.calendarWeek,
+      from.year,
+      to.calendarWeek,
+      to.year,
+      callback);
   }
 
 }

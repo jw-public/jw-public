@@ -10,5 +10,6 @@ export const Types = {
   IAssignmentCanceler: Symbol("IAssignmentCanceler"),
   IAssignmentCloser: Symbol("IAssignmentCloser"),
   IAssignmentReenabler: Symbol("IAssignmentReenabler"),
-  LoggerFactory: Symbol("LoggerFactory")
+  LoggerFactory: Symbol("LoggerFactory"),
+  AssignmentWeekCopyPaster: Symbol("AssignmentWeekCopyPaster")
 };
