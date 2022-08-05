@@ -37,6 +37,7 @@ export namespace Routes {
     static GroupMembers = new Def("groupMembers", "/group/:" + ParamNames.GroupId + "/mitglieder");
     static InfoSite = new Def("infoSite", "/info");
     static BlueprintManagement = new Def("manage-blueprints", "/group/:" + ParamNames.GroupId + "/manage-blueprints");
+    static CopyAssignments = new Def("copyAssignments", "/group/:" + ParamNames.GroupId + "/copy-assignments");
     static ResetPassword = new Def("resetPassword", "/reset-password/:" + ParamNames.Token);
   }
 
@@ -282,6 +283,22 @@ Routes.route(Routes.Def.GroupApplicants, {
     BlazeLayout.render<MainLayout.Context>("MainLayout", { main: "manageApplicants" });
   }
 });
+
+// route for copy-assignments
+Routes.route(Routes.Def.CopyAssignments, {
+
+  triggersEnter: [requiredLogin],
+
+  subscriptions: function (params, queryParams) {
+    this.register("groups", Meteor.subscribe("groups"));
+  },
+
+  action: function (params, queryParams) {
+    BlazeLayout.render<MainLayout.Context>("MainLayout", { main: "copyAssignments" });
+  }
+}
+);
+
 
 
 Routes.route(Routes.Def.GroupMembers, {

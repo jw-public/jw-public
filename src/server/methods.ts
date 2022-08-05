@@ -334,6 +334,34 @@ Meteor.startup(function () {
       }
     },
 
+    copyAssignmentWeek: function (
+      groupId: string,
+      fromIsoWeek: number,
+      fromIsoYear: number,
+      toIsoWeek: number,
+      toIsoYear: number): number {
+      check([groupId], [String]);
+      check([fromIsoWeek, toIsoWeek, fromIsoYear, toIsoYear], [Number]);
+
+      let initiator: User = new User(this.userId);
+      let group: Group = new Group(groupId);
+
+      if (group.isCoordinator(initiator)) {
+        return app.assignmentWeekCopyPaster.copyPasteCalendarWeekInGroup({
+          groupId: groupId,
+          from: {
+            calendarWeek: fromIsoWeek,
+            year: fromIsoYear
+          },
+          to: {
+            calendarWeek: toIsoWeek,
+            year: toIsoYear
+          }
+        })
+      }
+      throw new Meteor.Error("403", "Access denied");
+    },
+
     validatePhoneNumber: function (phoneNumber: string): boolean {
       return PhoneValidator.isValidNumber(phoneNumber);
     },

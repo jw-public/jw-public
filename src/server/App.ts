@@ -25,8 +25,10 @@ import { meteorSpecificBindings as mailingMeteorSpecificBindings } from "./maili
 import { IAssignmentApplicationControllerFactory } from "./assignments/interfaces/IAssignmentApplicationControllerFactory";
 
 import { Meteor } from "meteor/meteor";
+import { AssignmentCopyActionDAO, AssignmentCopyActions } from "../collections/lib/AssignmentCopyActionsCollection";
 import { GroupDAO, Groups } from "../collections/lib/GroupCollection";
 import { UserDAO } from "../collections/lib/UserCollection";
+import { AssignmentWeekCopyPaster } from "./assignments/classes/AssignmentWeekCopyPaster";
 
 let kernel = new Kernel();
 
@@ -38,14 +40,13 @@ kernel.load(loggingModule);
 
 declare var Mongo: any;
 kernel.bind<SimpleCollection<AssignmentDAO>>(Types.Collection).toConstantValue(Assignments).whenTargetNamed("assignment");
+kernel.bind<SimpleCollection<AssignmentCopyActionDAO>>(Types.Collection).toConstantValue(AssignmentCopyActions).whenTargetNamed("assignmentCopyActions");
 kernel.bind<SimpleCollection<NotificationDAO>>(Types.Collection).toConstantValue(Notifications).whenTargetNamed("notification");
 kernel.bind<SimpleCollection<UserDAO>>(Types.Collection).toConstantValue(<any>Meteor.users).whenTargetNamed("user");
 kernel.bind<SimpleCollection<GroupDAO>>(Types.Collection).toConstantValue(Groups).whenTargetNamed("group");
 
 
 let { lazyInject } = getDecorators(kernel);
-
-
 
 class AppRoot {
 
@@ -67,9 +68,11 @@ class AppRoot {
   @lazyInject(Types.IAssignmentReenabler)
   public assignmentReenabler: IAssignmentReenabler;
 
+  @lazyInject(Types.AssignmentWeekCopyPaster)
+  public assignmentWeekCopyPaster: AssignmentWeekCopyPaster;
+
   @lazyInject(Types.Collection)
   public assignments: SimpleCollection<AssignmentDAO>;
-
 }
 
 export const app = new AppRoot();

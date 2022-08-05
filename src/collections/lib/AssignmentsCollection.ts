@@ -17,6 +17,7 @@ export interface AssignmentDAO {
   _id?: string;
   name?: string;
   group?: string;
+  copyActionId?: string;
   start?: Date;
   end?: Date;
   participants?: Array<UserEntry>;
@@ -65,6 +66,12 @@ export const AssignmentSchema = new SimpleSchema({
     type: String,
     regEx: SimpleSchema.RegEx.Id,
     index: 1
+  },
+  copyActionId: {
+    type: String,
+    regEx: SimpleSchema.RegEx.Id,
+    index: 1,
+    optional: true
   },
   start: {
     type: Date,

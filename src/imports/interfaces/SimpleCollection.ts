@@ -46,7 +46,7 @@ export interface SimpleCollection<T> {
     transform?: Function;
   }): T;
   insert(doc: T, callback?: Function): string;
-  remove(selector: Selector  | string, callback?: Function): number;
+  remove(selector: Selector | string, callback?: Function): number;
   update(selector: Selector | string, modifier: Modifier, options?: {
     multi?: boolean;
     upsert?: boolean;
@@ -63,10 +63,10 @@ interface CursorStatic {
 interface Cursor<T> {
   count(): number;
   fetch(): Array<T>;
-  forEach(callback: <T>(doc: T, index: number, cursor: Cursor<T>) => void, thisArg?: any): void;
+  forEach(callback: (doc: T, index: number, cursor: Cursor<T>) => void, thisArg?: any): void;
   map<U>(callback: (doc: T, index: number, cursor: Cursor<T>) => U, thisArg?: any): Array<U>;
 }
 
 interface ObjectIDStatic {
-  new (hexString?: string): any;
+  new(hexString?: string): any;
 }
