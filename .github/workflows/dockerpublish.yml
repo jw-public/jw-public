@@ -144,7 +144,7 @@ jobs:
       - run: cd src && meteor npm test
       - run: cd src && meteor build --allow-superuser ./build
       - name: Build and push
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: .
           file: ./Dockerfile
@@ -167,7 +167,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build and push
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: ./userdocs
           file: userdocs/Dockerfile
