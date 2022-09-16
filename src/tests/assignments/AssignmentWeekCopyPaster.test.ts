@@ -169,6 +169,7 @@ describe("AssignmentWeekCopyPaster.copyPasteCalendarWeek()", function () {
 
     const result = fixtureCollection.findOne({
       isoWeek: 2,
+      yearOfIsoWeek: 2023
     })
     const copyAction = copyActionsCollection.findOne()
 

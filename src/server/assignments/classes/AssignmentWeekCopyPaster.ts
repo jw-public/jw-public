@@ -57,9 +57,17 @@ export class AssignmentWeekCopyPaster {
     })
 
     assignments.forEach((assignment, index, cursor): void => {
+      const fromDate = {
+        start: moment(assignment.start).tz('Europe/Berlin'),
+        end: moment(assignment.end).tz('Europe/Berlin'),
+      }
       const targetDate = {
-        start: moment(assignment.start).add(diff),
-        end: moment(assignment.end).add(diff),
+        start: moment(fromDate.start)
+          .add(diff)
+          .set('hour', fromDate.start.get('hour')), // set to same displayed hour (winter/summer time)
+        end: moment(fromDate.end)
+          .add(diff)
+          .set('hour', fromDate.end.get('hour')), // set to same displayed hour (winter/summer time)
       }
       const copied = {
         ...assignment,
