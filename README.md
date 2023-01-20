@@ -2,7 +2,7 @@
 
 jw-public is an open source tool designed to help Jehovah's Witnesses better organize public witnessing activities. This tool provides a central hub for managing and organizing public witnessing activities. 
 
-Features:
+## Features
 - User Management: Create, edit, and delete user accounts.
 - Group Management: Create, edit, and delete groups.
 - Assignment Management: Create, edit, and delete assignments. 
@@ -14,7 +14,7 @@ Features:
 - Logging: Log events and errors.
 - Kubernetes: Deploy the application to production.
 
-Directory Structure:
+## Directory Structure:
 - `/userdocs`: User documentation related to the tool.
 - `/orga/translation`: Files for translating content into multiple languages.
 - `/scripts`: Scripts for automating tasks.
