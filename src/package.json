@@ -28,7 +28,7 @@
     "inversify-inject-decorators": "^1.0.0-beta.1",
     "jquery": "^2.2.4",
     "jsnlog": "^2.22.0",
-    "marked": "^3.0.0",
+    "marked": "^4.0.10",
     "meteor-node-stubs": "^1.2.1",
     "moment": "^2.29.4",
     "moment-duration-format": "^2.0.0",
