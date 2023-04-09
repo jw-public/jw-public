@@ -1,38 +1,61 @@
 <template name="copyAssignments">
     <div class="col-lg-10">
-        <h1 class="page-header">Einsätze von Kalenderwoche kopieren (in Entwicklung)</h1>
+        <h1 class="page-header">Einsätze von Kalenderwoche kopieren</h1>
+        <p>
+            Wählen Sie die Kalenderwoche, deren Einsätze Sie kopieren möchten, und die Zielwochen aus. Die verfügbaren
+            Schnellauswahl-Buttons ermöglichen eine einfache Auswahl von bestimmten Zeiträumen.
+        </p>
+        <p>
+            Aktuelle Kalenderwoche: {{currentIsoWeek}}
+        </p>
 
-        <div class="modal-body">
-            <p>
-                Kalenderwochen können kopiert werden, indem Sie die Kalenderwoche auswählen, die Sie kopieren möchten.
-            </p>
-            <p>
-                Diese Funktion ist noch in Entwicklung, funktioniert aber.
-            </p>
-            <p>
-                <a href="https://kalender.digital/kalenderwochen/2022" target="_blank" rel="noopener noreferrer">Link zu
-                    einer Kalenderwochenübersicht</a>
-            </p>
+        <form accept-charset="UTF-8" role="form" id="copy">
+            <fieldset>
+                <div class="form-group">
+                    <label for="fromWeek">Von Kalenderwoche</label>
+                    <select class="form-control" name="fromWeek" id="fromWeek">
+                        {{#each weeks}}
+                        <option value="{{week}}" {{selectedWeek}}>{{formattedWeek}}</option>
+                        {{/each}}
+                    </select>
+                </div>
 
-            <p>
-                Aktuelle Kalenderwoche: {{currentIsoWeek}}
-            </p>
-            <form accept-charset="UTF-8" role="form" id="copy">
-                <fieldset>
-                    <div class="form-group">
-                        <input type="number" class="form-control" name="fromWeek" placeholder="Von Kalenderwoche"
-                            aria-label="Von Kalenderwoche">
+
+                <div class="form-group">
+                    <label for="toWeek">Nach Kalenderwoche</label>
+                    <select class="form-control" name="toWeek[]" id="toWeek" multiple="multiple">
+                        {{#each presentAndFutureWeeks}}
+                        <option value="{{week}}">{{formattedWeek}}</option>
+                        {{/each}}
+                    </select>
+                    <div class="mt-3" style="margin-top: 20px;">
+                        <div class="row">
+                            <div class="col-xs-12 col-md-3 mb-2">
+                                <button type="button" class="btn btn-primary btn-block quick-action"
+                                    data-timeframe="nextMonth">Nächster Monat</button>
+                            </div>
+                            <div class="col-xs-12 col-md-3 mb-2">
+                                <button type="button" class="btn btn-primary btn-block quick-action"
+                                    data-timeframe="restOfMonth">Rest des aktuellen Monats</button>
+                            </div>
+                            <div class="col-xs-12 col-md-3 mb-2">
+                                <button type="button" class="btn btn-primary btn-block quick-action"
+                                    data-timeframe="restOfQuarter">Rest des Quartals</button>
+                            </div>
+                            <div class="col-xs-12 col-md-3 mb-2">
+                                <button type="button" class="btn btn-primary btn-block quick-action"
+                                    data-timeframe="restOfYear">Rest des Jahres</button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <input type="number" class="form-control" name="toWeek" placeholder="Nach Kalenderwoche"
-                            aria-label="Nach Kalenderwoche">
-                    </div>
+                </div>
 
-                    <input id="copy" class="btn btn-lg btn-success btn-block" type="submit" value="Kopieren">
-                </fieldset>
-            </form>
+                <!-- ... -->
 
-            {{> bootstrapAlerts}}
-        </div>
+
+                <input id="copy" class="btn btn-lg btn-success btn-block" type="submit" value="Kopieren">
+            </fieldset>
+        </form>
+        {{> bootstrapAlerts}}
     </div>
 </template>
