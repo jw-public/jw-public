@@ -15,7 +15,7 @@
                     <label for="fromWeek">Von Kalenderwoche</label>
                     <select class="form-control" name="fromWeek" id="fromWeek">
                         {{#each weeks}}
-                        <option value="{{week}}" {{selectedWeek}}>{{formattedWeek}}</option>
+                        <option value="{{week}}/{{year}}" {{selectedWeek}}>{{formattedWeek}}</option>
                         {{/each}}
                     </select>
                 </div>

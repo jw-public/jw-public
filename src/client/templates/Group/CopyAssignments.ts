@@ -99,7 +99,12 @@ Template["copyAssignments"].events({
   "submit #copy": function (event: Event) {
     event.preventDefault();
 
-    const fromWeek = parseInt(event.target["fromWeek"].value, 10);
+    const fromWeekRawValues = event.target["fromWeek"].value.split("/");
+    // fromWeek raw value is like "23/2023" (CW/Year)
+    const fromWeek = {
+      week: parseInt(fromWeekRawValues[0], 10),
+      year: parseInt(fromWeekRawValues[1], 10),
+    }
     const toWeekOptions = event.target["toWeek"].selectedOptions;
     // values are like "23/2023" (CW/Year)
     const toWeeks = Array.from(toWeekOptions).map((option: any) => {
@@ -115,8 +120,6 @@ Template["copyAssignments"].events({
       return toBeReturned;
     });
 
-    const fromYear = moment().year();
-
     let proxy = new ServerMethodsWrapper.GroupProxy(FlowRouter.getParam("groupId"));
     let totalCopied = 0;
     let errors = "";
@@ -127,8 +130,8 @@ Template["copyAssignments"].events({
         proxy.copyAssignmentWeek(
           {
             from: {
-              calendarWeek: fromWeek,
-              year: fromYear,
+              calendarWeek: fromWeek.week,
+              year: fromWeek.year,
             },
             to: {
               calendarWeek: toWeek.week,
@@ -138,7 +141,7 @@ Template["copyAssignments"].events({
           function (err: Meteor.Error, copied: number) {
             if (err) {
               console.error("Fehler beim kopieren:", err);
-              errors += `Fehler beim kopieren von KW ${fromWeek} ${fromYear} nach KW ${toWeek} ${toWeek.year}: ${err.reason}\n`;
+              errors += `Fehler beim kopieren von KW ${fromWeek.week} ${fromWeek.year} nach KW ${toWeek} ${toWeek.year}: ${err.reason}\n`;
             } else {
               totalCopied += copied;
             }
@@ -155,7 +158,7 @@ Template["copyAssignments"].events({
         Alerts.add(errors, "danger", {});
       }
       if (totalCopied) {
-        const message = `Aus aus KW ${fromWeek} wurden insgesamt ${totalCopied} Einsätze nach ${toWeeks.length} Wochen kopiert.`;
+        const message = `Aus aus KW ${fromWeek.week} ${fromWeek.year} wurden insgesamt ${totalCopied} Einsätze nach ${toWeeks.length} Wochen kopiert.`;
         Alerts.add(message, "success", {
           fadeIn: 100,
           fadeOut: 100,
