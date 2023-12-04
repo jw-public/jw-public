@@ -24,7 +24,7 @@
     "create-react-class": "^15.5.3",
     "graphql": "^15.0.0",
     "i18n-2": "^0.7.1",
-    "inversify": "^2.0.0-rc.10",
+    "inversify": "^6.0.0",
     "inversify-inject-decorators": "^1.0.0-beta.1",
     "jquery": "^2.2.4",
     "jsnlog": "^2.22.0",
