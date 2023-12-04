@@ -58,9 +58,10 @@ Template["copyAssignments"].helpers({
     return moment().isoWeek();
   },
   weeks: function () {
-    const totalWeeks = moment().isoWeeksInYear();
+    const totalWeeks = moment().isoWeeksInYear() + 4; // add 4 weeks to the current year
     const currentYear = moment().year();
-    return generateWeeks(1, totalWeeks, currentYear);
+
+    return generateWeeksByAmount(1, currentYear, totalWeeks);
   },
   presentAndFutureWeeks: function () {
     const currentWeek = moment().isoWeek();
