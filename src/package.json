@@ -71,7 +71,7 @@
     "inversify-dts": "3.0.0",
     "isparta": "4.1.1",
     "istanbul": "0.4.5",
-    "js-base64": "3.7.2",
+    "js-base64": "3.7.7",
     "lolex": "5.1.2",
     "mocha": "10.0.0",
     "mocha-jenkins-reporter": "0.4.7",
