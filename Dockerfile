@@ -7,7 +7,7 @@ FROM node:14
 COPY --from=prepare /tmp/bundle /bundle
 
 # renovate: datasource=npm depName=fibers
-ENV FIBERS_VERSION=4.0.3
+ENV FIBERS_VERSION=5.0.3
 # renovate: datasource=npm depName=bcrypt
 ENV BCRYPT_VERSION=5.0.1
 
