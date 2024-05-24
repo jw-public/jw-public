@@ -7,7 +7,10 @@ RUN mkdir /tmp/src
 COPY ./install-meteor.sh /tmp/install-meteor.sh
 COPY src/.meteor /tmp/src/.meteor
 
-RUN cd /tmp && ./install-meteor.sh
+WORKDIR /tmp
+RUN ./install-meteor.sh
+
+WORKDIR /
 
 # [Optional] Uncomment this section to install additional OS packages.
 # RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
