@@ -1,6 +1,5 @@
 # [Choice] Node.js version (use -bullseye variants on local arm64/Apple Silicon): 16, 14, 12, 16-bullseye, 14-bullseye, 12-bullseye, 16-buster, 14-buster, 12-buster
-ARG VARIANT=12
-FROM mcr.microsoft.com/vscode/devcontainers/typescript-node:${VARIANT}
+FROM mcr.microsoft.com/vscode/devcontainers/typescript-node:20
 
 ENV APP_SOURCE_DIR=src
 
@@ -8,7 +7,10 @@ RUN mkdir /tmp/src
 COPY ./install-meteor.sh /tmp/install-meteor.sh
 COPY src/.meteor /tmp/src/.meteor
 
-RUN cd /tmp && ./install-meteor.sh
+WORKDIR /tmp
+RUN ./install-meteor.sh
+
+WORKDIR /
 
 # [Optional] Uncomment this section to install additional OS packages.
 # RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
