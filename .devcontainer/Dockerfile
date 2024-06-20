@@ -1,14 +1,16 @@
 # [Choice] Node.js version (use -bullseye variants on local arm64/Apple Silicon): 16, 14, 12, 16-bullseye, 14-bullseye, 12-bullseye, 16-buster, 14-buster, 12-buster
-FROM mcr.microsoft.com/vscode/devcontainers/typescript-node:20
+FROM mcr.microsoft.com/vscode/devcontainers/typescript-node:14
 
 ENV APP_SOURCE_DIR=src
 
 RUN mkdir /tmp/src
+RUN apt-get update && apt-get install bash curl dos2unix -y
 COPY ./install-meteor.sh /tmp/install-meteor.sh
 COPY src/.meteor /tmp/src/.meteor
 
 WORKDIR /tmp
-RUN ./install-meteor.sh
+RUN bash -c "echo hello"
+RUN chmod +x /tmp/install-meteor.sh && /tmp/install-meteor.sh
 
 WORKDIR /
 
