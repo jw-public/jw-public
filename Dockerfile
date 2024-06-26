@@ -3,7 +3,7 @@ COPY src/build/src.tar.gz /bundle/meteor.tar.gz
 WORKDIR /tmp
 RUN tar xvf /bundle/meteor.tar.gz
 
-FROM node:14
+FROM node:20
 COPY --from=prepare /tmp/bundle /bundle
 
 # renovate: datasource=npm depName=fibers
