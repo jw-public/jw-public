@@ -42,10 +42,11 @@ jobs:
       - run: cd src && meteor npm install
       - run: cd src && meteor npm run compile
       - run: cd src && meteor npm test
-      - uses: cypress-io/github-action@v2
+      - uses: cypress-io/github-action@v4
         with:
           project: ./src
           working-directory: ./src
+          browser: chrome
           start: meteor
           # wait for all services to respond
           install-command: echo "skipped"
