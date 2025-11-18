@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.21.0",
-    "@types/bootstrap-datepicker": "0.0.4",
+    "@types/bootstrap-datepicker": "0.0.19",
     "@types/jquery": "^2.0.51",
     "@types/node": "7.0.7",
     "@types/react": "^0.14.41",
