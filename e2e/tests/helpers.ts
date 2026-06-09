@@ -14,6 +14,36 @@ export async function login(page: Page, email = ADMIN_EMAIL, password = ADMIN_PA
   await expect(page.locator("div#page-wrapper")).toBeVisible();
 }
 
+// Client-side navigation via FlowRouter. Cold page loads of some routes are
+// broken in the legacy app (blank page on /manage-assignments, role-trigger
+// redirect on /admin/*), so tests navigate the way real users do.
+export async function flowGoto(page: Page, path: string): Promise<void> {
+  await page.evaluate((p) => {
+    (window as any).Package["ostrio:flow-router-extra"].FlowRouter.go(p);
+  }, path);
+}
+
+// The metismenu sidebar re-initializes on reactive re-renders, which can
+// collapse a submenu mid-animation. Open the submenu and click the entry
+// with retries instead of assuming it stays open.
+export async function clickSidebarSubmenuEntry(
+  page: Page,
+  toggleSelector: string,
+  entrySelector: string,
+): Promise<void> {
+  const sideMenu = page.locator("ul#side-menu");
+  for (let attempt = 0; attempt < 5; attempt++) {
+    await sideMenu.locator(toggleSelector).click();
+    try {
+      await sideMenu.locator(entrySelector).click({ timeout: 3_000 });
+      return;
+    } catch {
+      // submenu collapsed again — retry
+    }
+  }
+  await sideMenu.locator(entrySelector).click({ timeout: 5_000 });
+}
+
 export function uniqueName(prefix: string): string {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
 }

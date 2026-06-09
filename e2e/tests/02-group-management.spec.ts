@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { login, uniqueName } from "./helpers";
+import { login, uniqueName, clickSidebarSubmenuEntry } from "./helpers";
 
 // Ported from cypress/e2e/createGroup.cy.js
 test.describe("Group management (admin)", () => {
@@ -7,9 +7,7 @@ test.describe("Group management (admin)", () => {
     await login(page);
     const groupName = uniqueName("test-group");
 
-    const sideMenu = page.locator("ul#side-menu");
-    await sideMenu.locator('#adminMenu > [href="#"]').click();
-    await sideMenu.locator("#toGroupManagement").click();
+    await clickSidebarSubmenuEntry(page, '#adminMenu > [href="#"]', "#toGroupManagement a");
     await expect(page).toHaveURL(/\/admin\/groups/);
     await expect(page.locator(".page-header")).toContainText("Gruppenverwaltung");
 
@@ -24,6 +22,12 @@ test.describe("Group management (admin)", () => {
 
     await page.locator("#saveButton").click();
 
-    await expect(page.locator(".dataTables_wrapper")).toContainText(groupName);
+    // The admin was chosen as coordinator, so the new group appears reactively
+    // in the sidebar. (The tabular DataTable refreshes lazily and is not a
+    // stable oracle.)
+    await expect(page.locator("ul#side-menu")).toContainText(`Gruppe ${groupName}`, {
+      timeout: 15_000,
+    });
+    await expect(page.locator(".dataTables_wrapper")).toBeVisible();
   });
 });
