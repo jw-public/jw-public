@@ -1,0 +1,63 @@
+import * as React from "react";
+import { useState } from "react";
+import { Accounts } from "meteor/accounts-base";
+
+import { FlowRouter } from "meteor/ostrio:flow-router-extra";
+import { Routes } from "../../lib/client/routes";
+import { InlineAlert, InlineAlerts } from "../react/components/InlineAlerts";
+
+export default function ResetPassword(): JSX.Element {
+  const [password, setPassword] = useState("");
+  const [alerts, setAlerts] = useState<InlineAlert[]>([]);
+
+  const onSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    setAlerts([]);
+
+    const token = FlowRouter.getParam(Routes.ParamNames.Token);
+    console.log("trigger reset");
+    Accounts.resetPassword(token, password, (err: any) => {
+      if (err) {
+        console.log(err);
+        if (err.reason === "Token expired") {
+          setAlerts([{ message: "Dein Link ist abgelaufen.", type: "danger" }]);
+        } else {
+          setAlerts([{ message: "Passwort ungültig. Mindestens 6 Zeichen.", type: "danger" }]);
+        }
+      } else {
+        Routes.go(Routes.Def.Home);
+      }
+    });
+  };
+
+  return (
+    <div className="row vertical-offset-100">
+      <div className="col-md-4 col-md-offset-4">
+        <div className="panel panel-default">
+          <div className="panel-heading">
+            <h3 className="panel-title">Wähle neues Passwort</h3>
+          </div>
+          <div className="panel-body">
+            <InlineAlerts alerts={alerts} />
+            <form acceptCharset="UTF-8" role="form" className="reset" onSubmit={onSubmit}>
+              <fieldset>
+                <div className="form-group">
+                  <input
+                    id="password"
+                    className="form-control"
+                    placeholder="Neues Passwort"
+                    name="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
+                <input id="reset" className="btn btn-lg btn-success btn-block" type="submit" value="Zurücksetzen" />
+              </fieldset>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
