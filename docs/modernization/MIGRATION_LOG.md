@@ -74,3 +74,4 @@ All React components intentionally still emit Bootstrap-3 markup (panel/btn-xs/c
 
 ## Open items / decisions made autonomously
 - App port 4000 + Mailpit 11025/18025 locally (port conflicts with unrelated containers); CI keeps port 3000.
+- **CI on master was already broken**: GitHub hard-fails `actions/upload-artifact@v3` since 2024, so the test/docker jobs died at job setup. Bumped checkout/cache/upload-artifact to v4 and CodeQL to v3 in this PR.
