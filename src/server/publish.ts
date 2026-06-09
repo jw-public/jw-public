@@ -61,6 +61,30 @@ Meteor.publish("groupMembers", function (groupId: string) {
   });
 });
 
+Meteor.publish("groupApplicants", function (groupId: string) {
+  check(groupId, String);
+
+  let group = new Group(groupId);
+  let user = new User(this.userId);
+
+  let isCoordinator = group.isCoordinator(user) || Roles.userIsInRole(user.getId(), "admin");
+  let hasRight: boolean = user.exists() && isCoordinator;
+  if (!hasRight) {
+    return null;
+  }
+  return Meteor.users.find({
+    "profile.pendingGroups": {
+      $in: [groupId]
+    }
+  }, {
+    fields: {
+      "_id": 1,
+      profile: 1,
+      emails: 1,
+    }
+  });
+});
+
 Meteor.publish("groupCoordinators", function (groupId: string) {
   check(groupId, String);
   let group = new Group(groupId);
@@ -108,6 +132,7 @@ namespace UserPublication {
         "_id": 1,
         profile: 1,
         groups: 1,
+        emails: 1,
       },
       limit,
       reactive: false
