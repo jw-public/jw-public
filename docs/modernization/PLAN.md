@@ -34,11 +34,11 @@ Decisions agreed with Dominik (see ADRs 0001, 0002):
 
 ## Status
 
-- [x] Plan agreed, ADRs 0001/0002 written
-- [ ] Phase 0
-- [ ] Phase 1
-- [ ] Phase 2
-- [ ] Phase 3
-- [ ] Phase 4
-- [ ] Phase 5
-- [ ] Phase 6
+- [x] Plan agreed, ADRs 0001/0002/0003 written
+- [x] Phase 0 — Playwright suite (17 specs) green vs legacy app, Mailpit email assertions, Cypress removed
+- [x] Phase 1 — React 18.3, TypeScript 5.9, react-meteor-data 2.5 (hooks)
+- [x] Phase 2 — all page templates React; tabular/AutoForm/select2/jquery-ui stack removed
+- [ ] Phase 3 — Meteor 3 (scoped in MIGRATION_LOG; do Phase 4 first)
+- [ ] Phase 4 — react-router + layouts
+- [ ] Phase 5 — Bootstrap 3→5 sweep
+- [x] Phase 6 — MIGRATION_LOG.md is the report

@@ -44,16 +44,33 @@ Infrastructure built: `client/react/components/DataTable.tsx` (tabular/DataTable
 - ⚠️ Learned: conditional `Meteor.subscribe` inside one `useTracker` computation flaps ready state → endless re-renders. Use separate trackers keyed by deps.
 - New npm deps: react-select, react-datepicker, date-fns.
 
-Still Blaze: showSingle, showOverview shell (+ paginator/weekView), ManageAssignments page shell, CopyAssignments, Sidebar/MainLayout/ParallaxScreen (layouts stay for Phase 4 router swap). Dead stubs (manage-blueprints, emailserver settings) untouched.
+- ✅ singleAssignmentView (detail page; embeds React AssignmentForm; same-day previews)
+- ✅ manageAssignments page (react-datepicker range filter; selection/clipboard in state; new `assignmentsForGroupTable` publication)
+- ✅ copyAssignments (week copy, quick-select buttons)
+- ✅ showOverview (month pagination, filters, lazy week accordion)
+- ✅ Cleanup: 9 atmosphere packages removed (autoform, tabular, select2×3, jquery-ui, reactive-modal, reactivearray, bootstrap-3-modal) + jQuery daterangepicker/datepicker npm stack + all dead Blaze glue files
 
-## Phase 3 — Meteor 3
-(pending)
+**Phase 2 complete.** Every page/feature template is React. Only the layout shells remain Blaze by design (MainLayout, Sidebar, ParallaxScreen + the `{{> React}}` wrapper templates) — they fall together with flow-router in Phase 4.
 
-## Phase 4 — react-router
-(pending)
+⚠️ Behavior notes (intentional, suite-validated):
+- Empty optional form fields are stored as `undefined`, not `""` (AutoForm stored empty strings)
+- jQuery slide animations on admin edit panels dropped
+- showOverview filter state no longer persists across page navigation (was a module-level ReactiveVar)
 
-## Phase 5 — Bootstrap 5 + dependency sweep
-(pending)
+## Phase 3 — Meteor 3 (NOT in this PR — next project)
+Deliberately stopped before this step. Honest scoping after Phase 2:
+1. **Isomorphic domain layer must go async.** The classes in `collections/lib/classes/` (User, Group, Assignment, …) call `findOne()/fetch()/count()` synchronously and run on BOTH client (minimongo, stays sync) and server (Fibers gone in Meteor 3 → must be `*Async`). This needs an explicit design decision (split client/server paths vs. async-everywhere) — not something to decide overnight without review.
+2. **simpl-schema migration.** aldeed:simple-schema v1 (atmosphere) → npm simpl-schema + collection2 v4; all schema definitions need porting.
+3. Remaining atmosphere packages need M3-compatible versions: alanning:roles v4 (role document format migration!), flow-router-extra, blaze-layout (or go straight to Phase 4 first), publish-composite, publish-counts, collection-helpers, ongoworks:security, emgee:libphonenumber (→ npm libphonenumber-js), mizzao:bootboxjs (→ React modals), mrt:gsap (→ npm gsap or CSS).
+4. `.github/workflows/dockerpublish.yml` meteor-release pin + `Dockerfile` (node:14 + fibers!) must change in the same step.
+
+Recommendation: do Phase 4 (router swap) BEFORE Meteor 3 — it removes blaze-layout, react-template-helper, blaze-html-templates and the layouts, shrinking the package surface further.
+
+## Phase 4 — react-router (NOT in this PR)
+Prepared but not executed: all routes still in `lib/client/routes.ts` (flow-router + BlazeLayout). Once swapped, MainLayout/Sidebar/ParallaxScreen become React, the `{{> React}}` wrapper shells disappear, and the cold-load blank-page bug fixes itself.
+
+## Phase 5 — Bootstrap 5 + dependency sweep (NOT in this PR)
+All React components intentionally still emit Bootstrap-3 markup (panel/btn-xs/col-xs…). The BS3→BS5 class sweep stays one atomic, suite-validated step. Tier-3 list unchanged (moment→dayjs etc.).
 
 ## Open items / decisions made autonomously
 - App port 4000 + Mailpit 11025/18025 locally (port conflicts with unrelated containers); CI keeps port 3000.
