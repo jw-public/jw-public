@@ -1,8 +1,8 @@
 import * as _ from "underscore";
-import * as AssignmentManager from "./AssignmentManager";
+import * as React from "react";
+import { createRoot } from "react-dom/client";
 
-import { Blaze } from "meteor/blaze";
-import { Template } from "meteor/templating";
+import AssignmentManagerComponent, { AssignmentManagerProps } from "./AssignmentManagerComponent";
 
 const HTML_ID = "AssignmentManagerModalDialogNode";
 
@@ -10,9 +10,9 @@ const DEFAULT_BOOTBOX_OPTIONS: BootboxDialogOptionsWithoutMessage = {
   title: "Termin abschließen"
 };
 
-export function dialog(templateOptions: AssignmentManager.TemplateOptions, bootboxoptions?: BootboxDialogOptionsWithoutMessage) { // this can be tied to an event handler in another template
+export function dialog(templateOptions: AssignmentManagerProps, bootboxoptions?: BootboxDialogOptionsWithoutMessage) { // this can be tied to an event handler in another template
 
-  let wrappedTemplateOptions: AssignmentManager.TemplateOptions = {
+  let wrappedTemplateOptions: AssignmentManagerProps = {
     assignmentId: templateOptions.assignmentId,
     onSuccess: function () {
       bootbox.hideAll();
@@ -35,11 +35,15 @@ export function dialog(templateOptions: AssignmentManager.TemplateOptions, bootb
   _.defaults(bootboxoptions, DEFAULT_BOOTBOX_OPTIONS);
 
   bootboxoptions["message"] = "<div id='" + HTML_ID + "'></div>";
-  bootbox.dialog(<BootboxDialogOptions>bootboxoptions);
+  let dialogElement = bootbox.dialog(<BootboxDialogOptions>bootboxoptions);
 
-  Blaze.renderWithData(
-    Template["assignmentManager"],
-    wrappedTemplateOptions,
-    $("#" + HTML_ID).get(0)
-  );
+  // Mount the React manager directly (no Blaze hop) and unmount when the
+  // dialog goes away.
+  const node = $("#" + HTML_ID).get(0);
+  const root = createRoot(node);
+  root.render(React.createElement(AssignmentManagerComponent, wrappedTemplateOptions));
+
+  (<any>dialogElement).on("hidden.bs.modal", function () {
+    root.unmount();
+  });
 };
