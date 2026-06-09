@@ -61,6 +61,23 @@ Meteor.publish("groupMembers", function (groupId: string) {
   });
 });
 
+// Replaces aldeed:tabular's internal publication for the admin user table.
+Meteor.publish("adminAllUsers", function () {
+  if (!Roles.userIsInRole(this.userId, ["admin"])) {
+    return null;
+  }
+  return Meteor.users.find({}, {
+    fields: {
+      "_id": 1,
+      profile: 1,
+      emails: 1,
+      groups: 1,
+      roles: 1,
+      notice: 1,
+    }
+  });
+});
+
 Meteor.publish("groupApplicants", function (groupId: string) {
   check(groupId, String);
 

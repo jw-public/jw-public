@@ -58,6 +58,7 @@ export default function GroupMembers(): JSX.Element {
                 rows={members}
                 rowKey={(u) => u._id}
                 searchText={searchText}
+                defaultSort={{ column: 0, direction: "asc" }}
                 tableClassName="table table-responsive"
               />
             </div>
