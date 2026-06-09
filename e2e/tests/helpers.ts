@@ -71,6 +71,8 @@ export async function createAssignment(page: Page, name: string): Promise<{ grou
   const form = page.locator("form#assignmentForm");
   await form.locator("input[name='name']").fill(name);
   await form.locator("input[name='userGoal']").fill("2");
+  await form.locator("input[name='pickup_point']").fill("Abholpunkt-Test");
+  await form.locator("input[name='return_point']").fill("Rückgabepunkt-Test");
   // react-select contacts field (replaced autoform-select2 in the migration)
   await form.locator("input#assignmentContacts").fill("Admin");
   await form.locator("input#assignmentContacts").press("Enter");

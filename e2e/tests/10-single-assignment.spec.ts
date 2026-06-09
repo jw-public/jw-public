@@ -44,6 +44,7 @@ test.describe("Single assignment view", () => {
     await expect(page.locator("h1.page-header")).toContainText(name, { timeout: 15_000 });
     await expect(page.getByText("Ansprechpersonen").first()).toBeVisible();
     await expect(page.getByText("Informationen").first()).toBeVisible();
+    await expect(page.getByText("Abholpunkt: Abholpunkt-Test")).toBeVisible();
     await expect(page.getByText("Admin User").first()).toBeVisible();
   });
 });
