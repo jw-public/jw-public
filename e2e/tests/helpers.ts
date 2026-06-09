@@ -71,9 +71,9 @@ export async function createAssignment(page: Page, name: string): Promise<{ grou
   const form = page.locator("form#assignmentForm");
   await form.locator("input[name='name']").fill(name);
   await form.locator("input[name='userGoal']").fill("2");
-  await form.locator(".select2-container").click();
-  await page.locator("div.select2-result-label").first().click();
-  await expect(form.locator(".select2-search-choice")).toHaveCount(1);
+  // react-select contacts field (replaced autoform-select2 in the migration)
+  await form.locator("input#assignmentContacts").fill("Admin");
+  await form.locator("input#assignmentContacts").press("Enter");
   await expect(form.locator("input[name='start']")).not.toHaveValue("");
   const start = new Date(await form.locator("input[name='start']").inputValue());
   const yearMonth = `${start.getFullYear()}-${String(start.getMonth() + 1).padStart(2, "0")}`;
