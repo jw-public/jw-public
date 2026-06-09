@@ -16,9 +16,9 @@ test.describe("Group management (admin)", () => {
     await insertPanel.locator("textarea[name='additional']").fill("additional");
     await insertPanel.locator("input[name='email']").fill("mytest@example.org");
 
-    // select2 coordinator dropdown
-    await insertPanel.locator("div.select2-container").click();
-    await page.locator("div.select2-result-label").first().click();
+    // react-select coordinator dropdown (replaced select2 in the migration)
+    await insertPanel.locator("input#inputCoordinators").fill("Admin");
+    await insertPanel.locator("input#inputCoordinators").press("Enter");
 
     await page.locator("#saveButton").click();
 

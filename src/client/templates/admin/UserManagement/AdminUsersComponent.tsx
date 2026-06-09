@@ -2,39 +2,18 @@ import * as React from "react";
 import { useState } from "react";
 import { Meteor } from "meteor/meteor";
 import { useTracker } from "meteor/react-meteor-data";
-import Select from "react-select";
-
 import { Groups } from "../../../../collections/lib/GroupCollection";
 import * as UserCollection from "../../../../collections/lib/UserCollection";
 import * as ServerMethodsWrapper from "../../../../lib/classes/ServerMethodsWrapper";
 
 import DataTable, { DataTableColumn } from "../../../react/components/DataTable";
+import MultiSelect, { SelectOption } from "../../../react/components/MultiSelect";
 import { InlineAlert, InlineAlerts } from "../../../react/components/InlineAlerts";
-
-interface SelectOption {
-  label: string;
-  value: string;
-}
 
 const GENDER_OPTIONS = [
   { label: "Bruder", value: "Male" },
   { label: "Schwester", value: "Female" },
 ];
-
-function MultiSelect(props: {
-  options: SelectOption[];
-  value: string[];
-  onChange: (values: string[]) => void;
-}): JSX.Element {
-  return (
-    <Select
-      isMulti
-      options={props.options}
-      value={props.options.filter((o) => props.value.includes(o.value))}
-      onChange={(selected: any) => props.onChange((selected ?? []).map((o: SelectOption) => o.value))}
-    />
-  );
-}
 
 function EditUserPanel(props: {
   user: UserCollection.UserDAO;
