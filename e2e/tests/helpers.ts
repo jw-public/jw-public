@@ -48,6 +48,61 @@ export function uniqueName(prefix: string): string {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
 }
 
+// --- Domain flows --------------------------------------------------------------
+
+// Creates an assignment in Standardgruppe via the coordinator form and returns
+// the ids needed to find it on the overview. Expects an admin session.
+export async function createAssignment(page: Page, name: string): Promise<{ groupId: string; yearMonth: string }> {
+  const groupEntry = page.locator("ul#side-menu > li", {
+    has: page.getByText("Gruppe Standardgruppe"),
+  });
+  for (let attempt = 0; attempt < 5; attempt++) {
+    await groupEntry.locator("> a").click();
+    try {
+      await groupEntry.getByText("Einsätze verwalten").click({ timeout: 3_000 });
+      break;
+    } catch {
+      // metismenu collapsed mid-animation — retry
+    }
+  }
+  await expect(page).toHaveURL(/\/group\/[^/]+\/manage-assignments/);
+  const groupId = /\/group\/([^/]+)\/manage-assignments/.exec(page.url())![1];
+
+  const form = page.locator("form#assignmentForm");
+  await form.locator("input[name='name']").fill(name);
+  await form.locator("input[name='userGoal']").fill("2");
+  await form.locator(".select2-container").click();
+  await page.locator("div.select2-result-label").first().click();
+  await expect(form.locator(".select2-search-choice")).toHaveCount(1);
+  await expect(form.locator("input[name='start']")).not.toHaveValue("");
+  const start = new Date(await form.locator("input[name='start']").inputValue());
+  const yearMonth = `${start.getFullYear()}-${String(start.getMonth() + 1).padStart(2, "0")}`;
+  await form.locator("button.submit-change").click();
+  await expect(form.locator("input[name='name']")).toHaveValue("", { timeout: 15_000 });
+
+  return { groupId, yearMonth };
+}
+
+// Opens the week accordions on the overview until the panel is visible.
+export async function expandWeekUntilVisible(
+  page: Page,
+  panel: ReturnType<Page["locator"]>,
+): Promise<void> {
+  await expect(page.locator("#accordion")).toBeVisible({ timeout: 15_000 });
+  for (let round = 0; round < 10; round++) {
+    if (await panel.isVisible()) return;
+    const headings = page.locator("#accordion .panel-heading");
+    const count = await headings.count();
+    for (let i = 0; i < count; i++) {
+      if (await panel.isVisible()) return;
+      await headings.nth(i).click();
+      await page.waitForTimeout(400);
+    }
+    await page.waitForTimeout(500);
+  }
+  await expect(panel).toBeVisible();
+}
+
 // --- Mailpit -----------------------------------------------------------------
 
 export async function clearMailbox(): Promise<void> {
