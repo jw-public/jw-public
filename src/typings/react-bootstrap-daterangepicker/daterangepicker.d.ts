@@ -19,6 +19,8 @@ declare namespace ReactBootstrapDaterangepicker {
         onEvent?: EventHandler;
         ranges: Object;
         locale: Object;
+        /** React 18 no longer provides implicit children. */
+        children?: React.ReactNode;
     }
 
     export class DateRangePicker extends React.Component<Props, {}> { }

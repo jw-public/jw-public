@@ -161,7 +161,7 @@ class AssignmentNotifierTestCase extends TestCase<IAssignmentNotifier> {
       });
   }
 
-  public get emailAssert() {
+  public get emailAssert(): any {
     return {
       noEmailWasSent: () => {
         this._userMailerMock.verify(emailSender => emailSender.notifyUserAboutAssignmentViaEmail(TypeMoq.It.isAny()), TypeMoq.Times.never());

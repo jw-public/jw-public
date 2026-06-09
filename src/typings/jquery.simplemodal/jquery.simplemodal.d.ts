@@ -106,6 +106,8 @@ declare module SimpleModal {
 
     interface JQueryExtension {
         (options?: SimpleModalOptions): JQuery;
+        /** Bootstrap modal command form, e.g. $(dialog).modal('hide'). */
+        (command: string): JQuery;
     }
 }
 

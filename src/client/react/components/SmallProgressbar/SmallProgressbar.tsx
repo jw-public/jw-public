@@ -81,7 +81,7 @@ export class SmallProgressbar extends React.Component < DataContext, {} > {
         let background = data.barColor;
 
         return {
-            "background-color": background.toString(),
+            backgroundColor: background.toString(),
             height,
             width
         };
@@ -97,7 +97,7 @@ export class SmallProgressbar extends React.Component < DataContext, {} > {
       let background = data.backgroundColor;
 
         return {
-            "background-color": background.toString(),
+            backgroundColor: background.toString(),
             height
         };
     }
