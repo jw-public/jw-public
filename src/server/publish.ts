@@ -418,6 +418,30 @@ namespace AssignmentPublication {
 
 
 
+// Replaces aldeed:tabular's internal publication for the coordinator's
+// assignment table. The one-month-back cap matches the old tabular selector.
+Meteor.publish("assignmentsForGroupTable", function (groupId: string, startDate: Date, endDate: Date) {
+  check(groupId, String);
+  check(startDate, Date);
+  check(endDate, Date);
+
+  let group = new Group(groupId);
+  let user = new User(this.userId);
+  let isCoordinator = group.isCoordinator(user) || Roles.userIsInRole(user.getId(), "admin");
+  if (!(user.exists() && isCoordinator)) {
+    return null;
+  }
+
+  let earliest = moment().subtract(1, "month").toDate();
+  let effectiveStart = startDate > earliest ? startDate : earliest;
+
+  return Assignments.find({
+    group: groupId,
+    start: { $gte: effectiveStart },
+    end: { $lte: endDate }
+  });
+});
+
 Meteor.publish("assignmentsInMonthPerGroup", function (groupId: string, monthYear: string) {
   check(groupId, String);
   check(monthYear, String);
