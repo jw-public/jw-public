@@ -1,26 +1,18 @@
 {
-    "compilerOptions": {
-        "target": "es2017",
-        "module": "commonjs",
-        "isolatedModules": false,
-        "jsx": "react",
-        "noImplicitAny": false,
-        "removeComments": false,
-        "preserveConstEnums": true,
-        "skipLibCheck": true,
-        "typeRoots": [
-            "node_modules/@types/"
-        ],
-        "baseUrl": ".",
-        "esModuleInterop": true,
-        "noEmit": true
-    },
-    "include": [
-        "**/*"
-    ],
-    "exclude": [
-        "node_modules",
-        ".meteor",
-        "**/*.spec.ts"
-    ]
+  "compilerOptions": {
+    "target": "es2017",
+    "module": "commonjs",
+    "isolatedModules": false,
+    "jsx": "react",
+    "noImplicitAny": false,
+    "removeComments": false,
+    "preserveConstEnums": true,
+    "skipLibCheck": true,
+    "typeRoots": ["node_modules/@types/"],
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "noEmit": true
+  },
+  "include": ["**/*"],
+  "exclude": ["node_modules", ".meteor", "**/*.spec.ts"]
 }

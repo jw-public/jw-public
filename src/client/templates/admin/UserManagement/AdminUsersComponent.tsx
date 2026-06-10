@@ -34,7 +34,9 @@ function EditUserPanel(props: {
   const [groups, setGroups] = useState<string[]>((props.user as any).groups ?? []);
   const [roles, setRoles] = useState<string[]>(Roles.getRolesForUser(props.user._id) as string[]);
   const [email, setEmail] = useState(props.user.emails?.[0]?.address ?? "");
-  const [notificationAsEmail, setNotificationAsEmail] = useState(profile.notificationAsEmail ?? true);
+  const [notificationAsEmail, setNotificationAsEmail] = useState(
+    profile.notificationAsEmail ?? true,
+  );
   const [notice, setNotice] = useState((props.user as any).notice ?? "");
   const [alerts, setAlerts] = useState<InlineAlert[]>([]);
 
@@ -42,43 +44,58 @@ function EditUserPanel(props: {
     event.preventDefault();
     setAlerts([]);
 
-    UserCollection.users.update(props.user._id, {
-      $set: {
-        "profile.first_name": firstName,
-        "profile.last_name": lastName,
-        "profile.gender": gender,
-        "profile.mobile": mobile,
-        "profile.placeName": placeName,
-        "profile.zip": zip,
-        "profile.pendingGroups": pendingGroups,
-        "profile.notificationAsEmail": notificationAsEmail,
-        groups,
-        "emails.0.address": email,
-        notice,
+    UserCollection.users.update(
+      props.user._id,
+      {
+        $set: {
+          "profile.first_name": firstName,
+          "profile.last_name": lastName,
+          "profile.gender": gender,
+          "profile.mobile": mobile,
+          "profile.placeName": placeName,
+          "profile.zip": zip,
+          "profile.pendingGroups": pendingGroups,
+          "profile.notificationAsEmail": notificationAsEmail,
+          groups,
+          "emails.0.address": email,
+          notice,
+        },
       },
-    }, {}, (err: any) => {
-      if (err) {
-        console.error("Was trying to update an user: ", err);
-        setAlerts([{ message: "Speichern fehlgeschlagen: " + (err.reason ?? err.message), type: "danger" }]);
-      } else {
-        // Roles live in their own collection since alanning:roles v4.
-        Meteor.call("adminSetUserRoles", props.user._id, roles, (rolesErr: any) => {
-          if (rolesErr) {
-            console.error("Was trying to set roles: ", rolesErr);
-            setAlerts([{ message: "Rollen speichern fehlgeschlagen: " + (rolesErr.reason ?? rolesErr.message), type: "danger" }]);
-          } else {
-            props.onClose();
-          }
-        });
-      }
-    });
+      {},
+      (err: any) => {
+        if (err) {
+          console.error("Was trying to update an user: ", err);
+          setAlerts([
+            { message: "Speichern fehlgeschlagen: " + (err.reason ?? err.message), type: "danger" },
+          ]);
+        } else {
+          // Roles live in their own collection since alanning:roles v4.
+          Meteor.call("adminSetUserRoles", props.user._id, roles, (rolesErr: any) => {
+            if (rolesErr) {
+              console.error("Was trying to set roles: ", rolesErr);
+              setAlerts([
+                {
+                  message:
+                    "Rollen speichern fehlgeschlagen: " + (rolesErr.reason ?? rolesErr.message),
+                  type: "danger",
+                },
+              ]);
+            } else {
+              props.onClose();
+            }
+          });
+        }
+      },
+    );
   };
 
   return (
     <div className="card card-primary edit-user-panel">
       <div className="card-header">
         <div className="row">
-          <div className="col-10"><i className="fa fa-pencil-square-o fa-fw"></i> User bearbeiten</div>
+          <div className="col-10">
+            <i className="fa fa-pencil-square-o fa-fw"></i> User bearbeiten
+          </div>
           <div className="col-2">
             <a
               href="#"
@@ -99,37 +116,78 @@ function EditUserPanel(props: {
           <fieldset>
             <div className="form-group">
               <label>Vorname</label>
-              <input type="text" name="profile.first_name" className="form-control" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+              <input
+                type="text"
+                name="profile.first_name"
+                className="form-control"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+              />
             </div>
             <div className="form-group">
               <label>Nachname</label>
-              <input type="text" name="profile.last_name" className="form-control" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+              <input
+                type="text"
+                name="profile.last_name"
+                className="form-control"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+              />
             </div>
             <div className="form-group">
               <label>Anrede</label>
               <div>
                 {GENDER_OPTIONS.map((o) => (
                   <label key={o.value} className="radio-inline">
-                    <input type="radio" name="profile.gender" value={o.value} checked={gender === o.value} onChange={() => setGender(o.value)} /> {o.label}
+                    <input
+                      type="radio"
+                      name="profile.gender"
+                      value={o.value}
+                      checked={gender === o.value}
+                      onChange={() => setGender(o.value)}
+                    />{" "}
+                    {o.label}
                   </label>
                 ))}
               </div>
             </div>
             <div className="form-group">
               <label>Handynummer</label>
-              <input type="text" name="profile.mobile" className="form-control" value={mobile} onChange={(e) => setMobile(e.target.value)} />
+              <input
+                type="text"
+                name="profile.mobile"
+                className="form-control"
+                value={mobile}
+                onChange={(e) => setMobile(e.target.value)}
+              />
             </div>
             <div className="form-group">
               <label>Wohnort</label>
-              <input type="text" name="profile.placeName" className="form-control" value={placeName} onChange={(e) => setPlaceName(e.target.value)} />
+              <input
+                type="text"
+                name="profile.placeName"
+                className="form-control"
+                value={placeName}
+                onChange={(e) => setPlaceName(e.target.value)}
+              />
             </div>
             <div className="form-group">
               <label>Postleitzahl</label>
-              <input type="text" name="profile.zip" className="form-control" value={zip} onChange={(e) => setZip(e.target.value)} />
+              <input
+                type="text"
+                name="profile.zip"
+                className="form-control"
+                value={zip}
+                onChange={(e) => setZip(e.target.value)}
+              />
             </div>
             <div className="form-group">
               <label>Ausstehende Gruppenbewerbungen</label>
-              <MultiSelect options={props.groupsOptions} value={pendingGroups} onChange={setPendingGroups} />
+              <MultiSelect
+                options={props.groupsOptions}
+                value={pendingGroups}
+                onChange={setPendingGroups}
+              />
             </div>
             <div className="form-group">
               <label>Gruppen</label>
@@ -141,26 +199,58 @@ function EditUserPanel(props: {
             </div>
             <div className="form-group">
               <label>E-Mail</label>
-              <input type="text" name="emails.0.address" className="form-control" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <input
+                type="text"
+                name="emails.0.address"
+                className="form-control"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </div>
             <div className="form-group">
               <label>Benachrichtigungen via E-Mail bekommen</label>
               <div>
                 <label className="radio-inline">
-                  <input type="radio" name="profile.notificationAsEmail" checked={notificationAsEmail} onChange={() => setNotificationAsEmail(true)} /> Ja
+                  <input
+                    type="radio"
+                    name="profile.notificationAsEmail"
+                    checked={notificationAsEmail}
+                    onChange={() => setNotificationAsEmail(true)}
+                  />{" "}
+                  Ja
                 </label>
                 <label className="radio-inline">
-                  <input type="radio" name="profile.notificationAsEmail" checked={!notificationAsEmail} onChange={() => setNotificationAsEmail(false)} /> Nein
+                  <input
+                    type="radio"
+                    name="profile.notificationAsEmail"
+                    checked={!notificationAsEmail}
+                    onChange={() => setNotificationAsEmail(false)}
+                  />{" "}
+                  Nein
                 </label>
               </div>
             </div>
             <div className="form-group">
               <label>Notiz</label>
-              <input type="text" name="notice" className="form-control" value={notice} onChange={(e) => setNotice(e.target.value)} />
+              <input
+                type="text"
+                name="notice"
+                className="form-control"
+                value={notice}
+                onChange={(e) => setNotice(e.target.value)}
+              />
             </div>
             <div className="form-group">
-              <button type="submit" className="btn btn-primary submit-change"><i className="fa fa-floppy-o"></i>Speichern</button>{" "}
-              <button type="button" className="btn btn-outline-secondary cancel-update" onClick={props.onClose}><i className="fa fa-times"></i>Abbruch</button>
+              <button type="submit" className="btn btn-primary submit-change">
+                <i className="fa fa-floppy-o"></i>Speichern
+              </button>{" "}
+              <button
+                type="button"
+                className="btn btn-outline-secondary cancel-update"
+                onClick={props.onClose}
+              >
+                <i className="fa fa-times"></i>Abbruch
+              </button>
             </div>
           </fieldset>
         </form>
@@ -171,16 +261,16 @@ function EditUserPanel(props: {
 
 function removeUser(userId: string): void {
   confirmDialog({ message: "Den User wirklich löschen?" }).then((result) => {
-      if (!result) {
-        return;
+    if (!result) {
+      return;
+    }
+    const proxy = new ServerMethodsWrapper.AdminUserProxy(userId);
+    proxy.removeUser((error: any) => {
+      if (error) {
+        console.error("Was trying to remove an user: ", error);
+        alert("Fehler: " + error.toString());
       }
-      const proxy = new ServerMethodsWrapper.AdminUserProxy(userId);
-      proxy.removeUser((error: any) => {
-        if (error) {
-          console.error("Was trying to remove an user: ", error);
-          alert("Fehler: " + error.toString());
-        }
-      });
+    });
   });
 }
 
@@ -193,7 +283,9 @@ export default function AdminUsers(): JSX.Element {
     Meteor.subscribe("roles");
 
     return {
-      users: Meteor.users.find({}, { sort: { "profile.last_name": 1 } }).fetch() as UserCollection.UserDAO[],
+      users: Meteor.users
+        .find({}, { sort: { "profile.last_name": 1 } })
+        .fetch() as UserCollection.UserDAO[],
       groupsOptions: Groups.find({}, {}).map((c) => ({ label: c.name, value: c._id })),
       rolesOptions: Meteor.roles.find({}, {}).map((c: any) => ({ label: c.name, value: c.name })),
     };
@@ -204,19 +296,39 @@ export default function AdminUsers(): JSX.Element {
     : null;
 
   const columns: DataTableColumn<UserCollection.UserDAO>[] = [
-    { title: "Vorname", render: (u) => u.profile?.first_name, sortValue: (u) => u.profile?.first_name ?? "" },
-    { title: "Nachname", render: (u) => u.profile?.last_name, sortValue: (u) => u.profile?.last_name ?? "" },
+    {
+      title: "Vorname",
+      render: (u) => u.profile?.first_name,
+      sortValue: (u) => u.profile?.first_name ?? "",
+    },
+    {
+      title: "Nachname",
+      render: (u) => u.profile?.last_name,
+      sortValue: (u) => u.profile?.last_name ?? "",
+    },
     { title: "Telefon", render: (u) => u.profile?.mobileNat },
-    { title: "E-Mail", render: (u) => u.emails?.[0]?.address, sortValue: (u) => u.emails?.[0]?.address ?? "" },
+    {
+      title: "E-Mail",
+      render: (u) => u.emails?.[0]?.address,
+      sortValue: (u) => u.emails?.[0]?.address ?? "",
+    },
     { title: "PLZ", render: (u) => u.profile?.zip, sortValue: (u) => u.profile?.zip ?? "" },
     {
       title: "",
       render: (u) => (
         <span>
-          <button type="button" className="btn btn-sm btn-trash remove-user" onClick={() => removeUser(u._id)}>
+          <button
+            type="button"
+            className="btn btn-sm btn-trash remove-user"
+            onClick={() => removeUser(u._id)}
+          >
             <i className="fa fa-trash"></i>
           </button>{" "}
-          <button type="button" className="btn btn-primary edit-user" onClick={() => setSelectedUserId(u._id)}>
+          <button
+            type="button"
+            className="btn btn-primary edit-user"
+            onClick={() => setSelectedUserId(u._id)}
+          >
             <i className="fa fa-pencil"></i>
           </button>
         </span>
@@ -243,7 +355,13 @@ export default function AdminUsers(): JSX.Element {
                 rows={data.users}
                 rowKey={(u) => u._id}
                 searchText={(u) =>
-                  [u.profile?.first_name, u.profile?.last_name, u.profile?.mobileNat, u.emails?.[0]?.address, u.profile?.zip].join(" ")
+                  [
+                    u.profile?.first_name,
+                    u.profile?.last_name,
+                    u.profile?.mobileNat,
+                    u.emails?.[0]?.address,
+                    u.profile?.zip,
+                  ].join(" ")
                 }
                 defaultSort={{ column: 0, direction: "asc" }}
                 tableClassName="table table-responsive"

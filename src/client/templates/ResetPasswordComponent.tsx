@@ -51,7 +51,12 @@ export default function ResetPassword(): JSX.Element {
                     onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
-                <input id="reset" className="btn btn-lg btn-success btn-block" type="submit" value="Zurücksetzen" />
+                <input
+                  id="reset"
+                  className="btn btn-lg btn-success btn-block"
+                  type="submit"
+                  value="Zurücksetzen"
+                />
               </fieldset>
             </form>
           </div>

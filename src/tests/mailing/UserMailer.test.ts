@@ -8,19 +8,16 @@ import { MailTestCase } from "./common/MailTestCase";
 import { marked } from "marked";
 
 describe("UserMailer", async function () {
-
   it("should not be null or undefined", async function () {
     // Arrange
     let testCase = new UserMailerTestCase();
 
     // Act
 
-
     // Assert
     assert.isDefined(testCase.sender);
     assert.isNotNull(testCase.sender);
   });
-
 
   it("should not send Email when user not existing", async function () {
     // Arrange
@@ -31,7 +28,7 @@ describe("UserMailer", async function () {
       recepientId: "someUserId",
       subject: "My Test",
       markdownContent: "Test Text",
-      replyToAddress: "test@testserver.de"
+      replyToAddress: "test@testserver.de",
     });
 
     // Assert
@@ -46,16 +43,16 @@ describe("UserMailer", async function () {
       emails: [
         {
           address: "someUser@email.com",
-          verified: true
-        }
-      ]
+          verified: true,
+        },
+      ],
     });
 
     // Act
     await testCase.sender.send({
       recepientId: someUserId,
       subject: "My Test",
-      markdownContent: "Test __Text__"
+      markdownContent: "Test __Text__",
     });
 
     // Assert
@@ -65,7 +62,7 @@ describe("UserMailer", async function () {
       to: "someUser@email.com",
       subject: "My Test",
       text: "Test Text",
-      html: marked.parse("Test __Text__") as string
+      html: marked.parse("Test __Text__") as string,
     });
   });
 
@@ -77,9 +74,9 @@ describe("UserMailer", async function () {
       emails: [
         {
           address: "someUser@email.com",
-          verified: true
-        }
-      ]
+          verified: true,
+        },
+      ],
     });
 
     // Act
@@ -87,7 +84,7 @@ describe("UserMailer", async function () {
       recepientId: someUserId,
       subject: "My Test",
       markdownContent: "Test __Text__",
-      replyToAddress: "absender1@test.de"
+      replyToAddress: "absender1@test.de",
     });
 
     // Assert
@@ -97,15 +94,12 @@ describe("UserMailer", async function () {
       to: "someUser@email.com",
       subject: "My Test",
       text: "Test Text",
-      html: marked.parse("Test __Text__") as string
+      html: marked.parse("Test __Text__") as string,
     });
-
   });
 });
 
-
 class UserMailerTestCase extends MailTestCase<IUserMailer> {
-
   constructor() {
     super(MailingTypes.IUserMailer);
   }

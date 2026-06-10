@@ -40,7 +40,10 @@ function ForgottenPasswordModal(props: { onClose: () => void }): JSX.Element {
         }
       } else {
         setAlerts([
-          { message: "Eine E-Mail wurde versendet. Bitte kontrolliere dein E-Mail Postfach.", type: "success" },
+          {
+            message: "Eine E-Mail wurde versendet. Bitte kontrolliere dein E-Mail Postfach.",
+            type: "success",
+          },
         ]);
       }
     });
@@ -53,14 +56,21 @@ function ForgottenPasswordModal(props: { onClose: () => void }): JSX.Element {
           <div className="modal-content" id="forgottenPasswordModal">
             <div className="modal-header">
               <h4 className="modal-title">Passwort vergessen?</h4>
-              <p>Hier kannst du an deine Emailadresse einen Link versenden lassen. Nach dem Klick auf diesen Link
-                in
-                deiner Email wirst du aufgefordert dein Passwort zu ändern.</p>
+              <p>
+                Hier kannst du an deine Emailadresse einen Link versenden lassen. Nach dem Klick auf
+                diesen Link in deiner Email wirst du aufgefordert dein Passwort zu ändern.
+              </p>
             </div>
 
             <div className="modal-body">
               <InlineAlerts alerts={alerts} />
-              <form acceptCharset="UTF-8" role="form" className="forgotPassword" method="post" onSubmit={onSubmit}>
+              <form
+                acceptCharset="UTF-8"
+                role="form"
+                className="forgotPassword"
+                method="post"
+                onSubmit={onSubmit}
+              >
                 <div className="input-group">
                   <input
                     id="email"
@@ -72,14 +82,23 @@ function ForgottenPasswordModal(props: { onClose: () => void }): JSX.Element {
                     onChange={(e) => setEmail(e.target.value)}
                   />
                   <span className="input-group-btn">
-                    <button className="btn btn-success" type="submit"><i className="fa fa-envelope"></i> Absenden</button>
+                    <button className="btn btn-success" type="submit">
+                      <i className="fa fa-envelope"></i> Absenden
+                    </button>
                   </span>
                 </div>
               </form>
             </div>
 
             <div className="modal-footer">
-              <button type="button" id="close" className="btn btn-outline-secondary" onClick={props.onClose}>Schließen</button>
+              <button
+                type="button"
+                id="close"
+                className="btn btn-outline-secondary"
+                onClick={props.onClose}
+              >
+                Schließen
+              </button>
             </div>
           </div>
         </div>
@@ -104,7 +123,12 @@ export default function Login(): JSX.Element {
     const gotoParam = Routes.getQueryParam("goto");
     Meteor.loginWithPassword(user.trim().toLowerCase(), password, (err: any) => {
       if (err) {
-        setAlerts([{ message: "Benutzer oder Passwort falsch. Bitte noch einmal versuchen.", type: "danger" }]);
+        setAlerts([
+          {
+            message: "Benutzer oder Passwort falsch. Bitte noch einmal versuchen.",
+            type: "danger",
+          },
+        ]);
       } else {
         if (gotoParam === undefined) {
           Routes.go(Routes.Def.Home);
@@ -150,7 +174,12 @@ export default function Login(): JSX.Element {
                         onChange={(e) => setPassword(e.target.value)}
                       />
                     </div>
-                    <input id="login" className="btn btn-lg btn-success btn-block" type="submit" value="Login" />
+                    <input
+                      id="login"
+                      className="btn btn-lg btn-success btn-block"
+                      type="submit"
+                      value="Login"
+                    />
                   </fieldset>
                 </form>
                 <div className="form-actions">
@@ -174,7 +203,9 @@ export default function Login(): JSX.Element {
           </div>
         </div>
       </div>
-      {showForgotModal ? <ForgottenPasswordModal onClose={() => setShowForgotModal(false)} /> : null}
+      {showForgotModal ? (
+        <ForgottenPasswordModal onClose={() => setShowForgotModal(false)} />
+      ) : null}
     </div>
   );
 }

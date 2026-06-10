@@ -11,10 +11,8 @@ interface DateDisplayProps {
 // DateDisplay component, using the React.Component class
 // and the DateDisplayProps interface as its props
 export default class DateDisplay extends React.Component<DateDisplayProps, {}> {
-
   // Render method that returns JSX elements
   public render(): JSX.Element {
-
     // moment.js is used to format the start and end dates
     const start = moment(this.props.start);
     const end = moment(this.props.end);
@@ -34,8 +32,10 @@ export default class DateDisplay extends React.Component<DateDisplayProps, {}> {
         </div>
         <div className="col-5 time text-center">
           {startTime}
-          <br /><i className="fa fa-clock-o fa-fw"></i>
-          <br />{endTime}
+          <br />
+          <i className="fa fa-clock-o fa-fw"></i>
+          <br />
+          {endTime}
         </div>
       </div>
     );

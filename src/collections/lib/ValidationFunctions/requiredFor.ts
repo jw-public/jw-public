@@ -1,4 +1,3 @@
-import { Match } from "meteor/check";
 import SimpleSchema from "../SimpleSchema";
 
 // Extend the schema options allowed by SimpleSchema
@@ -6,7 +5,8 @@ SimpleSchema.extendOptions(["requiredFor"]);
 
 export default function requiredForValidator(context: any) {
   let requiredFor = context.definition && context.definition.requiredFor;
-  let hasSchemaKeyRequiredFor: boolean = requiredFor !== undefined && requiredFor !== null && requiredFor !== "";
+  let hasSchemaKeyRequiredFor: boolean =
+    requiredFor !== undefined && requiredFor !== null && requiredFor !== "";
   let typeField = context.field("type");
 
   if (!hasSchemaKeyRequiredFor || !typeField) {
@@ -25,12 +25,12 @@ export default function requiredForValidator(context: any) {
 
     // updates
     else if (context.isSet) {
-      if (context.operator === "$set" && context.value === null || context.value === "") return "required";
+      if ((context.operator === "$set" && context.value === null) || context.value === "")
+        return "required";
       if (context.operator === "$unset") return "required";
       if (context.operator === "$rename") return "required";
     }
   }
-
 }
 
 /**

@@ -41,12 +41,14 @@ function UserDropdown(): JSX.Element {
       <ul className="dropdown-menu dropdown-user" style={{ display: open ? "block" : "none" }}>
         <li>
           <Link to={buildPath(Def.MyProfile)} onClick={() => setOpen(false)}>
-            <i className="fa fa-user fa-fw"></i> Meine Daten</Link>
+            <i className="fa fa-user fa-fw"></i> Meine Daten
+          </Link>
         </li>
         <li className="divider"></li>
         <li>
           <Link to={buildPath(Def.Logout)} onClick={() => setOpen(false)}>
-            <i className="fa fa-sign-out fa-fw"></i> Abmelden</Link>
+            <i className="fa fa-sign-out fa-fw"></i> Abmelden
+          </Link>
         </li>
       </ul>
     </li>
@@ -58,7 +60,12 @@ export default function MainLayout(): JSX.Element {
     <div id="wrapper">
       <nav className="navbar sb-admin-topbar" role="navigation" style={{ marginBottom: 0 }}>
         <div className="navbar-header">
-          <button type="button" className="navbar-toggle" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
+          <button
+            type="button"
+            className="navbar-toggle"
+            data-bs-toggle="collapse"
+            data-bs-target=".navbar-collapse"
+          >
             <span className="visually-hidden">Toggle navigation</span>
             <span className="icon-bar"></span>
             <span className="icon-bar"></span>

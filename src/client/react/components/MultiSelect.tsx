@@ -19,7 +19,9 @@ export default function MultiSelect(props: {
       inputId={props.inputId}
       options={props.options}
       value={props.options.filter((o) => props.value.includes(o.value))}
-      onChange={(selected: any) => props.onChange((selected ?? []).map((o: SelectOption) => o.value))}
+      onChange={(selected: any) =>
+        props.onChange((selected ?? []).map((o: SelectOption) => o.value))
+      }
     />
   );
 }

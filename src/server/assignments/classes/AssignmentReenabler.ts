@@ -2,18 +2,15 @@ import { AssignmentDAO } from "../../../collections/lib/AssignmentsCollection";
 import { AssignmentState } from "../../../collections/lib/classes/AssignmentState";
 import { AssignmentEventType } from "../../../imports/assignments/interfaces/AssignmentEventType";
 import { SimpleCollection } from "../../../imports/interfaces/SimpleCollection";
-import { Types } from "../../Types";
-import { AssignmentServiceTypes } from "../AssignmentServiceTypes";
 import { IAssignmentDaoNotifier } from "../interfaces/IAssignmentDaoNotifier";
 import { IAssignmentReenabler } from "../interfaces/IAssignmentReenabler";
 import { AssignmentAction } from "./AssignmentAction";
 
-
 export class AssignmentReenabler extends AssignmentAction implements IAssignmentReenabler {
-
-
-  constructor(collection: SimpleCollection<AssignmentDAO>,
-    private assignmentNotifier: IAssignmentDaoNotifier) {
+  constructor(
+    collection: SimpleCollection<AssignmentDAO>,
+    private assignmentNotifier: IAssignmentDaoNotifier,
+  ) {
     super(collection);
   }
 
@@ -24,18 +21,19 @@ export class AssignmentReenabler extends AssignmentAction implements IAssignment
     await this.assignmentNotifier.notifyParticipantsOfAssignment({
       assignment,
       eventType: AssignmentEventType.Reenable,
-      reenablingReason: reason
+      reenablingReason: reason,
     });
   }
 
-  private async updateDatabaseEntry(assignment: AssignmentDAO, reason: string): Promise<void> {
-
-
-    await this.collection.updateAsync({ _id: assignment._id }, {
-      $set: {
-        state: AssignmentState[this.determineDesiredState(assignment)]
-      }
-    });
+  private async updateDatabaseEntry(assignment: AssignmentDAO, _reason: string): Promise<void> {
+    await this.collection.updateAsync(
+      { _id: assignment._id },
+      {
+        $set: {
+          state: AssignmentState[this.determineDesiredState(assignment)],
+        },
+      },
+    );
   }
 
   private determineDesiredState(assignment: AssignmentDAO): AssignmentState {

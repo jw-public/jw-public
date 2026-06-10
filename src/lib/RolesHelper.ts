@@ -6,7 +6,9 @@ import { Roles } from "meteor/alanning:roles";
 /** Client-side (reactive, minimongo). Throws on the server. */
 export function userIsInRole(userId: string, role: string | string[]): boolean {
   if (Meteor.isServer) {
-    throw new Error("userIsInRole is client-only on Meteor 3 — use userIsInRoleAsync on the server.");
+    throw new Error(
+      "userIsInRole is client-only on Meteor 3 — use userIsInRoleAsync on the server.",
+    );
   }
   if (!userId) {
     return false;

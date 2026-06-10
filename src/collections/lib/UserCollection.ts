@@ -1,6 +1,6 @@
 import { Meteor } from "meteor/meteor";
 import { Mongo } from "meteor/mongo";
-import { Locale } from '../../imports/i18n/classes/I18nProvider';
+import { Locale } from "../../imports/i18n/classes/I18nProvider";
 
 export interface UserProfile {
   first_name?: string;
@@ -18,7 +18,6 @@ export interface UserProfile {
   placeName?: string;
   notificationAsEmail?: boolean;
 }
-
 
 /**
  * User Data Access Object

@@ -44,7 +44,7 @@ async function isMemberOf(groupId: string, userId: string): Promise<boolean> {
 
 async function requireCoordinatorOrAdmin(userId: string, groupId: string): Promise<void> {
   const group = await getGroupDoc(groupId);
-  const hasRight = isCoordinatorOf(group, userId) || await RolesHelper.userIsAdminAsync(userId);
+  const hasRight = isCoordinatorOf(group, userId) || (await RolesHelper.userIsAdminAsync(userId));
   if (!hasRight) {
     throw new Meteor.Error("403", "Access denied");
   }
@@ -73,9 +73,8 @@ Meteor.startup(function () {
      * Gesamtzahl aller Nutzer einsehen.
      */
     getAllUsersCount: async function (): Promise<number> {
-
-      if (this.userId && await RolesHelper.userIsAdminAsync(this.userId)) {
-        return await Meteor.users.find({}, { fields: { "_id": 1 } }).countAsync();
+      if (this.userId && (await RolesHelper.userIsAdminAsync(this.userId))) {
+        return await Meteor.users.find({}, { fields: { _id: 1 } }).countAsync();
       } else {
         return -1;
       }
@@ -84,13 +83,14 @@ Meteor.startup(function () {
      * Gesamtzahl aller Nutzer einer Gruppe einsehen.
      */
     getUsersInGroupCount: async function (groupId: string): Promise<number> {
-
       check(groupId, String);
 
-      const hasRight = this.userId && await isMemberOf(groupId, this.userId);
+      const hasRight = this.userId && (await isMemberOf(groupId, this.userId));
 
       if (hasRight) {
-        return await Meteor.users.find({ groups: { $in: [groupId] } }, { fields: { _id: 1 } }).countAsync();
+        return await Meteor.users
+          .find({ groups: { $in: [groupId] } }, { fields: { _id: 1 } })
+          .countAsync();
       } else {
         return -1;
       }
@@ -101,16 +101,23 @@ Meteor.startup(function () {
      * @returns {boolean} Wenn TRUE, dann existiert der Benutzer bereits.
      */
     userExists: async function (username: string): Promise<boolean> {
-
       check(username, String);
 
-      const userCount = await UserCollection.users.find({
-        "$or": [{
-          "username": username
-        }, {
-          "emails.address": username
-        }]
-      }, { fields: { "_id": 1 } }).countAsync();
+      const userCount = await UserCollection.users
+        .find(
+          {
+            $or: [
+              {
+                username: username,
+              },
+              {
+                "emails.address": username,
+              },
+            ],
+          },
+          { fields: { _id: 1 } },
+        )
+        .countAsync();
       return userCount > 0;
     },
     /**
@@ -119,11 +126,13 @@ Meteor.startup(function () {
      * @returns {boolean} Wenn TRUE, dann existiert die Gruppe.
      */
     groupExists: async function (groupId: string): Promise<boolean> {
-
       check(groupId, String);
-      const groupCount = await Groups.find({
-        "_id": groupId
-      }, { fields: { "_id": 1 } }).countAsync();
+      const groupCount = await Groups.find(
+        {
+          _id: groupId,
+        },
+        { fields: { _id: 1 } },
+      ).countAsync();
       return groupCount > 0;
     },
     /**
@@ -132,7 +141,6 @@ Meteor.startup(function () {
      * @param groupId ID der Gruppe, in die der Nutzer eingefügt werden soll
      */
     addToGroup: async function (userToBeAddedId: string, groupId: string): Promise<void> {
-
       // Checking types of parameters
       check(groupId, String);
       check(userToBeAddedId, String);
@@ -145,16 +153,20 @@ Meteor.startup(function () {
         { fields: { _id: 1, groups: 1, emails: 1 } },
       );
 
-      const isAlreadyMember = !!userToBeAdded && _.contains((userToBeAdded as any).groups || [], groupId);
+      const isAlreadyMember =
+        !!userToBeAdded && _.contains((userToBeAdded as any).groups || [], groupId);
       if (!userToBeAdded || isAlreadyMember) {
         console.warn("Failed to add user " + userToBeAddedId + " to group " + group.name);
         return;
       }
 
-      await Meteor.users.updateAsync({ _id: userToBeAddedId }, {
-        $pull: { "profile.pendingGroups": groupId },
-        $push: { "groups": groupId }
-      });
+      await Meteor.users.updateAsync(
+        { _id: userToBeAddedId },
+        {
+          $pull: { "profile.pendingGroups": groupId },
+          $push: { groups: groupId },
+        },
+      );
 
       console.log("Added user " + userToBeAddedId + " to group " + group.name);
 
@@ -166,8 +178,8 @@ Meteor.startup(function () {
           title: "Willkommen!",
           details: "Herzlich Willkommen in der Gruppe " + group.name + ".",
           icon: "fa fa-thumbs-o-up faa-bounce animated-hover",
-          hasLink: false
-        }
+          hasLink: false,
+        },
       });
     },
 
@@ -177,39 +189,43 @@ Meteor.startup(function () {
      * @param groupId ID der Gruppe, in die sich der Nutzer befindet
      */
     denyUser: async function (userToDenyId: string, groupId: string): Promise<void> {
-
       // Checking types of parameters
       check(userToDenyId, String);
       check(groupId, String);
 
-      const userToDeny = await Meteor.users.findOneAsync(
+      const userToDeny = (await Meteor.users.findOneAsync(
         { _id: userToDenyId },
         { fields: { groups: 1, "profile.pendingGroups": 1 } },
-      ) as any;
+      )) as any;
 
       if (!userToDeny) {
         throw new Meteor.Error("404", "User not found");
       }
 
-      const pendingGroupIds: string[] = (userToDeny.profile && userToDeny.profile.pendingGroups) || [];
+      const pendingGroupIds: string[] =
+        (userToDeny.profile && userToDeny.profile.pendingGroups) || [];
       const isMemberOfAnyGroup = (userToDeny.groups || []).length > 0;
       const isPendingOnGroup = _.contains(pendingGroupIds, groupId);
       const hasMoreThanOnePendingGroup = pendingGroupIds.length > 1;
 
       const group = await getGroupDoc(groupId);
-      const hasRight = isPendingOnGroup &&
-        (isCoordinatorOf(group, this.userId) || await RolesHelper.userIsAdminAsync(this.userId));
+      const hasRight =
+        isPendingOnGroup &&
+        (isCoordinatorOf(group, this.userId) || (await RolesHelper.userIsAdminAsync(this.userId)));
       if (!hasRight) {
         throw new Meteor.Error("403", "Access denied");
       }
 
       if (!isMemberOfAnyGroup && !hasMoreThanOnePendingGroup) {
         // Delete record
-        await Meteor.users.removeAsync({ "_id": userToDenyId });
+        await Meteor.users.removeAsync({ _id: userToDenyId });
       } else {
-        await Meteor.users.updateAsync({ _id: userToDenyId }, {
-          $pull: { "profile.pendingGroups": groupId }
-        });
+        await Meteor.users.updateAsync(
+          { _id: userToDenyId },
+          {
+            $pull: { "profile.pendingGroups": groupId },
+          },
+        );
       }
     },
 
@@ -230,8 +246,10 @@ Meteor.startup(function () {
       }
       const isClosed = assignment.state === AssignmentState[AssignmentState.Closed];
 
-      if (await isMemberOf(assignment.group, this.userId) && !isClosed) {
-        await app.assignmentApplicationControllerFactory(assignmentId).addUserAsApplicantById(this.userId);
+      if ((await isMemberOf(assignment.group, this.userId)) && !isClosed) {
+        await app
+          .assignmentApplicationControllerFactory(assignmentId)
+          .addUserAsApplicantById(this.userId);
       } else {
         throw new Meteor.Error("403", "Access denied.");
       }
@@ -245,7 +263,9 @@ Meteor.startup(function () {
       if (!this.userId) {
         throw new Meteor.Error("403", "Access denied.");
       }
-      await app.assignmentApplicationControllerFactory(assignmentId).removeUserAsApplicantById(this.userId);
+      await app
+        .assignmentApplicationControllerFactory(assignmentId)
+        .removeUserAsApplicantById(this.userId);
     },
     /**
      * Überprüft, ob User ein Bewerber ist.
@@ -258,15 +278,20 @@ Meteor.startup(function () {
         throw new Meteor.Error("403", "Access denied.");
       }
       const assignment = await getAssignmentDoc(assignmentId);
-      return !!assignment && _.some(assignment.applicants || [], (entry: any) => entry.user === this.userId);
+      return (
+        !!assignment &&
+        _.some(assignment.applicants || [], (entry: any) => entry.user === this.userId)
+      );
     },
     /**
      * Fügt einen Benutzer als Teilnehmer eines Einsatzes hinzu und löscht die Bewerbung auf diesen (falls vorhanden).
      * @param userToBeAddedId Benutzer, der als Teilnehmer hinzugefügt werden soll.
      * @param assignmentId Die ID des Einsatzes.
      */
-    addUserAsAssignmentParticipant: async function (userToBeAddedId: string, assignmentId: string): Promise<void> {
-
+    addUserAsAssignmentParticipant: async function (
+      userToBeAddedId: string,
+      assignmentId: string,
+    ): Promise<void> {
       check(assignmentId, String);
       check(userToBeAddedId, String);
 
@@ -276,21 +301,27 @@ Meteor.startup(function () {
       }
       await requireCoordinatorOrAdmin(this.userId, assignment.group);
 
-      const userToBeAdded = await Meteor.users.findOneAsync({ _id: userToBeAddedId }, { fields: { _id: 1 } });
+      const userToBeAdded = await Meteor.users.findOneAsync(
+        { _id: userToBeAddedId },
+        { fields: { _id: 1 } },
+      );
       if (!userToBeAdded) {
         throw new Meteor.Error("403", "Access denied");
       }
-      await app.assignmentParticipantControllerFactory(assignmentId).addUserAsParticipantAndNotify(userToBeAddedId);
+      await app
+        .assignmentParticipantControllerFactory(assignmentId)
+        .addUserAsParticipantAndNotify(userToBeAddedId);
     },
-
 
     /**
      * Löscht einen User aus einem Einsatz, sowohl als Bewerber als auch Teilnehmer.
      * @param userToBeRemovedId Benutzer, der entfernt werden soll.
      * @param assignmentId Die ID des Einsatzes.
      */
-    removeUserAsAssignmentParticipant: async function (userToBeRemovedId: string, assignmentId: string): Promise<void> {
-
+    removeUserAsAssignmentParticipant: async function (
+      userToBeRemovedId: string,
+      assignmentId: string,
+    ): Promise<void> {
       check(assignmentId, String);
       check(userToBeRemovedId, String);
 
@@ -300,15 +331,22 @@ Meteor.startup(function () {
       }
       await requireCoordinatorOrAdmin(this.userId, assignment.group);
 
-      const userToBeRemoved = await Meteor.users.findOneAsync({ _id: userToBeRemovedId }, { fields: { _id: 1 } });
+      const userToBeRemoved = await Meteor.users.findOneAsync(
+        { _id: userToBeRemovedId },
+        { fields: { _id: 1 } },
+      );
       if (!userToBeRemoved) {
         throw new Meteor.Error("403", "Access denied");
       }
-      await app.assignmentParticipantControllerFactory(assignmentId).removeUserAsParticipantAndNotify(userToBeRemovedId);
+      await app
+        .assignmentParticipantControllerFactory(assignmentId)
+        .removeUserAsParticipantAndNotify(userToBeRemovedId);
     },
 
-    closeAssignment: async function (participantIds: Array<string>, assignmentId: string): Promise<void> {
-
+    closeAssignment: async function (
+      participantIds: Array<string>,
+      assignmentId: string,
+    ): Promise<void> {
       check(assignmentId, String);
       check(participantIds, [String]);
 
@@ -320,11 +358,10 @@ Meteor.startup(function () {
 
       await app.assignmentCloser.closeAssignment({
         assignmentId,
-        participantIds
+        participantIds,
       });
     },
     cancelAssignment: async function (assignmentId: string, reason: string): Promise<void> {
-
       check(assignmentId, String);
       check(reason, String);
 
@@ -337,7 +374,6 @@ Meteor.startup(function () {
       await app.assignmentCanceler.cancelAssignment(assignmentId, reason);
     },
     reenableAssignment: async function (assignmentId: string, reason: string): Promise<void> {
-
       check(assignmentId, String);
       check(reason, String);
 
@@ -350,7 +386,6 @@ Meteor.startup(function () {
       await app.assignmentReenabler.reenableAssignment(assignmentId, reason);
     },
     removeAssignment: async function (assignmentId: string): Promise<void> {
-
       check(assignmentId, String);
 
       const assignment = await getAssignmentDoc(assignmentId);
@@ -362,7 +397,12 @@ Meteor.startup(function () {
       await app.assignmentRemover.removeAssignment(assignmentId);
     },
 
-    sendEmail: async function (to: string, from: string, subject: string, text: string): Promise<void> {
+    sendEmail: async function (
+      to: string,
+      from: string,
+      subject: string,
+      text: string,
+    ): Promise<void> {
       check([to, from, subject, text], [String]);
 
       if (await RolesHelper.userIsAdminAsync(this.userId)) {
@@ -370,7 +410,7 @@ Meteor.startup(function () {
           to: to,
           from: from,
           subject: subject,
-          text: text
+          text: text,
         });
       }
     },
@@ -380,7 +420,8 @@ Meteor.startup(function () {
       fromIsoWeek: number,
       fromIsoYear: number,
       toIsoWeek: number,
-      toIsoYear: number): Promise<number> {
+      toIsoYear: number,
+    ): Promise<number> {
       check([groupId], [String]);
       check([fromIsoWeek, toIsoWeek, fromIsoYear, toIsoYear], [Number]);
 
@@ -390,12 +431,12 @@ Meteor.startup(function () {
           groupId: groupId,
           from: {
             calendarWeek: fromIsoWeek,
-            year: fromIsoYear
+            year: fromIsoYear,
           },
           to: {
             calendarWeek: toIsoWeek,
-            year: toIsoYear
-          }
+            year: toIsoYear,
+          },
         });
       }
       throw new Meteor.Error("403", "Access denied");
@@ -410,7 +451,6 @@ Meteor.startup(function () {
      * @param userToRemoveId ID des Benutzers, der gelöscht werden soll
      */
     removeUser: async function (userToRemoveId: string): Promise<void> {
-
       // Checking types of parameters
       check(userToRemoveId, String);
 
@@ -420,11 +460,10 @@ Meteor.startup(function () {
       if (hasRight && !isUserToRemoveAnAdmin) {
         // Remove user
         console.error(userToRemoveId);
-        await Meteor.users.removeAsync({ "_id": userToRemoveId });
+        await Meteor.users.removeAsync({ _id: userToRemoveId });
       } else {
         throw new Meteor.Error("403", "Access denied");
       }
-    }
-
+    },
   });
 });

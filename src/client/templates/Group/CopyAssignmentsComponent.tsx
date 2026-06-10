@@ -49,7 +49,12 @@ function generateWeeksByAmount(startWeek: number, startYear: number, amount: num
   return weeks;
 }
 
-function selectWeeks(startWeek: number, startYear: number, endWeek: number, endYear: number): string[] {
+function selectWeeks(
+  startWeek: number,
+  startYear: number,
+  endWeek: number,
+  endYear: number,
+): string[] {
   const weeks: string[] = [];
   let currentWeek = startWeek;
   let currentYear = startYear;
@@ -107,7 +112,12 @@ export default function CopyAssignments(): JSX.Element {
         return;
     }
 
-    const selected = selectWeeks(startWeek.isoWeek(), startWeek.year(), endWeek.isoWeek(), endWeek.year());
+    const selected = selectWeeks(
+      startWeek.isoWeek(),
+      startWeek.year(),
+      endWeek.isoWeek(),
+      endWeek.year(),
+    );
     // Only offer weeks that exist in the options list.
     setToWeeks(selected.filter((v) => futureWeekOptions.some((o) => o.value === v)));
   };
@@ -171,12 +181,11 @@ export default function CopyAssignments(): JSX.Element {
     <div className="col-lg-10">
       <h1 className="page-header">Einsätze von Kalenderwoche kopieren</h1>
       <p>
-        Wählen Sie die Kalenderwoche, deren Einsätze Sie kopieren möchten, und die Zielwochen aus. Die verfügbaren
-        Schnellauswahl-Buttons ermöglichen eine einfache Auswahl von bestimmten Zeiträumen.
+        Wählen Sie die Kalenderwoche, deren Einsätze Sie kopieren möchten, und die Zielwochen aus.
+        Die verfügbaren Schnellauswahl-Buttons ermöglichen eine einfache Auswahl von bestimmten
+        Zeiträumen.
       </p>
-      <p>
-        Aktuelle Kalenderwoche: {currentIsoWeek}
-      </p>
+      <p>Aktuelle Kalenderwoche: {currentIsoWeek}</p>
 
       <form acceptCharset="UTF-8" role="form" id="copy" onSubmit={onSubmit}>
         <fieldset>
@@ -190,7 +199,9 @@ export default function CopyAssignments(): JSX.Element {
               onChange={(e) => setFromWeek(e.target.value)}
             >
               {allWeeks.map((w) => (
-                <option key={`${w.week}/${w.year}`} value={`${w.week}/${w.year}`}>{w.formattedWeek}</option>
+                <option key={`${w.week}/${w.year}`} value={`${w.week}/${w.year}`}>
+                  {w.formattedWeek}
+                </option>
               ))}
             </select>
           </div>
@@ -208,22 +219,51 @@ export default function CopyAssignments(): JSX.Element {
             <div className="mt-3" style={{ marginTop: "20px" }}>
               <div className="row">
                 <div className="col-12 col-md-3 mb-2">
-                  <button type="button" className="btn btn-primary btn-block quick-action" onClick={() => onQuickAction("nextMonth")}>Nächster Monat</button>
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-block quick-action"
+                    onClick={() => onQuickAction("nextMonth")}
+                  >
+                    Nächster Monat
+                  </button>
                 </div>
                 <div className="col-12 col-md-3 mb-2">
-                  <button type="button" className="btn btn-primary btn-block quick-action" onClick={() => onQuickAction("restOfMonth")}>Rest des aktuellen Monats</button>
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-block quick-action"
+                    onClick={() => onQuickAction("restOfMonth")}
+                  >
+                    Rest des aktuellen Monats
+                  </button>
                 </div>
                 <div className="col-12 col-md-3 mb-2">
-                  <button type="button" className="btn btn-primary btn-block quick-action" onClick={() => onQuickAction("restOfQuarter")}>Rest des Quartals</button>
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-block quick-action"
+                    onClick={() => onQuickAction("restOfQuarter")}
+                  >
+                    Rest des Quartals
+                  </button>
                 </div>
                 <div className="col-12 col-md-3 mb-2">
-                  <button type="button" className="btn btn-primary btn-block quick-action" onClick={() => onQuickAction("restOfYear")}>Rest des Jahres</button>
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-block quick-action"
+                    onClick={() => onQuickAction("restOfYear")}
+                  >
+                    Rest des Jahres
+                  </button>
                 </div>
               </div>
             </div>
           </div>
 
-          <input id="copySubmit" className="btn btn-lg btn-success btn-block" type="submit" value="Kopieren" />
+          <input
+            id="copySubmit"
+            className="btn btn-lg btn-success btn-block"
+            type="submit"
+            value="Kopieren"
+          />
         </fieldset>
       </form>
       <InlineAlerts alerts={alerts} />

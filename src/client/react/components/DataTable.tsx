@@ -96,7 +96,9 @@ export default function DataTable<T>(props: DataTableProps<T>): JSX.Element {
                 }}
               >
                 {PAGE_SIZES.map((s) => (
-                  <option key={s} value={s}>{s}</option>
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
                 ))}
               </select>{" "}
               entries
@@ -139,7 +141,10 @@ export default function DataTable<T>(props: DataTableProps<T>): JSX.Element {
             </thead>
             <tbody>
               {pageRows.map((row) => (
-                <tr key={props.rowKey(row)} className={props.rowClassName ? props.rowClassName(row) : undefined}>
+                <tr
+                  key={props.rowKey(row)}
+                  className={props.rowClassName ? props.rowClassName(row) : undefined}
+                >
                   {props.columns.map((c, i) => (
                     <td key={i}>{c.render(row)}</td>
                   ))}
@@ -189,7 +194,9 @@ export default function DataTable<T>(props: DataTableProps<T>): JSX.Element {
                   </a>
                 </li>
               ))}
-              <li className={`paginate_button next${currentPage >= pageCount - 1 ? " disabled" : ""}`}>
+              <li
+                className={`paginate_button next${currentPage >= pageCount - 1 ? " disabled" : ""}`}
+              >
                 <a
                   href="#"
                   onClick={(e) => {

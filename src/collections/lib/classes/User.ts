@@ -2,7 +2,6 @@ import * as _ from "underscore";
 import { AssignmentEventType } from "../../../imports/assignments/interfaces/AssignmentEventType";
 import Group from "./Group";
 
-import { Roles } from "meteor/alanning:roles";
 import { Meteor } from "meteor/meteor";
 import * as RolesHelper from "../../../lib/RolesHelper";
 import { Mongo } from "meteor/mongo";
@@ -11,11 +10,9 @@ import Assignment from "./Assignment";
 import * as UserCollection from "../UserCollection";
 import * as UserNotification from "./UserNotification";
 
-
 import { Assignments } from "../AssignmentsCollection";
 import { GroupDAO, Groups } from "../GroupCollection";
 import { Notifications } from "../NotificationCollection";
-
 
 /**
  * Diese Klasse stellt zusätzliche Funktionen für den Benutzer zur Verfügung.
@@ -30,24 +27,35 @@ export default class User {
    */
   public static userExists(username: string): boolean {
     // Check if user exists.
-    let userCount = UserCollection.users.find({
-      "$or": [{
-        "username": username
-      }, {
-        "emails.address": username
-      }]
-    }, { fields: { "_id": 1 } }).count();
+    let userCount = UserCollection.users
+      .find(
+        {
+          $or: [
+            {
+              username: username,
+            },
+            {
+              "emails.address": username,
+            },
+          ],
+        },
+        { fields: { _id: 1 } },
+      )
+      .count();
     return userCount > 0;
   }
 
   public static createFromEmail(email: string): User {
     if (!User.userExists(email)) {
-      throw new Meteor.Error("404", "User \"" + email + "\" not found.");
+      throw new Meteor.Error("404", 'User "' + email + '" not found.');
     }
 
-    let id = UserCollection.users.findOne({
-      "emails.address": email
-    }, { fields: { "_id": 1 } })._id;
+    let id = UserCollection.users.findOne(
+      {
+        "emails.address": email,
+      },
+      { fields: { _id: 1 } },
+    )._id;
 
     return User.createFromId(id);
   }
@@ -61,7 +69,6 @@ export default class User {
     } else {
       return User.createFromId(Meteor.userId());
     }
-
   }
 
   public static createFromDAO(dao: Meteor.User | UserCollection.UserDAO): User {
@@ -101,7 +108,7 @@ export default class User {
     }
 
     if (fields) {
-      options = { "fields": fields, "reactive": reactive };
+      options = { fields: fields, reactive: reactive };
     }
 
     return UserCollection.users.findOne({ _id: this.id }, options);
@@ -116,7 +123,10 @@ export default class User {
       reactive = false;
     }
 
-    return UserCollection.users.findOne({ _id: this.id }, { fields: { _id: 1, groups: 1 }, reactive }).groups;
+    return UserCollection.users.findOne(
+      { _id: this.id },
+      { fields: { _id: 1, groups: 1 }, reactive },
+    ).groups;
   }
 
   public getGroupIdsReactive(): Array<string> {
@@ -137,7 +147,7 @@ export default class User {
   }
 
   public isAdmin(): boolean {
-    return RolesHelper.userIsInRole(this.id, ['admin']);
+    return RolesHelper.userIsInRole(this.id, ["admin"]);
   }
 
   public isGroupCoordinator(group: Group, reactive?: boolean): boolean {
@@ -149,9 +159,14 @@ export default class User {
       reactive = false;
     }
 
-    let userCount = UserCollection.users.find({
-      _id: this.id
-    }, { fields: { "_id": 1 }, "reactive": reactive }).count();
+    let userCount = UserCollection.users
+      .find(
+        {
+          _id: this.id,
+        },
+        { fields: { _id: 1 }, reactive: reactive },
+      )
+      .count();
     return userCount > 0;
   }
 
@@ -160,12 +175,12 @@ export default class User {
       reactive = false;
     }
 
-
     let coordinatingGroupsCursor: Mongo.Cursor<GroupDAO> = Groups.find(
       {
-        coordinators: { $in: [this.id] }
-      }
-      , { fields: { '_id': 1 }, reactive: reactive });
+        coordinators: { $in: [this.id] },
+      },
+      { fields: { _id: 1 }, reactive: reactive },
+    );
 
     /**
      * Bestimmt, ob der User in irgendeiner Gruppe ein Koordinator ist.
@@ -226,7 +241,6 @@ export default class User {
   }
 
   get mobilePhone(): string {
-
     let userDAO: UserCollection.UserDAO = this.getDAO({ "profile.mobileNat": 1 });
 
     if (!_.isUndefined(userDAO)) {
@@ -249,9 +263,10 @@ export default class User {
   }
 
   get pendingGroups(): Array<Group> {
-    let groupIds: Array<string> = this.getDAO({ "profile.pendingGroups": 1 }, true).profile.pendingGroups;
+    let groupIds: Array<string> = this.getDAO({ "profile.pendingGroups": 1 }, true).profile
+      .pendingGroups;
 
-    let pendingGroups: Array<Group> = new Array();
+    let pendingGroups: Array<Group> = [];
 
     _.forEach(groupIds, function (groupId: string) {
       pendingGroups.push(new Group(groupId));
@@ -263,7 +278,6 @@ export default class User {
   get pendingGroupIdsOnce(): Array<string> {
     return this.getDAO({ "profile.pendingGroups": 1 }, false).profile.pendingGroups;
   }
-
 
   get pendingGroupIds(): Array<string> {
     return this.getDAO({ "profile.pendingGroups": 1 }, true).profile.pendingGroups;
@@ -280,11 +294,12 @@ export default class User {
   public getCoordinatingGroups(reactive?: boolean): Array<Group> {
     let groupDAOs: Array<GroupDAO> = Groups.find(
       {
-        coordinators: { $in: [Meteor.userId()] }
+        coordinators: { $in: [Meteor.userId()] },
       },
-      { sort: { _id: 1 }, "reactive": reactive }).fetch();
+      { sort: { _id: 1 }, reactive: reactive },
+    ).fetch();
 
-    let coordinatingGroups: Array<Group> = new Array();
+    let coordinatingGroups: Array<Group> = [];
 
     _.forEach(groupDAOs, function (groupDAO) {
       coordinatingGroups.push(Group.createFromDAO(groupDAO));
@@ -296,27 +311,27 @@ export default class User {
   public delete() {
     UserCollection.users.remove({ _id: this.getId() });
   }
-
 }
 
 class UserNotificationManager {
+  constructor(private user: User) {}
 
-  constructor(private user: User) {
-  }
-
-  public notifyAboutAssignmentById(assignmentId: string, type: AssignmentEventType, parameters?: UserNotification.AssignmentOptionsParameters) {
-
+  public notifyAboutAssignmentById(
+    assignmentId: string,
+    type: AssignmentEventType,
+    parameters?: UserNotification.AssignmentOptionsParameters,
+  ) {
     let assignmentsOptions: UserNotification.AssignmentOptions = {
       id: assignmentId,
-      type: AssignmentEventType[type]
+      type: AssignmentEventType[type],
     };
 
     assignmentsOptions = _.extend(assignmentsOptions, parameters);
 
     let notification: UserNotification.NotificationDAO = {
-      "type": UserNotification.Type[UserNotification.Type.Assignment],
-      "userId": this.user.getId(),
-      "assignmentOptions": assignmentsOptions
+      type: UserNotification.Type[UserNotification.Type.Assignment],
+      userId: this.user.getId(),
+      assignmentOptions: assignmentsOptions,
     };
 
     Notifications.insert(notification);
@@ -326,7 +341,7 @@ class UserNotificationManager {
     let notification: UserNotification.NotificationDAO = {
       type: UserNotification.Type[UserNotification.Type.Simple],
       userId: this.user.getId(),
-      simpleData: notificationData
+      simpleData: notificationData,
     };
 
     Notifications.insert(notification);
@@ -336,7 +351,10 @@ class UserNotificationManager {
     this.notifyAboutAssignmentById(assignment.getAssignmentId(), type);
   }
 
-  public getAllNotifications(reactive?: boolean, limit?: number): Mongo.Cursor<UserNotification.NotificationDAO> {
+  public getAllNotifications(
+    reactive?: boolean,
+    limit?: number,
+  ): Mongo.Cursor<UserNotification.NotificationDAO> {
     if (!reactive) {
       reactive = false;
     }
@@ -344,42 +362,45 @@ class UserNotificationManager {
       limit = 0;
     }
 
-
-    return Notifications.find({ "userId": this.user.getId() }, { sort: { when: -1 }, limit: limit });
-
-
+    return Notifications.find({ userId: this.user.getId() }, { sort: { when: -1 }, limit: limit });
   }
 
   public markAllNotificationsAsSeen(): void {
     let unread: Array<UserNotification.NotificationDAO> = this.getUnreadNotifications().fetch();
 
     _.forEach(unread, function (notfification) {
-      Notifications.update({ "_id": notfification._id }, {
-        $set: {
-          "seen": true
-        }
-      });
+      Notifications.update(
+        { _id: notfification._id },
+        {
+          $set: {
+            seen: true,
+          },
+        },
+      );
     });
-
   }
 
   public removeSeen(): void {
     let read: Array<UserNotification.NotificationDAO> = this.getReadNotifications().fetch();
 
     _.forEach(read, function (notfification) {
-      Notifications.remove({ "_id": notfification._id });
+      Notifications.remove({ _id: notfification._id });
     });
   }
 
   public removeAll(): void {
-    let allNotifications: Array<UserNotification.NotificationDAO> = this.getAllNotifications().fetch();
+    let allNotifications: Array<UserNotification.NotificationDAO> =
+      this.getAllNotifications().fetch();
 
     _.forEach(allNotifications, function (notfification) {
-      Notifications.remove({ "_id": notfification._id });
+      Notifications.remove({ _id: notfification._id });
     });
   }
 
-  public getUnreadNotifications(reactive?: boolean, limit?: number): Mongo.Cursor<UserNotification.NotificationDAO> {
+  public getUnreadNotifications(
+    reactive?: boolean,
+    limit?: number,
+  ): Mongo.Cursor<UserNotification.NotificationDAO> {
     if (!reactive) {
       reactive = false;
     }
@@ -387,12 +408,16 @@ class UserNotificationManager {
       limit = 0;
     }
 
-
-    return Notifications.find({ "userId": this.user.getId(), "seen": false }, { sort: { when: -1 }, limit: limit });
-
+    return Notifications.find(
+      { userId: this.user.getId(), seen: false },
+      { sort: { when: -1 }, limit: limit },
+    );
   }
 
-  public getReadNotifications(reactive?: boolean, limit?: number): Mongo.Cursor<UserNotification.NotificationDAO> {
+  public getReadNotifications(
+    reactive?: boolean,
+    limit?: number,
+  ): Mongo.Cursor<UserNotification.NotificationDAO> {
     if (!reactive) {
       reactive = false;
     }
@@ -400,14 +425,13 @@ class UserNotificationManager {
       limit = 0;
     }
 
-
-    return Notifications.find({ "userId": this.user.getId(), "seen": true }, { sort: { when: -1 }, limit: limit });
-
+    return Notifications.find(
+      { userId: this.user.getId(), seen: true },
+      { sort: { when: -1 }, limit: limit },
+    );
   }
 
   public hasUnreadNotifications(): boolean {
-    return Notifications.find({ "userId": this.user.getId(), "seen": false }, { limit: 1 }).count() > 0;
-
+    return Notifications.find({ userId: this.user.getId(), seen: false }, { limit: 1 }).count() > 0;
   }
-
 }

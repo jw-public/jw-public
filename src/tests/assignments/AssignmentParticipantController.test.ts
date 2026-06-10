@@ -1,34 +1,24 @@
-import { AssignmentDAO } from '../../collections/lib/AssignmentsCollection';
-import { SimpleCollection } from '../../imports/interfaces/SimpleCollection';
-import { AssignmentServiceTypes } from '../../server/assignments/AssignmentServiceTypes';
-import { IAssignmentContext } from '../../server/assignments/interfaces/IAssignmentContext';
-import {
-  IAssignmentParticipantController
-} from '../../server/assignments/interfaces/IAssignmentParticipantController';
-import {
-  IAssignmentParticipantControllerFactory
-} from '../../server/assignments/interfaces/IAssignmentParticipantControllerFactory';
-import {
-  IAssignmentParticipationNotifier
-} from '../../server/assignments/interfaces/IAssignmentParticipationNotifier';
-import { Types } from '../../server/Types';
-import { AssignmentParticipationNotifierMock } from './common/AssignmentParticipationNotifierMock';
-import { AssignmentTestCaseWithNotifications } from './common/AssignmentTestCaseWithNotifications';
+import { AssignmentDAO } from "../../collections/lib/AssignmentsCollection";
+import { SimpleCollection } from "../../imports/interfaces/SimpleCollection";
+import { AssignmentServiceTypes } from "../../server/assignments/AssignmentServiceTypes";
+import { IAssignmentContext } from "../../server/assignments/interfaces/IAssignmentContext";
+import { IAssignmentParticipantController } from "../../server/assignments/interfaces/IAssignmentParticipantController";
+import { IAssignmentParticipantControllerFactory } from "../../server/assignments/interfaces/IAssignmentParticipantControllerFactory";
+import { IAssignmentParticipationNotifier } from "../../server/assignments/interfaces/IAssignmentParticipationNotifier";
+import { Types } from "../../server/Types";
+import { AssignmentParticipationNotifierMock } from "./common/AssignmentParticipationNotifierMock";
+import { AssignmentTestCaseWithNotifications } from "./common/AssignmentTestCaseWithNotifications";
 
 import { assert } from "chai";
 
-
-
 describe("AssignmentParticipantController.addUserAsParticipantAndNotify()", async function () {
-
   it("should be able to add a user as participant, when no other user is applicant or participant", async function () {
     // Arrange
     let addUserTestCase = new AddUserTestCase({
-      initialAssignment:
-      {
+      initialAssignment: {
         applicants: [],
-        participants: []
-      }
+        participants: [],
+      },
     });
 
     // Act
@@ -38,20 +28,20 @@ describe("AssignmentParticipantController.addUserAsParticipantAndNotify()", asyn
     let assignmentAssert = addUserTestCase.assignmentAssert;
     assignmentAssert.participantCountIs(1, "No user was appended to participants");
     assignmentAssert.containsUserIdInParticipants(testData.userId);
-    assert.isTrue(appliedChanges, "Method shall indicate change")
-
+    assert.isTrue(appliedChanges, "Method shall indicate change");
   });
 
   it("should be able to add a user as participant, when user is applicant. Also removes applicant.", async function () {
     // Arrange
     let addUserTestCase = new AddUserTestCase({
-      initialAssignment:
-      {
-        applicants: [{
-          user: testData.userId
-        }],
-        participants: []
-      }
+      initialAssignment: {
+        applicants: [
+          {
+            user: testData.userId,
+          },
+        ],
+        participants: [],
+      },
     });
 
     // Act
@@ -63,20 +53,20 @@ describe("AssignmentParticipantController.addUserAsParticipantAndNotify()", asyn
     assignmentAssert.participantCountIs(1, "No user was appended to participants");
     assignmentAssert.containsUserIdInParticipants(testData.userId);
     assignmentAssert.applicantCountIs(0, "User was not removed from applicants");
-    assert.isTrue(appliedChanges, "Method shall indicate change")
-
+    assert.isTrue(appliedChanges, "Method shall indicate change");
   });
 
   it("should not add participant twice", async function () {
     // Arrange
     let addUserTestCase = new AddUserTestCase({
-      initialAssignment:
-      {
-        participants: [{
-          user: testData.userId
-        }],
-        applicants: []
-      }
+      initialAssignment: {
+        participants: [
+          {
+            user: testData.userId,
+          },
+        ],
+        applicants: [],
+      },
     });
 
     // Act
@@ -88,17 +78,16 @@ describe("AssignmentParticipantController.addUserAsParticipantAndNotify()", asyn
     assignmentAssert.participantCountIs(1, "User was appended more than once to participants");
     assignmentAssert.containsUserIdInParticipants(testData.userId);
     addUserTestCase.notifierMock.assertNoUserWasNotifiedAboutAccepted();
-    assert.isFalse(appliedChanges, "Method shall indicate no change")
+    assert.isFalse(appliedChanges, "Method shall indicate no change");
   });
 
   it("should notify user, when adding as participant", async function () {
     // Arrange
     let addUserTestCase = new AddUserTestCase({
-      initialAssignment:
-      {
+      initialAssignment: {
         participants: [],
-        applicants: []
-      }
+        applicants: [],
+      },
     });
 
     // Act
@@ -109,26 +98,21 @@ describe("AssignmentParticipantController.addUserAsParticipantAndNotify()", asyn
 
     assignmentAssert.containsUserIdInParticipants(testData.userId);
     addUserTestCase.notifierMock.assertUserWasNotifiedAboutAccepted(testData.userId);
-
   });
-
-
 });
 
-
-
 describe("AssignmentParticipantController.removeUserAsParticipantAndNotify()", async function () {
-
   it("should be able to remove a user from participants and user is notified", async function () {
     // Arrange
     let removeUserTestCase = new RemoveUserTestCase({
-      initialAssignment:
-      {
-        participants: [{
-          user: testData.userId
-        }],
-        applicants: []
-      }
+      initialAssignment: {
+        participants: [
+          {
+            user: testData.userId,
+          },
+        ],
+        applicants: [],
+      },
     });
 
     // Act
@@ -140,19 +124,19 @@ describe("AssignmentParticipantController.removeUserAsParticipantAndNotify()", a
     assignmentAssert.participantCountIs(0, "No user was removed from participants");
     removeUserTestCase.notifierMock.assertUserWasNotifiedAboutRemoval(testData.userId);
     assert.isTrue(appliedChanges, "Method shall indicate change");
-
   });
 
   it("should not throw an error if already not an participant", async function () {
     // Arrange
     let removeUserTestCase = new RemoveUserTestCase({
-      initialAssignment:
-      {
-        participants: [{
-          user: "Some-other-user"
-        }],
-        applicants: []
-      }
+      initialAssignment: {
+        participants: [
+          {
+            user: "Some-other-user",
+          },
+        ],
+        applicants: [],
+      },
     });
 
     // Act
@@ -165,49 +149,37 @@ describe("AssignmentParticipantController.removeUserAsParticipantAndNotify()", a
     assignmentAssert.containsUserIdInParticipants("Some-other-user");
     assert.isFalse(appliedChanges, "Method shall indicate no change");
     removeUserTestCase.notifierMock.assertNoUserWasNotifiedAboutRemoved();
-
   });
-
-
-
-
-
 });
-
-
 
 const testData = {
   userId: "thisIsSomeRandomUserId814691",
-}
-
-
-
+};
 
 interface ApplicationControllerTestData {
-  initialAssignment: AssignmentDAO
+  initialAssignment: AssignmentDAO;
 }
 
-class AssignmentParticipantControllerTestCase extends AssignmentTestCaseWithNotifications<IAssignmentParticipantControllerFactory> implements IAssignmentContext {
+class AssignmentParticipantControllerTestCase
+  extends AssignmentTestCaseWithNotifications<IAssignmentParticipantControllerFactory>
+  implements IAssignmentContext
+{
   public participantController: IAssignmentParticipantController;
   private _notifier: AssignmentParticipationNotifierMock;
 
   constructor(private testData: ApplicationControllerTestData) {
     super(Types.IAssignmentParticipantControllerFactory);
 
-
     this._notifier = new AssignmentParticipationNotifierMock(this);
 
-    this.replace<IAssignmentParticipationNotifier>(
-      {
-        type: AssignmentServiceTypes.IAssignmentParticipationNotifier,
-        alternative: this._notifier
-      });
+    this.replace<IAssignmentParticipationNotifier>({
+      type: AssignmentServiceTypes.IAssignmentParticipationNotifier,
+      alternative: this._notifier,
+    });
 
-
-
-    this.participantController = this.createParticipantControllerWithAssignment(this.getTestObject());
-
-
+    this.participantController = this.createParticipantControllerWithAssignment(
+      this.getTestObject(),
+    );
   }
 
   public getAssignmentId() {
@@ -218,8 +190,6 @@ class AssignmentParticipantControllerTestCase extends AssignmentTestCaseWithNoti
     return this.collection.findOne();
   }
 
-
-
   get assignmentAssert() {
     return this.assert(this.assignment);
   }
@@ -228,37 +198,39 @@ class AssignmentParticipantControllerTestCase extends AssignmentTestCaseWithNoti
     return this._notifier;
   }
 
-  private createParticipantControllerWithAssignment(controllerFactory: IAssignmentParticipantControllerFactory) {
-    let assignmentContext = insertAnAssignmentIntoCollection(this.collection, this.testData.initialAssignment);
+  private createParticipantControllerWithAssignment(
+    controllerFactory: IAssignmentParticipantControllerFactory,
+  ) {
+    let assignmentContext = insertAnAssignmentIntoCollection(
+      this.collection,
+      this.testData.initialAssignment,
+    );
     let participantController = controllerFactory(assignmentContext.getAssignmentId());
     return participantController;
   }
-
 }
 
 class AddUserTestCase extends AssignmentParticipantControllerTestCase {
-
   public executeWith(userId: string): Promise<boolean> {
     return this.participantController.addUserAsParticipantAndNotify(userId);
   }
-
 }
 
 class RemoveUserTestCase extends AssignmentParticipantControllerTestCase {
-
   public executeWith(userId: string): Promise<boolean> {
     return this.participantController.removeUserAsParticipantAndNotify(userId);
   }
-
 }
 
-
-function insertAnAssignmentIntoCollection(collection: SimpleCollection<AssignmentDAO>, assignment: AssignmentDAO): IAssignmentContext {
+function insertAnAssignmentIntoCollection(
+  collection: SimpleCollection<AssignmentDAO>,
+  assignment: AssignmentDAO,
+): IAssignmentContext {
   let assignmentId = collection.insert(assignment);
 
   return {
     getAssignmentId: () => {
       return assignmentId;
-    }
+    },
   };
 }

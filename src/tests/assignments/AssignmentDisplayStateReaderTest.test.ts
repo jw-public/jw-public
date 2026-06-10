@@ -1,10 +1,15 @@
 import * as chai from "chai";
-import { AssignmentDisplayStateReader, DisplayState, IAssignmentDisplayStateReader } from "../../lib/classes/AssignmentDisplayStateReader";
-import { AssignmentStateForUser, IAssignmentStateReader } from "../../lib/classes/AssignmentStateReader";
-
+import {
+  AssignmentDisplayStateReader,
+  DisplayState,
+  IAssignmentDisplayStateReader,
+} from "../../lib/classes/AssignmentDisplayStateReader";
+import {
+  AssignmentStateForUser,
+  IAssignmentStateReader,
+} from "../../lib/classes/AssignmentStateReader";
 
 describe("AssignmentDisplayStateReader UnitTest", function () {
-
   it("State Default", function () {
     assertDisplayStateOf(defaultState).is(DisplayState.Default);
   });
@@ -59,7 +64,7 @@ describe("AssignmentDisplayStateReader UnitTest", function () {
       closed: true,
       canceled: false,
       participant: false,
-      applicant: false
+      applicant: false,
     }).is(DisplayState.Closed);
   });
 
@@ -68,7 +73,7 @@ describe("AssignmentDisplayStateReader UnitTest", function () {
       closed: true,
       canceled: false,
       participant: false,
-      applicant: true
+      applicant: true,
     }).is(DisplayState.Closed);
   });
 
@@ -77,7 +82,7 @@ describe("AssignmentDisplayStateReader UnitTest", function () {
       closed: true,
       canceled: false,
       participant: true,
-      applicant: false
+      applicant: false,
     }).is(DisplayState.UserAccepted);
   });
 
@@ -86,7 +91,7 @@ describe("AssignmentDisplayStateReader UnitTest", function () {
       closed: false,
       canceled: false,
       participant: true,
-      applicant: false
+      applicant: false,
     }).is(DisplayState.UserAccepted);
   });
 
@@ -95,10 +100,9 @@ describe("AssignmentDisplayStateReader UnitTest", function () {
       closed: false,
       canceled: false,
       participant: false,
-      applicant: true
+      applicant: true,
     }).is(DisplayState.UserApplicant);
   });
-
 });
 
 interface TestState {
@@ -108,7 +112,6 @@ interface TestState {
   applicant: boolean;
 }
 
-
 const defaultState: TestState = {
   closed: false,
   canceled: false,
@@ -116,43 +119,52 @@ const defaultState: TestState = {
   applicant: false,
 };
 
-
 function wrapTestState(testState: TestState): IAssignmentStateReader {
   return {
-    isClosed() { return testState.closed; },
-    isCanceled() { return testState.canceled; },
-    isParticipantById(userId: string) { return testState.participant; },
-    isApplicantById(userId: string) { return testState.applicant; },
-    getAssignmentState(userId: string): AssignmentStateForUser {
+    isClosed() {
+      return testState.closed;
+    },
+    isCanceled() {
+      return testState.canceled;
+    },
+    isParticipantById(_userId: string) {
+      return testState.participant;
+    },
+    isApplicantById(_userId: string) {
+      return testState.applicant;
+    },
+    getAssignmentState(_userId: string): AssignmentStateForUser {
       return {
         canceled: testState.canceled,
         closed: testState.closed,
         isParticipant: testState.participant,
         isApplicant: testState.applicant,
       };
-    }
-
+    },
   };
 }
 
-
-
 function getSystemUnderTestWith(assignmentState: TestState): IAssignmentDisplayStateReader {
-  return AssignmentDisplayStateReader.fromAssignmentStateReader(wrapTestState(assignmentState)).withUserId("ThisIsARandomUserID");
+  return AssignmentDisplayStateReader.fromAssignmentStateReader(
+    wrapTestState(assignmentState),
+  ).withUserId("ThisIsARandomUserID");
 }
 
 function assertDisplayStateEquals(actual: DisplayState, expected: DisplayState) {
-  chai.assert.equal(actual, expected, "Should be " + DisplayState[expected] + ", but was " + DisplayState[actual]);
+  chai.assert.equal(
+    actual,
+    expected,
+    "Should be " + DisplayState[expected] + ", but was " + DisplayState[actual],
+  );
 }
 
 function assertDisplayStateOf(testState: TestState) {
-
   let systemUnderTest = getSystemUnderTestWith(testState);
 
   return {
     is(displayState: DisplayState) {
       let state = systemUnderTest.getDisplayState();
       assertDisplayStateEquals(state, displayState);
-    }
+    },
   };
 }

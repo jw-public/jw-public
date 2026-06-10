@@ -1,16 +1,14 @@
-import { assert } from 'chai';
-import * as TypeMoq from 'typemoq';
-import { AssignmentEventType } from '../../imports/assignments/interfaces/AssignmentEventType';
-import { AssignmentServiceTypes } from '../../server/assignments/AssignmentServiceTypes';
-import { IAssignmentEmailNotifier } from '../../server/assignments/interfaces/IAssignmentEmailNotifier';
-import { UserMailer } from '../../server/mailing/classes/UserMailer';
-import { IUserMailer, IUserMailerOptions } from '../../server/mailing/interfaces/IUserMailer';
-import { MailingTypes } from '../../server/mailing/MailingTypes';
-import { TestCase } from '../common/TestCase';
-
+import { assert } from "chai";
+import * as TypeMoq from "typemoq";
+import { AssignmentEventType } from "../../imports/assignments/interfaces/AssignmentEventType";
+import { AssignmentServiceTypes } from "../../server/assignments/AssignmentServiceTypes";
+import { IAssignmentEmailNotifier } from "../../server/assignments/interfaces/IAssignmentEmailNotifier";
+import { UserMailer } from "../../server/mailing/classes/UserMailer";
+import { IUserMailer, IUserMailerOptions } from "../../server/mailing/interfaces/IUserMailer";
+import { MailingTypes } from "../../server/mailing/MailingTypes";
+import { TestCase } from "../common/TestCase";
 
 describe("AssignmentEmailNotifier", async function () {
-
   it("should not be null or undefined", async function () {
     // Arrange
     let testCase = new AssignmentEmailNotifierTestCase();
@@ -30,7 +28,7 @@ describe("AssignmentEmailNotifier", async function () {
     await testCase.notifier.notifyUserAboutAssignmentViaEmail({
       userId: testCase.testUserId,
       assignmentId: "sampleAssignmentId",
-      eventType: AssignmentEventType.Accept
+      eventType: AssignmentEventType.Accept,
     });
 
     // Assert
@@ -49,21 +47,19 @@ Deine Brüder der Trolleyorganisation.
 ---
 
 Wenn du mit der zugeteilten Ansprechperson Kontakt aufnehmen möchtest, klicke auf den oben genannten Link. 
-Dort findest du die Kontaktdaten. Bitte sende uns deinen Bericht dieser Schicht an diese Adresse: test-group@jw-public.org`
+Dort findest du die Kontaktdaten. Bitte sende uns deinen Bericht dieser Schicht an diese Adresse: test-group@jw-public.org`,
     });
   });
-
 
   it("should send E-Mail when removed", async function () {
     // Arrange
     let testCase = new AssignmentEmailNotifierTestCase();
 
-
     // Act
     await testCase.notifier.notifyUserAboutAssignmentViaEmail({
       userId: testCase.testUserId,
       assignmentId: "sampleAssignmentId",
-      eventType: AssignmentEventType.Removed
+      eventType: AssignmentEventType.Removed,
     });
 
     // Assert
@@ -80,16 +76,13 @@ Deine Brüder der Trolleyorganisation.
 ---
 
 Wenn du mit der zugeteilten Ansprechperson Kontakt aufnehmen möchtest, klicke auf den oben genannten Link. 
-Dort findest du die Kontaktdaten. Bitte sende uns deinen Bericht dieser Schicht an diese Adresse: test-group@jw-public.org`
+Dort findest du die Kontaktdaten. Bitte sende uns deinen Bericht dieser Schicht an diese Adresse: test-group@jw-public.org`,
     });
   });
-
-
 
   it("should send E-Mail when canceled", async function () {
     // Arrange
     let testCase = new AssignmentEmailNotifierTestCase();
-
 
     // Act
     await testCase.notifier.notifyUserAboutAssignmentViaEmail({
@@ -115,15 +108,13 @@ Deine Brüder der Trolleyorganisation.
 ---
 
 Wenn du mit der zugeteilten Ansprechperson Kontakt aufnehmen möchtest, klicke auf den oben genannten Link. 
-Dort findest du die Kontaktdaten. Bitte sende uns deinen Bericht dieser Schicht an diese Adresse: test-group@jw-public.org`
+Dort findest du die Kontaktdaten. Bitte sende uns deinen Bericht dieser Schicht an diese Adresse: test-group@jw-public.org`,
     });
-
   });
 
   it("should send E-Mail when changed", async function () {
     // Arrange
     let testCase = new AssignmentEmailNotifierTestCase();
-
 
     // Act
     await testCase.notifier.notifyUserAboutAssignmentViaEmail({
@@ -149,22 +140,20 @@ Deine Brüder der Trolleyorganisation.
 ---
 
 Wenn du mit der zugeteilten Ansprechperson Kontakt aufnehmen möchtest, klicke auf den oben genannten Link. 
-Dort findest du die Kontaktdaten. Bitte sende uns deinen Bericht dieser Schicht an diese Adresse: test-group@jw-public.org`
+Dort findest du die Kontaktdaten. Bitte sende uns deinen Bericht dieser Schicht an diese Adresse: test-group@jw-public.org`,
     });
-
   });
 
   it("should send E-Mail when reenabled", async function () {
     // Arrange
     let testCase = new AssignmentEmailNotifierTestCase();
 
-
     // Act
     await testCase.notifier.notifyUserAboutAssignmentViaEmail({
       userId: testCase.testUserId,
       assignmentId: "sampleAssignmentId",
       eventType: AssignmentEventType.Reenable,
-      reenablingReason: "Regen hat aufgehört"
+      reenablingReason: "Regen hat aufgehört",
     });
 
     // Assert
@@ -184,27 +173,30 @@ Deine Brüder der Trolleyorganisation.
 ---
 
 Wenn du mit der zugeteilten Ansprechperson Kontakt aufnehmen möchtest, klicke auf den oben genannten Link. 
-Dort findest du die Kontaktdaten. Bitte sende uns deinen Bericht dieser Schicht an diese Adresse: test-group@jw-public.org`
+Dort findest du die Kontaktdaten. Bitte sende uns deinen Bericht dieser Schicht an diese Adresse: test-group@jw-public.org`,
     });
   });
 
   it("should not send E-Mail when user disabled it", async function () {
     // Arrange
     let testCase = new AssignmentEmailNotifierTestCase();
-    testCase.userCollection.update({ _id: testCase.testUserId }, {
-      $set: {
-        "profile.notificationAsEmail": false
-      }
-    });
+    testCase.userCollection.update(
+      { _id: testCase.testUserId },
+      {
+        $set: {
+          "profile.notificationAsEmail": false,
+        },
+      },
+    );
 
     let triggerNotification = async (eventType: AssignmentEventType) => {
       await testCase.notifier.notifyUserAboutAssignmentViaEmail({
         userId: testCase.testUserId,
         assignmentId: "sampleAssignmentId",
         eventType: eventType,
-        reenablingReason: "Regen hat aufgehört"
+        reenablingReason: "Regen hat aufgehört",
       });
-    }
+    };
 
     // Act
     await triggerNotification(AssignmentEventType.Accept);
@@ -213,15 +205,8 @@ Dort findest du die Kontaktdaten. Bitte sende uns deinen Bericht dieser Schicht 
     await triggerNotification(AssignmentEventType.Cancel);
     // Assert
     testCase.emailAssert.noEmailWasSent();
-
-
   });
-
 });
-
-
-
-
 
 class AssignmentEmailNotifierTestCase extends TestCase<IAssignmentEmailNotifier> {
   public _userMailerMock: TypeMoq.Mock<IUserMailer>;
@@ -231,24 +216,22 @@ class AssignmentEmailNotifierTestCase extends TestCase<IAssignmentEmailNotifier>
 
     this._userMailerMock = TypeMoq.Mock.ofType<IUserMailer>(UserMailer);
 
-
-    this.replaceWithMock<IUserMailer>(
-      {
-        type: MailingTypes.IUserMailer,
-        mock: this._userMailerMock
-      });
+    this.replaceWithMock<IUserMailer>({
+      type: MailingTypes.IUserMailer,
+      mock: this._userMailerMock,
+    });
 
     this.assignmentsCollection.insert({
       _id: "sampleAssignmentId",
       name: "TestName",
       group: "test-group-id",
       cancelationReason: "Regen",
-      start: new Date("2016-10-24T12:00:00Z")
+      start: new Date("2016-10-24T12:00:00Z"),
     });
 
     this.groupCollection.insert({
       _id: "test-group-id",
-      email: "test-group@jw-public.org"
+      email: "test-group@jw-public.org",
     });
 
     process.env.ROOT_URL = "http://my-root-url";
@@ -261,16 +244,23 @@ class AssignmentEmailNotifierTestCase extends TestCase<IAssignmentEmailNotifier>
   public get emailAssert() {
     return {
       noEmailWasSent: () => {
-        this._userMailerMock.verify(emailSender => emailSender.send(TypeMoq.It.isAny()), TypeMoq.Times.never());
+        this._userMailerMock.verify(
+          (emailSender) => emailSender.send(TypeMoq.It.isAny()),
+          TypeMoq.Times.never(),
+        );
       },
       oneEmailWasSent: () => {
-        this._userMailerMock.verify(emailSender => emailSender.send(TypeMoq.It.isAny()), TypeMoq.Times.once());
+        this._userMailerMock.verify(
+          (emailSender) => emailSender.send(TypeMoq.It.isAny()),
+          TypeMoq.Times.once(),
+        );
       },
       emailWasSentWith: (options: IUserMailerOptions) => {
-        this._userMailerMock.verify(emailSender => emailSender.send(TypeMoq.It.isValue(options)), TypeMoq.Times.once());
-      }
-    }
+        this._userMailerMock.verify(
+          (emailSender) => emailSender.send(TypeMoq.It.isValue(options)),
+          TypeMoq.Times.once(),
+        );
+      },
+    };
   }
-
-
 }

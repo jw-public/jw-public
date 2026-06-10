@@ -30,7 +30,9 @@ function denyUser(userId: string): void {
 
   console.log("Denying User " + userId + " " + groupId);
 
-  confirmDialog({ message: "Anfrage von " + user.fullName + " (" + user.email + ") ablehnen." }).then((result) => {
+  confirmDialog({
+    message: "Anfrage von " + user.fullName + " (" + user.email + ") ablehnen.",
+  }).then((result) => {
     if (result) {
       const proxy = new ServerMethodsWrapper.GroupProxy(groupId);
       proxy.denyUser(userId, (err: Meteor.Error) => {
@@ -44,18 +46,39 @@ function denyUser(userId: string): void {
 }
 
 const columns: DataTableColumn<UserCollection.UserDAO>[] = [
-  { title: "Vorname", render: (u) => u.profile?.first_name, sortValue: (u) => u.profile?.first_name ?? "" },
-  { title: "Nachname", render: (u) => u.profile?.last_name, sortValue: (u) => u.profile?.last_name ?? "" },
+  {
+    title: "Vorname",
+    render: (u) => u.profile?.first_name,
+    sortValue: (u) => u.profile?.first_name ?? "",
+  },
+  {
+    title: "Nachname",
+    render: (u) => u.profile?.last_name,
+    sortValue: (u) => u.profile?.last_name ?? "",
+  },
   { title: "Telefon", render: (u) => u.profile?.mobileNat },
-  { title: "E-Mail", render: (u) => u.emails?.[0]?.address, sortValue: (u) => u.emails?.[0]?.address ?? "" },
+  {
+    title: "E-Mail",
+    render: (u) => u.emails?.[0]?.address,
+    sortValue: (u) => u.emails?.[0]?.address ?? "",
+  },
   {
     title: "",
     render: (u) => (
       <span>
-        <button type="button" className="btn btn-success accept-user" onClick={() => acceptUser(u._id)}>
+        <button
+          type="button"
+          className="btn btn-success accept-user"
+          onClick={() => acceptUser(u._id)}
+        >
           <i className="fa fa-check"></i>
         </button>{" "}
-        <button type="button" title="Gruppenanfrage ablehnen" className="btn btn-danger deny-user" onClick={() => denyUser(u._id)}>
+        <button
+          type="button"
+          title="Gruppenanfrage ablehnen"
+          className="btn btn-danger deny-user"
+          onClick={() => denyUser(u._id)}
+        >
           <i className="fa fa-times"></i>
         </button>
       </span>
@@ -64,7 +87,12 @@ const columns: DataTableColumn<UserCollection.UserDAO>[] = [
 ];
 
 function searchText(u: UserCollection.UserDAO): string {
-  return [u.profile?.first_name, u.profile?.last_name, u.profile?.mobileNat, u.emails?.[0]?.address].join(" ");
+  return [
+    u.profile?.first_name,
+    u.profile?.last_name,
+    u.profile?.mobileNat,
+    u.emails?.[0]?.address,
+  ].join(" ");
 }
 
 export default function ManageApplicants(): JSX.Element {
@@ -84,7 +112,9 @@ export default function ManageApplicants(): JSX.Element {
     <div>
       <div className="row">
         <div className="col-lg-12">
-          <h1 className="page-header">Bewerbungen <small>{groupName}</small></h1>
+          <h1 className="page-header">
+            Bewerbungen <small>{groupName}</small>
+          </h1>
         </div>
       </div>
       <div className="row">

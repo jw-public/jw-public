@@ -3,5 +3,5 @@ export const AssignmentServiceTypes = {
   IAssignmentNotifier: Symbol("IAssignmentNotifier"),
   IAssignmentDaoNotifier: Symbol("IAssignmentDaoNotifier"),
   IAssignmentEmailNotifier: Symbol("IAssignmentEmailNotifier"),
-  IAssignmentDateParser: Symbol("IAssignmentDateParser")
+  IAssignmentDateParser: Symbol("IAssignmentDateParser"),
 };

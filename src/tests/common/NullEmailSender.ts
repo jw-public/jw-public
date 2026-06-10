@@ -2,9 +2,5 @@ import { IEmailSender, IEmailSendOptions } from "../../server/mailing/interfaces
 
 /** Does nothing **/
 export class NullEmailSender implements IEmailSender {
-
-  public send(options: IEmailSendOptions) {
-
-  }
-
+  public send(_options: IEmailSendOptions) {}
 }

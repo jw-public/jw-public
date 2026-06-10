@@ -50,17 +50,19 @@ function allowBoth(rules: { insert?: Function; update?: Function; remove?: Funct
 
 // --- Groups -------------------------------------------------------------
 
-Groups.allow(allowBoth({
-  insert: (userId: string) => isAdmin(userId),
-  remove: (userId: string) => isAdmin(userId),
-  // Coordinators may edit their group but never the coordinator list.
-  update: async (userId: string, doc: any, fields: string[]) => {
-    if (await isAdmin(userId)) {
-      return true;
-    }
-    return (await isGroupCoordinator(userId, doc._id)) && !_.contains(fields, "coordinators");
-  },
-}));
+Groups.allow(
+  allowBoth({
+    insert: (userId: string) => isAdmin(userId),
+    remove: (userId: string) => isAdmin(userId),
+    // Coordinators may edit their group but never the coordinator list.
+    update: async (userId: string, doc: any, fields: string[]) => {
+      if (await isAdmin(userId)) {
+        return true;
+      }
+      return (await isGroupCoordinator(userId, doc._id)) && !_.contains(fields, "coordinators");
+    },
+  }),
+);
 
 // --- Assignments & Blueprints --------------------------------------------
 
@@ -68,32 +70,40 @@ function allowAssignmentWrite(userId: string, doc: { group?: string }): Promise<
   return isGroupCoordinator(userId, doc.group);
 }
 
-Assignments.allow(allowBoth({
-  insert: allowAssignmentWrite,
-  update: allowAssignmentWrite,
-}));
+Assignments.allow(
+  allowBoth({
+    insert: allowAssignmentWrite,
+    update: allowAssignmentWrite,
+  }),
+);
 
-Blueprints.allow(allowBoth({
-  insert: allowAssignmentWrite,
-  update: allowAssignmentWrite,
-}));
+Blueprints.allow(
+  allowBoth({
+    insert: allowAssignmentWrite,
+    update: allowAssignmentWrite,
+  }),
+);
 
 // --- Users ----------------------------------------------------------------
 
-Meteor.users.allow(allowBoth({
-  update: async (userId: string, doc: any, fields: string[]) => {
-    if (await isAdmin(userId)) {
-      return true;
-    }
-    // Own profile only, and only the whitelisted top-level fields.
-    const allowedOwnFields = ["profile", "updatedAt"];
-    return doc._id === userId && _.difference(fields, allowedOwnFields).length === 0;
-  },
-}));
+Meteor.users.allow(
+  allowBoth({
+    update: async (userId: string, doc: any, fields: string[]) => {
+      if (await isAdmin(userId)) {
+        return true;
+      }
+      // Own profile only, and only the whitelisted top-level fields.
+      const allowedOwnFields = ["profile", "updatedAt"];
+      return doc._id === userId && _.difference(fields, allowedOwnFields).length === 0;
+    },
+  }),
+);
 
 // --- Notifications ----------------------------------------------------------
 
-Notifications.allow(allowBoth({
-  update: (userId: string, doc: any) => !!userId && doc.userId === userId,
-  remove: (userId: string, doc: any) => !!userId && doc.userId === userId,
-}));
+Notifications.allow(
+  allowBoth({
+    update: (userId: string, doc: any) => !!userId && doc.userId === userId,
+    remove: (userId: string, doc: any) => !!userId && doc.userId === userId,
+  }),
+);

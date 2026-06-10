@@ -7,7 +7,7 @@ import { MailingTypes } from "../../server/mailing/MailingTypes";
 import { UserTypes } from "../../server/user/UserTypes";
 import { ServiceOverrides, Services } from "../../server/services";
 
-export const SYMBOL_TO_SERVICE = new Map<Symbol, keyof Services>([
+export const SYMBOL_TO_SERVICE = new Map<symbol, keyof Services>([
   [Types.IAssignmentApplicationControllerFactory, "assignmentApplicationControllerFactory"],
   [Types.IAssignmentParticipantControllerFactory, "assignmentParticipantControllerFactory"],
   [Types.IAssignmentCanceler, "assignmentCanceler"],
@@ -25,7 +25,7 @@ export const SYMBOL_TO_SERVICE = new Map<Symbol, keyof Services>([
   [UserTypes.IUserSettingsReaderFactory, "userSettingsReaderFactory"],
 ]);
 
-export const SYMBOL_TO_OVERRIDE = new Map<Symbol, keyof ServiceOverrides>([
+export const SYMBOL_TO_OVERRIDE = new Map<symbol, keyof ServiceOverrides>([
   [AssignmentServiceTypes.IAssignmentNotifier, "assignmentNotifier"],
   [AssignmentServiceTypes.IAssignmentEmailNotifier, "assignmentEmailNotifier"],
   [AssignmentServiceTypes.IAssignmentDaoNotifier, "assignmentDaoNotifier"],
@@ -37,7 +37,7 @@ export const SYMBOL_TO_OVERRIDE = new Map<Symbol, keyof ServiceOverrides>([
   [Types.LoggerFactory, "loggerFactory"],
 ]);
 
-export function serviceKeyFor(symbol: Symbol): keyof Services {
+export function serviceKeyFor(symbol: symbol): keyof Services {
   const key = SYMBOL_TO_SERVICE.get(symbol);
   if (!key) {
     throw new Error(`No service mapping for symbol ${String(symbol)}`);
@@ -45,7 +45,7 @@ export function serviceKeyFor(symbol: Symbol): keyof Services {
   return key;
 }
 
-export function overrideKeyFor(symbol: Symbol): keyof ServiceOverrides {
+export function overrideKeyFor(symbol: symbol): keyof ServiceOverrides {
   const key = SYMBOL_TO_OVERRIDE.get(symbol);
   if (!key) {
     throw new Error(`No override mapping for symbol ${String(symbol)}`);

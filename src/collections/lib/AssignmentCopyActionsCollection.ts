@@ -17,7 +17,9 @@ export interface AssignmentCopyActionDAO {
   executedDate?: Date;
 }
 
-export const AssignmentCopyActions = new Mongo.Collection<AssignmentCopyActionDAO>("assignmentCopyActions");
+export const AssignmentCopyActions = new Mongo.Collection<AssignmentCopyActionDAO>(
+  "assignmentCopyActions",
+);
 
 export const AssignmentCopyActionSchema = new SimpleSchema({
   group: {
@@ -26,29 +28,29 @@ export const AssignmentCopyActionSchema = new SimpleSchema({
   },
   fromYearOfIsoWeek: {
     type: Number,
-    min: 2014
+    min: 2014,
   },
   totalCopied: {
     type: Number,
-    min: 0
+    min: 0,
   },
   toYearOfIsoWeek: {
     type: Number,
-    min: 2014
+    min: 2014,
   },
   fromIsoWeek: {
     type: Number,
     min: 1,
-    max: 53
+    max: 53,
   },
   toIsoWeek: {
     type: Number,
     min: 1,
-    max: 53
+    max: 53,
   },
   executedDate: {
     type: Date,
-  }
+  },
 });
 
 AssignmentCopyActions.attachSchema(AssignmentCopyActionSchema);

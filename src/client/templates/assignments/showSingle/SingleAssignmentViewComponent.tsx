@@ -33,18 +33,31 @@ function BackButton(): JSX.Element {
 function UserEntryListElement(props: { user: User; hideCar?: boolean }): JSX.Element {
   const user = props.user;
   return (
-    <li className="list-group-item"> {user.fullName}
+    <li className="list-group-item">
+      {" "}
+      {user.fullName}
       <span className="text-muted small d-none d-sm-block">
         <em>{user.mobilePhone}</em>
       </span>
       <span className="float-end">
         {!props.hideCar && user.carMostlyAvailable ? (
-          <i className="fa fa-car" title={`${user.fullName} hat meistens ein Auto zur Verfügung`}></i>
+          <i
+            className="fa fa-car"
+            title={`${user.fullName} hat meistens ein Auto zur Verfügung`}
+          ></i>
         ) : null}{" "}
-        <a href={`tel:${user.formattedMobilePhone}`} title={`${user.fullName} anrufen`} className="btn btn-sm btn-success toggle-application">
+        <a
+          href={`tel:${user.formattedMobilePhone}`}
+          title={`${user.fullName} anrufen`}
+          className="btn btn-sm btn-success toggle-application"
+        >
           <i className="fa fa-phone"></i>
         </a>{" "}
-        <a href={`mailto:${user.email}`} title={`Eine E-Mail an ${user.fullName} senden`} className="btn btn-sm btn-primary toggle-application">
+        <a
+          href={`mailto:${user.email}`}
+          title={`Eine E-Mail an ${user.fullName} senden`}
+          className="btn btn-sm btn-primary toggle-application"
+        >
           <i className="fa fa-envelope"></i>
         </a>
       </span>
@@ -64,9 +77,16 @@ function AssignmentPreview(props: { assignmentDao: AssignmentDAO }): JSX.Element
 
   return (
     <div className="card card-primary">
-      <div className="card-header" style={{ cursor: "pointer" }} onClick={() => setCollapsed(!collapsed)}>
+      <div
+        className="card-header"
+        style={{ cursor: "pointer" }}
+        onClick={() => setCollapsed(!collapsed)}
+      >
         <h4 className="card-title">
-          <i className={`fa ${!collapsed ? "fa-chevron-circle-down" : "fa-chevron-circle-right"}`}></i> {`${start} - ${end}`}
+          <i
+            className={`fa ${!collapsed ? "fa-chevron-circle-down" : "fa-chevron-circle-right"}`}
+          ></i>{" "}
+          {`${start} - ${end}`}
         </h4>
       </div>
       <div
@@ -164,22 +184,39 @@ export default function SingleAssignmentView(): JSX.Element {
     <div>
       <div className="row">
         <div className="col-lg-12">
-          <h1 className="page-header"><BackButton /> {data.isCoordinator ? (
-            <React.Fragment>
-              <button type="button" className="btn btn-success manage-assignment" onClick={onManage}>
-                <i className="fa fa-users"></i>
-              </button>{" "}
-              {!data.isCanceled ? (
-                <button type="button" title="Termin absagen" className="btn btn-danger cancel-assignment" onClick={onCancelAssignment}>
-                  <i className="fa fa-ban"></i>
-                </button>
-              ) : (
-                <button type="button" title="Termin stattfinden lassen" className="btn btn-info reenable-assignment" onClick={onReenable}>
-                  <i className="fa fa-calendar-check-o"></i>
-                </button>
-              )}
-            </React.Fragment>
-          ) : null} {dao.name}
+          <h1 className="page-header">
+            <BackButton />{" "}
+            {data.isCoordinator ? (
+              <React.Fragment>
+                <button
+                  type="button"
+                  className="btn btn-success manage-assignment"
+                  onClick={onManage}
+                >
+                  <i className="fa fa-users"></i>
+                </button>{" "}
+                {!data.isCanceled ? (
+                  <button
+                    type="button"
+                    title="Termin absagen"
+                    className="btn btn-danger cancel-assignment"
+                    onClick={onCancelAssignment}
+                  >
+                    <i className="fa fa-ban"></i>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    title="Termin stattfinden lassen"
+                    className="btn btn-info reenable-assignment"
+                    onClick={onReenable}
+                  >
+                    <i className="fa fa-calendar-check-o"></i>
+                  </button>
+                )}
+              </React.Fragment>
+            ) : null}{" "}
+            {dao.name}
             <small> {fmt(dao.start, "Do MMMM LT")} </small>
           </h1>
         </div>
@@ -191,22 +228,31 @@ export default function SingleAssignmentView(): JSX.Element {
             <div className="col-sm-12 col-md-6 col-lg-6">
               <div className="col-12 bg-primary assignment-head-element">
                 <div className="col-5 text-center">
-                  <div className="huge row icon"><i className="fa fa-calendar"></i></div>
+                  <div className="huge row icon">
+                    <i className="fa fa-calendar"></i>
+                  </div>
                 </div>
-                <div className="col-7 info text-center">{fmt(dao.start, "ddd")}
-                  <br />{fmt(dao.start, "Do MMM")}</div>
+                <div className="col-7 info text-center">
+                  {fmt(dao.start, "ddd")}
+                  <br />
+                  {fmt(dao.start, "Do MMM")}
+                </div>
               </div>
             </div>
 
             <div className="col-sm-12 col-md-6 col-lg-6">
               <div className="col-12 bg-primary assignment-head-element">
                 <div className="col-5 text-center">
-                  <div className="huge row icon"><i className="fa fa-clock-o"></i></div>
+                  <div className="huge row icon">
+                    <i className="fa fa-clock-o"></i>
+                  </div>
                 </div>
                 <div className="col-7 info text-center">
                   {fmt(dao.start, "LT")}
-                  <br /><i className="fa fa-clock-o fa-fw"></i>
-                  <br />{fmt(dao.end, "LT")}
+                  <br />
+                  <i className="fa fa-clock-o fa-fw"></i>
+                  <br />
+                  {fmt(dao.end, "LT")}
                 </div>
               </div>
             </div>
@@ -217,9 +263,13 @@ export default function SingleAssignmentView(): JSX.Element {
               <div className="col-sm-12">
                 <div className="col-sm-12 bg-danger assignment-head-element">
                   <div className="col-5 text-center">
-                    <div className="huge row icon"><i className="fa fa-ban"></i></div>
+                    <div className="huge row icon">
+                      <i className="fa fa-ban"></i>
+                    </div>
                   </div>
-                  <div className="col-7 info text-center">Termin wurde abgesagt: {(dao as any).cancelationReason}</div>
+                  <div className="col-7 info text-center">
+                    Termin wurde abgesagt: {(dao as any).cancelationReason}
+                  </div>
                 </div>
               </div>
             </div>
@@ -255,7 +305,11 @@ export default function SingleAssignmentView(): JSX.Element {
               <div className="card-body">
                 Sende uns bitte den Bericht als E-Mail:{" "}
                 <span className="float-end">
-                  <a href={`mailto:${data.replyEmailAddress}`} title={`Bericht an ${data.replyEmailAddress} senden`} className="btn btn-sm btn-primary toggle-application">
+                  <a
+                    href={`mailto:${data.replyEmailAddress}`}
+                    title={`Bericht an ${data.replyEmailAddress} senden`}
+                    className="btn btn-sm btn-primary toggle-application"
+                  >
                     <i className="fa fa-envelope"></i>
                   </a>
                 </span>
@@ -270,7 +324,9 @@ export default function SingleAssignmentView(): JSX.Element {
               </div>
               <ul className="list-group">
                 {data.infos.map((info: { label: string; value: string }) => (
-                  <li key={info.label} className="list-group-item">{info.label}: {info.value}</li>
+                  <li key={info.label} className="list-group-item">
+                    {info.label}: {info.value}
+                  </li>
                 ))}
               </ul>
             </div>

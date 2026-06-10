@@ -1,12 +1,10 @@
 import { assert } from "chai";
-import { I18nProvider } from '../../imports/i18n/classes/I18nProvider';
-
+import { I18nProvider } from "../../imports/i18n/classes/I18nProvider";
 
 describe("I18nProvider", function () {
-
-
   it("constructor", function () {
-    let sut = new I18nProvider("de-de", "Europe/Berlin");
+    const sut = new I18nProvider("de-de", "Europe/Berlin");
+    assert.isDefined(sut);
   });
 
   it("what is hello in german?", function () {
@@ -16,13 +14,9 @@ describe("I18nProvider", function () {
 
     assert.equal(answer, "Hallo", "Du kannst kein Deutsch!");
   });
-
 });
 
-
 describe("I18nProvider date parser", function () {
-
-
   it("what is 1.9.1914 as short german date-time?", function () {
     let sut = new I18nProvider("de-de", "Europe/Berlin").getDateParser();
 
@@ -55,7 +49,6 @@ describe("I18nProvider date parser", function () {
     assert.equal(answer, "Thursday, 1st Oct at 1:00 PM");
   });
 
-
   it("what is 11.09.2017 as short french date-time?", function () {
     let sut = new I18nProvider("fr-fr", "Europe/Berlin").getDateParser();
 
@@ -71,8 +64,4 @@ describe("I18nProvider date parser", function () {
 
     assert.equal(answer, "lundi, le 11 sept. 2017 à 10h00");
   });
-
-
-
-
 });

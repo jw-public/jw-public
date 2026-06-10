@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 services:
   typescript:
     build: build-utils/typescript

@@ -1,29 +1,18 @@
-import { AssignmentDAO } from '../../collections/lib/AssignmentsCollection';
-import { SimpleCollection } from '../../imports/interfaces/SimpleCollection';
-import {
-  IAssignmentApplicationController
-} from '../../server/assignments/interfaces/IAssignmentApplicationController';
-import {
-  IAssignmentApplicationControllerFactory
-} from '../../server/assignments/interfaces/IAssignmentApplicationControllerFactory';
-import { IAssignmentContext } from '../../server/assignments/interfaces/IAssignmentContext';
-import { Types } from '../../server/Types';
-import { AssignmentTestCaseWithNotifications } from './common/AssignmentTestCaseWithNotifications';
-
-
-
-
-
+import { AssignmentDAO } from "../../collections/lib/AssignmentsCollection";
+import { SimpleCollection } from "../../imports/interfaces/SimpleCollection";
+import { IAssignmentApplicationController } from "../../server/assignments/interfaces/IAssignmentApplicationController";
+import { IAssignmentApplicationControllerFactory } from "../../server/assignments/interfaces/IAssignmentApplicationControllerFactory";
+import { IAssignmentContext } from "../../server/assignments/interfaces/IAssignmentContext";
+import { Types } from "../../server/Types";
+import { AssignmentTestCaseWithNotifications } from "./common/AssignmentTestCaseWithNotifications";
 
 describe("AssignmentApplicationController.addUserAsApplicantById()", function () {
-
   it("should be able to add a user as applicant, when no other user is applicant", function () {
     // Arrange
     let addUserTestCase = new AddUserTestCase({
-      initialAssignment:
-      {
-        applicants: []
-      }
+      initialAssignment: {
+        applicants: [],
+      },
     });
 
     // Act
@@ -34,20 +23,18 @@ describe("AssignmentApplicationController.addUserAsApplicantById()", function ()
 
     assignmentAssert.applicantCountIs(1, "No user was appended to applicants");
     assignmentAssert.containsUserIdInApplicants(testData.userId, "A wrong user id was appended");
-
   });
 
   it("should be able to add a user as applicant, when other users are already applicants", function () {
     // Arrange
     let addUserTestCase = new AddUserTestCase({
-      initialAssignment:
-      {
+      initialAssignment: {
         applicants: [
           {
-            user: "thisIsSomeOtherGuy"
-          }
-        ]
-      }
+            user: "thisIsSomeOtherGuy",
+          },
+        ],
+      },
     });
 
     // Act
@@ -56,23 +43,24 @@ describe("AssignmentApplicationController.addUserAsApplicantById()", function ()
     // Assert
     let assignmentAssert = addUserTestCase.assignmentAssert;
 
-    assignmentAssert.applicantCountIs(2, "The given user was not correctly appended to the applicant entries.");
+    assignmentAssert.applicantCountIs(
+      2,
+      "The given user was not correctly appended to the applicant entries.",
+    );
     assignmentAssert.containsUserIdInApplicants(testData.userId, "A wrong user id was appended");
     assignmentAssert.containsUserIdInApplicants("thisIsSomeOtherGuy");
   });
 
   it("should not add a user if already an applicant", function () {
-
     // Arrange
     let addUserTestCase = new AddUserTestCase({
-      initialAssignment:
-      {
+      initialAssignment: {
         applicants: [
           {
-            user: testData.userId
-          }
-        ]
-      }
+            user: testData.userId,
+          },
+        ],
+      },
     });
 
     // Act
@@ -92,10 +80,10 @@ describe("AssignmentApplicationController.addUserAsApplicantById()", function ()
         applicants: [],
         participants: [
           {
-            user: testData.userId
-          }
-        ]
-      }
+            user: testData.userId,
+          },
+        ],
+      },
     });
 
     // Act
@@ -108,23 +96,19 @@ describe("AssignmentApplicationController.addUserAsApplicantById()", function ()
     assignmentAssert.participantCountIs(1, "The given user should still be an participant.");
     assignmentAssert.containsUserIdInParticipants(testData.userId);
   });
-
-
-
 });
 
-
 describe("AssignmentApplicationController.removeUserAsApplicantById()", function () {
-
   it("should do nothing, when trying to remove applicant when user is no applicant", function () {
     // Arrange
     let removeUserTestCase = new RemoveUserTestCase({
-      initialAssignment:
-      {
-        applicants: [{
-          user: "thisIsSomeOtherGuy"
-        }]
-      }
+      initialAssignment: {
+        applicants: [
+          {
+            user: "thisIsSomeOtherGuy",
+          },
+        ],
+      },
     });
 
     // Act
@@ -135,18 +119,18 @@ describe("AssignmentApplicationController.removeUserAsApplicantById()", function
 
     assignmentAssert.applicantCountIs(1, "Obviously it removed the wrong one");
     assignmentAssert.containsUserIdInApplicants("thisIsSomeOtherGuy");
-
   });
 
   it("should remove user, when he is the only applicant", function () {
     // Arrange
     let removeUserTestCase = new RemoveUserTestCase({
-      initialAssignment:
-      {
-        applicants: [{
-          user: testData.userId
-        }]
-      }
+      initialAssignment: {
+        applicants: [
+          {
+            user: testData.userId,
+          },
+        ],
+      },
     });
 
     // Act
@@ -156,22 +140,21 @@ describe("AssignmentApplicationController.removeUserAsApplicantById()", function
     let assignmentAssert = removeUserTestCase.assignmentAssert;
 
     assignmentAssert.applicantCountIs(0, "The given user was not removed.");
-
   });
 
   it("should remove user, when there are other applicants", function () {
     // Arrange
     let removeUserTestCase = new RemoveUserTestCase({
-      initialAssignment:
-      {
-        applicants: [{
-          user: testData.userId
-        },
-        {
-          user: "someOtherGuy"
-        }
-        ]
-      }
+      initialAssignment: {
+        applicants: [
+          {
+            user: testData.userId,
+          },
+          {
+            user: "someOtherGuy",
+          },
+        ],
+      },
     });
 
     // Act
@@ -182,29 +165,26 @@ describe("AssignmentApplicationController.removeUserAsApplicantById()", function
 
     assignmentAssert.containsUserIdInApplicants("someOtherGuy", "We deleted the wrong one.");
     assignmentAssert.applicantCountIs(1, "The given user was not removed.");
-
   });
-
-
 });
-
 
 const testData = {
   userId: "thisIsSomeRandomUserId814691",
-}
-
+};
 
 interface ApplicationControllerTestData {
-  initialAssignment: AssignmentDAO
+  initialAssignment: AssignmentDAO;
 }
 
-class AssignmentApplicationTestCase extends AssignmentTestCaseWithNotifications<IAssignmentApplicationControllerFactory>{
+class AssignmentApplicationTestCase extends AssignmentTestCaseWithNotifications<IAssignmentApplicationControllerFactory> {
   public applicationController: IAssignmentApplicationController;
 
   constructor(private testData: ApplicationControllerTestData) {
     super(Types.IAssignmentApplicationControllerFactory);
 
-    this.applicationController = this.createApplicationControllerWithAssignment(this.getTestObject());
+    this.applicationController = this.createApplicationControllerWithAssignment(
+      this.getTestObject(),
+    );
   }
 
   get assignment(): AssignmentDAO {
@@ -215,41 +195,41 @@ class AssignmentApplicationTestCase extends AssignmentTestCaseWithNotifications<
     return this.assert(this.assignment);
   }
 
-
-  private createApplicationControllerWithAssignment(controllerFactory: IAssignmentApplicationControllerFactory): IAssignmentApplicationController {
-    let assignmentContext = insertAnAssignmentIntoCollection(this.collection, this.testData.initialAssignment);
-    let applicationController: IAssignmentApplicationController = controllerFactory(assignmentContext.getAssignmentId());
+  private createApplicationControllerWithAssignment(
+    controllerFactory: IAssignmentApplicationControllerFactory,
+  ): IAssignmentApplicationController {
+    let assignmentContext = insertAnAssignmentIntoCollection(
+      this.collection,
+      this.testData.initialAssignment,
+    );
+    let applicationController: IAssignmentApplicationController = controllerFactory(
+      assignmentContext.getAssignmentId(),
+    );
     return applicationController;
   }
-
 }
 
 class AddUserTestCase extends AssignmentApplicationTestCase {
-
   public executeWith(userId: string) {
     this.applicationController.addUserAsApplicantById(userId);
   }
-
 }
 
 class RemoveUserTestCase extends AssignmentApplicationTestCase {
-
   public executeWith(userId: string) {
     this.applicationController.removeUserAsApplicantById(userId);
   }
-
 }
 
-
-
-
-
-function insertAnAssignmentIntoCollection(collection: SimpleCollection<AssignmentDAO>, assignment: AssignmentDAO): IAssignmentContext {
+function insertAnAssignmentIntoCollection(
+  collection: SimpleCollection<AssignmentDAO>,
+  assignment: AssignmentDAO,
+): IAssignmentContext {
   let assignmentId = collection.insert(assignment);
 
   return {
     getAssignmentId: () => {
       return assignmentId;
-    }
+    },
   };
 }

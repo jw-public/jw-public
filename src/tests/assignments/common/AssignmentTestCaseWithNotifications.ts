@@ -1,5 +1,8 @@
 import { AssignmentNotifier } from "../../../server/assignments/classes/AssignmentNotifier";
-import { IAssignmentNotifier, IAssignmentSingleNotifierOptions } from "../../../server/assignments/interfaces/IAssignmentNotifier";
+import {
+  IAssignmentNotifier,
+  IAssignmentSingleNotifierOptions,
+} from "../../../server/assignments/interfaces/IAssignmentNotifier";
 
 import { SimpleCollection } from "../../../imports/interfaces/SimpleCollection";
 import { LocalCollection } from "../../3rdParty/minimongo-standalone/minimongo-standalone";
@@ -15,85 +18,80 @@ import { overrideKeyFor, serviceKeyFor } from "../../common/serviceSymbols";
 import { buildServices, ServiceOverrides, Services } from "../../../server/services";
 import { AssignmentAsserts } from "./AssignmentAsserts";
 
-
-
 const testData = {
-    userId: "randomUserId",
+  userId: "randomUserId",
 };
-
-
-
 
 // Assignment-focused test composition root with a mocked IAssignmentNotifier
 // (replaces the old InversifyJS test kernel, ADR 0005).
 export class AssignmentTestCaseWithNotifications<T> {
-    public collection: SimpleCollection<AssignmentDAO>;
-    protected overrides: ServiceOverrides = {};
-    private _services: Services = null;
-    private _assignmentNotifierMock: TypeMoq.Mock<IAssignmentNotifier>;
+  public collection: SimpleCollection<AssignmentDAO>;
+  protected overrides: ServiceOverrides = {};
+  private _services: Services = null;
+  private _assignmentNotifierMock: TypeMoq.Mock<IAssignmentNotifier>;
 
-    constructor(private testee: Symbol) {
-        this.collection = new LocalCollection<AssignmentDAO>("assignment");
+  constructor(private testee: symbol) {
+    this.collection = new LocalCollection<AssignmentDAO>("assignment");
 
-        this._assignmentNotifierMock = TypeMoq.Mock.ofType<IAssignmentNotifier>(AssignmentNotifier);
-        this.overrides.assignmentNotifier = this._assignmentNotifierMock.object;
+    this._assignmentNotifierMock = TypeMoq.Mock.ofType<IAssignmentNotifier>(AssignmentNotifier);
+    this.overrides.assignmentNotifier = this._assignmentNotifierMock.object;
+  }
+
+  protected get services(): Services {
+    if (this._services === null) {
+      this._services = buildServices(
+        {
+          assignments: this.collection,
+          assignmentCopyActions: new LocalCollection<AssignmentCopyActionDAO>("test-copy-actions"),
+          notifications: new LocalCollection<NotificationDAO>("notification"),
+          users: new LocalCollection("user"),
+          groups: new LocalCollection("group"),
+        },
+        new NullEmailSender(),
+        this.overrides,
+      );
     }
+    return this._services;
+  }
 
-    protected get services(): Services {
-        if (this._services === null) {
-            this._services = buildServices(
-                {
-                    assignments: this.collection,
-                    assignmentCopyActions: new LocalCollection<AssignmentCopyActionDAO>("test-copy-actions"),
-                    notifications: new LocalCollection<NotificationDAO>("notification"),
-                    users: new LocalCollection("user"),
-                    groups: new LocalCollection("group"),
-                },
-                new NullEmailSender(),
-                this.overrides,
-            );
-        }
-        return this._services;
-    }
+  protected getTestObject(): T {
+    return this.services[serviceKeyFor(this.testee)] as unknown as T;
+  }
 
-    protected getTestObject(): T {
-        return this.services[serviceKeyFor(this.testee)] as unknown as T;
-    }
+  protected replaceWithMock<E>(options: { type: symbol; mock: TypeMoq.Mock<E> }) {
+    this.replace<E>({ type: options.type, alternative: options.mock.object });
+  }
 
-    protected replaceWithMock<E>(options: {
-        type: Symbol;
-        mock: TypeMoq.Mock<E>;
-    }) {
-        this.replace<E>({ type: options.type, alternative: options.mock.object });
-    }
+  protected replace<E>(options: { type: symbol; alternative: E }) {
+    (this.overrides as any)[overrideKeyFor(options.type)] = options.alternative;
+  }
 
-    protected replace<E>(options: {
-        type: Symbol;
-        alternative: E;
-    }) {
-        (this.overrides as any)[overrideKeyFor(options.type)] = options.alternative;
-    }
+  expectNotificationWith(expectedOptions: IAssignmentSingleNotifierOptions) {
+    this._assignmentNotifierMock.verify(
+      (x) => x.notifyUserAboutAssignment(TypeMoq.It.isValue(expectedOptions)),
+      TypeMoq.Times.once(),
+    );
+  }
 
-    expectNotificationWith(expectedOptions: IAssignmentSingleNotifierOptions) {
-        this._assignmentNotifierMock
-            .verify(x => x.notifyUserAboutAssignment(TypeMoq.It.isValue(expectedOptions)), TypeMoq.Times.once());
-    }
+  expectNoNotifications() {
+    this._assignmentNotifierMock.verify(
+      (x) => x.notifyUserAboutAssignment(TypeMoq.It.isAny()),
+      TypeMoq.Times.never(),
+    );
+  }
 
-    expectNoNotifications() {
-        this._assignmentNotifierMock
-            .verify(x => x.notifyUserAboutAssignment(TypeMoq.It.isAny()), TypeMoq.Times.never());
-    }
+  expectAmountOfNotificationsIs(amount: number) {
+    this._assignmentNotifierMock.verify(
+      (x) => x.notifyUserAboutAssignment(TypeMoq.It.isAny()),
+      TypeMoq.Times.exactly(amount),
+    );
+  }
 
-    expectAmountOfNotificationsIs(amount: number) {
-        this._assignmentNotifierMock
-            .verify(x => x.notifyUserAboutAssignment(TypeMoq.It.isAny()), TypeMoq.Times.exactly(amount));
-    }
+  public assert(assignment: AssignmentDAO): AssignmentAsserts {
+    return new AssignmentAsserts(assignment);
+  }
 
-    public assert(assignment: AssignmentDAO): AssignmentAsserts {
-        return new AssignmentAsserts(assignment);
-    }
-
-    get testUser() {
-        return testData.userId;
-    }
+  get testUser() {
+    return testData.userId;
+  }
 }

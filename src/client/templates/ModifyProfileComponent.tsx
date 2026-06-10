@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Accounts } from "meteor/accounts-base";
 import { Meteor } from "meteor/meteor";
 import { useTracker } from "meteor/react-meteor-data";
@@ -56,25 +56,32 @@ function ProfileDataForm(props: { user: Meteor.User }): JSX.Element {
     event.preventDefault();
     setAlerts([]);
 
-    UserCollection.users.update(props.user._id, {
-      $set: {
-        "profile.first_name": firstName,
-        "profile.last_name": lastName,
-        "profile.gender": gender,
-        "profile.carMostlyAvailable": carMostlyAvailable,
-        "profile.pioneer": pioneer,
-        "profile.mobile": mobile,
-        "profile.placeName": placeName,
-        "profile.zip": zip,
+    UserCollection.users.update(
+      props.user._id,
+      {
+        $set: {
+          "profile.first_name": firstName,
+          "profile.last_name": lastName,
+          "profile.gender": gender,
+          "profile.carMostlyAvailable": carMostlyAvailable,
+          "profile.pioneer": pioneer,
+          "profile.mobile": mobile,
+          "profile.placeName": placeName,
+          "profile.zip": zip,
+        },
       },
-    }, {}, (err: any) => {
-      if (err) {
-        console.log("Fehler beim Speichern des Profils: ", err);
-        setAlerts([{ message: "Speichern fehlgeschlagen: " + (err.reason ?? err.message), type: "danger" }]);
-      } else {
-        setAlerts([{ message: "Dein Profil wurde gespeichert.", type: "success" }]);
-      }
-    });
+      {},
+      (err: any) => {
+        if (err) {
+          console.log("Fehler beim Speichern des Profils: ", err);
+          setAlerts([
+            { message: "Speichern fehlgeschlagen: " + (err.reason ?? err.message), type: "danger" },
+          ]);
+        } else {
+          setAlerts([{ message: "Dein Profil wurde gespeichert.", type: "success" }]);
+        }
+      },
+    );
   };
 
   return (
@@ -83,15 +90,34 @@ function ProfileDataForm(props: { user: Meteor.User }): JSX.Element {
         <InlineAlerts alerts={alerts} />
         <div className="form-group">
           <label>Anmeldeadresse</label>
-          <input type="text" className="form-control" value={(props.user.emails?.[0] as any)?.address ?? ""} disabled />
+          <input
+            type="text"
+            className="form-control"
+            value={(props.user.emails?.[0] as any)?.address ?? ""}
+            disabled
+          />
         </div>
         <div className="form-group">
           <label htmlFor="profile-first-name">Vorname</label>
-          <input id="profile-first-name" name="profile.first_name" type="text" className="form-control" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+          <input
+            id="profile-first-name"
+            name="profile.first_name"
+            type="text"
+            className="form-control"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+          />
         </div>
         <div className="form-group">
           <label htmlFor="profile-last-name">Nachname</label>
-          <input id="profile-last-name" name="profile.last_name" type="text" className="form-control" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+          <input
+            id="profile-last-name"
+            name="profile.last_name"
+            type="text"
+            className="form-control"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+          />
         </div>
         <div className="form-group">
           <label>Ich bin</label>
@@ -116,21 +142,52 @@ function ProfileDataForm(props: { user: Meteor.User }): JSX.Element {
           value={carMostlyAvailable}
           onChange={setCarMostlyAvailable}
         />
-        <BooleanSelect id="profile-pioneer" label="Ich bin ein Pionier" value={pioneer} onChange={setPioneer} />
+        <BooleanSelect
+          id="profile-pioneer"
+          label="Ich bin ein Pionier"
+          value={pioneer}
+          onChange={setPioneer}
+        />
         <div className="form-group">
-          <label htmlFor="profile-mobile">Handynummer (Hier kann ausnahmsweise auch die Festnetznummer eingetragen werden falls du kein Handy besitzt)</label>
-          <input id="profile-mobile" name="profile.mobile" type="text" className="form-control" value={mobile} onChange={(e) => setMobile(e.target.value)} />
+          <label htmlFor="profile-mobile">
+            Handynummer (Hier kann ausnahmsweise auch die Festnetznummer eingetragen werden falls du
+            kein Handy besitzt)
+          </label>
+          <input
+            id="profile-mobile"
+            name="profile.mobile"
+            type="text"
+            className="form-control"
+            value={mobile}
+            onChange={(e) => setMobile(e.target.value)}
+          />
         </div>
         <div className="form-group">
           <label htmlFor="profile-place">Wohnort</label>
-          <input id="profile-place" name="profile.placeName" type="text" className="form-control" value={placeName} onChange={(e) => setPlaceName(e.target.value)} />
+          <input
+            id="profile-place"
+            name="profile.placeName"
+            type="text"
+            className="form-control"
+            value={placeName}
+            onChange={(e) => setPlaceName(e.target.value)}
+          />
         </div>
         <div className="form-group">
           <label htmlFor="profile-zip">Postleitzahl</label>
-          <input id="profile-zip" name="profile.zip" type="text" className="form-control" value={zip} onChange={(e) => setZip(e.target.value)} />
+          <input
+            id="profile-zip"
+            name="profile.zip"
+            type="text"
+            className="form-control"
+            value={zip}
+            onChange={(e) => setZip(e.target.value)}
+          />
         </div>
         <div className="form-group">
-          <button type="submit" className="btn btn-primary submit-change"><i className="fa fa-floppy-o"></i> Speichern</button>
+          <button type="submit" className="btn btn-primary submit-change">
+            <i className="fa fa-floppy-o"></i> Speichern
+          </button>
         </div>
       </fieldset>
     </form>
@@ -180,18 +237,41 @@ function ChangePasswordForm(): JSX.Element {
         <InlineAlerts alerts={alerts} />
         <div className="form-group">
           <label htmlFor="oldpassword">Altes Passwort</label>
-          <input id="oldpassword" name="oldpassword" type="password" className="form-control" value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} />
+          <input
+            id="oldpassword"
+            name="oldpassword"
+            type="password"
+            className="form-control"
+            value={oldPassword}
+            onChange={(e) => setOldPassword(e.target.value)}
+          />
         </div>
         <div className="form-group">
           <label htmlFor="newpassword">Passwort</label>
-          <input id="newpassword" name="password" type="password" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <input
+            id="newpassword"
+            name="password"
+            type="password"
+            className="form-control"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </div>
         <div className="form-group">
           <label htmlFor="passwordConfirmation">Passwort bestätigen</label>
-          <input id="passwordConfirmation" name="passwordConfirmation" type="password" className="form-control" value={confirmation} onChange={(e) => setConfirmation(e.target.value)} />
+          <input
+            id="passwordConfirmation"
+            name="passwordConfirmation"
+            type="password"
+            className="form-control"
+            value={confirmation}
+            onChange={(e) => setConfirmation(e.target.value)}
+          />
         </div>
         <div className="form-group">
-          <button type="submit" className="btn btn-primary submit-change"><i className="fa fa-sign-in"></i> Ändern</button>
+          <button type="submit" className="btn btn-primary submit-change">
+            <i className="fa fa-sign-in"></i> Ändern
+          </button>
         </div>
       </fieldset>
     </form>
@@ -224,7 +304,9 @@ export default function ModifyProfile(): JSX.Element {
           <h1 className="page-header">Profil</h1>
           {profile.first_name ? (
             <p>
-              Hallo {profile.first_name}{profile.last_name ? ` ${profile.last_name}` : ""}, hier kannst du dein Benutzerprofil einstellen.
+              Hallo {profile.first_name}
+              {profile.last_name ? ` ${profile.last_name}` : ""}, hier kannst du dein Benutzerprofil
+              einstellen.
             </p>
           ) : null}
         </div>
@@ -232,9 +314,7 @@ export default function ModifyProfile(): JSX.Element {
       <div className="row">
         <div className="col-md-5">
           <div className="card card-primary">
-            <div className="card-header">
-              Daten ändern
-            </div>
+            <div className="card-header">Daten ändern</div>
             <div className="card-body">
               {/* key: remount when another user logs in */}
               <ProfileDataForm key={user._id} user={user} />
@@ -243,9 +323,7 @@ export default function ModifyProfile(): JSX.Element {
         </div>
         <div className="col-md-5">
           <div className="card card-primary">
-            <div className="card-header">
-              Benachrichtigungen
-            </div>
+            <div className="card-header">Benachrichtigungen</div>
             <div className="card-body">
               <div className="checkbox">
                 <label>
@@ -253,7 +331,9 @@ export default function ModifyProfile(): JSX.Element {
                     type="checkbox"
                     name="profile.notificationAsEmail"
                     checked={profile.notificationAsEmail ?? true}
-                    onChange={(e) => setProfileField("profile.notificationAsEmail", e.target.checked)}
+                    onChange={(e) =>
+                      setProfileField("profile.notificationAsEmail", e.target.checked)
+                    }
                   />{" "}
                   Benachrichtigungen via E-Mail bekommen
                 </label>
@@ -261,9 +341,7 @@ export default function ModifyProfile(): JSX.Element {
             </div>
           </div>
           <div className="card card-primary">
-            <div className="card-header">
-              Sprache für E-Mail-Benachrichtigungen
-            </div>
+            <div className="card-header">Sprache für E-Mail-Benachrichtigungen</div>
             <div className="card-body">
               <div className="form-group">
                 <label htmlFor="profile-language">Sprache</label>
@@ -274,16 +352,16 @@ export default function ModifyProfile(): JSX.Element {
                   onChange={(e) => setProfileField("profile.language", e.target.value)}
                 >
                   {LANGUAGE_OPTIONS.map((o) => (
-                    <option key={o.value} value={o.value}>{o.label}</option>
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
                   ))}
                 </select>
               </div>
             </div>
           </div>
           <div className="card card-primary">
-            <div className="card-header">
-              Passwort ändern
-            </div>
+            <div className="card-header">Passwort ändern</div>
             <div className="card-body">
               <ChangePasswordForm />
             </div>

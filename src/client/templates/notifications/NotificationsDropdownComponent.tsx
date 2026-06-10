@@ -23,7 +23,9 @@ function NotificationItemContent(props: { notification: UserNotification.Wrapper
         {moment(when).fromNow()}
       </span>
       <br />
-      <p className="small" style={{ whiteSpace: "pre-line" }}>{props.notification.details}</p>
+      <p className="small" style={{ whiteSpace: "pre-line" }}>
+        {props.notification.details}
+      </p>
     </div>
   );
 }
@@ -52,7 +54,13 @@ export default function NotificationsDropdown(): JSX.Element {
   const data = useTracker(() => {
     const userId = Meteor.userId();
     if (!userId) {
-      return { ready: false, items: [] as ItemData[], hasUnread: false, unreadCount: 0, hasNotifications: false };
+      return {
+        ready: false,
+        items: [] as ItemData[],
+        hasUnread: false,
+        unreadCount: 0,
+        hasNotifications: false,
+      };
     }
 
     const handle = Meteor.subscribe("notifications");
@@ -120,7 +128,9 @@ export default function NotificationsDropdown(): JSX.Element {
         onClick={onToggle}
       >
         <i className={`fa fa-bell fa-fw faa-ring${data.hasUnread ? " animated" : ""}`}></i>
-        {data.hasUnread ? <span className="badge-danger badge-notify">{data.unreadCount}</span> : null}
+        {data.hasUnread ? (
+          <span className="badge-danger badge-notify">{data.unreadCount}</span>
+        ) : null}
         <i className="fa fa-caret-down"></i>
       </a>
 
@@ -129,9 +139,7 @@ export default function NotificationsDropdown(): JSX.Element {
           <React.Fragment>
             {!data.hasNotifications ? (
               <li>
-                <div>
-                  Du hast keine Benachrichtigungen.
-                </div>
+                <div>Du hast keine Benachrichtigungen.</div>
               </li>
             ) : null}
             {data.items.map((item, i) => (
@@ -155,7 +163,8 @@ export default function NotificationsDropdown(): JSX.Element {
         ) : (
           <li>
             <div>
-              <i className="fa fa-circle-o-notch faa-spin animated"></i> Benachrichtigungen werden geladen...
+              <i className="fa fa-circle-o-notch faa-spin animated"></i> Benachrichtigungen werden
+              geladen...
             </div>
           </li>
         )}

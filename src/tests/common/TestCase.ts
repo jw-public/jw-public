@@ -33,7 +33,7 @@ export class TestCase<T> {
   private _services: Services = null;
   public _emailSenderMock: TypeMoq.Mock<IEmailSender>;
 
-  constructor(private testee: Symbol) {
+  constructor(private testee: symbol) {
     this.userCollection = new LocalCollection("user");
     this.notificationCollection = new LocalCollection<NotificationDAO>("test-notification");
     this.assignmentsCollection = new LocalCollection<AssignmentDAO>("test-assignments");
@@ -66,14 +66,14 @@ export class TestCase<T> {
     return this.services[serviceKeyFor(this.testee)] as unknown as T;
   }
 
-  protected replaceBindingWith<E>(options: { type: Symbol; newBinding: E }) {
+  protected replaceBindingWith<E>(options: { type: symbol; newBinding: E }) {
     if (options.type === MailingTypes.IEmailSender) {
       throw new Error("Replace the email sender via _emailSenderMock instead.");
     }
     (this.overrides as any)[overrideKeyFor(options.type)] = options.newBinding;
   }
 
-  protected replaceWithMock<E>(options: { type: Symbol; mock: TypeMoq.Mock<E> }) {
+  protected replaceWithMock<E>(options: { type: symbol; mock: TypeMoq.Mock<E> }) {
     this.replaceBindingWith<E>({
       type: options.type,
       newBinding: options.mock.object,
@@ -83,15 +83,24 @@ export class TestCase<T> {
   public get emailAssert() {
     return {
       noEmailWasSent: () => {
-        this._emailSenderMock.verify(emailSender => emailSender.send(TypeMoq.It.isAny()), TypeMoq.Times.never());
+        this._emailSenderMock.verify(
+          (emailSender) => emailSender.send(TypeMoq.It.isAny()),
+          TypeMoq.Times.never(),
+        );
       },
       oneEmailWasSent: () => {
-        this._emailSenderMock.verify(emailSender => emailSender.send(TypeMoq.It.isAny()), TypeMoq.Times.once());
+        this._emailSenderMock.verify(
+          (emailSender) => emailSender.send(TypeMoq.It.isAny()),
+          TypeMoq.Times.once(),
+        );
       },
       emailWasSentWith: (options: IEmailSendOptions) => {
-        this._emailSenderMock.verify(emailSender => emailSender.send(TypeMoq.It.isValue(options)), TypeMoq.Times.once());
-      }
-    }
+        this._emailSenderMock.verify(
+          (emailSender) => emailSender.send(TypeMoq.It.isValue(options)),
+          TypeMoq.Times.once(),
+        );
+      },
+    };
   }
 
   get notificationAssert() {
@@ -105,7 +114,6 @@ export class TestCase<T> {
   get testUserEmail() {
     return testData.emails[0].address;
   }
-
 }
 
 const testData: UserDAO = {
@@ -113,13 +121,13 @@ const testData: UserDAO = {
   emails: [
     {
       address: "test@trolley.com",
-      verified: true
-    }
+      verified: true,
+    },
   ],
   profile: {
     first_name: "Dummy",
     last_name: "Dusslig",
     notificationAsEmail: true,
-    language: "de-de"
-  }
+    language: "de-de",
+  },
 };

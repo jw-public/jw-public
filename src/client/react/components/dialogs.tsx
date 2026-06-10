@@ -29,14 +29,29 @@ function DialogShell(props: ShellProps): JSX.Element {
 
   return (
     <React.Fragment>
-      <div className="modal-backdrop fade show" style={{ zIndex: props.zIndex - 5 }} onClick={props.onDismiss}></div>
-      <div className="modal fade show app-modal" style={{ display: "block", zIndex: props.zIndex }} role="dialog" aria-modal="true" tabIndex={-1}>
+      <div
+        className="modal-backdrop fade show"
+        style={{ zIndex: props.zIndex - 5 }}
+        onClick={props.onDismiss}
+      ></div>
+      <div
+        className="modal fade show app-modal"
+        style={{ display: "block", zIndex: props.zIndex }}
+        role="dialog"
+        aria-modal="true"
+        tabIndex={-1}
+      >
         <div className="modal-dialog">
           <div className="modal-content">
             {props.title ? (
               <div className="modal-header">
                 <h5 className="modal-title">{props.title}</h5>
-                <button type="button" className="btn-close" aria-label="Schließen" onClick={props.onDismiss}></button>
+                <button
+                  type="button"
+                  className="btn-close"
+                  aria-label="Schließen"
+                  onClick={props.onDismiss}
+                ></button>
               </div>
             ) : null}
             <div className="modal-body">{props.children}</div>
@@ -48,7 +63,9 @@ function DialogShell(props: ShellProps): JSX.Element {
   );
 }
 
-function mountDialog<T>(render: (close: (result: T) => void, zIndex: number) => React.ReactNode): Promise<T> {
+function mountDialog<T>(
+  render: (close: (result: T) => void, zIndex: number) => React.ReactNode,
+): Promise<T> {
   return new Promise<T>((resolve) => {
     const container = document.createElement("div");
     document.body.appendChild(container);
@@ -93,7 +110,12 @@ export function confirmDialog(options: ConfirmOptions): Promise<boolean> {
           <button type="button" className="btn btn-outline-secondary" onClick={() => close(false)}>
             {options.noLabel ?? "Abbrechen"}
           </button>
-          <button type="button" className={`btn btn-${options.yesVariant ?? "primary"}`} autoFocus onClick={() => close(true)}>
+          <button
+            type="button"
+            className={`btn btn-${options.yesVariant ?? "primary"}`}
+            autoFocus
+            onClick={() => close(true)}
+          >
             {options.yesLabel ?? "Akzeptieren"}
           </button>
         </React.Fragment>
@@ -110,7 +132,13 @@ export interface PromptOptions {
   cancelLabel?: string;
 }
 
-function PromptBody(props: { title: string; submitLabel: string; cancelLabel: string; close: (result: string | null) => void; zIndex: number }): JSX.Element {
+function PromptBody(props: {
+  title: string;
+  submitLabel: string;
+  cancelLabel: string;
+  close: (result: string | null) => void;
+  zIndex: number;
+}): JSX.Element {
   const [value, setValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   useEffect(() => inputRef.current?.focus(), []);
@@ -124,7 +152,11 @@ function PromptBody(props: { title: string; submitLabel: string; cancelLabel: st
       onDismiss={() => props.close(null)}
       footer={
         <React.Fragment>
-          <button type="button" className="btn btn-outline-secondary" onClick={() => props.close(null)}>
+          <button
+            type="button"
+            className="btn btn-outline-secondary"
+            onClick={() => props.close(null)}
+          >
             {props.cancelLabel}
           </button>
           <button type="button" className="btn btn-primary" onClick={submit}>
@@ -172,7 +204,12 @@ export interface ContentDialogOptions {
 
 export function contentDialog(options: ContentDialogOptions): Promise<void> {
   return mountDialog<void>((close, zIndex) => (
-    <DialogShell title={options.title} zIndex={zIndex} onDismiss={() => close(undefined)} footer={null}>
+    <DialogShell
+      title={options.title}
+      zIndex={zIndex}
+      onDismiss={() => close(undefined)}
+      footer={null}
+    >
       {options.body(() => close(undefined))}
     </DialogShell>
   ));

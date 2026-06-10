@@ -61,7 +61,9 @@ function weekHeading(isoWeek: number, year: number): string {
   const firstDayOfMonth = month.clone().startOf("month");
   const lastDayOfMonth = month.clone().endOf("month");
 
-  const firstDay = firstDayOfIsoWeek.isBefore(firstDayOfMonth) ? firstDayOfMonth : firstDayOfIsoWeek;
+  const firstDay = firstDayOfIsoWeek.isBefore(firstDayOfMonth)
+    ? firstDayOfMonth
+    : firstDayOfIsoWeek;
   const lastDay = lastDayOfIsoWeek.isAfter(lastDayOfMonth) ? lastDayOfMonth : lastDayOfIsoWeek;
 
   if (firstDay.isSame(lastDay, "day")) {
@@ -70,7 +72,12 @@ function weekHeading(isoWeek: number, year: number): string {
   return `${firstDay.format(formatPattern)} bis ${lastDay.format(formatPattern)}`;
 }
 
-function AssignmentWeekView(props: { isoWeek: number; year: number; groupId: string; filter: FilterState }): JSX.Element {
+function AssignmentWeekView(props: {
+  isoWeek: number;
+  year: number;
+  groupId: string;
+  filter: FilterState;
+}): JSX.Element {
   const [collapsed, setCollapsed] = useState(true);
   const [renderedOnce, setRenderedOnce] = useState(false);
 
@@ -95,7 +102,10 @@ function AssignmentWeekView(props: { isoWeek: number; year: number; groupId: str
     <div className="card card-primary">
       <div className="card-header" style={{ cursor: "pointer" }} onClick={onHeadingClick}>
         <h4 className="card-title">
-          <i className={`fa ${!collapsed ? "fa-chevron-circle-down" : "fa-chevron-circle-right"}`}></i> {weekHeading(props.isoWeek, props.year)}
+          <i
+            className={`fa ${!collapsed ? "fa-chevron-circle-down" : "fa-chevron-circle-right"}`}
+          ></i>{" "}
+          {weekHeading(props.isoWeek, props.year)}
         </h4>
       </div>
       <div
@@ -147,7 +157,9 @@ export default function ShowOverview(): JSX.Element {
       ready: handle.ready(),
       groupName: groupDoc?.name ?? "",
       // The group doc may not be delivered yet on a cold load.
-      isCoordinator: groupDoc ? new User(Meteor.userId()).isGroupCoordinator(new Group(groupId)) : false,
+      isCoordinator: groupDoc
+        ? new User(Meteor.userId()).isGroupCoordinator(new Group(groupId))
+        : false,
       assignments: Assignments.find(assignmentSelector(groupId, filter), {
         sort: { start: 1, name: 1, _id: 1 },
       }).fetch(),
@@ -163,7 +175,12 @@ export default function ShowOverview(): JSX.Element {
         const monthYear = Assignment.convertDateToMonthString(month);
         return (
           <li key={monthYear} className={monthYear === data.yearMonth ? "active" : ""}>
-            <Link to={Routes.path(Routes.Def.AssignmentOverview, { groupId: data.groupId, yearMonth: monthYear })}>
+            <Link
+              to={Routes.path(Routes.Def.AssignmentOverview, {
+                groupId: data.groupId,
+                yearMonth: monthYear,
+              })}
+            >
               {month.format("MMM YY")}
             </Link>
           </li>
@@ -179,7 +196,10 @@ export default function ShowOverview(): JSX.Element {
       <div className="row">
         <div className="col-lg-12">
           <h1 className="page-header">
-            <Link className="btn btn-primary" to={Routes.path(Routes.Def.Home)}><i className="fa fa-chevron-left fa-fw"></i></Link> Termine
+            <Link className="btn btn-primary" to={Routes.path(Routes.Def.Home)}>
+              <i className="fa fa-chevron-left fa-fw"></i>
+            </Link>{" "}
+            Termine
             <small> {data.groupName}</small>
           </h1>
         </div>
@@ -190,19 +210,51 @@ export default function ShowOverview(): JSX.Element {
           {paginator}
 
           <div className="pagination btn-group" data-bs-toggle="buttons">
-            <label className={`btn btn-primary ${filter === "all" ? "active" : ""}`} onClick={() => setFilter("all")}>
-              <input type="radio" name="options" id="filter-all" autoComplete="off" readOnly checked={filter === "all"} /> Alle <i className="fa fa-calendar"></i>
+            <label
+              className={`btn btn-primary ${filter === "all" ? "active" : ""}`}
+              onClick={() => setFilter("all")}
+            >
+              <input
+                type="radio"
+                name="options"
+                id="filter-all"
+                autoComplete="off"
+                readOnly
+                checked={filter === "all"}
+              />{" "}
+              Alle <i className="fa fa-calendar"></i>
               {filter === "all" ? <i className="fa fa-check"></i> : null}
             </label>
-            <label className={`btn btn-success ${filter === "own" ? "active" : ""}`} onClick={() => setFilter("own")}>
-              <input type="radio" name="options" id="filter-mine" autoComplete="off" readOnly checked={filter === "own"} />
-              {filter === "own" ? <i className="fa fa-check"></i> : null}
-              {" "}Meine <i className="fa fa-calendar"></i>
+            <label
+              className={`btn btn-success ${filter === "own" ? "active" : ""}`}
+              onClick={() => setFilter("own")}
+            >
+              <input
+                type="radio"
+                name="options"
+                id="filter-mine"
+                autoComplete="off"
+                readOnly
+                checked={filter === "own"}
+              />
+              {filter === "own" ? <i className="fa fa-check"></i> : null} Meine{" "}
+              <i className="fa fa-calendar"></i>
             </label>
             {data.isCoordinator ? (
-              <label className={`btn btn-info ${filter === "readyForClose" ? "active" : ""}`} onClick={() => setFilter("readyForClose")}>
-                <input type="radio" name="options" id="filter-ready-for-close" autoComplete="off" readOnly checked={filter === "readyForClose"} />
-                {" "}Volle <i className="fa fa-calendar"></i> {filter === "readyForClose" ? <i className="fa fa-check"></i> : null}
+              <label
+                className={`btn btn-info ${filter === "readyForClose" ? "active" : ""}`}
+                onClick={() => setFilter("readyForClose")}
+              >
+                <input
+                  type="radio"
+                  name="options"
+                  id="filter-ready-for-close"
+                  autoComplete="off"
+                  readOnly
+                  checked={filter === "readyForClose"}
+                />{" "}
+                Volle <i className="fa fa-calendar"></i>{" "}
+                {filter === "readyForClose" ? <i className="fa fa-check"></i> : null}
               </label>
             ) : null}
           </div>
@@ -221,7 +273,10 @@ export default function ShowOverview(): JSX.Element {
             ) : (
               <div className="col-lg-12">
                 <div className="alert alert-info" role="alert">
-                  <strong><i className="fa fa-info-circle"></i> Kein voller und offener Termin für diesen Monat vorhanden.</strong>
+                  <strong>
+                    <i className="fa fa-info-circle"></i> Kein voller und offener Termin für diesen
+                    Monat vorhanden.
+                  </strong>
                 </div>
               </div>
             )
@@ -241,8 +296,16 @@ export default function ShowOverview(): JSX.Element {
             ) : (
               <div className="col-lg-12">
                 <div className="alert alert-success" role="alert">
-                  <strong><i className="fa fa-info-circle"></i> Kein eigener Termin vorhanden.</strong> Du hast dich im gewählten Monat auf keinen Termin beworben und nimmst noch an keinem teil.
-                  <strong> Klicke oben auf "Alle <i className="fa fa-calendar"></i>"</strong>, um dir einen Termin auszusuchen.
+                  <strong>
+                    <i className="fa fa-info-circle"></i> Kein eigener Termin vorhanden.
+                  </strong>{" "}
+                  Du hast dich im gewählten Monat auf keinen Termin beworben und nimmst noch an
+                  keinem teil.
+                  <strong>
+                    {" "}
+                    Klicke oben auf "Alle <i className="fa fa-calendar"></i>"
+                  </strong>
+                  , um dir einen Termin auszusuchen.
                 </div>
               </div>
             )
@@ -255,7 +318,10 @@ export default function ShowOverview(): JSX.Element {
           {!hasAssignments ? (
             <div className="col-lg-12">
               <div className="alert alert-info" role="alert">
-                <strong><i className="fa fa-exclamation-circle"></i> Keine Termine vorhanden.</strong> Im gewählten Monat sind keine Termine verfügbar.
+                <strong>
+                  <i className="fa fa-exclamation-circle"></i> Keine Termine vorhanden.
+                </strong>{" "}
+                Im gewählten Monat sind keine Termine verfügbar.
               </div>
             </div>
           ) : (
@@ -276,9 +342,7 @@ export default function ShowOverview(): JSX.Element {
 
       {data.ready && hasAssignments ? (
         <div className="row">
-          <div className="col-lg-12">
-            {paginator}
-          </div>
+          <div className="col-lg-12">{paginator}</div>
         </div>
       ) : null}
     </div>

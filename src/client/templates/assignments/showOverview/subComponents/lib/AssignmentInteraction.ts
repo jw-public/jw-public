@@ -10,7 +10,6 @@ import * as ServerMethodsWrapper from "../../../../../../lib/classes/ServerMetho
 import { Routes } from "../../../../../../lib/client/routes";
 
 export default class AssignmentInteraction {
-
   private proxy: ServerMethodsWrapper.AssignmentProxy = null;
 
   private sessionKeyForVariable: string;
@@ -21,8 +20,6 @@ export default class AssignmentInteraction {
     this.proxy = new ServerMethodsWrapper.AssignmentProxy(this.assignmentId);
     this.sessionKeyForVariable = `pending_request_for_${this.assignmentId}`;
   }
-
-
 
   public cancelApplication() {
     this.requestPending = true;
@@ -57,11 +54,13 @@ export default class AssignmentInteraction {
   }
 
   private confirmAndApplyOnYes() {
-    confirmDialog({ message: "Auf Termin " + this.assignment.name + " bewerben?" }).then((userPressedOnYes) => {
-      if (userPressedOnYes) {
-        this.apply();
-      }
-    });
+    confirmDialog({ message: "Auf Termin " + this.assignment.name + " bewerben?" }).then(
+      (userPressedOnYes) => {
+        if (userPressedOnYes) {
+          this.apply();
+        }
+      },
+    );
   }
 
   private handleError(error: Meteor.Error) {
@@ -84,5 +83,4 @@ export default class AssignmentInteraction {
   public goToAssignment(): void {
     Routes.go(Routes.Def.AssignmentSingleView, { assignmentId: this.assignmentId });
   }
-
 }

@@ -3,18 +3,19 @@ import { useTracker } from "meteor/react-meteor-data";
 import Icon from "../../../../react/lib/Icon";
 
 import { AssignmentStateForUser } from "../../../../../lib/classes/AssignmentStateReader";
-import { DisplayState, IAssignmentDisplayStateReader } from "../../../../../lib/classes/AssignmentDisplayStateReader";
+import {
+  DisplayState,
+  IAssignmentDisplayStateReader,
+} from "../../../../../lib/classes/AssignmentDisplayStateReader";
 import { AssignmentDAO } from "../../../../../collections/lib/AssignmentsCollection";
 
 import AssignmentInteraction from "./lib/AssignmentInteraction";
 
 interface AssignmentPanelFooterProps {
-
   assignment: AssignmentDAO;
   state: AssignmentStateForUser;
   displayStateReader: IAssignmentDisplayStateReader;
 }
-
 
 namespace PanelFooterConsts {
   let textMap: Map<DisplayState, string> = null;
@@ -54,12 +55,9 @@ namespace PanelFooterConsts {
   export function getIconName(displayState: DisplayState): string {
     return getIcons().get(displayState);
   }
-
-
 }
 
 export default function AssignmentPanelFooter(props: AssignmentPanelFooterProps): JSX.Element {
-
   const assignmentInteraction = new AssignmentInteraction(props.assignment);
   const isUpdating = useTracker(() => assignmentInteraction.requestPending, [props.assignment._id]);
 
@@ -99,7 +97,10 @@ export default function AssignmentPanelFooter(props: AssignmentPanelFooterProps)
     styles["cursor"] = "progress";
     content = (
       <div>
-        <span className="float-end"> <Icon name="spinner" pulse /></span>
+        <span className="float-end">
+          {" "}
+          <Icon name="spinner" pulse />
+        </span>
         <div className="clearfix" />
       </div>
     );
@@ -109,10 +110,10 @@ export default function AssignmentPanelFooter(props: AssignmentPanelFooterProps)
     }
     content = (
       <div>
-        <span className="float-start">
-          {PanelFooterConsts.getText(displayState)}
+        <span className="float-start">{PanelFooterConsts.getText(displayState)}</span>
+        <span className="float-end">
+          <Icon name={PanelFooterConsts.getIconName(displayState)} />
         </span>
-        <span className="float-end"><Icon name={PanelFooterConsts.getIconName(displayState)} /></span>
         <div className="clearfix"></div>
       </div>
     );

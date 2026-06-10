@@ -29,7 +29,9 @@ function DashboardPanel(props: DashboardPanelData): JSX.Element {
     <div className="card-footer">
       <span className="float-start">{props.footerDescription}</span>
       {props.showLink ? (
-        <span className="float-end"><i className="fa fa-arrow-circle-right"></i></span>
+        <span className="float-end">
+          <i className="fa fa-arrow-circle-right"></i>
+        </span>
       ) : null}
       <div className="clearfix"></div>
     </div>
@@ -119,10 +121,10 @@ export default function Dashboard(): JSX.Element {
             smallContent: "Termine in " + group.name + "",
             showLink: hasAssignments,
             link: hasAssignments
-              ? Routes.path(
-                  Routes.Def.AssignmentOverview,
-                  { groupId: group.getId(), yearMonth: Assignment.convertDateToMonthString(moment()) },
-                )
+              ? Routes.path(Routes.Def.AssignmentOverview, {
+                  groupId: group.getId(),
+                  yearMonth: Assignment.convertDateToMonthString(moment()),
+                })
               : null,
             footerDescription: hasAssignments
               ? "Zur Terminansicht"
@@ -191,13 +193,21 @@ export default function Dashboard(): JSX.Element {
     <div>
       <div className="row">
         <div className="col-lg-12">
-          <h1 className="page-header" id="greeting">{data.greeting}</h1>
+          <h1 className="page-header" id="greeting">
+            {data.greeting}
+          </h1>
         </div>
       </div>
       <div className="row">
-        {data.coordinatorPanels.map((p, i) => <DashboardPanel key={`coord-${i}`} {...p} />)}
-        {data.ownPendingPanels.map((p, i) => <DashboardPanel key={`own-${i}`} {...p} />)}
-        {data.trolleyPanels.map((p, i) => <DashboardPanel key={`trolley-${i}`} {...p} />)}
+        {data.coordinatorPanels.map((p, i) => (
+          <DashboardPanel key={`coord-${i}`} {...p} />
+        ))}
+        {data.ownPendingPanels.map((p, i) => (
+          <DashboardPanel key={`own-${i}`} {...p} />
+        ))}
+        {data.trolleyPanels.map((p, i) => (
+          <DashboardPanel key={`trolley-${i}`} {...p} />
+        ))}
         {adminPanel ? <DashboardPanel key="admin" {...adminPanel} /> : null}
       </div>
     </div>

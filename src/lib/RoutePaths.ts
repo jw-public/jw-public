@@ -9,12 +9,20 @@ export const ParamNames = {
 };
 
 export class Def {
-  constructor(public name: string, public path: string) {
-  }
+  constructor(
+    public name: string,
+    public path: string,
+  ) {}
 
   static Home = new Def("home", "/");
-  static AssignmentOverview = new Def("assignment-list", "/group/:" + ParamNames.GroupId + "/:" + ParamNames.YearMonth + "/overview");
-  static AssignmentManagement = new Def("manage-assignment", "/group/:" + ParamNames.GroupId + "/manage-assignments");
+  static AssignmentOverview = new Def(
+    "assignment-list",
+    "/group/:" + ParamNames.GroupId + "/:" + ParamNames.YearMonth + "/overview",
+  );
+  static AssignmentManagement = new Def(
+    "manage-assignment",
+    "/group/:" + ParamNames.GroupId + "/manage-assignments",
+  );
   static AssignmentSingleView = new Def("singleAssignment", "/einsatz/:" + ParamNames.AssignmentId);
   static UserManagement = new Def("adminUsers", "/admin/users");
   static GroupManagement = new Def("modifyGroups", "/admin/groups");
@@ -22,12 +30,24 @@ export class Def {
   static MyProfile = new Def("modifyProfile", "/my-profile");
   static Login = new Def("login", "/login");
   static Logout = new Def("logout", "/logout");
-  static UserRegistration = new Def("registerInGroup", "/group/:" + ParamNames.GroupId + "/registrierung");
-  static GroupApplicants = new Def("groupApplicants", "/group/:" + ParamNames.GroupId + "/bewerber");
+  static UserRegistration = new Def(
+    "registerInGroup",
+    "/group/:" + ParamNames.GroupId + "/registrierung",
+  );
+  static GroupApplicants = new Def(
+    "groupApplicants",
+    "/group/:" + ParamNames.GroupId + "/bewerber",
+  );
   static GroupMembers = new Def("groupMembers", "/group/:" + ParamNames.GroupId + "/mitglieder");
   static InfoSite = new Def("infoSite", "/info");
-  static BlueprintManagement = new Def("manage-blueprints", "/group/:" + ParamNames.GroupId + "/manage-blueprints");
-  static CopyAssignments = new Def("copyAssignments", "/group/:" + ParamNames.GroupId + "/copy-assignments");
+  static BlueprintManagement = new Def(
+    "manage-blueprints",
+    "/group/:" + ParamNames.GroupId + "/manage-blueprints",
+  );
+  static CopyAssignments = new Def(
+    "copyAssignments",
+    "/group/:" + ParamNames.GroupId + "/copy-assignments",
+  );
   static ResetPassword = new Def("resetPassword", "/reset-password/:" + ParamNames.Token);
 
   /** Find a definition by its (FlowRouter era) route name. */

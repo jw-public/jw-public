@@ -10,8 +10,8 @@ const adminUser = {
   gender: "Male",
   email: "admin@trolley.com",
   roles: ["admin"],
-  password: "admin3210"
-}
+  password: "admin3210",
+};
 
 export async function initData(): Promise<void> {
   let adminUserId = await initUser();
@@ -35,18 +35,15 @@ export async function initData(): Promise<void> {
 async function initGroup(adminUserId: string): Promise<string> {
   let group: GroupDAO = {
     name: "Standardgruppe",
-    coordinators: [
-      adminUserId
-    ],
+    coordinators: [adminUserId],
     additional: "Standardgruppe",
-    creator: adminUserId
-  }
+    creator: adminUserId,
+  };
   console.log("Adding new group: ", group.name);
   return await Groups.insertAsync(group);
 }
 
 async function initUser(): Promise<string> {
-
   let id = await Accounts.createUserAsync({
     username: "root",
     email: adminUser.email,
@@ -57,8 +54,8 @@ async function initUser(): Promise<string> {
       gender: adminUser.gender,
       mobile: "08122 894327",
       zip: "85435",
-      placeName: "Erding"
-    }
+      placeName: "Erding",
+    },
   });
   if (adminUser.roles.length > 0) {
     for (const r of adminUser.roles) {

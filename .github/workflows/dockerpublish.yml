@@ -47,6 +47,8 @@ jobs:
           meteor-release: "3.3.2"
       - run: cd src && meteor npm install
       - run: cd src && meteor npm run compile
+      - run: cd src && meteor npm run lint
+      - run: cd src && meteor npm run format:check
       - run: cd src && meteor npm test
       - name: Install Playwright
         run: cd e2e && npm ci && npx playwright install --with-deps chromium

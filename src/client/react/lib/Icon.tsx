@@ -1,7 +1,6 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 
-interface IconProps {
+export interface IconProps {
   name: string;
   className?: string;
   size?: string;
@@ -15,9 +14,7 @@ interface IconProps {
 }
 
 export default class Icon extends React.Component<any, any> {
-
   render() {
-
     let props = this.props;
 
     let classNames = `fa fa-${props.name}`;

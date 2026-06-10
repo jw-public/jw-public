@@ -8,114 +8,118 @@ import { assert } from "chai";
 import { IAssignmentRemover } from "../../server/assignments/interfaces/IAssignmentRemover";
 
 describe("AssignmentRemover", async function () {
+  it("should not be null or undefined", async function () {
+    // Arrange
+    let testCase = new AssignmentRemoverTestCase();
 
-    it("should not be null or undefined", async function () {
-        // Arrange
-        let testCase = new AssignmentRemoverTestCase();
+    // Act
 
-        // Act
+    // Assert
+    assert.isDefined(testCase.remover);
+    assert.isNotNull(testCase.remover);
+  });
 
-        // Assert
-        assert.isDefined(testCase.remover);
-        assert.isNotNull(testCase.remover);
+  it("should remove assignment", async function () {
+    // Arrange
+    let testCase = new AssignmentRemoverTestCase();
+    let toBeDeletedId = testCase.collection.insert({
+      name: "To be deleted",
     });
 
-    it("should remove assignment", async function () {
-        // Arrange
-        let testCase = new AssignmentRemoverTestCase();
-        let toBeDeletedId = testCase.collection.insert({
-            name: "To be deleted"
-        });
-
-        let notToBeDeletedId = testCase.collection.insert({
-            name: "NOT to be deleted"
-        });
-
-        // Act
-        await testCase.remover.removeAssignment(toBeDeletedId);
-
-        // Assert
-        assert.equal(testCase.collection.find().count(), 1, "Did not remove assignment correctly.");
-        assert.equal(testCase.collection.findOne().name, "NOT to be deleted", "Did remove the wrong one.");
+    testCase.collection.insert({
+      name: "NOT to be deleted",
     });
 
-    it("should notify participants", async function () {
-        // Arrange
-        let testCase = new AssignmentRemoverTestCase();
-        let toBeDeletedId = testCase.collection.insert({
-            name: "To be deleted",
-            participants: [{
-                user: "pleaseNotifyMe"
-            }, {
-                user: "meToo"
-            }]
-        });
+    // Act
+    await testCase.remover.removeAssignment(toBeDeletedId);
 
-        // Act
-        await testCase.remover.removeAssignment(toBeDeletedId);
+    // Assert
+    assert.equal(testCase.collection.find().count(), 1, "Did not remove assignment correctly.");
+    assert.equal(
+      testCase.collection.findOne().name,
+      "NOT to be deleted",
+      "Did remove the wrong one.",
+    );
+  });
 
-        // Assert
-        assert.equal(testCase.collection.find().count(), 0, "Did not remove assignment correctly.");
-
-        testCase.expectNotificationWith({
-            userId: "pleaseNotifyMe",
-            eventType: AssignmentEventType.Removed,
-            assignmentId: toBeDeletedId
-        });
-
-        testCase.expectNotificationWith({
-            userId: "meToo",
-            eventType: AssignmentEventType.Removed,
-            assignmentId: toBeDeletedId
-        });
+  it("should notify participants", async function () {
+    // Arrange
+    let testCase = new AssignmentRemoverTestCase();
+    let toBeDeletedId = testCase.collection.insert({
+      name: "To be deleted",
+      participants: [
+        {
+          user: "pleaseNotifyMe",
+        },
+        {
+          user: "meToo",
+        },
+      ],
     });
 
-    it("should notify applicants", async function () {
-        // Arrange
-        let testCase = new AssignmentRemoverTestCase();
-        let toBeDeletedId = testCase.collection.insert({
-            name: "To be deleted",
-            applicants: [{
-                user: "pleaseNotifyMe"
-            }, {
-                user: "meToo"
-            }]
-        });
+    // Act
+    await testCase.remover.removeAssignment(toBeDeletedId);
 
-        // Act
-        await testCase.remover.removeAssignment(toBeDeletedId);
+    // Assert
+    assert.equal(testCase.collection.find().count(), 0, "Did not remove assignment correctly.");
 
-        // Assert
-        assert.equal(testCase.collection.find().count(), 0, "Did not remove assignment correctly.");
-
-        testCase.expectNotificationWith({
-            userId: "pleaseNotifyMe",
-            eventType: AssignmentEventType.Removed,
-            assignmentId: toBeDeletedId
-        });
-
-        testCase.expectNotificationWith({
-            userId: "meToo",
-            eventType: AssignmentEventType.Removed,
-            assignmentId: toBeDeletedId
-        });
+    testCase.expectNotificationWith({
+      userId: "pleaseNotifyMe",
+      eventType: AssignmentEventType.Removed,
+      assignmentId: toBeDeletedId,
     });
 
+    testCase.expectNotificationWith({
+      userId: "meToo",
+      eventType: AssignmentEventType.Removed,
+      assignmentId: toBeDeletedId,
+    });
+  });
 
+  it("should notify applicants", async function () {
+    // Arrange
+    let testCase = new AssignmentRemoverTestCase();
+    let toBeDeletedId = testCase.collection.insert({
+      name: "To be deleted",
+      applicants: [
+        {
+          user: "pleaseNotifyMe",
+        },
+        {
+          user: "meToo",
+        },
+      ],
+    });
+
+    // Act
+    await testCase.remover.removeAssignment(toBeDeletedId);
+
+    // Assert
+    assert.equal(testCase.collection.find().count(), 0, "Did not remove assignment correctly.");
+
+    testCase.expectNotificationWith({
+      userId: "pleaseNotifyMe",
+      eventType: AssignmentEventType.Removed,
+      assignmentId: toBeDeletedId,
+    });
+
+    testCase.expectNotificationWith({
+      userId: "meToo",
+      eventType: AssignmentEventType.Removed,
+      assignmentId: toBeDeletedId,
+    });
+  });
 });
 
-
 class AssignmentRemoverTestCase extends AssignmentTestCaseWithNotifications<IAssignmentRemover> {
-    private _remover: IAssignmentRemover = null;
+  private _remover: IAssignmentRemover = null;
 
-    constructor() {
-        super(Types.IAssignmentRemover);
-        this._remover = this.getTestObject();
-    }
+  constructor() {
+    super(Types.IAssignmentRemover);
+    this._remover = this.getTestObject();
+  }
 
-    get remover(): IAssignmentRemover {
-        return this._remover;
-    }
-
-
+  get remover(): IAssignmentRemover {
+    return this._remover;
+  }
 }

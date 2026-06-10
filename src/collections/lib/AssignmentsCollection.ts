@@ -40,17 +40,15 @@ export interface AssignmentDAO {
   yearOfIsoWeek?: number;
 }
 
-
 const AssignmentStateNames = EnumUtil.getNames(AssignmentState);
 
 export const Assignments = new Mongo.Collection<AssignmentDAO>("assignments");
 
-
-
-export const AssignmentUserEntrySchema = new SimpleSchema({ // Siehe AssignmentSchema.applicants und AssignmentSchema.participants
+export const AssignmentUserEntrySchema = new SimpleSchema({
+  // Siehe AssignmentSchema.applicants und AssignmentSchema.participants
   user: {
     type: String,
-    regEx: SimpleSchema.RegEx.Id
+    regEx: SimpleSchema.RegEx.Id,
   },
   when: {
     type: Date,
@@ -58,8 +56,8 @@ export const AssignmentUserEntrySchema = new SimpleSchema({ // Siehe AssignmentS
       if (this.isUpdate && this.operator !== "$pull") {
         return new Date();
       }
-    }
-  }
+    },
+  },
 });
 
 export const AssignmentSchema = new SimpleSchema({
@@ -70,7 +68,7 @@ export const AssignmentSchema = new SimpleSchema({
   copyActionId: {
     type: String,
     regEx: SimpleSchema.RegEx.Id,
-    optional: true
+    optional: true,
   },
   start: {
     type: Date,
@@ -78,7 +76,7 @@ export const AssignmentSchema = new SimpleSchema({
   },
   end: {
     type: Date,
-    label: "Ende"
+    label: "Ende",
   },
   yearOfIsoWeek: {
     type: Number,
@@ -93,7 +91,7 @@ export const AssignmentSchema = new SimpleSchema({
       } else {
         this.unset();
       }
-    }
+    },
   },
   year: {
     type: Number,
@@ -108,7 +106,7 @@ export const AssignmentSchema = new SimpleSchema({
       } else {
         this.unset();
       }
-    }
+    },
   },
   month: {
     type: Number,
@@ -124,7 +122,7 @@ export const AssignmentSchema = new SimpleSchema({
       } else {
         this.unset();
       }
-    }
+    },
   },
   isoWeek: {
     type: Number,
@@ -140,19 +138,19 @@ export const AssignmentSchema = new SimpleSchema({
       } else {
         this.unset();
       }
-    }
+    },
   },
   state: {
     type: String,
     label: "Zustand",
     allowedValues: AssignmentStateNames,
-    defaultValue: AssignmentState[AssignmentState.Online]
+    defaultValue: AssignmentState[AssignmentState.Online],
   },
   stateBeforeLastClose: {
     type: String,
     label: "Zustand vor letztem Schließen",
     allowedValues: AssignmentStateNames,
-    optional: true
+    optional: true,
   },
   cancelationReason: {
     type: String,
@@ -161,7 +159,8 @@ export const AssignmentSchema = new SimpleSchema({
     custom: function () {
       var context = <any>this;
 
-      var shouldBeRequired = AssignmentState[<string>context.field('state').value] === AssignmentState.Canceled;
+      var shouldBeRequired =
+        AssignmentState[<string>context.field("state").value] === AssignmentState.Canceled;
 
       if (shouldBeRequired) {
         // inserts
@@ -171,33 +170,34 @@ export const AssignmentSchema = new SimpleSchema({
 
         // updates
         else if (context.isSet) {
-          if (context.operator === "$set" && context.value === null || context.value === "") return "required";
+          if ((context.operator === "$set" && context.value === null) || context.value === "")
+            return "required";
           if (context.operator === "$unset") return "required";
           if (context.operator === "$rename") return "required";
         }
       }
-    }
+    },
   },
   note: {
     type: String,
     label: "Notiz",
-    optional: true
+    optional: true,
   },
   userGoal: {
     type: Number,
     label: "Teilnehmer-Ziel (bei 0 wird keine Belegung angezeigt)",
     optional: true,
     min: 0,
-    defaultValue: 0
+    defaultValue: 0,
   },
   name: {
     type: String,
-    label: "Name des Einsatzes"
+    label: "Name des Einsatzes",
   },
   applicants: {
     type: Array,
     label: "Bewerber",
-    defaultValue: []
+    defaultValue: [],
   },
   "applicants.$": {
     type: AssignmentUserEntrySchema,
@@ -205,15 +205,15 @@ export const AssignmentSchema = new SimpleSchema({
   participants: {
     type: Array,
     label: "Teilnehmer",
-    defaultValue: []
+    defaultValue: [],
   },
   "participants.$": {
-    type: AssignmentUserEntrySchema
+    type: AssignmentUserEntrySchema,
   },
   contacts: {
     type: Array,
     label: "Ansprechpersonen",
-    minCount: 1
+    minCount: 1,
   },
   "contacts.$": {
     type: String,
@@ -230,15 +230,15 @@ export const AssignmentSchema = new SimpleSchema({
                 }
             }*/
   },
-  "pickup_point": {
+  pickup_point: {
     type: String,
     optional: true,
-    label: "Abholung"
+    label: "Abholung",
   },
-  "return_point": {
+  return_point: {
     type: String,
     label: "Rückgabe",
-    optional: true
+    optional: true,
   },
   // Force value to be current date (on server) upon insert
   // and prevent updates thereafter.
@@ -246,13 +246,13 @@ export const AssignmentSchema = new SimpleSchema({
     type: Date,
     autoValue: function () {
       if (this.isInsert) {
-        return new Date;
+        return new Date();
       } else if (this.isUpsert) {
-        return { $setOnInsert: new Date };
+        return { $setOnInsert: new Date() };
       } else {
         this.unset();
       }
-    }
+    },
   },
   creator: {
     type: String,
@@ -265,7 +265,6 @@ export const AssignmentSchema = new SimpleSchema({
       }
     },
     autoValue: function () {
-
       if (Meteor.isServer && this.isSet) {
         return;
       }
@@ -277,7 +276,7 @@ export const AssignmentSchema = new SimpleSchema({
       } else {
         this.unset();
       }
-    }
+    },
   },
   // Force value to be current date (on server) upon update
   // and don't allow it to be set upon insert.
@@ -288,8 +287,8 @@ export const AssignmentSchema = new SimpleSchema({
         return new Date();
       }
     },
-    optional: true
-  }
+    optional: true,
+  },
 });
 
 Assignments.attachSchema(AssignmentSchema);

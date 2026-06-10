@@ -48,8 +48,8 @@ export async function publishCount(
 }
 
 interface Subscription {
-  added(collection: string, id: string, fields: Object): void;
-  changed(collection: string, id: string, fields: Object): void;
+  added(collection: string, id: string, fields: object): void;
+  changed(collection: string, id: string, fields: object): void;
   removed(collection: string, id: string): void;
   onStop(func: Function): void;
   ready(): void;

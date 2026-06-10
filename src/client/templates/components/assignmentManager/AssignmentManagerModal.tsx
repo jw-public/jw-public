@@ -16,13 +16,19 @@ export function dialog(templateOptions: AssignmentManagerProps, options?: { titl
           assignmentId={templateOptions.assignmentId}
           onSuccess={() => {
             close();
-            if (!_.isUndefined(templateOptions.onSuccess) && _.isFunction(templateOptions.onSuccess)) {
+            if (
+              !_.isUndefined(templateOptions.onSuccess) &&
+              _.isFunction(templateOptions.onSuccess)
+            ) {
               templateOptions.onSuccess();
             }
           }}
           onCancel={(event: any) => {
             close();
-            if (!_.isUndefined(templateOptions.onCancel) && _.isFunction(templateOptions.onCancel)) {
+            if (
+              !_.isUndefined(templateOptions.onCancel) &&
+              _.isFunction(templateOptions.onCancel)
+            ) {
               templateOptions.onCancel(event);
             }
           }}

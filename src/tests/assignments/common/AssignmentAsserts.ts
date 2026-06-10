@@ -2,13 +2,8 @@ import { assert } from "chai";
 import * as _ from "underscore";
 import { AssignmentDAO, UserEntry } from "../../../collections/lib/AssignmentsCollection";
 
-
-
-
 export class AssignmentAsserts {
-  constructor(private assignment: AssignmentDAO) {
-
-  }
+  constructor(private assignment: AssignmentDAO) {}
 
   containsUserIdInApplicants(userId: string, message?: string) {
     assertContainsUserEntry(this.assignment.applicants, userId, message);
@@ -28,9 +23,20 @@ export class AssignmentAsserts {
 }
 
 function containsUserEntry(userEntryArray: Array<UserEntry>, userId: string): boolean {
-  return _.findIndex(userEntryArray, (userEntry) => { return userEntry.user === userId }) >= 0;
+  return (
+    _.findIndex(userEntryArray, (userEntry) => {
+      return userEntry.user === userId;
+    }) >= 0
+  );
 }
 
-function assertContainsUserEntry(userEntryArray: Array<UserEntry>, userId: string, message?: string): void {
-  return assert.isTrue(containsUserEntry(userEntryArray, userId), `${message}\nThe user ${userId} is not part of ${JSON.stringify(userEntryArray)}.`);
+function assertContainsUserEntry(
+  userEntryArray: Array<UserEntry>,
+  userId: string,
+  message?: string,
+): void {
+  return assert.isTrue(
+    containsUserEntry(userEntryArray, userId),
+    `${message}\nThe user ${userId} is not part of ${JSON.stringify(userEntryArray)}.`,
+  );
 }

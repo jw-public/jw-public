@@ -6,7 +6,6 @@ export const CONTEXT_NAME_STEP_TWO = "register-secondStep-register";
 import * as UserCollection from "./UserCollection";
 import { UserProfileSchema } from "./Users";
 
-
 /**
  * Wird verwendet, wenn ein neuer Benutzer angelegt werden soll.
  * Dieses Objekt wird als Parameter dann Accounts.createUser() aufgerufen.
@@ -24,10 +23,12 @@ export const NewUserSchema = new SimpleSchema({
       if (Meteor.isClient && this.isSet) {
         Meteor.call("userExists", this.value, function (error, result) {
           if (result) {
-            getStepTwoContext().addValidationErrors([{
-              name: "email",
-              type: "userAlreadyExisting"
-            }]);
+            getStepTwoContext().addValidationErrors([
+              {
+                name: "email",
+                type: "userAlreadyExisting",
+              },
+            ]);
           }
         });
       }
@@ -36,7 +37,7 @@ export const NewUserSchema = new SimpleSchema({
       if (this.isSet) {
         return this.value.trim().toLowerCase(); // Alles kleinschreiben
       }
-    }
+    },
   },
   password: {
     type: String,
@@ -45,21 +46,21 @@ export const NewUserSchema = new SimpleSchema({
     // this must be optional if you also use other login services like facebook,
     // but if you use only accounts-password, then it can be required
     optional: false,
-    min: 6
+    min: 6,
   },
   passwordConfirmation: {
     type: String,
     label: "Passwort bestätigen",
     custom: function () {
-      if (this.value !== this.field('password').value) {
+      if (this.value !== this.field("password").value) {
         return "passwordMissmatch";
       }
-    }
+    },
   },
   profile: {
     type: UserProfileSchema,
-    optional: false
-  }
+    optional: false,
+  },
 });
 
 export interface INewUser {

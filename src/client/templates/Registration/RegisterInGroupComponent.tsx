@@ -69,7 +69,9 @@ export default function RegisterInGroup(): JSX.Element {
     Meteor.call("userExists", cleaned, (err: Meteor.Error, userExists: boolean) => {
       if (userExists) {
         console.log("Benutzer ist bereits registriert!");
-        alert("Du bist bereits schon im System registriert. Eine zweite Registrierung ist zurzeit nicht möglich.");
+        alert(
+          "Du bist bereits schon im System registriert. Eine zweite Registrierung ist zurzeit nicht möglich.",
+        );
       } else {
         console.log("Benutzer ist neu! Weiter gehts.");
         setEmail(cleaned);
@@ -142,7 +144,9 @@ export default function RegisterInGroup(): JSX.Element {
                   <i className="fa fa-home"></i> Willkommen!
                 </div>
                 <div className="card-body">
-                  <p>Hier kannst Du Dich für den Trolleydienst in der Gruppe {groupName} anmelden.</p>
+                  <p>
+                    Hier kannst Du Dich für den Trolleydienst in der Gruppe {groupName} anmelden.
+                  </p>
                   <p>Gib bitte Deine E-Mail Adresse ein und klicke dann auf weiter.</p>
                 </div>
               </React.Fragment>
@@ -153,7 +157,11 @@ export default function RegisterInGroup(): JSX.Element {
                 </div>
                 <div className="card-body">
                   <p>Wir würden noch gerne wissen, wer Du bist.</p>
-                  <p>Es hilft uns sehr bei der Organisation, wenn wir deine Kontaktdaten haben und diese für den Zweck der Organisation unserer Öffentlichkeitsarbeit verwenden dürfen.</p>
+                  <p>
+                    Es hilft uns sehr bei der Organisation, wenn wir deine Kontaktdaten haben und
+                    diese für den Zweck der Organisation unserer Öffentlichkeitsarbeit verwenden
+                    dürfen.
+                  </p>
                 </div>
               </React.Fragment>
             )}
@@ -209,11 +217,23 @@ export default function RegisterInGroup(): JSX.Element {
                       </div>
                       <div className="form-group">
                         <label>Vorname</label>
-                        <input type="text" name="profile.first_name" className="form-control" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+                        <input
+                          type="text"
+                          name="profile.first_name"
+                          className="form-control"
+                          value={firstName}
+                          onChange={(e) => setFirstName(e.target.value)}
+                        />
                       </div>
                       <div className="form-group">
                         <label>Nachname</label>
-                        <input type="text" name="profile.last_name" className="form-control" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+                        <input
+                          type="text"
+                          name="profile.last_name"
+                          className="form-control"
+                          value={lastName}
+                          onChange={(e) => setLastName(e.target.value)}
+                        />
                       </div>
                       <div className="form-group">
                         <label>Ich bin</label>
@@ -245,24 +265,56 @@ export default function RegisterInGroup(): JSX.Element {
                         onChange={setPioneer}
                       />
                       <div className="form-group">
-                        <label>Handynummer (Für Österreich bitte die führende 0 mit +43 ersetzen)</label>
-                        <input type="text" name="profile.mobile" className="form-control" value={mobile} onChange={(e) => setMobile(e.target.value)} />
+                        <label>
+                          Handynummer (Für Österreich bitte die führende 0 mit +43 ersetzen)
+                        </label>
+                        <input
+                          type="text"
+                          name="profile.mobile"
+                          className="form-control"
+                          value={mobile}
+                          onChange={(e) => setMobile(e.target.value)}
+                        />
                       </div>
                       <div className="form-group">
                         <label>Wohnort</label>
-                        <input type="text" name="profile.placeName" className="form-control" value={placeName} onChange={(e) => setPlaceName(e.target.value)} />
+                        <input
+                          type="text"
+                          name="profile.placeName"
+                          className="form-control"
+                          value={placeName}
+                          onChange={(e) => setPlaceName(e.target.value)}
+                        />
                       </div>
                       <div className="form-group">
                         <label>Postleitzahl</label>
-                        <input type="text" name="profile.zip" className="form-control" value={zip} onChange={(e) => setZip(e.target.value)} />
+                        <input
+                          type="text"
+                          name="profile.zip"
+                          className="form-control"
+                          value={zip}
+                          onChange={(e) => setZip(e.target.value)}
+                        />
                       </div>
                       <div className="form-group">
                         <label>Denk dir ein Passwort aus</label>
-                        <input type="password" name="password" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)} />
+                        <input
+                          type="password"
+                          name="password"
+                          className="form-control"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                        />
                       </div>
                       <div className="form-group">
                         <label>Tipp dein neues Passwort noch einmal ein</label>
-                        <input type="password" name="passwordConfirmation" className="form-control" value={passwordConfirmation} onChange={(e) => setPasswordConfirmation(e.target.value)} />
+                        <input
+                          type="password"
+                          name="passwordConfirmation"
+                          className="form-control"
+                          value={passwordConfirmation}
+                          onChange={(e) => setPasswordConfirmation(e.target.value)}
+                        />
                       </div>
                       <div className="form-group">
                         <button type="submit" className="btn btn-primary submit-change">

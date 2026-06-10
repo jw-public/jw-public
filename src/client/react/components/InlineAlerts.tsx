@@ -12,7 +12,9 @@ export function InlineAlerts(props: { alerts: InlineAlert[] }): JSX.Element {
   return (
     <React.Fragment>
       {props.alerts.map((a, i) => (
-        <div key={i} className={`alert alert-${a.type}`}>{a.message}</div>
+        <div key={i} className={`alert alert-${a.type}`}>
+          {a.message}
+        </div>
       ))}
     </React.Fragment>
   );

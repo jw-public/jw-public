@@ -2,12 +2,7 @@ import * as React from "react";
 import { Meteor } from "meteor/meteor";
 import { ReactiveVar } from "meteor/reactive-var";
 import { useTracker } from "meteor/react-meteor-data";
-import {
-  createBrowserRouter,
-  Navigate,
-  useLocation,
-  useParams,
-} from "react-router-dom";
+import { createBrowserRouter, Navigate, useLocation } from "react-router-dom";
 
 import User from "../../collections/lib/classes/User";
 
@@ -62,10 +57,13 @@ function LoadingSpinner(): JSX.Element {
 
 function RequireLogin(props: { children: JSX.Element }): JSX.Element {
   const location = useLocation();
-  const { userId, loggingIn } = useTracker(() => ({
-    userId: Meteor.userId(),
-    loggingIn: Meteor.loggingIn(),
-  }), []);
+  const { userId, loggingIn } = useTracker(
+    () => ({
+      userId: Meteor.userId(),
+      loggingIn: Meteor.loggingIn(),
+    }),
+    [],
+  );
 
   if (userId) {
     return props.children;
@@ -73,7 +71,12 @@ function RequireLogin(props: { children: JSX.Element }): JSX.Element {
   if (loggingIn) {
     return <LoadingSpinner />;
   }
-  return <Navigate to={`${buildPath(Def.Login)}?goto=${encodeURIComponent(location.pathname)}`} replace />;
+  return (
+    <Navigate
+      to={`${buildPath(Def.Login)}?goto=${encodeURIComponent(location.pathname)}`}
+      replace
+    />
+  );
 }
 
 // Unlike the old FlowRouter trigger, this waits for the user document before
@@ -102,7 +105,12 @@ function RequireAdmin(props: { children: JSX.Element }): JSX.Element {
     case "wait":
       return <LoadingSpinner />;
     case "redirect-login":
-      return <Navigate to={`${buildPath(Def.Login)}?goto=${encodeURIComponent(location.pathname)}`} replace />;
+      return (
+        <Navigate
+          to={`${buildPath(Def.Login)}?goto=${encodeURIComponent(location.pathname)}`}
+          replace
+        />
+      );
     default:
       return <Navigate to={buildPath(Def.Home)} replace />;
   }
@@ -167,7 +175,14 @@ export const router = createBrowserRouter([
   {
     element: <ParallaxLayout />,
     children: [
-      { path: Def.Login.path, element: <RequireLoggedOut><Login /></RequireLoggedOut> },
+      {
+        path: Def.Login.path,
+        element: (
+          <RequireLoggedOut>
+            <Login />
+          </RequireLoggedOut>
+        ),
+      },
       { path: Def.UserRegistration.path, element: <RegisterInGroup /> },
       { path: Def.ResetPassword.path, element: <ResetPassword /> },
     ],
@@ -189,9 +204,30 @@ export const router = createBrowserRouter([
       { path: Def.InfoSite.path, element: <InfoSite /> },
       { path: Def.BlueprintManagement.path, element: <ManageBlueprintsComponent /> },
       { path: Def.CopyAssignments.path, element: <CopyAssignments /> },
-      { path: Def.UserManagement.path, element: <RequireAdmin><AdminUsers /></RequireAdmin> },
-      { path: Def.GroupManagement.path, element: <RequireAdmin><ModifyGroups /></RequireAdmin> },
-      { path: Def.EmailServerManagement.path, element: <RequireAdmin><EmptyPage /></RequireAdmin> },
+      {
+        path: Def.UserManagement.path,
+        element: (
+          <RequireAdmin>
+            <AdminUsers />
+          </RequireAdmin>
+        ),
+      },
+      {
+        path: Def.GroupManagement.path,
+        element: (
+          <RequireAdmin>
+            <ModifyGroups />
+          </RequireAdmin>
+        ),
+      },
+      {
+        path: Def.EmailServerManagement.path,
+        element: (
+          <RequireAdmin>
+            <EmptyPage />
+          </RequireAdmin>
+        ),
+      },
     ],
   },
   { path: Def.Logout.path, element: <Logout /> },
@@ -205,7 +241,6 @@ router.subscribe((state) => syncRouterState(state as any));
 // ---------------------------------------------------------------------------
 
 export namespace Routes {
-
   export const ParamNames = {
     GroupId: "groupId",
     YearMonth: "yearMonth",

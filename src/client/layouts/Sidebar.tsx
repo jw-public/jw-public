@@ -55,29 +55,40 @@ function GroupMenuEntry(props: { group: GroupDAO }): JSX.Element {
   const groupParam = { [ParamNames.GroupId]: props.group._id };
 
   return (
-    <Submenu toggle={<span><i className="fa fa-square fa-fw"></i> Gruppe {props.group.name} </span>}>
+    <Submenu
+      toggle={
+        <span>
+          <i className="fa fa-square fa-fw"></i> Gruppe {props.group.name}{" "}
+        </span>
+      }
+    >
       <li>
         <Link to={buildPath(Def.GroupMembers, groupParam)} className="auto-scroll">
-          <i className="fa fa-users fa-fw"></i> Mitglieder</Link>
+          <i className="fa fa-users fa-fw"></i> Mitglieder
+        </Link>
       </li>
       <li>
         <Link to={buildPath(Def.AssignmentManagement, groupParam)} className="auto-scroll">
-          <i className="fa fa-list-ul fa-fw"></i> Einsätze verwalten</Link>
+          <i className="fa fa-list-ul fa-fw"></i> Einsätze verwalten
+        </Link>
       </li>
       <li>
         <Link to={buildPath(Def.GroupApplicants, groupParam)} className="auto-scroll">
-          <i className="fa fa-server fa-fw"></i> Offene Gruppenbewerbungen {pendingUsersCount > 0 ? (
+          <i className="fa fa-server fa-fw"></i> Offene Gruppenbewerbungen{" "}
+          {pendingUsersCount > 0 ? (
             <div className="badge-danger float-end">{pendingUsersCount}</div>
           ) : null}
         </Link>
       </li>
       <li>
         <Link to={buildPath(Def.UserRegistration, groupParam)}>
-          <i className="fa fa-link fa-fw"></i> Registrierungs-Link</Link>
+          <i className="fa fa-link fa-fw"></i> Registrierungs-Link
+        </Link>
       </li>
       <li>
         <Link to={buildPath(Def.CopyAssignments, groupParam)}>
-          <i className="fa fa-clone fa-fw"></i> Einsätze wochenweise kopieren</Link>
+          <i className="fa fa-clone fa-fw"></i> Einsätze wochenweise kopieren
+        </Link>
       </li>
     </Submenu>
   );
@@ -113,29 +124,41 @@ export default function Sidebar(): JSX.Element {
 
           <li>
             <Link to={buildPath(Def.Home)} className="auto-scroll" id="toDashboard">
-              <i className="fa fa-dashboard fa-fw"></i> Übersicht</Link>
+              <i className="fa fa-dashboard fa-fw"></i> Übersicht
+            </Link>
           </li>
           <li>
             <a href="https://docs.jw-public.org/userguide/" className="auto-scroll" id="toDocs">
-              <i className="fa fa-book fa-fw"></i> Anleitung</a>
+              <i className="fa fa-book fa-fw"></i> Anleitung
+            </a>
           </li>
 
           {data.isCoordinatorInAnyGroup ? (
             <li>
               <Link to={buildPath(Def.InfoSite)} className="auto-scroll">
-                <i className="fa fa-question-circle fa-fw"></i> Info</Link>
+                <i className="fa fa-question-circle fa-fw"></i> Info
+              </Link>
             </li>
           ) : null}
 
           {data.isAdmin ? (
-            <Submenu id="adminMenu" toggle={<span><i className="fa fa-wrench fa-fw"></i> Admin </span>}>
+            <Submenu
+              id="adminMenu"
+              toggle={
+                <span>
+                  <i className="fa fa-wrench fa-fw"></i> Admin{" "}
+                </span>
+              }
+            >
               <li>
                 <Link to={buildPath(Def.UserManagement)} className="auto-scroll">
-                  <i className="fa fa-users fa-fw"></i> Benutzerverwaltung</Link>
+                  <i className="fa fa-users fa-fw"></i> Benutzerverwaltung
+                </Link>
               </li>
               <li id="toGroupManagement">
                 <Link to={buildPath(Def.GroupManagement)} className="auto-scroll">
-                  <i className="fa fa-sitemap fa-fw"></i> Gruppenverwaltung</Link>
+                  <i className="fa fa-sitemap fa-fw"></i> Gruppenverwaltung
+                </Link>
               </li>
             </Submenu>
           ) : null}

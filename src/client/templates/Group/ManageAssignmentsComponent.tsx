@@ -14,22 +14,24 @@ import { Groups } from "../../../collections/lib/GroupCollection";
 import * as ServerMethodsWrapper from "../../../lib/classes/ServerMethodsWrapper";
 
 import DataTable, { DataTableColumn } from "../../react/components/DataTable";
-import AssignmentFormComponent, { AssignmentFormProps } from "../components/assignmentForm/AssignmentFormComponent";
+import AssignmentFormComponent, {
+  AssignmentFormProps,
+} from "../components/assignmentForm/AssignmentFormComponent";
 import AssignmentManagerComponent from "../components/assignmentManager/AssignmentManagerComponent";
 import * as AssignmentManagerModal from "../components/assignmentManager/AssignmentManagerModal";
 
 function removeAssignment(assignmentId: string): void {
   confirmDialog({ message: "Den Termin wirklich löschen?" }).then((result) => {
-      if (!result) {
-        return;
+    if (!result) {
+      return;
+    }
+    const proxy = new ServerMethodsWrapper.AssignmentProxy(assignmentId);
+    proxy.remove((error: any) => {
+      if (error) {
+        console.error("Was trying to remove an assignment: ", error);
+        alert("Fehler: " + error.toString());
       }
-      const proxy = new ServerMethodsWrapper.AssignmentProxy(assignmentId);
-      proxy.remove((error: any) => {
-        if (error) {
-          console.error("Was trying to remove an assignment: ", error);
-          alert("Fehler: " + error.toString());
-        }
-      });
+    });
   });
 }
 
@@ -94,18 +96,30 @@ export default function ManageAssignments(): JSX.Element {
         const isClosed = a.state === AssignmentState[AssignmentState.Closed];
         return (
           <div className="btn-group">
-            <button type="button" className="btn btn-sm btn-trash remove-assignment" title="Termin löschen" onClick={() => removeAssignment(a._id)}>
+            <button
+              type="button"
+              className="btn btn-sm btn-trash remove-assignment"
+              title="Termin löschen"
+              onClick={() => removeAssignment(a._id)}
+            >
               <i className="fa fa-fw fa-trash"></i>
             </button>
             <button
               type="button"
               className={`btn btn-sm ${isClosed ? "btn-warning" : "btn-danger"} manage-assignment`}
               title={isClosed ? "Termin erneut abschließen" : "Termin abschließen"}
-              onClick={() => AssignmentManagerModal.dialog({ assignmentId: a._id, onSuccess: () => {} })}
+              onClick={() =>
+                AssignmentManagerModal.dialog({ assignmentId: a._id, onSuccess: () => {} })
+              }
             >
               <i className={`fa fa-fw ${isClosed ? "fa-lock" : "fa-unlock"}`}></i>
             </button>
-            <button type="button" className="btn btn-sm btn-primary edit-assignment" title="Daten bearbeiten" onClick={() => toggleEdit(a)}>
+            <button
+              type="button"
+              className="btn btn-sm btn-primary edit-assignment"
+              title="Daten bearbeiten"
+              onClick={() => toggleEdit(a)}
+            >
               <i className="fa fa-fw fa-pencil"></i>
             </button>
             <button
@@ -169,7 +183,9 @@ export default function ManageAssignments(): JSX.Element {
     <div>
       <div className="row">
         <div className="col-lg-12">
-          <h1 className="page-header">Einsätze <small>{data.groupName}</small></h1>
+          <h1 className="page-header">
+            Einsätze <small>{data.groupName}</small>
+          </h1>
         </div>
       </div>
 
@@ -184,7 +200,7 @@ export default function ManageAssignments(): JSX.Element {
                 <div className="col-lg-8 col-md-10">
                   <div className="form-inline">
                     <div className="form-group">
-                      <label>Von:{" "}</label>{" "}
+                      <label>Von: </label>{" "}
                       <DatePicker
                         selected={filterStart}
                         onChange={(date: Date) => date && setFilterStart(date)}
@@ -194,7 +210,7 @@ export default function ManageAssignments(): JSX.Element {
                       />
                     </div>{" "}
                     <div className="form-group">
-                      <label>Bis:{" "}</label>{" "}
+                      <label>Bis: </label>{" "}
                       <DatePicker
                         selected={filterEnd}
                         onChange={(date: Date) => date && setFilterEnd(date)}

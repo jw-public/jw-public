@@ -9,10 +9,22 @@ import * as UserCollection from "../../../collections/lib/UserCollection";
 import DataTable, { DataTableColumn } from "../../react/components/DataTable";
 
 const columns: DataTableColumn<UserCollection.UserDAO>[] = [
-  { title: "Vorname", render: (u) => u.profile?.first_name, sortValue: (u) => u.profile?.first_name ?? "" },
-  { title: "Nachname", render: (u) => u.profile?.last_name, sortValue: (u) => u.profile?.last_name ?? "" },
+  {
+    title: "Vorname",
+    render: (u) => u.profile?.first_name,
+    sortValue: (u) => u.profile?.first_name ?? "",
+  },
+  {
+    title: "Nachname",
+    render: (u) => u.profile?.last_name,
+    sortValue: (u) => u.profile?.last_name ?? "",
+  },
   { title: "Telefon", render: (u) => u.profile?.mobileNat },
-  { title: "E-Mail", render: (u) => u.emails?.[0]?.address, sortValue: (u) => u.emails?.[0]?.address ?? "" },
+  {
+    title: "E-Mail",
+    render: (u) => u.emails?.[0]?.address,
+    sortValue: (u) => u.emails?.[0]?.address ?? "",
+  },
   { title: "PLZ", render: (u) => u.profile?.zip, sortValue: (u) => u.profile?.zip ?? "" },
 ];
 
@@ -43,7 +55,9 @@ export default function GroupMembers(): JSX.Element {
     <div>
       <div className="row">
         <div className="col-lg-12">
-          <h1 className="page-header">Mitglieder <small>{groupName}</small></h1>
+          <h1 className="page-header">
+            Mitglieder <small>{groupName}</small>
+          </h1>
         </div>
       </div>
       <div className="row">

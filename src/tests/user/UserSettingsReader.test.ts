@@ -2,18 +2,12 @@ import { IUserSettingsReader } from "../../server/user/interfaces/IUserSettingsR
 import { IUserSettingsReaderFactory } from "../../server/user/interfaces/IUserSettingsReaderFactory";
 import { UserTypes } from "../../server/user/UserTypes";
 
-
 import { assert } from "chai";
-
 
 import { UserDAO } from "../../collections/lib/UserCollection";
 import { TestCase } from "../common/TestCase";
 
-
-
-
 describe("UserSettingsReader", function () {
-
   it("should not be null or undefined", async function () {
     // Arrange
     let testCase = new UserSettingsReaderTestCase({
@@ -22,18 +16,15 @@ describe("UserSettingsReader", function () {
 
     // Act
 
-
     // Assert
     assert.isDefined(await testCase.reader);
     assert.isNotNull(await testCase.reader);
   });
 
-
   it("should determine whether user wants to receive notification emails, when property is undefined", async function () {
     // Arrange
     let testCase = new UserSettingsReaderTestCase({
-      profile: {
-      }
+      profile: {},
     });
 
     // Act
@@ -46,8 +37,8 @@ describe("UserSettingsReader", function () {
     // Arrange
     let testCase = new UserSettingsReaderTestCase({
       profile: {
-        notificationAsEmail: false
-      }
+        notificationAsEmail: false,
+      },
     });
 
     // Act
@@ -60,8 +51,8 @@ describe("UserSettingsReader", function () {
     // Arrange
     let testCase = new UserSettingsReaderTestCase({
       profile: {
-        notificationAsEmail: true
-      }
+        notificationAsEmail: true,
+      },
     });
 
     // Act
@@ -74,8 +65,8 @@ describe("UserSettingsReader", function () {
     // Arrange
     let testCase = new UserSettingsReaderTestCase({
       profile: {
-        language: "de-de"
-      }
+        language: "de-de",
+      },
     });
 
     // Act
@@ -88,8 +79,8 @@ describe("UserSettingsReader", function () {
     // Arrange
     let testCase = new UserSettingsReaderTestCase({
       profile: {
-        language: "fr-fr"
-      }
+        language: "fr-fr",
+      },
     });
 
     // Act
@@ -99,12 +90,7 @@ describe("UserSettingsReader", function () {
   });
 });
 
-
-
-
-
 class UserSettingsReaderTestCase extends TestCase<IUserSettingsReaderFactory> {
-
   private userId: string;
   constructor(private userDao: UserDAO) {
     super(UserTypes.IUserSettingsReaderFactory);
@@ -115,7 +101,4 @@ class UserSettingsReaderTestCase extends TestCase<IUserSettingsReaderFactory> {
   public get reader(): Promise<IUserSettingsReader> {
     return this.getTestObject().createSettingsReaderFor(this.userId);
   }
-
-
-
 }

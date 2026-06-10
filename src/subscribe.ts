@@ -1,13 +1,9 @@
 import { Meteor } from "meteor/meteor";
 import { Tracker } from "meteor/tracker";
 
-
-
 import * as SubscriptionHelper from "./Subscription";
 
-
 let userDataSubscription: Meteor.SubscriptionHandle = null;
-
 
 export function getUserDataSubscription(): Meteor.SubscriptionHandle {
   if (userDataSubscription === null) {
@@ -19,7 +15,7 @@ export function getUserDataSubscription(): Meteor.SubscriptionHandle {
 
 function init() {
   if (Meteor.isClient) {
-    let roleSubscription = Meteor.subscribe("roles");
+    Meteor.subscribe("roles");
 
     Tracker.autorun(() => {
       let userDao = Meteor.user();

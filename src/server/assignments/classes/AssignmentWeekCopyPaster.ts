@@ -3,22 +3,25 @@ import { AssignmentCopyActionDAO } from "../../../collections/lib/AssignmentCopy
 import { AssignmentDAO } from "../../../collections/lib/AssignmentsCollection";
 import { AssignmentState } from "../../../collections/lib/classes/AssignmentState";
 import { SimpleCollection } from "../../../imports/interfaces/SimpleCollection";
-import { Logger } from '../../../imports/logging/Logger';
-import { LoggerFactory } from '../../../imports/logging/LoggerFactory';
-import { Types } from "../../Types";
+import { Logger } from "../../../imports/logging/Logger";
+import { LoggerFactory } from "../../../imports/logging/LoggerFactory";
 
 export class AssignmentWeekCopyPaster {
-
   private logger: Logger;
 
-  constructor(private assignmentCollection: SimpleCollection<AssignmentDAO>,
+  constructor(
+    private assignmentCollection: SimpleCollection<AssignmentDAO>,
     private copyActionsCollection: SimpleCollection<AssignmentCopyActionDAO>,
     loggerFactory: LoggerFactory,
   ) {
     this.logger = loggerFactory.createLogger("AssignmentWeekCopyPaster");
   }
 
-  public async copyPasteCalendarWeekInGroup({ groupId, from, to }: {
+  public async copyPasteCalendarWeekInGroup({
+    groupId,
+    from,
+    to,
+  }: {
     groupId: string;
     from: {
       calendarWeek: number;
@@ -33,10 +36,10 @@ export class AssignmentWeekCopyPaster {
       group: groupId,
       isoWeek: from.calendarWeek,
       yearOfIsoWeek: from.year,
-    })
-    const fromMoment = moment().isoWeek(from.calendarWeek).isoWeekYear(from.year)
-    const toMoment = moment().isoWeek(to.calendarWeek).isoWeekYear(to.year)
-    const diff = toMoment.diff(fromMoment)
+    });
+    const fromMoment = moment().isoWeek(from.calendarWeek).isoWeekYear(from.year);
+    const toMoment = moment().isoWeek(to.calendarWeek).isoWeekYear(to.year);
+    const diff = toMoment.diff(fromMoment);
 
     const assignmentDocs = await assignments.fetchAsync();
 
@@ -47,28 +50,24 @@ export class AssignmentWeekCopyPaster {
       fromIsoWeek: from.calendarWeek,
       toIsoWeek: to.calendarWeek,
       fromYearOfIsoWeek: from.year,
-      toYearOfIsoWeek: to.year
-    }
-    const copyActionId = await this.copyActionsCollection.insertAsync(copyAction)
+      toYearOfIsoWeek: to.year,
+    };
+    const copyActionId = await this.copyActionsCollection.insertAsync(copyAction);
 
     this.logger.info({
       _id: copyActionId,
-      ...copyAction
-    })
+      ...copyAction,
+    });
 
     for (const assignment of assignmentDocs) {
       const fromDate = {
-        start: moment(assignment.start).tz('Europe/Berlin'),
-        end: moment(assignment.end).tz('Europe/Berlin'),
-      }
+        start: moment(assignment.start).tz("Europe/Berlin"),
+        end: moment(assignment.end).tz("Europe/Berlin"),
+      };
       const targetDate = {
-        start: moment(fromDate.start)
-          .add(diff)
-          .set('hour', fromDate.start.get('hour')), // set to same displayed hour (winter/summer time)
-        end: moment(fromDate.end)
-          .add(diff)
-          .set('hour', fromDate.end.get('hour')), // set to same displayed hour (winter/summer time)
-      }
+        start: moment(fromDate.start).add(diff).set("hour", fromDate.start.get("hour")), // set to same displayed hour (winter/summer time)
+        end: moment(fromDate.end).add(diff).set("hour", fromDate.end.get("hour")), // set to same displayed hour (winter/summer time)
+      };
       const copied = {
         ...assignment,
         start: targetDate.start.toDate(),
@@ -78,8 +77,8 @@ export class AssignmentWeekCopyPaster {
         participants: [],
         applicants: [],
         state: AssignmentState[AssignmentState.Online],
-        copyActionId
-      }
+        copyActionId,
+      };
 
       delete copied._id;
       delete copied.stateBeforeLastClose;
@@ -87,10 +86,10 @@ export class AssignmentWeekCopyPaster {
       delete copied.createdAt;
       delete copied.updatedAt;
 
-      await this.assignmentCollection.insertAsync(copied)
+      await this.assignmentCollection.insertAsync(copied);
     }
 
-    this.logger.info("Copied " + copyAction.totalCopied + " assignments")
+    this.logger.info("Copied " + copyAction.totalCopied + " assignments");
 
     return copyAction.totalCopied;
   }

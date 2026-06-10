@@ -84,3 +84,4 @@ coverage-report/
 src/TEST-report.xml
 src/coverage
 test-results/
+graphify-out/

@@ -57,8 +57,12 @@ function formatDurationShort(minutes: number): string {
 }
 
 export default function AssignmentForm(props: AssignmentFormProps): JSX.Element {
-  const [start, setStart] = useState<Date>(props.doc ? new Date(props.doc.start as any) : defaultStartDate());
-  const [duration, setDuration] = useState<number>(props.doc ? durationOf(props.doc) : DEFAULT_DURATION_MINUTES);
+  const [start, setStart] = useState<Date>(
+    props.doc ? new Date(props.doc.start as any) : defaultStartDate(),
+  );
+  const [duration, setDuration] = useState<number>(
+    props.doc ? durationOf(props.doc) : DEFAULT_DURATION_MINUTES,
+  );
   const [name, setName] = useState(props.doc?.name ?? "");
   const [state, setState] = useState(props.doc?.state ?? "Online");
   const [userGoal, setUserGoal] = useState(String(props.doc?.userGoal ?? 0));
@@ -83,10 +87,13 @@ export default function AssignmentForm(props: AssignmentFormProps): JSX.Element 
 
   const end = useMemo(() => moment(start).add(duration, "minutes").toDate(), [start, duration]);
 
-  const isCanceled = props.doc != null && AssignmentState[props.doc.state] === AssignmentState.Canceled;
+  const isCanceled =
+    props.doc != null && AssignmentState[props.doc.state] === AssignmentState.Canceled;
 
   const increaseDuration = (minutes: number) => {
-    setDuration((d) => Math.min(DURATION_BOUNDS.upper, Math.max(DURATION_BOUNDS.lower, d + minutes)));
+    setDuration((d) =>
+      Math.min(DURATION_BOUNDS.upper, Math.max(DURATION_BOUNDS.lower, d + minutes)),
+    );
   };
 
   const reset = () => {
@@ -134,7 +141,9 @@ export default function AssignmentForm(props: AssignmentFormProps): JSX.Element 
             })),
           );
         } else {
-          setAlerts([{ message: "Speichern fehlgeschlagen: " + (err.reason ?? err.message), type: "danger" }]);
+          setAlerts([
+            { message: "Speichern fehlgeschlagen: " + (err.reason ?? err.message), type: "danger" },
+          ]);
         }
       } else {
         if (props.resetOnSuccess) {
@@ -184,8 +193,20 @@ export default function AssignmentForm(props: AssignmentFormProps): JSX.Element 
               <label htmlFor="durationDisplay">Dauer</label>
               <div className="input-group duration">
                 <span className="input-group-btn">
-                  <button className="btn btn-primary increase" type="button" onClick={() => increaseDuration(-30)}>-30 Min</button>
-                  <button className="btn btn-info increase" type="button" onClick={() => increaseDuration(-15)}>-15 Min</button>
+                  <button
+                    className="btn btn-primary increase"
+                    type="button"
+                    onClick={() => increaseDuration(-30)}
+                  >
+                    -30 Min
+                  </button>
+                  <button
+                    className="btn btn-info increase"
+                    type="button"
+                    onClick={() => increaseDuration(-15)}
+                  >
+                    -15 Min
+                  </button>
                 </span>
                 <input
                   id="durationDisplay"
@@ -197,8 +218,20 @@ export default function AssignmentForm(props: AssignmentFormProps): JSX.Element 
                   title={formatDuration(duration)}
                 />
                 <span className="input-group-btn">
-                  <button className="btn btn-info increase" type="button" onClick={() => increaseDuration(15)}>+15 Min</button>
-                  <button className="btn btn-primary increase" type="button" onClick={() => increaseDuration(30)}>+30 Min</button>
+                  <button
+                    className="btn btn-info increase"
+                    type="button"
+                    onClick={() => increaseDuration(15)}
+                  >
+                    +15 Min
+                  </button>
+                  <button
+                    className="btn btn-primary increase"
+                    type="button"
+                    onClick={() => increaseDuration(30)}
+                  >
+                    +30 Min
+                  </button>
                 </span>
               </div>
             </div>
@@ -210,13 +243,22 @@ export default function AssignmentForm(props: AssignmentFormProps): JSX.Element 
 
             <div className="form-group">
               <label>Name des Einsatzes</label>
-              <input name="name" type="text" className="form-control" value={name} onChange={(e) => setName(e.target.value)} />
+              <input
+                name="name"
+                type="text"
+                className="form-control"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
             </div>
 
             <div className="form-group">
               <label>Geschlossen</label>
               <div>
-                {[{ label: "Nein", value: "Online" }, { label: "Ja", value: "Closed" }].map((o) => (
+                {[
+                  { label: "Nein", value: "Online" },
+                  { label: "Ja", value: "Closed" },
+                ].map((o) => (
                   <label key={o.value} className="radio-inline">
                     <input
                       type="radio"
@@ -234,17 +276,35 @@ export default function AssignmentForm(props: AssignmentFormProps): JSX.Element 
 
             <div className="form-group">
               <label>Teilnehmer-Ziel (bei 0 wird keine Belegung angezeigt)</label>
-              <input name="userGoal" type="number" className="form-control" value={userGoal} onChange={(e) => setUserGoal(e.target.value)} />
+              <input
+                name="userGoal"
+                type="number"
+                className="form-control"
+                value={userGoal}
+                onChange={(e) => setUserGoal(e.target.value)}
+              />
             </div>
 
             <div className="form-group">
               <label>Abholpunkt</label>
-              <input name="pickup_point" type="text" className="form-control" value={pickupPoint} onChange={(e) => setPickupPoint(e.target.value)} />
+              <input
+                name="pickup_point"
+                type="text"
+                className="form-control"
+                value={pickupPoint}
+                onChange={(e) => setPickupPoint(e.target.value)}
+              />
             </div>
 
             <div className="form-group">
               <label>Rückgabepunkt</label>
-              <input name="return_point" type="text" className="form-control" value={returnPoint} onChange={(e) => setReturnPoint(e.target.value)} />
+              <input
+                name="return_point"
+                type="text"
+                className="form-control"
+                value={returnPoint}
+                onChange={(e) => setReturnPoint(e.target.value)}
+              />
             </div>
 
             <div className="form-group">
@@ -259,7 +319,13 @@ export default function AssignmentForm(props: AssignmentFormProps): JSX.Element 
 
             <div className="form-group">
               <label>Notiz</label>
-              <textarea name="note" rows={5} className="form-control" value={note} onChange={(e) => setNote(e.target.value)} />
+              <textarea
+                name="note"
+                rows={5}
+                className="form-control"
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+              />
             </div>
 
             <div className="form-group">

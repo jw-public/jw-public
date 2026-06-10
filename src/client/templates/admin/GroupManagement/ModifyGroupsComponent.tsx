@@ -24,7 +24,11 @@ function GroupForm(props: {
   userOptions: SelectOption[];
   submitLabel: JSX.Element;
   extraButtons?: JSX.Element;
-  onSubmit: (values: GroupFormValues, onError: (message: string) => void, onSuccess: () => void) => void;
+  onSubmit: (
+    values: GroupFormValues,
+    onError: (message: string) => void,
+    onSuccess: () => void,
+  ) => void;
 }): JSX.Element {
   const [name, setName] = useState(props.initial.name);
   const [additional, setAdditional] = useState(props.initial.additional);
@@ -117,9 +121,10 @@ export default function ModifyGroups(): JSX.Element {
 
     return {
       groups: Groups.find({}, { sort: { name: 1 } }).fetch(),
-      userOptions: Meteor.users
-        .find({}, {})
-        .map((c: any) => ({ label: c.profile.first_name + " " + c.profile.last_name, value: c._id })),
+      userOptions: Meteor.users.find({}, {}).map((c: any) => ({
+        label: c.profile.first_name + " " + c.profile.last_name,
+        value: c._id,
+      })),
     };
   });
 
@@ -141,10 +146,17 @@ export default function ModifyGroups(): JSX.Element {
       title: "",
       render: (g) => (
         <span>
-          <a href={Routes.path(Routes.Def.UserRegistration, { groupId: g._id })} className="btn btn-primary">
+          <a
+            href={Routes.path(Routes.Def.UserRegistration, { groupId: g._id })}
+            className="btn btn-primary"
+          >
             <i className="fa fa-link"></i>
           </a>{" "}
-          <button type="button" className="btn btn-primary edit-group" onClick={() => setSelectedGroupId(g._id)}>
+          <button
+            type="button"
+            className="btn btn-primary edit-group"
+            onClick={() => setSelectedGroupId(g._id)}
+          >
             <i className="fa fa-pencil"></i>
           </button>
         </span>
@@ -174,10 +186,7 @@ export default function ModifyGroups(): JSX.Element {
     );
   };
 
-  const updateGroup = (
-    values: GroupFormValues,
-    onError: (m: string) => void,
-  ) => {
+  const updateGroup = (values: GroupFormValues, onError: (m: string) => void) => {
     Groups.update(
       selectedGroupId,
       {
@@ -248,7 +257,9 @@ export default function ModifyGroups(): JSX.Element {
             <div className="card card-primary update-panel">
               <div className="card-header">
                 <div className="row">
-                  <div className="col-10"><i className="fa fa-pencil-square-o fa-fw"></i> Gruppe bearbeiten</div>
+                  <div className="col-10">
+                    <i className="fa fa-pencil-square-o fa-fw"></i> Gruppe bearbeiten
+                  </div>
                   <div className="col-2">
                     <a
                       href="#"

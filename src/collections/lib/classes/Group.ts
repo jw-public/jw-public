@@ -4,7 +4,6 @@ import { Mongo } from "meteor/mongo";
 import { Counts } from "../../../lib/Counts";
 import * as _ from "underscore";
 
-
 import User from "../../../collections/lib/classes/User";
 import * as UserCollection from "../../../collections/lib/UserCollection";
 
@@ -13,7 +12,6 @@ import { GroupDAO, Groups } from "../GroupCollection";
 import { AssignmentDAO, Assignments } from "../AssignmentsCollection";
 
 import moment from "moment";
-
 
 /**
  * Diese Klasse stellt zusätzliche Funktionen für die Einsätze zur Verfügung.
@@ -34,9 +32,12 @@ export default class Group {
    */
   public static groupExists(groupId: string): boolean {
     // Check if group exists.
-    var groupCount = Groups.find({
-      "_id": groupId
-    }, { fields: { "_id": 1 } }).count();
+    var groupCount = Groups.find(
+      {
+        _id: groupId,
+      },
+      { fields: { _id: 1 } },
+    ).count();
     return groupCount > 0;
   }
 
@@ -45,7 +46,7 @@ export default class Group {
    * @param id Die ID der Gruppe.
    */
   constructor(id: string) {
-    this.id = id
+    this.id = id;
   }
 
   /**
@@ -60,7 +61,7 @@ export default class Group {
     }
 
     if (fields) {
-      projection = { "fields": fields };
+      projection = { fields: fields };
     }
 
     return Groups.findOne({ _id: this.getId() }, projection);
@@ -83,18 +84,24 @@ export default class Group {
    * @param userId Die ID des Bewerbers.
    */
   public addUserAsApplicantById(userId: string): void {
-    var user = Meteor.users.findOne({
-      _id: userId
-    }, { fields: { "_id": 1 } });
+    var user = Meteor.users.findOne(
+      {
+        _id: userId,
+      },
+      { fields: { _id: 1 } },
+    );
 
     if (!this.isMemberByDAO(user) && !this.isApplicant(user)) {
-      Meteor.users.update({
-        _id: user._id
-      }, {
-        $push: {
-          "profile.pendingGroups": this.id
-        }
-      });
+      Meteor.users.update(
+        {
+          _id: user._id,
+        },
+        {
+          $push: {
+            "profile.pendingGroups": this.id,
+          },
+        },
+      );
     }
   }
 
@@ -106,27 +113,30 @@ export default class Group {
     var user: User = new User(userId);
 
     if (user.exists() && !this.isMember(user)) {
-      Meteor.users.update({
-        _id: user.getId()
-      }, {
-        $pull: {
-          "profile.pendingGroups": this.id
+      Meteor.users.update(
+        {
+          _id: user.getId(),
         },
-        $push: {
-          "groups": this.id
-        }
-      });
+        {
+          $pull: {
+            "profile.pendingGroups": this.id,
+          },
+          $push: {
+            groups: this.id,
+          },
+        },
+      );
 
       // User benachrichtigen
-      console.log("Added user " + user.email + " to group " + this.name)
+      console.log("Added user " + user.email + " to group " + this.name);
       user.notificationManager.notify({
         title: "Willkommen!",
         details: "Herzlich Willkommen in der Gruppe " + this.name + ".",
         icon: "fa fa-thumbs-o-up faa-bounce animated-hover",
-        hasLink: false
+        hasLink: false,
       });
     } else {
-      console.warn("Failed to add user " + user.email + " to group " + this.name)
+      console.warn("Failed to add user " + user.email + " to group " + this.name);
     }
   }
 
@@ -135,7 +145,10 @@ export default class Group {
       reactive = false;
     }
 
-    return Groups.findOne({ _id: this.id }, { fields: { _id: 1, coordinators: 1 }, reactive: reactive }).coordinators;
+    return Groups.findOne(
+      { _id: this.id },
+      { fields: { _id: 1, coordinators: 1 }, reactive: reactive },
+    ).coordinators;
   }
 
   public isMemberByDAO(user: Meteor.User | UserCollection.UserDAO): boolean {
@@ -147,12 +160,19 @@ export default class Group {
   }
 
   public isMemberById(userId: string): boolean {
-    return Meteor.users.find({
-      _id: userId,
-      groups: {
-        $in: [this.id]
-      }
-    }, { fields: { "_id": 1 } }).count() > 0;
+    return (
+      Meteor.users
+        .find(
+          {
+            _id: userId,
+            groups: {
+              $in: [this.id],
+            },
+          },
+          { fields: { _id: 1 } },
+        )
+        .count() > 0
+    );
   }
 
   public getMembers(reactive?: boolean): Array<User> {
@@ -160,12 +180,14 @@ export default class Group {
       reactive = false;
     }
 
-    var cursor = Meteor.users.find({
-      groups: {
-        $in: [this.id]
-      }
-    }, { fields: { "_id": 1 }, reactive: reactive });
-
+    var cursor = Meteor.users.find(
+      {
+        groups: {
+          $in: [this.id],
+        },
+      },
+      { fields: { _id: 1 }, reactive: reactive },
+    );
 
     var users: Array<User> = cursor.map<User>(function (userDao: UserCollection.UserDAO) {
       return User.createFromDAO(userDao);
@@ -175,7 +197,8 @@ export default class Group {
   }
 
   public getReplyEmailAddress(): string {
-    return Groups.findOne({ _id: this.id }, { fields: { _id: 1, email: 1 }, reactive: false }).email;
+    return Groups.findOne({ _id: this.id }, { fields: { _id: 1, email: 1 }, reactive: false })
+      .email;
   }
 
   public sendNotificationToMembers(title: string, message: string) {
@@ -186,7 +209,7 @@ export default class Group {
         title: title,
         details: message,
         icon: "fa fa-envelope",
-        hasLink: false
+        hasLink: false,
       });
     });
   }
@@ -196,14 +219,18 @@ export default class Group {
       reactive = false;
     }
 
-    var cursor = Meteor.users.find({
-      groups: {
-        $in: [this.id]
-      }
-    }, { fields: { "emails.address": 1 }, reactive: reactive });
+    var cursor = Meteor.users.find(
+      {
+        groups: {
+          $in: [this.id],
+        },
+      },
+      { fields: { "emails.address": 1 }, reactive: reactive },
+    );
 
-
-    var emailAddresses: Array<string> = cursor.map<string>(function (userDao: UserCollection.UserDAO) {
+    var emailAddresses: Array<string> = cursor.map<string>(function (
+      userDao: UserCollection.UserDAO,
+    ) {
       return userDao.emails[0].address;
     });
 
@@ -225,14 +252,20 @@ export default class Group {
    * @returns {boolean} True, wenn User ein Bewerber ist.
    */
   public isApplicantById(userId: string): boolean {
-    return Meteor.users.find({
-      _id: userId,
-      "profile.pendingGroups": {
-        $in: [this.id]
-      }
-    }, { fields: { "_id": 1 } }).count() > 0;
+    return (
+      Meteor.users
+        .find(
+          {
+            _id: userId,
+            "profile.pendingGroups": {
+              $in: [this.id],
+            },
+          },
+          { fields: { _id: 1 } },
+        )
+        .count() > 0
+    );
   }
-
 
   /**
    * Entfernt den gegebenen User von den Bewerbern, falls vorhanden.
@@ -247,13 +280,16 @@ export default class Group {
    * @param userId Die ID des Bewerbers.
    */
   public removeUserAsApplicantById(userId: string): void {
-    Meteor.users.update({
-      _id: userId
-    }, {
-      $pull: {
-        "profile.pendingGroups": this.id
-      }
-    });
+    Meteor.users.update(
+      {
+        _id: userId,
+      },
+      {
+        $pull: {
+          "profile.pendingGroups": this.id,
+        },
+      },
+    );
   }
 
   /**
@@ -269,13 +305,16 @@ export default class Group {
    * @param userId Die ID des Mitglieds.
    */
   public removeUserAsMemberById(userId: string): void {
-    Meteor.users.update({
-      _id: userId
-    }, {
-      $pull: {
-        "groups": this.id
-      }
-    });
+    Meteor.users.update(
+      {
+        _id: userId,
+      },
+      {
+        $pull: {
+          groups: this.id,
+        },
+      },
+    );
   }
 
   /**
@@ -284,13 +323,16 @@ export default class Group {
    */
   public addAsCoordinator(user: User): void {
     if (user.exists() && !user.isGroupCoordinator(this)) {
-      Groups.update({
-        _id: this.id
-      }, {
-        $push: {
-          "coordinators": user.getId()
-        }
-      });
+      Groups.update(
+        {
+          _id: this.id,
+        },
+        {
+          $push: {
+            coordinators: user.getId(),
+          },
+        },
+      );
     }
   }
 
@@ -299,18 +341,19 @@ export default class Group {
    * @param user Das User Objekt.
    */
   public removeAsCoordinator(user: User): void {
-
-    Groups.update({
-      _id: this.id
-    }, {
-      $pull: {
-        "coordinators": user.getId()
-      }
-    });
-
+    Groups.update(
+      {
+        _id: this.id,
+      },
+      {
+        $pull: {
+          coordinators: user.getId(),
+        },
+      },
+    );
   }
 
-  public isCoordinatorByDAO(user: UserCollection.UserDAO, reactive?: boolean): boolean {
+  public isCoordinatorByDAO(user: UserCollection.UserDAO, _reactive?: boolean): boolean {
     return this.isCoordinatorById(user._id);
   }
 
@@ -318,10 +361,9 @@ export default class Group {
     return _.contains(this.getCoordinatorIds(reactive), userId);
   }
 
-  public isCoordinator(user: User, reactive?: boolean): boolean {
+  public isCoordinator(user: User, _reactive?: boolean): boolean {
     return this.isCoordinatorById(user.getId());
   }
-
 
   /**
    * Gibt die ID der Gruppe.
@@ -330,7 +372,6 @@ export default class Group {
   public getId(): string {
     return this.id;
   }
-
 
   /**
    * Überprüft auf Gleichheit.
@@ -342,11 +383,16 @@ export default class Group {
   }
 
   public getUserCount(): number {
-    return Meteor.users.find({
-      groups: {
-        $in: [this.getId()]
-      }
-    }, { fields: { "_id": 1 } }).count();
+    return Meteor.users
+      .find(
+        {
+          groups: {
+            $in: [this.getId()],
+          },
+        },
+        { fields: { _id: 1 } },
+      )
+      .count();
   }
 
   public get name(): string {
@@ -372,20 +418,16 @@ export default class Group {
     if (!reactive) {
       reactive = false;
     }
-    return Assignments.find({ $and: [{ group: this.getId() }, { end: { $gte: moment().toDate() } }] }, { "reactive": reactive });
+    return Assignments.find(
+      { $and: [{ group: this.getId() }, { end: { $gte: moment().toDate() } }] },
+      { reactive: reactive },
+    );
   }
-
-
-
-
-
 }
 
 // Klasse sichtbar machen für andere Script-Dateien
 
-
 export class GroupApplicationController {
-
   public static APPLICATION_COUNT_SUBSCRIPTION = "groupApplicantCount";
 
   private static subscription: Meteor.SubscriptionHandle = null;
@@ -394,14 +436,16 @@ export class GroupApplicationController {
    * Konstruktor.
    * @param id Die ID der Gruppe.
    */
-  constructor(private groupId: string) {
-  }
+  constructor(private groupId: string) {}
 
   public getApplicantsIdCursor(reactive?: boolean): Mongo.Cursor<UserCollection.UserDAO> {
     if (!reactive) {
       reactive = false;
     }
-    return UserCollection.users.find({ "profile.pendingGroups": { $in: [this.groupId] } }, { fields: { "_id": 1 }, "reactive": reactive });
+    return UserCollection.users.find(
+      { "profile.pendingGroups": { $in: [this.groupId] } },
+      { fields: { _id: 1 }, reactive: reactive },
+    );
   }
 
   public getApplicantsIdCursorReactive(): Mongo.Cursor<UserCollection.UserDAO> {
@@ -417,11 +461,18 @@ export class GroupApplicationController {
   }
 
   public subscribeCount(): Meteor.SubscriptionHandle {
-    return Meteor.subscribe(GroupApplicationController.APPLICATION_COUNT_SUBSCRIPTION, this.groupId);
+    return Meteor.subscribe(
+      GroupApplicationController.APPLICATION_COUNT_SUBSCRIPTION,
+      this.groupId,
+    );
   }
 
-  public subscribeCountOnTemplate(templateInstance: Blaze.TemplateInstance): Meteor.SubscriptionHandle {
-    return templateInstance.subscribe(GroupApplicationController.APPLICATION_COUNT_SUBSCRIPTION, this.groupId);
+  public subscribeCountOnTemplate(
+    templateInstance: Blaze.TemplateInstance,
+  ): Meteor.SubscriptionHandle {
+    return templateInstance.subscribe(
+      GroupApplicationController.APPLICATION_COUNT_SUBSCRIPTION,
+      this.groupId,
+    );
   }
-
 }

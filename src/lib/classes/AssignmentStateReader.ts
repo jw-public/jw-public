@@ -2,7 +2,6 @@ import * as _ from "underscore";
 import { AssignmentDAO, UserEntry } from "../../collections/lib/AssignmentsCollection";
 import { AssignmentState } from "../../collections/lib/classes/AssignmentState";
 
-
 export interface AssignmentStateForUser {
   canceled: boolean;
   closed: boolean;
@@ -18,9 +17,7 @@ export interface IAssignmentStateReader {
   getAssignmentState(userId: string): AssignmentStateForUser;
 }
 
-
 export class AssignmentStateReader implements IAssignmentStateReader {
-
   private participantIds: Array<string> = null;
   private applicantIds: Array<string> = null;
 
@@ -46,7 +43,6 @@ export class AssignmentStateReader implements IAssignmentStateReader {
   }
 
   getAssignmentState(userId: string): AssignmentStateForUser {
-
     return {
       canceled: this.isCanceled(),
       closed: this.isClosed(),
@@ -79,5 +75,4 @@ export class AssignmentStateReader implements IAssignmentStateReader {
   private getApplicantIds(): Array<string> {
     return this.applicantIds;
   }
-
 }

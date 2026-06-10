@@ -2,9 +2,7 @@ import { Accounts } from "meteor/accounts-base";
 import { Meteor } from "meteor/meteor";
 import * as UserCollection from "../collections/lib/UserCollection";
 
-
 export function initEmailSettings() {
-
   Accounts.emailTemplates.from = `no-reply@${process.env.VIRTUAL_HOST}`;
   Accounts.emailTemplates.siteName = "Public Assistant";
 
@@ -33,8 +31,8 @@ Herzlichen Dank!
 
 Liebe Grüße,
 deine Brüder im Organisationsteam`;
-    }
-  }
+    },
+  };
 
   Accounts.emailTemplates.resetPassword = resetPasswordTemplate;
 }

@@ -27,21 +27,36 @@ function UserEntry(props: {
   }, [props.userId]);
 
   return (
-    <li className="list-group-item"> {user.fullName}
+    <li className="list-group-item">
+      {" "}
+      {user.fullName}
       <span className="float-end">
         {user.carMostlyAvailable ? (
-          <i className="fa fa-car" title={`${user.fullName} hat meistens ein Auto zur Verfügung`}></i>
+          <i
+            className="fa fa-car"
+            title={`${user.fullName} hat meistens ein Auto zur Verfügung`}
+          ></i>
         ) : null}{" "}
         {props.variant === "applicant" ? (
-          <span className="badge text-bg-secondary" title={`${user.fullName} wohnt in ${user.placeName} (PLZ: ${user.zip}).`}>
+          <span
+            className="badge text-bg-secondary"
+            title={`${user.fullName} wohnt in ${user.placeName} (PLZ: ${user.zip}).`}
+          >
             {user.placeName}
           </span>
         ) : null}{" "}
-        <span className="badge text-bg-secondary" title={`${user.fullName} wurde bereits ${count}x angenommen.`}>
+        <span
+          className="badge text-bg-secondary"
+          title={`${user.fullName} wurde bereits ${count}x angenommen.`}
+        >
           {count}
         </span>{" "}
         {props.variant === "applicant" ? (
-          <button className="btn btn-sm btn-success toggle-application" title="Bewerber als Teilnehmer vormerken." onClick={props.onToggle}>
+          <button
+            className="btn btn-sm btn-success toggle-application"
+            title="Bewerber als Teilnehmer vormerken."
+            onClick={props.onToggle}
+          >
             <i className="fa fa-chevron-right"></i>
           </button>
         ) : (
@@ -82,7 +97,10 @@ export default function AssignmentManager(props: AssignmentManagerProps): JSX.El
     return Meteor.users
       .find(
         { groups: { $in: [assignmentData.groupId] } },
-        { fields: { "profile.first_name": 1, "profile.last_name": 1 }, sort: { "profile.last_name": 1 } },
+        {
+          fields: { "profile.first_name": 1, "profile.last_name": 1 },
+          sort: { "profile.last_name": 1 },
+        },
       )
       .map((c: Meteor.User) => ({ label: new User(c._id).fullName, value: c._id }));
   }, [assignmentData.groupId]);
@@ -142,7 +160,8 @@ export default function AssignmentManager(props: AssignmentManagerProps): JSX.El
     if (participants.length > 0) {
       confirmDialog({
         title: "Abschließen bestätigen",
-        message: "Der Termin wird geschlossen und den restlichen Bewerbern wird abgesagt. Aktion durchführen?",
+        message:
+          "Der Termin wird geschlossen und den restlichen Bewerbern wird abgesagt. Aktion durchführen?",
         yesLabel: "Ja",
         noLabel: "Nein",
       }).then((yes) => {
@@ -153,7 +172,11 @@ export default function AssignmentManager(props: AssignmentManagerProps): JSX.El
     } else {
       confirmDialog({
         title: "Leeren Termin schließen",
-        message: <span>Der Termin wird <b>ohne Teilnehmer</b> geschlossen. Allen Bewerbern wird abgesagt.</span>,
+        message: (
+          <span>
+            Der Termin wird <b>ohne Teilnehmer</b> geschlossen. Allen Bewerbern wird abgesagt.
+          </span>
+        ),
         yesLabel: "Ohne Teilnehmer schließen",
         yesVariant: "warning",
         noLabel: "Abbrechen",
@@ -175,7 +198,12 @@ export default function AssignmentManager(props: AssignmentManagerProps): JSX.El
           <ul className="list-group">
             {applicants.length > 0 ? (
               applicants.map((userId) => (
-                <UserEntry key={userId} userId={userId} variant="applicant" onToggle={() => toggle(userId)} />
+                <UserEntry
+                  key={userId}
+                  userId={userId}
+                  variant="applicant"
+                  onToggle={() => toggle(userId)}
+                />
               ))
             ) : (
               <li className="list-group-item">Keine Bewerber vorhanden.</li>
@@ -192,7 +220,12 @@ export default function AssignmentManager(props: AssignmentManagerProps): JSX.El
           <ul className="list-group">
             {participants.length > 0 ? (
               participants.map((userId) => (
-                <UserEntry key={userId} userId={userId} variant="participant" onToggle={() => toggle(userId)} />
+                <UserEntry
+                  key={userId}
+                  userId={userId}
+                  variant="participant"
+                  onToggle={() => toggle(userId)}
+                />
               ))
             ) : (
               <li className="list-group-item">Keine Teilnehmer vorhanden.</li>
@@ -206,11 +239,15 @@ export default function AssignmentManager(props: AssignmentManagerProps): JSX.El
                       placeholder="Benutzer"
                       options={addableOptions}
                       value={addableOptions.find((o) => o.value === selectedUserId) ?? null}
-                      onChange={(selected: any) => setSelectedUserId(selected ? selected.value : null)}
+                      onChange={(selected: any) =>
+                        setSelectedUserId(selected ? selected.value : null)
+                      }
                     />
                   </div>
                   <span className="input-group-btn">
-                    <button type="submit" className="btn btn-success"><i className="fa fa-user-plus fa-fw"></i></button>
+                    <button type="submit" className="btn btn-success">
+                      <i className="fa fa-user-plus fa-fw"></i>
+                    </button>
                   </span>
                 </div>
               </form>
@@ -222,7 +259,11 @@ export default function AssignmentManager(props: AssignmentManagerProps): JSX.El
       <div className="col-md-12">
         <button
           className="btn btn-primary close-application"
-          title={participants.length > 0 ? "Termin abschließen und Teilnehmer bestätigen" : "Bitte zuerst Teilnehmer auswählen"}
+          title={
+            participants.length > 0
+              ? "Termin abschließen und Teilnehmer bestätigen"
+              : "Bitte zuerst Teilnehmer auswählen"
+          }
           onClick={onCloseClick}
         >
           <i className="fa fa-lock"></i> Termin abschließen
