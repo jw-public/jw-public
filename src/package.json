@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.21.0",
-    "@types/jquery": "^2.0.51",
+    "@types/jquery": "^3.5.32",
     "@types/node": "^20.0.0",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
@@ -25,7 +25,7 @@
     "i18n-2": "^0.7.1",
     "inversify": "^2.0.0-rc.10",
     "inversify-inject-decorators": "^1.0.0-beta.1",
-    "jquery": "^2.2.4",
+    "jquery": "^3.7.1",
     "jsnlog": "^2.22.0",
     "marked": "^3.0.0",
     "meteor-node-stubs": "^1.2.1",
@@ -40,7 +40,6 @@
     "reflect-metadata": "^0.1.8",
     "remove-markdown": "^0.5.0",
     "simpl-schema": "^3.4.7",
-    "typedoc": "^0.22.0",
     "typescript": "^5.5.0",
     "underscore": "^1.9.1",
     "underscore.string": "^3.3.5"
@@ -62,11 +61,10 @@
     "js-base64": "3.7.7",
     "lolex": "5.1.2",
     "mocha": "10.0.0",
-    "mocha-jenkins-reporter": "0.4.7",
+    "mocha-jenkins-reporter": "^0.4.8",
     "mock-require": "3.0.3",
     "remap-istanbul": "0.13.0",
     "sinon": "14.0.0",
-    "sinon-chai": "3.7.0",
     "typemoq": "0.3.3"
   },
   "scripts": {
@@ -75,7 +73,6 @@
     "test": "npm run test:coverage && npm run test:remap-typescript && rm -rf coverage/",
     "test:coverage": "JUNIT_REPORT_PATH=TEST-report.xml JUNIT_REPORT_STACK=1 node_modules/.bin/babel-node -r node_modules/.bin/istanbul cover node_modules/.bin/_mocha -- --reporter mocha-jenkins-reporter --recursive tests/",
     "test:remap-typescript": "./node_modules/.bin/remap-istanbul -i coverage/coverage.json -o ../coverage-report -t html",
-    "docs": "typedoc --out ../typedoc/ --mode file --tsconfig ./tsconfig.json --exclude **/node_modules/** .",
     "start": "meteor run",
     "compile": "./node_modules/.bin/tsc",
     "compile:watch": "./node_modules/.bin/tsc -w"
