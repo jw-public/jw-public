@@ -97,7 +97,10 @@ Recommendation: do Phase 4 (router swap) BEFORE Meteor 3 — it removes blaze-la
   - **bootbox 5 → 6** (BS5 templates). Gotcha: the locales register on the package main `dist/bootbox.js`, NOT on `bootbox.all.min.js` (separate module instance) — `setLocale("de")` silently no-ops otherwise
   - Specs: 3 selectors followed the markup (div.panel→div.card etc.)
 - ✅ Dependency cleanup (npm 10 strict peers, CI-validated): jquery 2→3.7, mocha-jenkins-reporter ^0.4.8, sinon-chai & typedoc removed
-- Tier 3 REMAINING (deliberately separate steps): moment→dayjs, react-router v6→v7, bootbox→React modals, `typescript` Meteor package (+ tsc noEmit), SimpleSchema→zod, React 19, inversify 8, chai/mocha/sinon majors, marked 18, jquery 4
+- ✅ **CVE sweep** (production tree clean): underscore→1.13.8, marked 3→4 (mail pipeline; stale 0.x typings removed), moment-timezone→0.5.48, meteor-node-stubs→1.2.27 (bundled browser crypto polyfills). ONE accepted prod finding: qs (moderate, DoS edge case) sits in node-stubs' bundledDependencies — not overridable.
+- ✅ **Unit-test pipeline modernized (branch tooling)**: the 2017 Babel-6 stack (babel-cli/core/register/preset-es2015/-es2016, istanbul, isparta, remap-istanbul, mocha-jenkins-reporter) is GONE — Node 22 runs the tsc output (ES2017) natively; `npm test` = tsc + plain mocha 11, coverage via c8. npm audit: 66 → 4 (all dev-only/accepted: mocha-latest's own diff/serialize-javascript pins + the qs note above).
+- ⛔ **`typescript` Meteor package is BLOCKED**: InversifyJS uses constructor **parameter decorators** (`@inject(...)`) — a TypeScript-only feature Babel cannot compile, and Meteor's typescript package is Babel-based. Prerequisite: migrate DI away from parameter decorators (e.g. property injection or factory bindings). Until then the tsc-emit pipeline stays (`npm run compile` after every TS edit!).
+- Tier 3 REMAINING (deliberately separate steps): moment→dayjs, bootbox→React modals, DI ohne Parameter-Decorators → dann `typescript` Meteor package, SimpleSchema→zod, React 19, inversify 8, chai/mocha/sinon majors, marked 18, jquery 4
 
 ## Open items / decisions made autonomously
 - App port 4000 + Mailpit 11025/18025 locally (port conflicts with unrelated containers); CI keeps port 3000.
