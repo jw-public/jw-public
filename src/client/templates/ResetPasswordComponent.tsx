@@ -31,12 +31,12 @@ export default function ResetPassword(): JSX.Element {
 
   return (
     <div className="row vertical-offset-100">
-      <div className="col-md-4 col-md-offset-4">
-        <div className="panel panel-default">
-          <div className="panel-heading">
-            <h3 className="panel-title">Wähle neues Passwort</h3>
+      <div className="col-md-4 offset-md-4">
+        <div className="card">
+          <div className="card-header">
+            <h3 className="card-title">Wähle neues Passwort</h3>
           </div>
-          <div className="panel-body">
+          <div className="card-body">
             <InlineAlerts alerts={alerts} />
             <form acceptCharset="UTF-8" role="form" className="reset" onSubmit={onSubmit}>
               <fieldset>

@@ -125,33 +125,33 @@ export default function RegisterInGroup(): JSX.Element {
   return (
     <div>
       <div className="row">
-        <div className="col-md-8 col-md-offset-2">
-          <div className="panel panel-primary">
-            <div className="panel-body">
+        <div className="col-md-8 offset-md-2">
+          <div className="card card-primary">
+            <div className="card-body">
               <h1 className="page-header">Registrierung für {groupName}</h1>
             </div>
           </div>
         </div>
       </div>
       <div className="row">
-        <div className="col-md-3 col-md-offset-2">
-          <div className="panel panel-primary">
+        <div className="col-md-3 offset-md-2">
+          <div className="card card-primary">
             {step === 1 ? (
               <React.Fragment>
-                <div className="panel-heading">
+                <div className="card-header">
                   <i className="fa fa-home"></i> Willkommen!
                 </div>
-                <div className="panel-body">
+                <div className="card-body">
                   <p>Hier kannst Du Dich für den Trolleydienst in der Gruppe {groupName} anmelden.</p>
                   <p>Gib bitte Deine E-Mail Adresse ein und klicke dann auf weiter.</p>
                 </div>
               </React.Fragment>
             ) : (
               <React.Fragment>
-                <div className="panel-heading">
+                <div className="card-header">
                   <i className="fa fa-user-plus"></i> Nur noch ein Schritt!
                 </div>
-                <div className="panel-body">
+                <div className="card-body">
                   <p>Wir würden noch gerne wissen, wer Du bist.</p>
                   <p>Es hilft uns sehr bei der Organisation, wenn wir deine Kontaktdaten haben und diese für den Zweck der Organisation unserer Öffentlichkeitsarbeit verwenden dürfen.</p>
                 </div>
@@ -160,13 +160,13 @@ export default function RegisterInGroup(): JSX.Element {
           </div>
         </div>
         <div className="col-md-5">
-          <div className="panel panel-primary">
+          <div className="card card-primary">
             {step === 1 ? (
               <React.Fragment>
-                <div className="panel-heading">
+                <div className="card-header">
                   <i className="fa fa-envelope"></i> Meine E-Mail Adresse
                 </div>
-                <div className="panel-body">
+                <div className="card-body">
                   <InlineAlerts alerts={alerts} />
                   <form onSubmit={onSubmitStepOne}>
                     <fieldset>
@@ -190,10 +190,10 @@ export default function RegisterInGroup(): JSX.Element {
               </React.Fragment>
             ) : (
               <React.Fragment>
-                <div className="panel-heading">
+                <div className="card-header">
                   <i className="fa fa-table"></i> Meine Daten
                 </div>
-                <div className="panel-body">
+                <div className="card-body">
                   <InlineAlerts alerts={alerts} />
                   <form onSubmit={onSubmitStepTwo}>
                     <fieldset>
@@ -271,7 +271,7 @@ export default function RegisterInGroup(): JSX.Element {
                         <a
                           href=""
                           id="backToStart"
-                          className="btn btn-default"
+                          className="btn btn-outline-secondary"
                           onClick={(e) => {
                             e.preventDefault();
                             setAlerts([]);

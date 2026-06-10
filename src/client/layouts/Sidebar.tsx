@@ -35,7 +35,7 @@ function Submenu(props: {
         <span className="fa arrow"></span>
       </a>
       <ul
-        className={`nav nav-second-level collapse${open ? " in" : ""}`}
+        className={`nav nav-second-level collapse${open ? " show" : ""}`}
         aria-expanded={open}
         style={{ display: open ? "block" : "none", height: "auto" }}
       >
@@ -67,7 +67,7 @@ function GroupMenuEntry(props: { group: GroupDAO }): JSX.Element {
       <li>
         <Link to={buildPath(Def.GroupApplicants, groupParam)} className="auto-scroll">
           <i className="fa fa-server fa-fw"></i> Offene Gruppenbewerbungen {pendingUsersCount > 0 ? (
-            <div className="badge-danger pull-right">{pendingUsersCount}</div>
+            <div className="badge-danger float-end">{pendingUsersCount}</div>
           ) : null}
         </Link>
       </li>
@@ -103,7 +103,7 @@ export default function Sidebar(): JSX.Element {
 
   return (
     <div className="navbar-default sidebar" role="navigation">
-      <div className="sidebar-nav navbar-collapse">
+      <div className="sidebar-nav navbar-collapse collapse d-md-block">
         <ul className="nav" id="side-menu">
           {data.isAdmin ? (
             <li>

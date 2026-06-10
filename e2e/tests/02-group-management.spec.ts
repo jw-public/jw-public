@@ -11,7 +11,7 @@ test.describe("Group management (admin)", () => {
     await expect(page).toHaveURL(/\/admin\/groups/);
     await expect(page.locator(".page-header")).toContainText("Gruppenverwaltung");
 
-    const insertPanel = page.locator(".insert-panel > .panel-body");
+    const insertPanel = page.locator(".insert-panel > .card-body");
     await insertPanel.locator("#inputGroupName").fill(groupName);
     await insertPanel.locator("textarea[name='additional']").fill("additional");
     await insertPanel.locator("input[name='email']").fill("mytest@example.org");

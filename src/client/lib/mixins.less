@@ -197,3 +197,27 @@
   -webkit-background-clip: @argument;
   background-clip: @argument;
 }
+
+// Mixins formerly from the vendored Bootstrap 3 LESS
+.rounded(@radius: 4px) {
+  border-radius: @radius;
+}
+.border-left-radius(@radius) {
+  border-top-left-radius: @radius;
+  border-bottom-left-radius: @radius;
+}
+.bordered(@top-color: #eee, @right-color: #eee, @bottom-color: #eee, @left-color: #eee) {
+  border-top: solid 1px @top-color;
+  border-right: solid 1px @right-color;
+  border-bottom: solid 1px @bottom-color;
+  border-left: solid 1px @left-color;
+}
+// BS3 .panel-variant equivalent for BS5 cards
+.card-variant(@border; @heading-text-color; @heading-bg-color; @heading-border) {
+  border-color: @border;
+  > .card-header {
+    color: @heading-text-color;
+    background-color: @heading-bg-color;
+    border-color: @heading-border;
+  }
+}

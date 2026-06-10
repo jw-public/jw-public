@@ -28,11 +28,11 @@ export default class DateDisplay extends React.Component<DateDisplayProps, {}> {
 
     return (
       <div className="row">
-        <div className="col-xs-7">
+        <div className="col-7">
           <div className="huge row">{dayOfMonth}</div>
           <div className="row">{month}</div>
         </div>
-        <div className="col-xs-5 time text-center">
+        <div className="col-5 time text-center">
           {startTime}
           <br /><i className="fa fa-clock-o fa-fw"></i>
           <br />{endTime}

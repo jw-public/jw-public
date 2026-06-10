@@ -48,7 +48,7 @@ function ForgottenPasswordModal(props: { onClose: () => void }): JSX.Element {
 
   return (
     <React.Fragment>
-      <div className="modal fade in" style={{ display: "block" }}>
+      <div className="modal fade show" style={{ display: "block" }}>
         <div className="modal-dialog">
           <div className="modal-content" id="forgottenPasswordModal">
             <div className="modal-header">
@@ -79,12 +79,12 @@ function ForgottenPasswordModal(props: { onClose: () => void }): JSX.Element {
             </div>
 
             <div className="modal-footer">
-              <button type="button" id="close" className="btn btn-default" onClick={props.onClose}>Schließen</button>
+              <button type="button" id="close" className="btn btn-outline-secondary" onClick={props.onClose}>Schließen</button>
             </div>
           </div>
         </div>
       </div>
-      <div className="modal-backdrop fade in" onClick={props.onClose}></div>
+      <div className="modal-backdrop fade show" onClick={props.onClose}></div>
     </React.Fragment>
   );
 }
@@ -117,12 +117,12 @@ export default function Login(): JSX.Element {
 
   return (
     <div className="row vertical-offset-100">
-      <div className="col-md-4 col-md-offset-4">
-        <div className="panel panel-default">
-          <div className="panel-heading">
-            <h3 className="panel-title">Anmeldung</h3>
+      <div className="col-md-4 offset-md-4">
+        <div className="card">
+          <div className="card-header">
+            <h3 className="card-title">Anmeldung</h3>
           </div>
-          <div className="panel-body">
+          <div className="card-body">
             {!loggingIn ? (
               <React.Fragment>
                 <InlineAlerts alerts={alerts} />

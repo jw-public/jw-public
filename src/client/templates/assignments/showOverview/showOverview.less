@@ -1,9 +1,8 @@
-@import "../../../lib/custom.bootstrap.mixins.import.less";
-@import "../../../lib/custom.bootstrap.import.less";
+@import "../../../lib/variables.less";
 @import "../../../lib/mixins.less";
 .assignment-panel {
   .transition(0.8s);
-  .panel-heading,
+  .card-header,
   .time {
     .transition(0.8s);
 
@@ -28,7 +27,7 @@
     }
   }
   @media (min-width: @screen-md-min) {
-    .panel-heading {
+    .card-header {
       @padding-top: 10px;
       @padding-bottom: 10px;
       padding-top: @padding-top;
@@ -41,11 +40,11 @@
     }
   }
   @media (max-width: @screen-sm-max) {
-    .panel-heading {
+    .card-header {
       padding-top: 0;
       padding-bottom: 0;
     }
-    .panel-body {
+    .card-body {
       padding-bottom: 0;
       .time {
         .border-left-radius(0px);
@@ -54,56 +53,56 @@
         font-size: 27px;
       }
     }
-    .panel-footer {
+    .card-footer {
       padding-top: @padding-xs-vertical;
       padding-bottom: @padding-xs-vertical;
     }
   }
-  &.panel-applied {
+  &.card-applied {
     @bg-color: #eab116;
     @color: #fff;
-    .panel-variant(@bg-color, @color, @bg-color, @bg-color);
+    .card-variant(@bg-color; @color; @bg-color; @bg-color);
     .time {
       background-color: @bg-color;
       color: @color;
     }
-    .panel-footer {
+    .card-footer {
       color: @gray-dark;
     }
   }
-  &.panel-accepted {
+  &.card-accepted {
     @bg-color: @brand-success;
     @color: #fff;
-    .panel-variant(@bg-color, @color, @bg-color, @bg-color);
+    .card-variant(@bg-color; @color; @bg-color; @bg-color);
     .time {
       background-color: @bg-color;
       color: @color;
     }
-    .panel-footer {
+    .card-footer {
       color: @gray-dark;
     }
   }
-  &.panel-canceled {
+  &.card-canceled {
     @bg-color: @brand-danger;
     @color: #fff;
-    .panel-variant(@bg-color, @color, @bg-color, @bg-color);
+    .card-variant(@bg-color; @color; @bg-color; @bg-color);
     .time {
       background-color: @bg-color;
       color: @color;
     }
-    .panel-footer {
+    .card-footer {
       color: @gray-dark;
     }
   }
-  &.panel-closed {
+  &.card-closed {
     @bg-color: @gray-light;
     @color: #fff;
-    .panel-variant(@bg-color, @color, @bg-color, @bg-color);
+    .card-variant(@bg-color; @color; @bg-color; @bg-color);
     .time {
       background-color: @bg-color;
       color: @color;
     }
-    .panel-footer {
+    .card-footer {
       color: @gray-dark;
     }
   }
@@ -111,7 +110,7 @@
 
 .assignmentNav {
   .pagination {
-    display: inline-block;
+    display: inline-flex;
     padding-left: 0;
     position: relative;
     margin: 0px 20px 20px 0px;

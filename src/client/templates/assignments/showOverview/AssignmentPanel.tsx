@@ -62,7 +62,7 @@ export default class AssignmentPanel extends React.Component<AssignmentPanelProp
     });
 
 
-    let panelClassNames = `panel assignment-panel panel-${colorClass}`;
+    let panelClassNames = `card assignment-panel card-${colorClass}`;
 
     return (
       <div className="col-lg-3 col-md-6">

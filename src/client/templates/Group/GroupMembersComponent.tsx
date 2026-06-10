@@ -48,11 +48,11 @@ export default function GroupMembers(): JSX.Element {
       </div>
       <div className="row">
         <div className="col-lg-8">
-          <div className="panel panel-primary">
-            <div className="panel-heading">
+          <div className="card card-primary">
+            <div className="card-header">
               <i className="fa fa-users fa-fw"></i> Übersicht
             </div>
-            <div className="panel-body table-responsive">
+            <div className="card-body table-responsive">
               <DataTable
                 columns={columns}
                 rows={members}

@@ -6,7 +6,7 @@ test.describe("Login", () => {
   test("login panel has every input field and logs the admin in", async ({ page }) => {
     await page.goto("/");
 
-    const panel = page.locator("div.panel");
+    const panel = page.locator("div.card");
     await expect(panel.locator("input#user")).toBeVisible();
     await expect(panel.locator("input#user")).toBeEnabled();
     await expect(panel.locator("input#password")).toBeVisible();

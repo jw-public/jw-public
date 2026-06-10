@@ -19,7 +19,7 @@ export default class AssignmentPanelHeading extends React.Component<AssignmentPa
     const assignmentDayOfWeekShort = moment(this.props.assignment.start).format("ddd");
     const assignmentDayOfWeekLong = moment(this.props.assignment.start).format("dddd");
 
-    let panelHeadingClassNames = "panel-heading";
+    let panelHeadingClassNames = "card-header";
 
     if (this.panelBodyHasProgressBar()) {
       panelHeadingClassNames += " with-progress-bar";
@@ -28,11 +28,11 @@ export default class AssignmentPanelHeading extends React.Component<AssignmentPa
     return (
       <div className={panelHeadingClassNames}>
         <div className="row">
-          <div className="col-xs-7 text-center">
+          <div className="col-7 text-center">
             {assignmentName}
           </div>
 
-          <div className="col-xs-5 text-center">
+          <div className="col-5 text-center">
             <span className="visible-lg">{assignmentDayOfWeekShort}</span>
             <span className="hidden-lg">{assignmentDayOfWeekLong}
 

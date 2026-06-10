@@ -87,8 +87,17 @@ Recommendation: do Phase 4 (router swap) BEFORE Meteor 3 — it removes blaze-la
 - ⚠️ ADR 0004: react-router **v6** not v7 — v7's `import.meta` breaks Meteor 2.7's bundler. Bump with Meteor 3.
 - Validated: tsc clean, 101 unit tests, suite 17/17 ×3.
 
-## Phase 5 — Bootstrap 5 + dependency sweep (NOT in this PR)
-All React components intentionally still emit Bootstrap-3 markup (panel/btn-xs/col-xs…). The BS3→BS5 class sweep stays one atomic, suite-validated step. Tier-3 list unchanged (moment→dayjs etc.).
+## Phase 5 — Bootstrap 5 + dependency sweep (branch phase5)
+- ✅ **Bootstrap 3.4.1 → 5.3.8** (one atomic sweep, suite-validated 17/17 + visual screenshot check):
+  - BS5 dist CSS vendored as `client/lib/bootstrap5.import.less` (CSS-as-LESS keeps cascade order deterministic; empty custom props `--x: ;` patched to `initial` — the LESS 4 parser rejects them); vendored BS3 LESS (5491 lines) deleted
+  - Class sweep over all 25 React component files: panel→card (+card-primary/green/red/yellow/danger/info variants in sb-admin-2.less), col-xs→col, col-md-offset→offset-md, btn-xs→btn-sm, btn-default→btn-outline-secondary, pull-*→float-*, sr-only→visually-hidden, label→badge text-bg-*, control-label→form-label, input-group-addon→input-group-text, `in`→`show`, data-toggle→data-bs-toggle, caret spans dropped
+  - Deliberate BS3 *bridge styles* in custom.less (markup unchanged, parity-first): html 14px baseline, .page-header, .form-group, .radio-inline/.checkbox, .well, ul.pagination>li>a, hidden radios in btn-groups, dropdown-menu li>a, .navbar-toggle hamburger
+  - sb-admin-2 theme ported (topbar rebuilt as block layout `.sb-admin-topbar`, sidebar nav styles inlined — BS5 navbar is flex)
+  - BS3 LESS vars/mixins the template styles needed re-created in variables.less/mixins.less (.card-variant replaces .panel-variant)
+  - **bootbox 5 → 6** (BS5 templates). Gotcha: the locales register on the package main `dist/bootbox.js`, NOT on `bootbox.all.min.js` (separate module instance) — `setLocale("de")` silently no-ops otherwise
+  - Specs: 3 selectors followed the markup (div.panel→div.card etc.)
+- ✅ Dependency cleanup (npm 10 strict peers, CI-validated): jquery 2→3.7, mocha-jenkins-reporter ^0.4.8, sinon-chai & typedoc removed
+- Tier 3 REMAINING (deliberately separate steps): moment→dayjs, react-router v6→v7, bootbox→React modals, `typescript` Meteor package (+ tsc noEmit), SimpleSchema→zod, React 19, inversify 8, chai/mocha/sinon majors, marked 18, jquery 4
 
 ## Open items / decisions made autonomously
 - App port 4000 + Mailpit 11025/18025 locally (port conflicts with unrelated containers); CI keeps port 3000.

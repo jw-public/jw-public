@@ -112,7 +112,7 @@ export default function ManageAssignments(): JSX.Element {
             </button>
             <button
               type="button"
-              className={`btn btn-sm ${copiedId === a._id ? "btn-info" : "btn-default"} copy-assignment`}
+              className={`btn btn-sm ${copiedId === a._id ? "btn-info" : "btn-outline-secondary"} copy-assignment`}
               title="Als Kopiervorlage verwenden"
               onClick={() => toggleCopy(a)}
             >
@@ -135,7 +135,7 @@ export default function ManageAssignments(): JSX.Element {
       fontAwesomeLogo: "fa-floppy-o",
       headingText: "Daten ändern",
       currentGroupId: groupId,
-      panelClass: "panel-danger",
+      panelClass: "card-danger",
       buttonClass: "btn-danger",
     };
     formKey = `update-${selectedAssignment._id}`;
@@ -148,7 +148,7 @@ export default function ManageAssignments(): JSX.Element {
       fontAwesomeLogo: "fa-clone",
       headingText: "Einsatz kopieren",
       currentGroupId: groupId,
-      panelClass: "panel-info",
+      panelClass: "card-info",
       buttonClass: "btn-primary",
     };
     formKey = `copy-${copiedAssignment._id}`;
@@ -161,7 +161,7 @@ export default function ManageAssignments(): JSX.Element {
       fontAwesomeLogo: "fa-plus",
       headingText: "Einsatz hinzufügen",
       currentGroupId: groupId,
-      panelClass: "panel-primary",
+      panelClass: "card-primary",
       buttonClass: "btn-primary",
     };
     formKey = "insert";
@@ -177,11 +177,11 @@ export default function ManageAssignments(): JSX.Element {
 
       <div className="row">
         <div className="col-lg-7">
-          <div className="panel panel-primary">
-            <div className="panel-heading">
+          <div className="card card-primary">
+            <div className="card-header">
               <i className="fa fa-table"></i> Übersicht
             </div>
-            <div className="panel-body table-responsive">
+            <div className="card-body table-responsive">
               <div className="row">
                 <div className="col-lg-8 col-md-10">
                   <div className="form-inline">

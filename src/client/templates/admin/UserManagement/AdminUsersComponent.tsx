@@ -74,14 +74,14 @@ function EditUserPanel(props: {
   };
 
   return (
-    <div className="panel panel-primary edit-user-panel">
-      <div className="panel-heading">
+    <div className="card card-primary edit-user-panel">
+      <div className="card-header">
         <div className="row">
-          <div className="col-xs-10"><i className="fa fa-pencil-square-o fa-fw"></i> User bearbeiten</div>
-          <div className="col-xs-2">
+          <div className="col-10"><i className="fa fa-pencil-square-o fa-fw"></i> User bearbeiten</div>
+          <div className="col-2">
             <a
               href="#"
-              className="btn btn-default btn-xs cancel-update pull-right"
+              className="btn btn-outline-secondary btn-sm cancel-update float-end"
               onClick={(e) => {
                 e.preventDefault();
                 props.onClose();
@@ -92,7 +92,7 @@ function EditUserPanel(props: {
           </div>
         </div>
       </div>
-      <div className="panel-body">
+      <div className="card-body">
         <InlineAlerts alerts={alerts} />
         <form onSubmit={onSubmit}>
           <fieldset>
@@ -159,7 +159,7 @@ function EditUserPanel(props: {
             </div>
             <div className="form-group">
               <button type="submit" className="btn btn-primary submit-change"><i className="fa fa-floppy-o"></i>Speichern</button>{" "}
-              <button type="button" className="btn btn-default cancel-update" onClick={props.onClose}><i className="fa fa-times"></i>Abbruch</button>
+              <button type="button" className="btn btn-outline-secondary cancel-update" onClick={props.onClose}><i className="fa fa-times"></i>Abbruch</button>
             </div>
           </fieldset>
         </form>
@@ -235,11 +235,11 @@ export default function AdminUsers(): JSX.Element {
       </div>
       <div className="row">
         <div className="col-lg-8">
-          <div className="panel panel-primary">
-            <div className="panel-heading">
+          <div className="card card-primary">
+            <div className="card-header">
               <i className="fa fa-users fa-fw"></i> Übersicht
             </div>
-            <div className="panel-body table-responsive">
+            <div className="card-body table-responsive">
               <DataTable
                 columns={columns}
                 rows={data.users}

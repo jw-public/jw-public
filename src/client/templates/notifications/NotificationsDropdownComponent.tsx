@@ -19,7 +19,7 @@ function NotificationItemContent(props: { notification: UserNotification.Wrapper
   return (
     <div>
       <i className={props.notification.icon}></i> {props.notification.title}
-      <span className="pull-right text-muted small" title={moment(when).calendar()}>
+      <span className="float-end text-muted small" title={moment(when).calendar()}>
         {moment(when).fromNow()}
       </span>
       <br />

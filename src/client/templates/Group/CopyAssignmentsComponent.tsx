@@ -207,16 +207,16 @@ export default function CopyAssignments(): JSX.Element {
             </div>
             <div className="mt-3" style={{ marginTop: "20px" }}>
               <div className="row">
-                <div className="col-xs-12 col-md-3 mb-2">
+                <div className="col-12 col-md-3 mb-2">
                   <button type="button" className="btn btn-primary btn-block quick-action" onClick={() => onQuickAction("nextMonth")}>Nächster Monat</button>
                 </div>
-                <div className="col-xs-12 col-md-3 mb-2">
+                <div className="col-12 col-md-3 mb-2">
                   <button type="button" className="btn btn-primary btn-block quick-action" onClick={() => onQuickAction("restOfMonth")}>Rest des aktuellen Monats</button>
                 </div>
-                <div className="col-xs-12 col-md-3 mb-2">
+                <div className="col-12 col-md-3 mb-2">
                   <button type="button" className="btn btn-primary btn-block quick-action" onClick={() => onQuickAction("restOfQuarter")}>Rest des Quartals</button>
                 </div>
-                <div className="col-xs-12 col-md-3 mb-2">
+                <div className="col-12 col-md-3 mb-2">
                   <button type="button" className="btn btn-primary btn-block quick-action" onClick={() => onQuickAction("restOfYear")}>Rest des Jahres</button>
                 </div>
               </div>

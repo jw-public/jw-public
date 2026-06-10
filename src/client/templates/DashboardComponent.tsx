@@ -26,10 +26,10 @@ interface DashboardPanelData {
 
 function DashboardPanel(props: DashboardPanelData): JSX.Element {
   const footer = (
-    <div className="panel-footer">
-      <span className="pull-left">{props.footerDescription}</span>
+    <div className="card-footer">
+      <span className="float-start">{props.footerDescription}</span>
       {props.showLink ? (
-        <span className="pull-right"><i className="fa fa-arrow-circle-right"></i></span>
+        <span className="float-end"><i className="fa fa-arrow-circle-right"></i></span>
       ) : null}
       <div className="clearfix"></div>
     </div>
@@ -37,13 +37,13 @@ function DashboardPanel(props: DashboardPanelData): JSX.Element {
 
   return (
     <div className="col-lg-4 col-md-6">
-      <div className={`panel ${props.panelClass}`}>
-        <div className="panel-heading">
+      <div className={`card ${props.panelClass}`}>
+        <div className="card-header">
           <div className="row">
-            <div className="col-xs-3">
+            <div className="col-3">
               <i className={`fa ${props.fontAwesomeIcon} fa-5x`}></i>
             </div>
-            <div className="col-xs-9 text-right">
+            <div className="col-9 text-right">
               <div className="huge">
                 {_.isEmpty(props.hugeContent) ? (
                   <i className="fa fa-spinner fa-pulse"></i>
@@ -113,7 +113,7 @@ export default function Dashboard(): JSX.Element {
           const hasAssignments = assignmentCount > 0;
 
           trolleyPanels.push({
-            panelClass: "panel-primary",
+            panelClass: "card-primary",
             fontAwesomeIcon: "fa-pencil-square-o",
             hugeContent: assignmentCount.toString(),
             smallContent: "Termine in " + group.name + "",
@@ -139,7 +139,7 @@ export default function Dashboard(): JSX.Element {
       const applicationsCount = new GroupApplicationController(group.getId()).applicationsCount;
       if (applicationsCount > 0) {
         coordinatorPanels.push({
-          panelClass: "panel-red",
+          panelClass: "card-red",
           fontAwesomeIcon: "fa-list-alt",
           hugeContent: applicationsCount.toString(),
           smallContent: "Gruppenanfrage(n) für " + group.name + "",
@@ -156,7 +156,7 @@ export default function Dashboard(): JSX.Element {
     const loadedPendingGroups = (user.pendingGroups || []).filter((g) => g.exists());
     _.forEach(loadedPendingGroups, (group) => {
       ownPendingPanels.push({
-        panelClass: "panel-green",
+        panelClass: "card-green",
         fontAwesomeIcon: "fa-check",
         hugeContent: "Anfrage",
         smallContent: "für " + group.name,
@@ -177,7 +177,7 @@ export default function Dashboard(): JSX.Element {
 
   const adminPanel: DashboardPanelData = data.isAdmin
     ? {
-        panelClass: "panel-green",
+        panelClass: "card-green",
         fontAwesomeIcon: "fa-users",
         hugeContent: userCount,
         smallContent: "Benutzer",

@@ -99,7 +99,7 @@ export default function AssignmentPanelFooter(props: AssignmentPanelFooterProps)
     styles["cursor"] = "progress";
     content = (
       <div>
-        <span className="pull-right"> <Icon name="spinner" pulse /></span>
+        <span className="float-end"> <Icon name="spinner" pulse /></span>
         <div className="clearfix" />
       </div>
     );
@@ -109,17 +109,17 @@ export default function AssignmentPanelFooter(props: AssignmentPanelFooterProps)
     }
     content = (
       <div>
-        <span className="pull-left">
+        <span className="float-start">
           {PanelFooterConsts.getText(displayState)}
         </span>
-        <span className="pull-right"><Icon name={PanelFooterConsts.getIconName(displayState)} /></span>
+        <span className="float-end"><Icon name={PanelFooterConsts.getIconName(displayState)} /></span>
         <div className="clearfix"></div>
       </div>
     );
   }
 
   return (
-    <div className="panel-footer" style={styles} onClick={hasAction ? onClickAction : undefined}>
+    <div className="card-footer" style={styles} onClick={hasAction ? onClickAction : undefined}>
       {content}
     </div>
   );

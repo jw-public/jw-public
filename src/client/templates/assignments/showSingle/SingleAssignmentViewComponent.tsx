@@ -34,17 +34,17 @@ function UserEntryListElement(props: { user: User; hideCar?: boolean }): JSX.Ele
   const user = props.user;
   return (
     <li className="list-group-item"> {user.fullName}
-      <span className="text-muted small hidden-xs">
+      <span className="text-muted small d-none d-sm-block">
         <em>{user.mobilePhone}</em>
       </span>
-      <span className="pull-right">
+      <span className="float-end">
         {!props.hideCar && user.carMostlyAvailable ? (
           <i className="fa fa-car" title={`${user.fullName} hat meistens ein Auto zur Verfügung`}></i>
         ) : null}{" "}
-        <a href={`tel:${user.formattedMobilePhone}`} title={`${user.fullName} anrufen`} className="btn btn-xs btn-success toggle-application">
+        <a href={`tel:${user.formattedMobilePhone}`} title={`${user.fullName} anrufen`} className="btn btn-sm btn-success toggle-application">
           <i className="fa fa-phone"></i>
         </a>{" "}
-        <a href={`mailto:${user.email}`} title={`Eine E-Mail an ${user.fullName} senden`} className="btn btn-xs btn-primary toggle-application">
+        <a href={`mailto:${user.email}`} title={`Eine E-Mail an ${user.fullName} senden`} className="btn btn-sm btn-primary toggle-application">
           <i className="fa fa-envelope"></i>
         </a>
       </span>
@@ -63,15 +63,15 @@ function AssignmentPreview(props: { assignmentDao: AssignmentDAO }): JSX.Element
   );
 
   return (
-    <div className="panel panel-primary">
-      <div className="panel-heading" style={{ cursor: "pointer" }} onClick={() => setCollapsed(!collapsed)}>
-        <h4 className="panel-title">
+    <div className="card card-primary">
+      <div className="card-header" style={{ cursor: "pointer" }} onClick={() => setCollapsed(!collapsed)}>
+        <h4 className="card-title">
           <i className={`fa ${!collapsed ? "fa-chevron-circle-down" : "fa-chevron-circle-right"}`}></i> {`${start} - ${end}`}
         </h4>
       </div>
       <div
         id={props.assignmentDao._id}
-        className={`panel-collapse collapse weekViewCollapse${collapsed ? "" : " in"}`}
+        className={`collapse-wrapper collapse weekViewCollapse${collapsed ? "" : " show"}`}
         style={{ display: collapsed ? "none" : "block" }}
       >
         <ul className="list-group">
@@ -189,21 +189,21 @@ export default function SingleAssignmentView(): JSX.Element {
         <div className="col-lg-5 col-md-8">
           <div className="row">
             <div className="col-sm-12 col-md-6 col-lg-6">
-              <div className="col-xs-12 bg-primary assignment-head-element">
-                <div className="col-xs-5 text-center">
+              <div className="col-12 bg-primary assignment-head-element">
+                <div className="col-5 text-center">
                   <div className="huge row icon"><i className="fa fa-calendar"></i></div>
                 </div>
-                <div className="col-xs-7 info text-center">{fmt(dao.start, "ddd")}
+                <div className="col-7 info text-center">{fmt(dao.start, "ddd")}
                   <br />{fmt(dao.start, "Do MMM")}</div>
               </div>
             </div>
 
             <div className="col-sm-12 col-md-6 col-lg-6">
-              <div className="col-xs-12 bg-primary assignment-head-element">
-                <div className="col-xs-5 text-center">
+              <div className="col-12 bg-primary assignment-head-element">
+                <div className="col-5 text-center">
                   <div className="huge row icon"><i className="fa fa-clock-o"></i></div>
                 </div>
-                <div className="col-xs-7 info text-center">
+                <div className="col-7 info text-center">
                   {fmt(dao.start, "LT")}
                   <br /><i className="fa fa-clock-o fa-fw"></i>
                   <br />{fmt(dao.end, "LT")}
@@ -216,17 +216,17 @@ export default function SingleAssignmentView(): JSX.Element {
             <div className="row">
               <div className="col-sm-12">
                 <div className="col-sm-12 bg-danger assignment-head-element">
-                  <div className="col-xs-5 text-center">
+                  <div className="col-5 text-center">
                     <div className="huge row icon"><i className="fa fa-ban"></i></div>
                   </div>
-                  <div className="col-xs-7 info text-center">Termin wurde abgesagt: {(dao as any).cancelationReason}</div>
+                  <div className="col-7 info text-center">Termin wurde abgesagt: {(dao as any).cancelationReason}</div>
                 </div>
               </div>
             </div>
           ) : null}
 
-          <div className="panel panel-default">
-            <div className="panel-heading">
+          <div className="card">
+            <div className="card-header">
               <i className="fa fa-users fa-fw"></i> Teilnehmer
             </div>
             <ul className="list-group">
@@ -236,8 +236,8 @@ export default function SingleAssignmentView(): JSX.Element {
             </ul>
           </div>
 
-          <div className="panel panel-default">
-            <div className="panel-heading">
+          <div className="card">
+            <div className="card-header">
               <i className="fa fa-users fa-fw"></i> Ansprechpersonen
             </div>
             <ul className="list-group">
@@ -248,14 +248,14 @@ export default function SingleAssignmentView(): JSX.Element {
           </div>
 
           {data.replyEmailAddress ? (
-            <div className="panel panel-default">
-              <div className="panel-heading">
+            <div className="card">
+              <div className="card-header">
                 <i className="fa fa-users fa-fw"></i> Bericht senden
               </div>
-              <div className="panel-body">
+              <div className="card-body">
                 Sende uns bitte den Bericht als E-Mail:{" "}
-                <span className="pull-right">
-                  <a href={`mailto:${data.replyEmailAddress}`} title={`Bericht an ${data.replyEmailAddress} senden`} className="btn btn-xs btn-primary toggle-application">
+                <span className="float-end">
+                  <a href={`mailto:${data.replyEmailAddress}`} title={`Bericht an ${data.replyEmailAddress} senden`} className="btn btn-sm btn-primary toggle-application">
                     <i className="fa fa-envelope"></i>
                   </a>
                 </span>
@@ -264,8 +264,8 @@ export default function SingleAssignmentView(): JSX.Element {
           ) : null}
 
           {!_.isEmpty(data.infos) ? (
-            <div className="panel panel-default">
-              <div className="panel-heading">
+            <div className="card">
+              <div className="card-header">
                 <i className="fa fa-info fa-fw"></i> Informationen
               </div>
               <ul className="list-group">
@@ -277,11 +277,11 @@ export default function SingleAssignmentView(): JSX.Element {
           ) : null}
 
           {dao.note ? (
-            <div className="panel panel-default">
-              <div className="panel-heading">
+            <div className="card">
+              <div className="card-header">
                 <i className="fa fa-quote-left"></i> Notiz
               </div>
-              <div className="panel-body" style={{ whiteSpace: "pre-line" }}>
+              <div className="card-body" style={{ whiteSpace: "pre-line" }}>
                 {dao.note}
               </div>
             </div>
@@ -290,7 +290,7 @@ export default function SingleAssignmentView(): JSX.Element {
           {data.sameDay.length > 0 ? (
             <React.Fragment>
               <h2>Termine am gleichen Tag</h2>
-              <div className="panel-group" id="accordion">
+              <div className="accordion" id="accordion">
                 {data.sameDay.map((a: AssignmentDAO) => (
                   <AssignmentPreview key={a._id} assignmentDao={a} />
                 ))}
@@ -310,7 +310,7 @@ export default function SingleAssignmentView(): JSX.Element {
               headingText="Einsatz ändern"
               currentGroupId={data.groupId}
               fontAwesomeLogo="fa-floppy-o"
-              panelClass="panel-primary"
+              panelClass="card-primary"
               buttonClass="btn-primary"
             />
           </div>

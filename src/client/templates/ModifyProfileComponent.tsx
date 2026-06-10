@@ -231,22 +231,22 @@ export default function ModifyProfile(): JSX.Element {
       </div>
       <div className="row">
         <div className="col-md-5">
-          <div className="panel panel-primary">
-            <div className="panel-heading">
+          <div className="card card-primary">
+            <div className="card-header">
               Daten ändern
             </div>
-            <div className="panel-body">
+            <div className="card-body">
               {/* key: remount when another user logs in */}
               <ProfileDataForm key={user._id} user={user} />
             </div>
           </div>
         </div>
         <div className="col-md-5">
-          <div className="panel panel-primary">
-            <div className="panel-heading">
+          <div className="card card-primary">
+            <div className="card-header">
               Benachrichtigungen
             </div>
-            <div className="panel-body">
+            <div className="card-body">
               <div className="checkbox">
                 <label>
                   <input
@@ -260,11 +260,11 @@ export default function ModifyProfile(): JSX.Element {
               </div>
             </div>
           </div>
-          <div className="panel panel-primary">
-            <div className="panel-heading">
+          <div className="card card-primary">
+            <div className="card-header">
               Sprache für E-Mail-Benachrichtigungen
             </div>
-            <div className="panel-body">
+            <div className="card-body">
               <div className="form-group">
                 <label htmlFor="profile-language">Sprache</label>
                 <select
@@ -280,11 +280,11 @@ export default function ModifyProfile(): JSX.Element {
               </div>
             </div>
           </div>
-          <div className="panel panel-primary">
-            <div className="panel-heading">
+          <div className="card card-primary">
+            <div className="card-header">
               Passwort ändern
             </div>
-            <div className="panel-body">
+            <div className="card-body">
               <ChangePasswordForm />
             </div>
           </div>

@@ -91,7 +91,7 @@ export async function expandWeekUntilVisible(
   await expect(page.locator("#accordion")).toBeVisible({ timeout: 15_000 });
   for (let round = 0; round < 10; round++) {
     if (await panel.isVisible()) return;
-    const headings = page.locator("#accordion .panel-heading");
+    const headings = page.locator("#accordion .card-header");
     const count = await headings.count();
     for (let i = 0; i < count; i++) {
       if (await panel.isVisible()) return;

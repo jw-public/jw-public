@@ -27,24 +27,24 @@ function UserEntry(props: {
 
   return (
     <li className="list-group-item"> {user.fullName}
-      <span className="pull-right">
+      <span className="float-end">
         {user.carMostlyAvailable ? (
           <i className="fa fa-car" title={`${user.fullName} hat meistens ein Auto zur Verfügung`}></i>
         ) : null}{" "}
         {props.variant === "applicant" ? (
-          <span className="label label-default" title={`${user.fullName} wohnt in ${user.placeName} (PLZ: ${user.zip}).`}>
+          <span className="badge text-bg-secondary" title={`${user.fullName} wohnt in ${user.placeName} (PLZ: ${user.zip}).`}>
             {user.placeName}
           </span>
         ) : null}{" "}
-        <span className="label label-default" title={`${user.fullName} wurde bereits ${count}x angenommen.`}>
+        <span className="badge text-bg-secondary" title={`${user.fullName} wurde bereits ${count}x angenommen.`}>
           {count}
         </span>{" "}
         {props.variant === "applicant" ? (
-          <button className="btn btn-xs btn-success toggle-application" title="Bewerber als Teilnehmer vormerken." onClick={props.onToggle}>
+          <button className="btn btn-sm btn-success toggle-application" title="Bewerber als Teilnehmer vormerken." onClick={props.onToggle}>
             <i className="fa fa-chevron-right"></i>
           </button>
         ) : (
-          <button className="btn btn-xs btn-danger toggle-application" onClick={props.onToggle}>
+          <button className="btn btn-sm btn-danger toggle-application" onClick={props.onToggle}>
             <i className="fa fa-chevron-left"></i>
           </button>
         )}
@@ -154,7 +154,7 @@ export default function AssignmentManager(props: AssignmentManagerProps): JSX.El
           },
           noButton: {
             label: "Nein",
-            className: "btn-default",
+            className: "btn-outline-secondary",
             callback: () => {
               dialog.modal("hide");
             },
@@ -177,7 +177,7 @@ export default function AssignmentManager(props: AssignmentManagerProps): JSX.El
           },
           noButton: {
             label: "Abbrechen",
-            className: "btn-default",
+            className: "btn-outline-secondary",
             callback: () => {
               dialog.modal("hide");
             },
@@ -190,8 +190,8 @@ export default function AssignmentManager(props: AssignmentManagerProps): JSX.El
   return (
     <div className="row">
       <div className="col-md-6">
-        <div className="panel panel-default">
-          <div className="panel-heading">
+        <div className="card">
+          <div className="card-header">
             <i className="fa fa-users fa-fw"></i> Bewerber
           </div>
           <ul className="list-group">
@@ -207,8 +207,8 @@ export default function AssignmentManager(props: AssignmentManagerProps): JSX.El
       </div>
 
       <div className="col-md-6">
-        <div className="panel panel-default">
-          <div className="panel-heading">
+        <div className="card">
+          <div className="card-header">
             <i className="fa fa-users fa-fw"></i> Teilnehmer
           </div>
           <ul className="list-group">
@@ -251,7 +251,7 @@ export default function AssignmentManager(props: AssignmentManagerProps): JSX.El
         </button>{" "}
         {props.onCancel ? (
           <button
-            className="btn btn-default cancel"
+            className="btn btn-outline-secondary cancel"
             onClick={(e) => {
               e.preventDefault();
               props.onCancel(e);

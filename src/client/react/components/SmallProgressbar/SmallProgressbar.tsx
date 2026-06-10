@@ -76,7 +76,7 @@ export class SmallProgressbar extends React.Component < DataContext, {} > {
         let width: string = `${this.getPercent()}%`;
 
         // Den Tooltip resetten, da sich der Inhalt geändert hat.
-        $(`[data-toggle="tooltip"]`).tooltip();
+        $(`[data-bs-toggle="tooltip"]`).tooltip();
 
         let background = data.barColor;
 
@@ -124,7 +124,7 @@ export class SmallProgressbar extends React.Component < DataContext, {} > {
                     aria-valuemin={this.props.minValue}
                     aria-valuemax={this.props.maxValue}
                     style={this.cssBarStyles()}>
-                    <span className="sr-only">{title}</span>
+                    <span className="visually-hidden">{title}</span>
                 </div>
             </div>
         );

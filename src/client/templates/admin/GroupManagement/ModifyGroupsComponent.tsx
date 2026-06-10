@@ -52,7 +52,7 @@ function GroupForm(props: {
       <fieldset>
         <InlineAlerts alerts={alerts} />
         <div className="form-group">
-          <label className="control-label">Name</label>
+          <label className="form-label">Name</label>
           <input
             id={`${props.idPrefix}GroupName`}
             name="name"
@@ -63,7 +63,7 @@ function GroupForm(props: {
           />
         </div>
         <div className="form-group">
-          <label className="control-label">Zusätzliche Informationen</label>
+          <label className="form-label">Zusätzliche Informationen</label>
           <textarea
             name="additional"
             rows={6}
@@ -73,7 +73,7 @@ function GroupForm(props: {
           />
         </div>
         <div className="form-group">
-          <label className="control-label">E-Mail</label>
+          <label className="form-label">E-Mail</label>
           <input
             name="email"
             type="text"
@@ -83,7 +83,7 @@ function GroupForm(props: {
           />
         </div>
         <div className="form-group">
-          <label className="control-label">Koordinatoren</label>
+          <label className="form-label">Koordinatoren</label>
           <MultiSelect
             inputId={`${props.idPrefix}Coordinators`}
             options={props.userOptions}
@@ -208,11 +208,11 @@ export default function ModifyGroups(): JSX.Element {
       </div>
       <div className="row">
         <div className="col-lg-8">
-          <div className="panel panel-primary">
-            <div className="panel-heading">
+          <div className="card card-primary">
+            <div className="card-header">
               <i className="fa fa-table fa-fw"></i> Übersicht
             </div>
-            <div className="panel-body table-responsive">
+            <div className="card-body table-responsive">
               <DataTable
                 columns={columns}
                 rows={data.groups}
@@ -226,11 +226,11 @@ export default function ModifyGroups(): JSX.Element {
         </div>
         <div className="col-lg-4">
           {!selectedGroup ? (
-            <div className="panel panel-primary insert-panel">
-              <div className="panel-heading">
+            <div className="card card-primary insert-panel">
+              <div className="card-header">
                 <i className="fa fa-plus-square fa-fw"></i> Gruppe hinzufügen
               </div>
-              <div className="panel-body">
+              <div className="card-body">
                 <GroupForm
                   idPrefix="input"
                   initial={{ name: "", additional: "", email: "", coordinators: [] }}
@@ -245,14 +245,14 @@ export default function ModifyGroups(): JSX.Element {
               </div>
             </div>
           ) : (
-            <div className="panel panel-primary update-panel">
-              <div className="panel-heading">
+            <div className="card card-primary update-panel">
+              <div className="card-header">
                 <div className="row">
-                  <div className="col-xs-10"><i className="fa fa-pencil-square-o fa-fw"></i> Gruppe bearbeiten</div>
-                  <div className="col-xs-2">
+                  <div className="col-10"><i className="fa fa-pencil-square-o fa-fw"></i> Gruppe bearbeiten</div>
+                  <div className="col-2">
                     <a
                       href="#"
-                      className="btn btn-default btn-xs cancel-update pull-right"
+                      className="btn btn-outline-secondary btn-sm cancel-update float-end"
                       onClick={(e) => {
                         e.preventDefault();
                         setSelectedGroupId(null);
@@ -263,7 +263,7 @@ export default function ModifyGroups(): JSX.Element {
                   </div>
                 </div>
               </div>
-              <div className="panel-body">
+              <div className="card-body">
                 <GroupForm
                   key={selectedGroup._id}
                   idPrefix="update"
@@ -282,7 +282,7 @@ export default function ModifyGroups(): JSX.Element {
                   extraButtons={
                     <button
                       type="button"
-                      className="btn btn-default cancel-update"
+                      className="btn btn-outline-secondary cancel-update"
                       onClick={() => setSelectedGroupId(null)}
                     >
                       <i className="fa fa-times"></i> Abbruch

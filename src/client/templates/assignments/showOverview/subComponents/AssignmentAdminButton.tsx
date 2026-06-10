@@ -117,14 +117,13 @@ export default class AssignmentAdminButton extends React.Component<AssignmentAdm
   }
 
   render(): JSX.Element {
-    let buttonClassName: string = `btn btn-xs btn-${this.props.bootstrapColorClass} dropdown-toggle`;
+    let buttonClassName: string = `btn btn-sm btn-${this.props.bootstrapColorClass} dropdown-toggle`;
 
     return (
       <div className="zero-clipboard dropdown">
         <div className="btn-group btn-clipboard">
-          <button type="button" className={buttonClassName} id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <button type="button" className={buttonClassName} id="dropdownMenu2" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <Icon name="cog" />
-            <span className="caret"></span>
           </button>
           <ul className="dropdown-menu" aria-labelledby="dropdownMenu2">
             {this.renderMenuEntries()}

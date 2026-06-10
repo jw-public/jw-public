@@ -56,10 +56,10 @@ function UserDropdown(): JSX.Element {
 export default function MainLayout(): JSX.Element {
   return (
     <div id="wrapper">
-      <nav className="navbar navbar-default navbar-static-top" role="navigation" style={{ marginBottom: 0 }}>
+      <nav className="navbar sb-admin-topbar" role="navigation" style={{ marginBottom: 0 }}>
         <div className="navbar-header">
-          <button type="button" className="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span className="sr-only">Toggle navigation</span>
+          <button type="button" className="navbar-toggle" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
+            <span className="visually-hidden">Toggle navigation</span>
             <span className="icon-bar"></span>
             <span className="icon-bar"></span>
             <span className="icon-bar"></span>
@@ -73,7 +73,7 @@ export default function MainLayout(): JSX.Element {
           </Link>
         </div>
 
-        <ul className="nav navbar-top-links navbar-right">
+        <ul className="nav navbar-top-links">
           <li className="dropdown" id="notificationsDropdown">
             <NotificationsDropdown />
           </li>

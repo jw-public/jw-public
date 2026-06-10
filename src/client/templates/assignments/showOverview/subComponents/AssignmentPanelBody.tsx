@@ -17,7 +17,7 @@ export default class AssignmentPanelBody extends React.Component<AssignmentPanel
 
   public render(): JSX.Element {
     return (
-      <div className="panel-body text-center assignment-item">
+      <div className="card-body text-center assignment-item">
         <AssignmentPanelProgressBar assignment={this.props.assignment} />
         <DateDisplay start={this.props.assignment.start} end={this.props.assignment.end} />
       </div>

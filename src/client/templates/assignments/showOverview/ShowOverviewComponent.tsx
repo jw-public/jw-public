@@ -92,18 +92,18 @@ function AssignmentWeekView(props: { isoWeek: number; year: number; groupId: str
   };
 
   return (
-    <div className="panel panel-primary">
-      <div className="panel-heading" style={{ cursor: "pointer" }} onClick={onHeadingClick}>
-        <h4 className="panel-title">
+    <div className="card card-primary">
+      <div className="card-header" style={{ cursor: "pointer" }} onClick={onHeadingClick}>
+        <h4 className="card-title">
           <i className={`fa ${!collapsed ? "fa-chevron-circle-down" : "fa-chevron-circle-right"}`}></i> {weekHeading(props.isoWeek, props.year)}
         </h4>
       </div>
       <div
         id={`accordion_${props.isoWeek}`}
-        className={`panel-collapse collapse weekViewCollapse${collapsed ? "" : " in"}`}
+        className={`collapse-wrapper collapse weekViewCollapse${collapsed ? "" : " show"}`}
         style={{ display: collapsed ? "none" : "block" }}
       >
-        <div className="panel-body">
+        <div className="card-body">
           {renderedOnce ? (
             <div className="row">
               {assignments.map((a: AssignmentDAO) => (
@@ -189,7 +189,7 @@ export default function ShowOverview(): JSX.Element {
         <div className="col-lg-12 assignmentNav">
           {paginator}
 
-          <div className="pagination btn-group" data-toggle="buttons">
+          <div className="pagination btn-group" data-bs-toggle="buttons">
             <label className={`btn btn-primary ${filter === "all" ? "active" : ""}`} onClick={() => setFilter("all")}>
               <input type="radio" name="options" id="filter-all" autoComplete="off" readOnly checked={filter === "all"} /> Alle <i className="fa fa-calendar"></i>
               {filter === "all" ? <i className="fa fa-check"></i> : null}
@@ -259,7 +259,7 @@ export default function ShowOverview(): JSX.Element {
               </div>
             </div>
           ) : (
-            <div className="panel-group" id="accordion">
+            <div className="accordion" id="accordion">
               {data.isoWeeks.map((w: any) => (
                 <AssignmentWeekView
                   key={`${data.yearMonth}-${w.number}`}
