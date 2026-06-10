@@ -9,19 +9,16 @@ import { IUserMailer, IUserMailerOptions } from "../interfaces/IUserMailer";
 
 import { IUserFactory } from "../../user/interfaces/IUserFactory";
 
-import { inject, injectable } from "inversify";
-
 import { marked } from 'marked';
 import * as removeMarkdown from 'remove-markdown';
 
-@injectable()
 export class UserMailer implements IUserMailer {
   private logger: Logger;
 
 
-  constructor(@inject(MailingTypes.IEmailSender) private mailSender: IEmailSender,
-    @inject(UserTypes.IUserFactory) private userFactory: IUserFactory,
-    @inject(Types.LoggerFactory) loggerFactory: LoggerFactory,
+  constructor(private mailSender: IEmailSender,
+    private userFactory: IUserFactory,
+    loggerFactory: LoggerFactory,
   ) {
 
     if (loggerFactory) {

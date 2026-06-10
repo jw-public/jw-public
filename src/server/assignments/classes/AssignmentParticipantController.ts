@@ -1,4 +1,3 @@
-import { inject, injectable, named } from 'inversify';
 import * as _ from 'underscore';
 import { AssignmentDAO } from '../../../collections/lib/AssignmentsCollection';
 import { SimpleCollection } from '../../../imports/interfaces/SimpleCollection';
@@ -11,13 +10,12 @@ import { extractIdsFromUserEntryArray } from '../utils/UserEntryHelper';
 import { AssignmentAction } from './AssignmentAction';
 
 
-@injectable()
 export class AssignmentParticipantController extends AssignmentAction implements IAssignmentParticipantController {
 
     private assignmentContext: IAssignmentContext;
 
-    constructor(@inject(Types.Collection) @named("assignment") protected collection: SimpleCollection<AssignmentDAO>,
-        @inject(AssignmentServiceTypes.IAssignmentParticipationNotifier) private participationNotifier: IAssignmentParticipationNotifier) {
+    constructor(protected collection: SimpleCollection<AssignmentDAO>,
+        private participationNotifier: IAssignmentParticipationNotifier) {
         super(collection);
     }
 

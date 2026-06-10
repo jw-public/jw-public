@@ -1,4 +1,3 @@
-import { inject, injectable, named } from 'inversify';
 import * as _ from 'underscore';
 import { AssignmentDAO } from '../../../collections/lib/AssignmentsCollection';
 import { AssignmentState } from '../../../collections/lib/classes/AssignmentState';
@@ -16,14 +15,13 @@ import { AssignmentAction } from './AssignmentAction';
 
 
 
-@injectable()
 export class AssignmentCloser extends AssignmentAction implements IAssignmentCloser {
     private logger: Logger;
 
-    constructor(@inject(Types.Collection) @named("assignment") collection: SimpleCollection<AssignmentDAO>,
-        @inject(AssignmentServiceTypes.IAssignmentNotifier) private assignmentNotifier: IAssignmentNotifier,
-        @inject(Types.IAssignmentParticipantControllerFactory) private assignmentParticipantController: IAssignmentParticipantControllerFactory,
-        @inject(Types.LoggerFactory) loggerFactory: LoggerFactory,
+    constructor(collection: SimpleCollection<AssignmentDAO>,
+        private assignmentNotifier: IAssignmentNotifier,
+        private assignmentParticipantController: IAssignmentParticipantControllerFactory,
+        loggerFactory: LoggerFactory,
     ) {
         super(collection);
         this.logger = loggerFactory.createLogger("AssignmentCloser");

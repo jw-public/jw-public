@@ -1,14 +1,12 @@
-import { inject, injectable } from "inversify";
 import { AssignmentServiceTypes } from "../AssignmentServiceTypes";
 import { IAssignmentDaoNotifier, IAssignmentMultiNotifierOptions } from "../interfaces/IAssignmentDaoNotifier";
 import { IAssignmentNotifier, IAssignmentSingleNotifierOptions } from "../interfaces/IAssignmentNotifier";
 import { extractIdsFromUserEntryArray } from "../utils/UserEntryHelper";
 
 
-@injectable()
 export class AssignmentDaoNotifier implements IAssignmentDaoNotifier {
 
-    constructor(@inject(AssignmentServiceTypes.IAssignmentNotifier) private assignmentNotifier: IAssignmentNotifier) {
+    constructor(private assignmentNotifier: IAssignmentNotifier) {
 
     }
 

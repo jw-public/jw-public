@@ -5,16 +5,14 @@ import { Types } from "../../Types";
 import { IUserSettingsReader } from "../interfaces/IUserSettingsReader";
 import { IUserSettingsReaderFactory } from "../interfaces/IUserSettingsReaderFactory";
 
-import { inject, injectable, named } from "inversify";
 import { UserDAO } from "../../../collections/lib/UserCollection";
 import { SimpleCollection } from "../../../imports/interfaces/SimpleCollection";
 
-@injectable()
 export class UserSettingsReaderFactory implements IUserSettingsReaderFactory {
 
 
   constructor(
-    @inject(Types.Collection) @named("user") private users: SimpleCollection<UserDAO>) {
+    private users: SimpleCollection<UserDAO>) {
   }
 
   async createSettingsReaderFor(userId: string): Promise<IUserSettingsReader> {

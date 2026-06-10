@@ -4,8 +4,6 @@
         "module": "commonjs",
         "isolatedModules": false,
         "jsx": "react",
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
         "declaration": false,
         "noImplicitAny": false,
         "removeComments": false,

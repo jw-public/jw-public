@@ -5,15 +5,13 @@ import { Logger } from './../../../imports/logging/Logger.d';
 import { BlueprintMaterializerOptions, IBlueprintMaterializer } from './../interfaces/IBlueprintMaterializer';
 
 import { LoggerFactory } from 'imports/logging/LoggerFactory';
-import { inject, injectable } from "inversify";
 import * as moment from 'moment';
 import { Types } from "../../Types";
 
-@injectable()
 export class BlueprintMaterializer implements IBlueprintMaterializer {
     private logger: Logger;
 
-    public constructor(@inject(Types.LoggerFactory) loggerFactory: LoggerFactory) {
+    public constructor(loggerFactory: LoggerFactory) {
         this.logger = loggerFactory.createLogger("BlueprintMaterializer");
     }
 

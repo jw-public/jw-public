@@ -1,4 +1,3 @@
-import { inject, injectable, named } from "inversify";
 import * as moment from "moment";
 import { AssignmentCopyActionDAO } from "../../../collections/lib/AssignmentCopyActionsCollection";
 import { AssignmentDAO } from "../../../collections/lib/AssignmentsCollection";
@@ -8,14 +7,13 @@ import { Logger } from '../../../imports/logging/Logger';
 import { LoggerFactory } from '../../../imports/logging/LoggerFactory';
 import { Types } from "../../Types";
 
-@injectable()
 export class AssignmentWeekCopyPaster {
 
   private logger: Logger;
 
-  constructor(@inject(Types.Collection) @named("assignment") private assignmentCollection: SimpleCollection<AssignmentDAO>,
-    @inject(Types.Collection) @named("assignmentCopyActions") private copyActionsCollection: SimpleCollection<AssignmentCopyActionDAO>,
-    @inject(Types.LoggerFactory) loggerFactory: LoggerFactory,
+  constructor(private assignmentCollection: SimpleCollection<AssignmentDAO>,
+    private copyActionsCollection: SimpleCollection<AssignmentCopyActionDAO>,
+    loggerFactory: LoggerFactory,
   ) {
     this.logger = loggerFactory.createLogger("AssignmentWeekCopyPaster");
   }

@@ -1,4 +1,3 @@
-import "reflect-metadata";
 
 export const Types = {
   IAssignmentApplicationController: Symbol("IAssignmentApplicationController"),

@@ -1,4 +1,3 @@
-import { inject, injectable, named } from "inversify";
 import { AssignmentDAO } from "../../../collections/lib/AssignmentsCollection";
 import { AssignmentState } from "../../../collections/lib/classes/AssignmentState";
 import { AssignmentEventType } from "../../../imports/assignments/interfaces/AssignmentEventType";
@@ -10,12 +9,11 @@ import { IAssignmentReenabler } from "../interfaces/IAssignmentReenabler";
 import { AssignmentAction } from "./AssignmentAction";
 
 
-@injectable()
 export class AssignmentReenabler extends AssignmentAction implements IAssignmentReenabler {
 
 
-  constructor(@inject(Types.Collection) @named("assignment") collection: SimpleCollection<AssignmentDAO>,
-    @inject(AssignmentServiceTypes.IAssignmentDaoNotifier) private assignmentNotifier: IAssignmentDaoNotifier) {
+  constructor(collection: SimpleCollection<AssignmentDAO>,
+    private assignmentNotifier: IAssignmentDaoNotifier) {
     super(collection);
   }
 

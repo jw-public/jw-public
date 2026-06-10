@@ -1,9 +1,7 @@
 import { assert } from "chai";
-import { injectable } from "inversify";
 import { IAssignmentContext } from "../../../server/assignments/interfaces/IAssignmentContext";
 import { IAssignmentNotifierOptions, IAssignmentParticipationNotifier } from "../../../server/assignments/interfaces/IAssignmentParticipationNotifier";
 
-@injectable()
 export class AssignmentParticipationNotifierMock implements IAssignmentParticipationNotifier {
 
   public lastAcceptanceNotificationOptions: IAssignmentNotifierOptions = null;

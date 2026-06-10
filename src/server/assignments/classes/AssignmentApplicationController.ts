@@ -1,4 +1,3 @@
-import { inject, injectable, named } from "inversify";
 import { AssignmentDAO } from "../../../collections/lib/AssignmentsCollection";
 import { SimpleCollection } from "../../../imports/interfaces/SimpleCollection";
 import { Logger } from '../../../imports/logging/Logger';
@@ -7,14 +6,13 @@ import { Types } from "../../Types";
 import { IAssignmentApplicationController } from "../interfaces/IAssignmentApplicationController";
 import { IAssignmentContext } from "../interfaces/IAssignmentContext";
 
-@injectable()
 export class AssignmentApplicationController implements IAssignmentApplicationController {
 
   private assignmentContext: IAssignmentContext;
   private logger: Logger;
 
-  constructor(@inject(Types.Collection) @named("assignment") private collection: SimpleCollection<AssignmentDAO>,
-    @inject(Types.LoggerFactory) loggerFactory: LoggerFactory,
+  constructor(private collection: SimpleCollection<AssignmentDAO>,
+    loggerFactory: LoggerFactory,
   ) {
     this.logger = loggerFactory.createLogger("AssignmentApplicationController");
   }

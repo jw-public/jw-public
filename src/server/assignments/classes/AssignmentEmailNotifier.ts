@@ -1,4 +1,3 @@
-import { inject, injectable, named } from "inversify";
 import * as moment from 'moment';
 import { AssignmentDAO } from "../../../collections/lib/AssignmentsCollection";
 import { GroupDAO } from "../../../collections/lib/GroupCollection";
@@ -18,16 +17,15 @@ import { IAssignmentEmailNotifier } from "../interfaces/IAssignmentEmailNotifier
 import { IAssignmentSingleNotifierOptions } from "../interfaces/IAssignmentNotifier";
 import { AssignmentAction } from "./AssignmentAction";
 
-@injectable()
 export class AssignmentEmailNotifier extends AssignmentAction implements IAssignmentEmailNotifier {
 
   constructor(
-    @inject(Types.Collection) @named("user") private users: SimpleCollection<UserDAO>,
-    @inject(Types.Collection) @named("assignment") collection: SimpleCollection<AssignmentDAO>,
-    @inject(Types.Collection) @named("group") private groups: SimpleCollection<GroupDAO>,
-    @inject(MailingTypes.IUserMailer) private userMailer: IUserMailer,
-    @inject(UserTypes.IUserSettingsReaderFactory) private userSettingsReaderFactory: IUserSettingsReaderFactory,
-    @inject(AssignmentServiceTypes.IAssignmentDateParser) private dateParser: IAssignmentDateParser
+    private users: SimpleCollection<UserDAO>,
+    collection: SimpleCollection<AssignmentDAO>,
+    private groups: SimpleCollection<GroupDAO>,
+    private userMailer: IUserMailer,
+    private userSettingsReaderFactory: IUserSettingsReaderFactory,
+    private dateParser: IAssignmentDateParser
   ) {
     super(collection);
 

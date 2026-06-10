@@ -1,4 +1,3 @@
-import { inject, injectable, named } from "inversify";
 import { NotificationDAO } from "../../../collections/lib/classes/UserNotification";
 import { AssignmentEventType } from "../../../imports/assignments/interfaces/AssignmentEventType";
 import { SimpleCollection } from "../../../imports/interfaces/SimpleCollection";
@@ -10,14 +9,13 @@ import { IAssignmentEmailNotifier } from "../interfaces/IAssignmentEmailNotifier
 import { IAssignmentNotifier, IAssignmentSingleNotifierOptions } from "../interfaces/IAssignmentNotifier";
 
 
-@injectable()
 export class AssignmentNotifier implements IAssignmentNotifier {
   private logger: Logger;
 
   constructor(
-    @inject(AssignmentServiceTypes.IAssignmentEmailNotifier) private emailNotifier: IAssignmentEmailNotifier,
-    @inject(Types.Collection) @named("notification") private collection: SimpleCollection<NotificationDAO>,
-    @inject(Types.LoggerFactory) loggerFactory: LoggerFactory) {
+    private emailNotifier: IAssignmentEmailNotifier,
+    private collection: SimpleCollection<NotificationDAO>,
+    loggerFactory: LoggerFactory) {
 
     if (loggerFactory) {
       this.logger = loggerFactory.createLogger("AssignmentNotifier");

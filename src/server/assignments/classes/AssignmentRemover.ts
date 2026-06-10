@@ -4,19 +4,17 @@ import { Types } from "../../Types";
 import { AssignmentServiceTypes } from "../AssignmentServiceTypes";
 
 
-import { inject, injectable, named } from "inversify";
 import { AssignmentDAO } from "../../../collections/lib/AssignmentsCollection";
 import { IAssignmentDaoNotifier } from "../interfaces/IAssignmentDaoNotifier";
 import { IAssignmentRemover } from "../interfaces/IAssignmentRemover";
 
 import { AssignmentAction } from "./AssignmentAction";
 
-@injectable()
 export class AssignmentRemover extends AssignmentAction implements IAssignmentRemover {
 
 
-    constructor(@inject(Types.Collection) @named("assignment") collection: SimpleCollection<AssignmentDAO>,
-        @inject(AssignmentServiceTypes.IAssignmentDaoNotifier) private assignmentNotifier: IAssignmentDaoNotifier) {
+    constructor(collection: SimpleCollection<AssignmentDAO>,
+        private assignmentNotifier: IAssignmentDaoNotifier) {
         super(collection);
     }
 
