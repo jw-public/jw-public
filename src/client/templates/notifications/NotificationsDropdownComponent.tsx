@@ -130,7 +130,7 @@ export default function NotificationsDropdown(): JSX.Element {
         <i className={`fa fa-bell fa-fw faa-ring${data.hasUnread ? " animated" : ""}`}></i>
         {data.hasUnread ? (
           <span className="badge-danger badge-notify">{data.unreadCount}</span>
-        ) : null}
+        ) : null}{" "}
         <i className="fa fa-caret-down"></i>
       </a>
 
@@ -151,7 +151,7 @@ export default function NotificationsDropdown(): JSX.Element {
                 <button
                   type="button"
                   id="removeAll"
-                  className="btn btn-primary btn-sm btn-block"
+                  className="btn btn-primary btn-sm w-100"
                   disabled={!data.hasNotifications}
                   onClick={onRemoveAll}
                 >

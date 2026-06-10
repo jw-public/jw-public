@@ -32,6 +32,12 @@ body {
 
 // --Topbar (BS5: rebuild the BS3 static-top navbar block layout)
 
+// The markup carries its own fa-caret-down icons (BS3 era) — suppress the
+// automatic BS5 ::after caret so the toggles don't show two carets.
+.navbar-top-links .dropdown-toggle::after {
+  display: none;
+}
+
 .navbar.sb-admin-topbar {
   display: block;
   padding: 0;
@@ -49,7 +55,8 @@ body {
   float: right;
 }
 
-.navbar-top-links > li > a {
+.navbar-top-links li > a,
+.navbar-top-links li > div > a {
   color: #777;
   text-decoration: none;
   display: block;
@@ -69,6 +76,7 @@ body {
 
 .navbar-top-links li {
   display: inline-block;
+  vertical-align: top;
 }
 
 .navbar-top-links li:last-child {

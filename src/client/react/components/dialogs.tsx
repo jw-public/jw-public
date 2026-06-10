@@ -13,6 +13,7 @@ interface ShellProps {
   zIndex: number;
   onDismiss: () => void;
   footer?: React.ReactNode;
+  size?: "sm";
   children: React.ReactNode;
 }
 
@@ -41,7 +42,7 @@ function DialogShell(props: ShellProps): JSX.Element {
         aria-modal="true"
         tabIndex={-1}
       >
-        <div className="modal-dialog">
+        <div className={`modal-dialog${props.size ? ` modal-${props.size}` : ""}`}>
           <div className="modal-content">
             {props.title ? (
               <div className="modal-header">
@@ -103,6 +104,7 @@ export function confirmDialog(options: ConfirmOptions): Promise<boolean> {
   return mountDialog<boolean>((close, zIndex) => (
     <DialogShell
       title={options.title}
+      size="sm"
       zIndex={zIndex}
       onDismiss={() => close(false)}
       footer={
@@ -170,6 +172,7 @@ function PromptBody(props: {
   return (
     <DialogShell
       title={props.title}
+      size="sm"
       zIndex={props.zIndex}
       onDismiss={() => props.close(null)}
       footer={

@@ -247,7 +247,7 @@ export default function AssignmentManager(props: AssignmentManagerProps): JSX.El
                       }
                     />
                   </div>
-                  <span className="input-group-btn">
+                  <span>
                     <button type="submit" className="btn btn-success">
                       <i className="fa fa-user-plus fa-fw"></i>
                     </button>
@@ -259,18 +259,9 @@ export default function AssignmentManager(props: AssignmentManagerProps): JSX.El
         </div>
       </div>
 
-      <div className="col-md-12">
-        <button
-          className="btn btn-primary close-application"
-          title={
-            participants.length > 0
-              ? "Termin abschließen und Teilnehmer bestätigen"
-              : "Bitte zuerst Teilnehmer auswählen"
-          }
-          onClick={onCloseClick}
-        >
-          <i className="fa fa-lock"></i> Termin abschließen
-        </button>{" "}
+      {/* Footer-style action bar: same position and order as the stacked
+          confirm dialog (cancel left of the primary action, right-aligned). */}
+      <div className="col-md-12 d-flex justify-content-end gap-2 border-top pt-3 mt-3">
         {props.onCancel ? (
           <button
             className="btn btn-outline-secondary cancel"
@@ -282,6 +273,17 @@ export default function AssignmentManager(props: AssignmentManagerProps): JSX.El
             <i className="fa fa-times"></i> Abbrechen
           </button>
         ) : null}
+        <button
+          className="btn btn-primary close-application"
+          title={
+            participants.length > 0
+              ? "Termin abschließen und Teilnehmer bestätigen"
+              : "Bitte zuerst Teilnehmer auswählen"
+          }
+          onClick={onCloseClick}
+        >
+          <i className="fa fa-lock"></i> Termin abschließen
+        </button>
       </div>
     </div>
   );

@@ -117,9 +117,7 @@ function AssignmentWeekView(props: {
           {renderedOnce ? (
             <div className="row">
               {assignments.map((a: AssignmentDAO) => (
-                <div key={a._id}>
-                  <AssignmentPanel assignment={a} />
-                </div>
+                <AssignmentPanel key={a._id} assignment={a} />
               ))}
             </div>
           ) : (
@@ -266,9 +264,7 @@ export default function ShowOverview(): JSX.Element {
           {data.ready ? (
             hasAssignments ? (
               data.assignments.map((a: AssignmentDAO) => (
-                <div key={a._id}>
-                  <AssignmentPanel assignment={a} />
-                </div>
+                <AssignmentPanel key={a._id} assignment={a} />
               ))
             ) : (
               <div className="col-lg-12">
@@ -289,9 +285,7 @@ export default function ShowOverview(): JSX.Element {
           {data.ready ? (
             hasAssignments ? (
               data.assignments.map((a: AssignmentDAO) => (
-                <div key={a._id}>
-                  <AssignmentPanel assignment={a} />
-                </div>
+                <AssignmentPanel key={a._id} assignment={a} />
               ))
             ) : (
               <div className="col-lg-12">
@@ -325,16 +319,18 @@ export default function ShowOverview(): JSX.Element {
               </div>
             </div>
           ) : (
-            <div className="accordion" id="accordion">
-              {data.isoWeeks.map((w: any) => (
-                <AssignmentWeekView
-                  key={`${data.yearMonth}-${w.number}`}
-                  isoWeek={w.number}
-                  year={w.year}
-                  groupId={data.groupId}
-                  filter={filter}
-                />
-              ))}
+            <div className="col-lg-12">
+              <div className="accordion" id="accordion">
+                {data.isoWeeks.map((w: any) => (
+                  <AssignmentWeekView
+                    key={`${data.yearMonth}-${w.number}`}
+                    isoWeek={w.number}
+                    year={w.year}
+                    groupId={data.groupId}
+                    filter={filter}
+                  />
+                ))}
+              </div>
             </div>
           )}
         </div>

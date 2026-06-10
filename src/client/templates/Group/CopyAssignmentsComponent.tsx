@@ -213,7 +213,7 @@ export default function CopyAssignments(): JSX.Element {
                 <div className="col-12 col-md-3 mb-2">
                   <button
                     type="button"
-                    className="btn btn-primary btn-block quick-action"
+                    className="btn btn-primary w-100 quick-action"
                     onClick={() => onQuickAction("nextMonth")}
                   >
                     Nächster Monat
@@ -222,7 +222,7 @@ export default function CopyAssignments(): JSX.Element {
                 <div className="col-12 col-md-3 mb-2">
                   <button
                     type="button"
-                    className="btn btn-primary btn-block quick-action"
+                    className="btn btn-primary w-100 quick-action"
                     onClick={() => onQuickAction("restOfMonth")}
                   >
                     Rest des aktuellen Monats
@@ -231,7 +231,7 @@ export default function CopyAssignments(): JSX.Element {
                 <div className="col-12 col-md-3 mb-2">
                   <button
                     type="button"
-                    className="btn btn-primary btn-block quick-action"
+                    className="btn btn-primary w-100 quick-action"
                     onClick={() => onQuickAction("restOfQuarter")}
                   >
                     Rest des Quartals
@@ -240,7 +240,7 @@ export default function CopyAssignments(): JSX.Element {
                 <div className="col-12 col-md-3 mb-2">
                   <button
                     type="button"
-                    className="btn btn-primary btn-block quick-action"
+                    className="btn btn-primary w-100 quick-action"
                     onClick={() => onQuickAction("restOfYear")}
                   >
                     Rest des Jahres
@@ -252,7 +252,7 @@ export default function CopyAssignments(): JSX.Element {
 
           <input
             id="copySubmit"
-            className="btn btn-lg btn-success btn-block"
+            className="btn btn-lg btn-success w-100"
             type="submit"
             value="Kopieren"
           />

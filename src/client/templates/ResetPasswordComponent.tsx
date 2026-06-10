@@ -53,7 +53,7 @@ export default function ResetPassword(): JSX.Element {
                 </div>
                 <input
                   id="reset"
-                  className="btn btn-lg btn-success btn-block"
+                  className="btn btn-lg btn-success w-100"
                   type="submit"
                   value="Zurücksetzen"
                 />

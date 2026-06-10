@@ -192,7 +192,7 @@ export default function AssignmentForm(props: AssignmentFormProps): JSX.Element 
             <div className="form-group" data-required="true">
               <label htmlFor="durationDisplay">Dauer</label>
               <div className="input-group duration">
-                <span className="input-group-btn">
+                <span>
                   <button
                     className="btn btn-primary increase"
                     type="button"
@@ -217,7 +217,7 @@ export default function AssignmentForm(props: AssignmentFormProps): JSX.Element 
                   className="form-control"
                   title={formatDuration(duration)}
                 />
-                <span className="input-group-btn">
+                <span>
                   <button
                     className="btn btn-info increase"
                     type="button"

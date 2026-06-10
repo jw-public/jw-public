@@ -30,8 +30,8 @@ export default class AssignmentPanelHeading extends React.Component<AssignmentPa
           <div className="col-7 text-center">{assignmentName}</div>
 
           <div className="col-5 text-center">
-            <span className="visible-lg">{assignmentDayOfWeekShort}</span>
-            <span className="hidden-lg">{assignmentDayOfWeekLong}</span>
+            <span className="d-none d-lg-inline">{assignmentDayOfWeekShort}</span>
+            <span className="d-lg-none">{assignmentDayOfWeekLong}</span>
           </div>
         </div>
       </div>
