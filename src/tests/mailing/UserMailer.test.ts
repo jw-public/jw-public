@@ -5,7 +5,7 @@ import { IUserMailer } from "../../server/mailing/interfaces/IUserMailer";
 
 import { MailTestCase } from "./common/MailTestCase";
 
-import * as marked from "marked";
+import { marked } from "marked";
 
 describe("UserMailer", async function () {
 
@@ -65,7 +65,7 @@ describe("UserMailer", async function () {
       to: "someUser@email.com",
       subject: "My Test",
       text: "Test Text",
-      html: marked("Test __Text__")
+      html: marked.parse("Test __Text__") as string
     });
   });
 
@@ -97,7 +97,7 @@ describe("UserMailer", async function () {
       to: "someUser@email.com",
       subject: "My Test",
       text: "Test Text",
-      html: marked("Test __Text__")
+      html: marked.parse("Test __Text__") as string
     });
 
   });

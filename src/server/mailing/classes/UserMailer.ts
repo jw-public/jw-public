@@ -11,7 +11,7 @@ import { IUserFactory } from "../../user/interfaces/IUserFactory";
 
 import { inject, injectable } from "inversify";
 
-import * as marked from 'marked';
+import { marked } from 'marked';
 import * as removeMarkdown from 'remove-markdown';
 
 @injectable()
@@ -55,7 +55,7 @@ export class UserMailer implements IUserMailer {
       to: userEmail,
       subject: options.subject,
       text: removeMarkdown(options.markdownContent),
-      html: marked(options.markdownContent)
+      html: marked.parse(options.markdownContent) as string
     });
   }
 
