@@ -67,22 +67,22 @@ export const UserProfileSchema = new SimpleSchema({
                 return false;
               })
               .then(function (isValid) {
-              if (!isValid) {
-                // Alle Formulare, die die Telefonnummer beinhalten benachrichtigen
-                Registration.getStepTwoContext().addValidationErrors([
-                  {
-                    name: "profile.mobile",
-                    type: "phoneNumberInvalid",
-                  },
-                ]);
-                ProfileEdit.getValidationContext().addValidationErrors([
-                  {
-                    name: "profile.mobile",
-                    type: "phoneNumberInvalid",
-                  },
-                ]);
-              }
-            });
+                if (!isValid) {
+                  // Alle Formulare, die die Telefonnummer beinhalten benachrichtigen
+                  Registration.getStepTwoContext().addValidationErrors([
+                    {
+                      name: "profile.mobile",
+                      type: "phoneNumberInvalid",
+                    },
+                  ]);
+                  ProfileEdit.getValidationContext().addValidationErrors([
+                    {
+                      name: "profile.mobile",
+                      type: "phoneNumberInvalid",
+                    },
+                  ]);
+                }
+              });
           }
         }
       }

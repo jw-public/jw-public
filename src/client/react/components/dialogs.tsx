@@ -133,7 +133,12 @@ export function alertDialog(message: React.ReactNode, title?: string): Promise<v
       zIndex={zIndex}
       onDismiss={() => close(undefined)}
       footer={
-        <button type="button" className="btn btn-primary" autoFocus onClick={() => close(undefined)}>
+        <button
+          type="button"
+          className="btn btn-primary"
+          autoFocus
+          onClick={() => close(undefined)}
+        >
           OK
         </button>
       }
