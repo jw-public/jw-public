@@ -1,5 +1,5 @@
+import { alertDialog, promptDialog } from "../../../react/components/dialogs";
 import * as ServerMethodsWrapper from "../../../../lib/classes/ServerMethodsWrapper";
-import { promptDialog } from "../../../react/components/dialogs";
 
 export function cancelDialog(assignmentId: string) {
   promptDialog({ title: "Was ist der Grund für die Terminabsage?" }).then(function (
@@ -9,12 +9,10 @@ export function cancelDialog(assignmentId: string) {
       // Prompt dismissed
     } else {
       // result has a value
-      var proxy = new ServerMethodsWrapper.AssignmentProxy(assignmentId);
-      proxy.cancel(result, function (error) {
-        if (error) {
-          console.error("Was trying to cancel an assignment: ", error);
-          alert("Fehler: " + error.toString());
-        }
+      const proxy = new ServerMethodsWrapper.AssignmentProxy(assignmentId);
+      proxy.cancel(result).catch((error) => {
+        console.error("Was trying to cancel an assignment: ", error);
+        alertDialog("Fehler: " + error.toString(), "Fehler");
       });
     }
   });
@@ -28,12 +26,10 @@ export function reenableDialog(assignmentId: string) {
       // Prompt dismissed
     } else {
       // result has a value
-      var proxy = new ServerMethodsWrapper.AssignmentProxy(assignmentId);
-      proxy.reenable(result, function (error) {
-        if (error) {
-          console.error("Was trying to reenable an assignment: ", error);
-          alert("Fehler: " + error.toString());
-        }
+      const proxy = new ServerMethodsWrapper.AssignmentProxy(assignmentId);
+      proxy.reenable(result).catch((error) => {
+        console.error("Was trying to reenable an assignment: ", error);
+        alertDialog("Fehler: " + error.toString(), "Fehler");
       });
     }
   });

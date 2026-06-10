@@ -43,3 +43,9 @@ declare module "meteor/accounts-base" {
         function setPasswordAsync(userId: string, newPassword: string, options?: Object): Promise<void>;
     }
 }
+
+declare module "meteor/meteor" {
+  module Meteor {
+    function callAsync(name: string, ...args: any[]): Promise<any>;
+  }
+}

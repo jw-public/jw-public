@@ -1,4 +1,4 @@
-import { confirmDialog } from "../../../react/components/dialogs";
+import { alertDialog, confirmDialog } from "../../../react/components/dialogs";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { Meteor } from "meteor/meteor";
@@ -145,14 +145,17 @@ export default function AssignmentManager(props: AssignmentManagerProps): JSX.El
 
   const closeAndSubmit = () => {
     const proxy = new ServerMethodsWrapper.AssignmentProxy(props.assignmentId);
-    proxy.close(participants, (error: any) => {
-      if (error) {
+    proxy
+      .close(participants)
+      .then(() => {
+        if (!_.isUndefined(props.onSuccess) && _.isFunction(props.onSuccess)) {
+          props.onSuccess();
+        }
+      })
+      .catch((error: any) => {
         console.error(error);
-        alert(error);
-      } else if (!_.isUndefined(props.onSuccess) && _.isFunction(props.onSuccess)) {
-        props.onSuccess();
-      }
-    });
+        alertDialog(String(error), "Fehler");
+      });
   };
 
   const onCloseClick = (event: React.MouseEvent) => {

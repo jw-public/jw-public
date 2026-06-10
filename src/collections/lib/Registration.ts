@@ -21,7 +21,7 @@ export const NewUserSchema = new SimpleSchema({
     custom: function () {
       // Überprüft, ob der Nutzer schon im System ist und gibt ggf. eine Fehlermeldung aus.
       if (Meteor.isClient && this.isSet) {
-        Meteor.call("userExists", this.value, function (error, result) {
+        Meteor.callAsync("userExists", this.value).then(function (result: boolean) {
           if (result) {
             getStepTwoContext().addValidationErrors([
               {

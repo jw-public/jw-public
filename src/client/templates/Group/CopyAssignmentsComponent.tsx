@@ -151,30 +151,23 @@ export default function CopyAssignments(): JSX.Element {
       setAlerts(next);
     };
 
-    const processResult = (index: number) => {
-      if (index < targets.length) {
-        const toWeek = targets[index];
-        proxy.copyAssignmentWeek(
-          {
+    const processAll = async () => {
+      for (const toWeek of targets) {
+        try {
+          const copied = await proxy.copyAssignmentWeek({
             from: { calendarWeek: from.week, year: from.year },
             to: { calendarWeek: toWeek.week, year: toWeek.year },
-          },
-          (err: Meteor.Error, copied: number) => {
-            if (err) {
-              console.error("Fehler beim kopieren:", err);
-              errors += `Fehler beim kopieren von KW ${from.week} ${from.year} nach KW ${toWeek.week} ${toWeek.year}: ${err.reason}\n`;
-            } else {
-              totalCopied += copied;
-            }
-            processResult(index + 1);
-          },
-        );
-      } else {
-        displaySummaryAlerts();
+          });
+          totalCopied += copied;
+        } catch (err: any) {
+          console.error("Fehler beim kopieren:", err);
+          errors += `Fehler beim kopieren von KW ${from.week} ${from.year} nach KW ${toWeek.week} ${toWeek.year}: ${err.reason}\n`;
+        }
       }
+      displaySummaryAlerts();
     };
 
-    processResult(0);
+    processAll();
   };
 
   return (

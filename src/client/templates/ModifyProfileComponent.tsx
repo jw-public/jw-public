@@ -1,3 +1,4 @@
+import { alertDialog } from "../react/components/dialogs";
 import * as React from "react";
 import { useState } from "react";
 import { Accounts } from "meteor/accounts-base";
@@ -292,7 +293,7 @@ export default function ModifyProfile(): JSX.Element {
     UserCollection.users.update(user._id, { $set: { [field]: value } }, {}, (err: any) => {
       if (err) {
         console.log(`Fehler beim Speichern von ${field}: `, err);
-        alert("Speichern fehlgeschlagen: " + (err.reason ?? err.message));
+        alertDialog("Speichern fehlgeschlagen: " + (err.reason ?? err.message), "Fehler");
       }
     });
   };

@@ -61,11 +61,12 @@ export const UserProfileSchema = new SimpleSchema({
               return "phoneNumberInvalid";
             }
           } else {
-            ServerMethodsWrapper.Validator.validatePhoneNumber(rawNumber, function (err, isValid) {
-              if (err) {
+            ServerMethodsWrapper.Validator.validatePhoneNumber(rawNumber)
+              .catch((err) => {
                 console.error(err);
-              }
-
+                return false;
+              })
+              .then(function (isValid) {
               if (!isValid) {
                 // Alle Formulare, die die Telefonnummer beinhalten benachrichtigen
                 Registration.getStepTwoContext().addValidationErrors([

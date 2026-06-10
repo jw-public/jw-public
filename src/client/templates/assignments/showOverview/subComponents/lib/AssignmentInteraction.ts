@@ -1,4 +1,4 @@
-import { confirmDialog } from "../../../../../react/components/dialogs";
+import { alertDialog, confirmDialog } from "../../../../../react/components/dialogs";
 import * as _ from "underscore";
 
 import { Meteor } from "meteor/meteor";
@@ -24,19 +24,23 @@ export default class AssignmentInteraction {
   public cancelApplication() {
     this.requestPending = true;
 
-    this.proxy.cancelApplication((err: Meteor.Error) => {
-      this.requestPending = false;
-      this.handleError(err);
-    });
+    this.proxy
+      .cancelApplication()
+      .catch((err: Meteor.Error) => this.handleError(err))
+      .finally(() => {
+        this.requestPending = false;
+      });
   }
 
   public apply() {
     this.requestPending = true;
 
-    this.proxy.applyOnAssignment((err: Meteor.Error) => {
-      this.requestPending = false;
-      this.handleError(err);
-    });
+    this.proxy
+      .applyOnAssignment()
+      .catch((err: Meteor.Error) => this.handleError(err))
+      .finally(() => {
+        this.requestPending = false;
+      });
   }
 
   private isMobileScreen(): boolean {
@@ -65,7 +69,7 @@ export default class AssignmentInteraction {
 
   private handleError(error: Meteor.Error) {
     if (!_.isUndefined(error)) {
-      alert(error.reason);
+      alertDialog(error.reason, "Fehler");
       console.error(error);
     }
   }

@@ -70,13 +70,9 @@ function useUserCount(loggedIn: boolean): string {
     if (!loggedIn) {
       return;
     }
-    Meteor.call("getAllUsersCount", (err: Meteor.Error, asyncValue: number) => {
-      if (err) {
-        console.log(err);
-      } else {
-        setUserCount(String(asyncValue));
-      }
-    });
+    Meteor.callAsync("getAllUsersCount")
+      .then((asyncValue: number) => setUserCount(String(asyncValue)))
+      .catch((err: Meteor.Error) => console.log(err));
   }, [loggedIn]);
 
   return userCount;

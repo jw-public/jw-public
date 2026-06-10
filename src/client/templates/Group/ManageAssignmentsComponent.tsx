@@ -1,4 +1,4 @@
-import { confirmDialog } from "../../react/components/dialogs";
+import { alertDialog, confirmDialog } from "../../react/components/dialogs";
 import * as React from "react";
 import { useState } from "react";
 import { Meteor } from "meteor/meteor";
@@ -26,11 +26,9 @@ function removeAssignment(assignmentId: string): void {
       return;
     }
     const proxy = new ServerMethodsWrapper.AssignmentProxy(assignmentId);
-    proxy.remove((error: any) => {
-      if (error) {
-        console.error("Was trying to remove an assignment: ", error);
-        alert("Fehler: " + error.toString());
-      }
+    proxy.remove().catch((error: any) => {
+      console.error("Was trying to remove an assignment: ", error);
+      alertDialog("Fehler: " + error.toString(), "Fehler");
     });
   });
 }

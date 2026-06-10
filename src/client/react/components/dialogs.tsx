@@ -126,6 +126,23 @@ export function confirmDialog(options: ConfirmOptions): Promise<boolean> {
   ));
 }
 
+export function alertDialog(message: React.ReactNode, title?: string): Promise<void> {
+  return mountDialog<void>((close, zIndex) => (
+    <DialogShell
+      title={title ?? "Hinweis"}
+      zIndex={zIndex}
+      onDismiss={() => close(undefined)}
+      footer={
+        <button type="button" className="btn btn-primary" autoFocus onClick={() => close(undefined)}>
+          OK
+        </button>
+      }
+    >
+      {message}
+    </DialogShell>
+  ));
+}
+
 export interface PromptOptions {
   title: string;
   submitLabel?: string;

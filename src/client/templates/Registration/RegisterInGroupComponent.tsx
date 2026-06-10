@@ -1,3 +1,4 @@
+import { alertDialog } from "../../react/components/dialogs";
 import SimpleSchema from "../../../collections/lib/SimpleSchema";
 import * as React from "react";
 import { useState } from "react";
@@ -66,10 +67,10 @@ export default function RegisterInGroup(): JSX.Element {
       return;
     }
 
-    Meteor.call("userExists", cleaned, (err: Meteor.Error, userExists: boolean) => {
+    Meteor.callAsync("userExists", cleaned).then((userExists: boolean) => {
       if (userExists) {
         console.log("Benutzer ist bereits registriert!");
-        alert(
+        alertDialog(
           "Du bist bereits schon im System registriert. Eine zweite Registrierung ist zurzeit nicht möglich.",
         );
       } else {
@@ -115,7 +116,7 @@ export default function RegisterInGroup(): JSX.Element {
       { email: doc.email, password: doc.password, profile: doc.profile },
       (err: any) => {
         if (err) {
-          alert(err.details ?? err.reason ?? String(err));
+          alertDialog(err.details ?? err.reason ?? String(err), "Fehler");
           console.error(err);
         } else {
           Routes.go(Routes.Def.Home);

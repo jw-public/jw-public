@@ -1,4 +1,4 @@
-import { confirmDialog } from "../../../react/components/dialogs";
+import { alertDialog, confirmDialog } from "../../../react/components/dialogs";
 import * as React from "react";
 import { useState } from "react";
 import { Meteor } from "meteor/meteor";
@@ -70,8 +70,9 @@ function EditUserPanel(props: {
           ]);
         } else {
           // Roles live in their own collection since alanning:roles v4.
-          Meteor.call("adminSetUserRoles", props.user._id, roles, (rolesErr: any) => {
-            if (rolesErr) {
+          Meteor.callAsync("adminSetUserRoles", props.user._id, roles)
+            .then(() => props.onClose())
+            .catch((rolesErr: any) => {
               console.error("Was trying to set roles: ", rolesErr);
               setAlerts([
                 {
@@ -80,10 +81,7 @@ function EditUserPanel(props: {
                   type: "danger",
                 },
               ]);
-            } else {
-              props.onClose();
-            }
-          });
+            });
         }
       },
     );
@@ -265,11 +263,9 @@ function removeUser(userId: string): void {
       return;
     }
     const proxy = new ServerMethodsWrapper.AdminUserProxy(userId);
-    proxy.removeUser((error: any) => {
-      if (error) {
-        console.error("Was trying to remove an user: ", error);
-        alert("Fehler: " + error.toString());
-      }
+    proxy.removeUser().catch((error: any) => {
+      console.error("Was trying to remove an user: ", error);
+      alertDialog("Fehler: " + error.toString(), "Fehler");
     });
   });
 }

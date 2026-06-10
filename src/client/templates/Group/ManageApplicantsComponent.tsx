@@ -6,7 +6,7 @@ import { Routes } from "../../../lib/client/routes";
 import User from "../../../collections/lib/classes/User";
 import { Groups } from "../../../collections/lib/GroupCollection";
 import * as UserCollection from "../../../collections/lib/UserCollection";
-import { confirmDialog } from "../../react/components/dialogs";
+import { alertDialog, confirmDialog } from "../../react/components/dialogs";
 import * as ServerMethodsWrapper from "../../../lib/classes/ServerMethodsWrapper";
 
 import DataTable, { DataTableColumn } from "../../react/components/DataTable";
@@ -16,11 +16,9 @@ function acceptUser(userId: string): void {
   console.log("Adding User " + userId + " zur Gruppe " + groupId);
 
   const proxy = new ServerMethodsWrapper.GroupProxy(groupId);
-  proxy.addUserToGroup(userId, (err: Meteor.Error) => {
-    if (err) {
-      console.error("Fehler bei Annehmen:", err);
-      alert(err.reason);
-    }
+  proxy.addUserToGroup(userId).catch((err: Meteor.Error) => {
+    console.error("Fehler bei Annehmen:", err);
+    alertDialog(err.reason, "Fehler");
   });
 }
 
@@ -35,11 +33,9 @@ function denyUser(userId: string): void {
   }).then((result) => {
     if (result) {
       const proxy = new ServerMethodsWrapper.GroupProxy(groupId);
-      proxy.denyUser(userId, (err: Meteor.Error) => {
-        if (err) {
-          console.error("Fehler bem Ablehnen:", err);
-          alert(err.reason);
-        }
+      proxy.denyUser(userId).catch((err: Meteor.Error) => {
+        console.error("Fehler bem Ablehnen:", err);
+        alertDialog(err.reason, "Fehler");
       });
     }
   });
