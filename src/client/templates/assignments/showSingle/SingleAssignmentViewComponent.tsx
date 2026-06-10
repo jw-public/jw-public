@@ -15,7 +15,6 @@ import AssignmentFormComponent from "../../components/assignmentForm/AssignmentF
 import * as AssignmentManagerModal from "../../components/assignmentManager/AssignmentManagerModal";
 
 import { Routes } from "../../../../lib/client/routes";
-import { FlowRouter } from "meteor/ostrio:flow-router-extra";
 
 function BackButton(): JSX.Element {
   return (
@@ -87,7 +86,7 @@ function AssignmentPreview(props: { assignmentDao: AssignmentDAO }): JSX.Element
 
 export default function SingleAssignmentView(): JSX.Element {
   const data = useTracker(() => {
-    const assignmentId = FlowRouter.getParam(Routes.ParamNames.AssignmentId);
+    const assignmentId = Routes.getParam(Routes.ParamNames.AssignmentId);
     const handle = Meteor.subscribe("singleAssignment", assignmentId);
     Meteor.subscribe("ownUserData");
 

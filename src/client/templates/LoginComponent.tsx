@@ -4,7 +4,6 @@ import { Accounts } from "meteor/accounts-base";
 import { Meteor } from "meteor/meteor";
 import { useTracker } from "meteor/react-meteor-data";
 
-import { FlowRouter } from "meteor/ostrio:flow-router-extra";
 import { Routes } from "../../lib/client/routes";
 import { InlineAlert, InlineAlerts } from "../react/components/InlineAlerts";
 
@@ -101,7 +100,7 @@ export default function Login(): JSX.Element {
     event.preventDefault();
     setAlerts([]);
 
-    const gotoParam = FlowRouter.getQueryParam("goto");
+    const gotoParam = Routes.getQueryParam("goto");
     Meteor.loginWithPassword(user.trim().toLowerCase(), password, (err: any) => {
       if (err) {
         setAlerts([{ message: "Benutzer oder Passwort falsch. Bitte noch einmal versuchen.", type: "danger" }]);
@@ -109,7 +108,7 @@ export default function Login(): JSX.Element {
         if (gotoParam === undefined) {
           Routes.go(Routes.Def.Home);
         } else {
-          FlowRouter.go(gotoParam);
+          Routes.goToPath(gotoParam);
         }
       }
     });

@@ -1,8 +1,8 @@
 import * as React from "react";
 import { useState } from "react";
 import { Meteor } from "meteor/meteor";
-import { FlowRouter } from "meteor/ostrio:flow-router-extra";
 import * as moment from "moment";
+import { Routes } from "../../../lib/client/routes";
 
 import * as ServerMethodsWrapper from "../../../lib/classes/ServerMethodsWrapper";
 import { InlineAlert, InlineAlerts } from "../../react/components/InlineAlerts";
@@ -123,7 +123,7 @@ export default function CopyAssignments(): JSX.Element {
       return { week: parseInt(w, 10), year: parseInt(y, 10) };
     });
 
-    const proxy = new ServerMethodsWrapper.GroupProxy(FlowRouter.getParam("groupId"));
+    const proxy = new ServerMethodsWrapper.GroupProxy(Routes.getParam("groupId"));
     let totalCopied = 0;
     let errors = "";
 

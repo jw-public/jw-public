@@ -2,7 +2,6 @@ import * as React from "react";
 import { useState } from "react";
 import { Accounts } from "meteor/accounts-base";
 
-import { FlowRouter } from "meteor/ostrio:flow-router-extra";
 import { Routes } from "../../lib/client/routes";
 import { InlineAlert, InlineAlerts } from "../react/components/InlineAlerts";
 
@@ -14,7 +13,7 @@ export default function ResetPassword(): JSX.Element {
     event.preventDefault();
     setAlerts([]);
 
-    const token = FlowRouter.getParam(Routes.ParamNames.Token);
+    const token = Routes.getParam(Routes.ParamNames.Token);
     console.log("trigger reset");
     Accounts.resetPassword(token, password, (err: any) => {
       if (err) {

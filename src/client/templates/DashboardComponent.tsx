@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { Meteor } from "meteor/meteor";
 import { useTracker } from "meteor/react-meteor-data";
 import * as _ from "underscore";
+import { Routes } from "../../lib/client/routes";
 
-import { FlowRouter } from "meteor/ostrio:flow-router-extra";
 import * as moment from "moment";
 
 import Assignment from "../../collections/lib/classes/Assignment";
@@ -119,10 +119,9 @@ export default function Dashboard(): JSX.Element {
             smallContent: "Termine in " + group.name + "",
             showLink: hasAssignments,
             link: hasAssignments
-              ? FlowRouter.path(
-                  "assignment-list",
+              ? Routes.path(
+                  Routes.Def.AssignmentOverview,
                   { groupId: group.getId(), yearMonth: Assignment.convertDateToMonthString(moment()) },
-                  {},
                 )
               : null,
             footerDescription: hasAssignments
@@ -146,14 +145,16 @@ export default function Dashboard(): JSX.Element {
           smallContent: "Gruppenanfrage(n) für " + group.name + "",
           footerDescription: "Bewerbungen bearbeiten",
           showLink: true,
-          link: FlowRouter.path("groupApplicants", { groupId: group.getId() }, {}),
+          link: Routes.path(Routes.Def.GroupApplicants, { groupId: group.getId() }),
         });
       }
     });
 
     // --- Eigene offene Gruppenanfragen ---------------------------------------
     const ownPendingPanels: DashboardPanelData[] = [];
-    _.forEach(user.pendingGroups || [], (group) => {
+    // Group docs may not be delivered yet right after registration/login.
+    const loadedPendingGroups = (user.pendingGroups || []).filter((g) => g.exists());
+    _.forEach(loadedPendingGroups, (group) => {
       ownPendingPanels.push({
         panelClass: "panel-green",
         fontAwesomeIcon: "fa-check",
@@ -182,7 +183,7 @@ export default function Dashboard(): JSX.Element {
         smallContent: "Benutzer",
         footerDescription: "Benutzerverwaltung.",
         showLink: true,
-        link: FlowRouter.path("adminUsers", {}, {}),
+        link: Routes.path(Routes.Def.UserManagement),
       }
     : null;
 

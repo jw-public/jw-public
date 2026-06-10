@@ -2,9 +2,10 @@ import * as React from "react";
 import { useState } from "react";
 import { Meteor } from "meteor/meteor";
 import { useTracker } from "meteor/react-meteor-data";
-import { FlowRouter } from "meteor/ostrio:flow-router-extra";
 import * as _ from "underscore";
 import * as moment from "moment";
+import { Routes } from "../../../../lib/client/routes";
+import { Link } from "react-router-dom";
 
 import { AssignmentDAO, Assignments } from "../../../../collections/lib/AssignmentsCollection";
 import Assignment from "../../../../collections/lib/classes/Assignment";
@@ -17,7 +18,7 @@ import AssignmentPanel from "./AssignmentPanel";
 type FilterState = "all" | "own" | "readyForClose";
 
 function getSelectedMonth(): moment.Moment {
-  const yearMonth = FlowRouter.getParam("yearMonth");
+  const yearMonth = Routes.getParam("yearMonth");
   return yearMonth ? moment(yearMonth, Assignment.MonthStringFormat) : moment();
 }
 
@@ -126,7 +127,7 @@ export default function ShowOverview(): JSX.Element {
   const [filter, setFilter] = useState<FilterState>("all");
 
   const data = useTracker(() => {
-    const groupId = FlowRouter.getParam("groupId");
+    const groupId = Routes.getParam("groupId");
     const yearMonth = Assignment.convertDateToMonthString(getSelectedMonth());
     const handle = Meteor.subscribe("assignmentsInMonthPerGroup", groupId, yearMonth);
 
@@ -138,12 +139,15 @@ export default function ShowOverview(): JSX.Element {
       (item: any) => item.number,
     );
 
+    const groupDoc = Groups.findOne({ _id: groupId });
+
     return {
       groupId,
       yearMonth,
       ready: handle.ready(),
-      groupName: Groups.findOne({ _id: groupId })?.name ?? "",
-      isCoordinator: new User(Meteor.userId()).isGroupCoordinator(new Group(groupId)),
+      groupName: groupDoc?.name ?? "",
+      // The group doc may not be delivered yet on a cold load.
+      isCoordinator: groupDoc ? new User(Meteor.userId()).isGroupCoordinator(new Group(groupId)) : false,
       assignments: Assignments.find(assignmentSelector(groupId, filter), {
         sort: { start: 1, name: 1, _id: 1 },
       }).fetch(),
@@ -159,9 +163,9 @@ export default function ShowOverview(): JSX.Element {
         const monthYear = Assignment.convertDateToMonthString(month);
         return (
           <li key={monthYear} className={monthYear === data.yearMonth ? "active" : ""}>
-            <a href={FlowRouter.path("assignment-list", { groupId: data.groupId, yearMonth: monthYear }, {})}>
+            <Link to={Routes.path(Routes.Def.AssignmentOverview, { groupId: data.groupId, yearMonth: monthYear })}>
               {month.format("MMM YY")}
-            </a>
+            </Link>
           </li>
         );
       })}
@@ -175,7 +179,7 @@ export default function ShowOverview(): JSX.Element {
       <div className="row">
         <div className="col-lg-12">
           <h1 className="page-header">
-            <a className="btn btn-primary" href={FlowRouter.path("home", {}, {})}><i className="fa fa-chevron-left fa-fw"></i></a> Termine
+            <Link className="btn btn-primary" to={Routes.path(Routes.Def.Home)}><i className="fa fa-chevron-left fa-fw"></i></Link> Termine
             <small> {data.groupName}</small>
           </h1>
         </div>

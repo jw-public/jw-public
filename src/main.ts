@@ -1,29 +1,9 @@
-import { Roles } from "meteor/alanning:roles";
 import { Meteor } from "meteor/meteor";
-import { Session } from "meteor/session";
-import { Template } from "meteor/templating";
-import ResizeSensor from "./lib/ResizeSensor";
 
 // The following code runs client-side in the browser.
 if (Meteor.isClient) {
-    // Helper function to check if a string is empty.
-    Template.registerHelper('isEmptyString', function (value) {
-        // Helper function that checks if a string is empty
-        // This is used in the Spacebars template
-        return (!value || /^\s*$/.test(value));
-    });
-
-    // Helper function to check if a user is an admin
-    Template.registerHelper('isAdmin', function (user) {
-        return Roles.userIsInRole(user, "admin");
-    });
-
     Meteor.startup(function () {
-        // Set initial values for error and success messages
-        Session.set('signUpErrorMessage', false);
-        Session.set('signUpSuccessMessage', false);
-        Session.set('loginErrorMessage', false);
-        new ResizeSensor();
+        // sb-admin layout sizing: keep #page-wrapper filling the viewport.
         $(window).bind("load resize", function () {
             var height, topOffset, width;
             topOffset = 50;

@@ -2,8 +2,8 @@ import * as React from "react";
 import { useState } from "react";
 import { Meteor } from "meteor/meteor";
 import { useTracker } from "meteor/react-meteor-data";
-import { FlowRouter } from "meteor/ostrio:flow-router-extra";
 import * as moment from "moment";
+import { Routes } from "../../../lib/client/routes";
 
 import DatePicker from "react-datepicker";
 
@@ -36,7 +36,7 @@ function removeAssignment(assignmentId: string): void {
 }
 
 export default function ManageAssignments(): JSX.Element {
-  const groupId = useTracker(() => FlowRouter.getParam("groupId"));
+  const groupId = useTracker(() => Routes.getParam("groupId"));
 
   const [filterStart, setFilterStart] = useState<Date>(moment().subtract(1, "weeks").toDate());
   const [filterEnd, setFilterEnd] = useState<Date>(moment().add(4, "months").toDate());

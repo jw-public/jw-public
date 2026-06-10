@@ -2,7 +2,7 @@ import * as React from "react";
 import { useState } from "react";
 import { Meteor } from "meteor/meteor";
 import { useTracker } from "meteor/react-meteor-data";
-import { FlowRouter } from "meteor/ostrio:flow-router-extra";
+import { Routes } from "../../../../lib/client/routes";
 
 import { GroupApplicationController } from "../../../../collections/lib/classes/Group";
 import { GroupDAO, Groups } from "../../../../collections/lib/GroupCollection";
@@ -141,7 +141,7 @@ export default function ModifyGroups(): JSX.Element {
       title: "",
       render: (g) => (
         <span>
-          <a href={FlowRouter.path("registerInGroup", { groupId: g._id }, {})} className="btn btn-primary">
+          <a href={Routes.path(Routes.Def.UserRegistration, { groupId: g._id })} className="btn btn-primary">
             <i className="fa fa-link"></i>
           </a>{" "}
           <button type="button" className="btn btn-primary edit-group" onClick={() => setSelectedGroupId(g._id)}>

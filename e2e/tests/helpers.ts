@@ -14,13 +14,11 @@ export async function login(page: Page, email = ADMIN_EMAIL, password = ADMIN_PA
   await expect(page.locator("div#page-wrapper")).toBeVisible();
 }
 
-// Client-side navigation via FlowRouter. Cold page loads of some routes are
-// broken in the legacy app (blank page on /manage-assignments, role-trigger
-// redirect on /admin/*), so tests navigate the way real users do.
+// Since the react-router migration every route survives a cold page load
+// (the guards wait for auth/roles instead of redirecting too early), so this
+// is a plain navigation now. The name stays for spec readability.
 export async function flowGoto(page: Page, path: string): Promise<void> {
-  await page.evaluate((p) => {
-    (window as any).Package["ostrio:flow-router-extra"].FlowRouter.go(p);
-  }, path);
+  await page.goto(path);
 }
 
 // The metismenu sidebar re-initializes on reactive re-renders, which can

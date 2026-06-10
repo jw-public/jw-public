@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Meteor } from "meteor/meteor";
 import { useTracker } from "meteor/react-meteor-data";
-import { FlowRouter } from "meteor/ostrio:flow-router-extra";
+import { Routes } from "../../../lib/client/routes";
 
 import { Groups } from "../../../collections/lib/GroupCollection";
 import * as UserCollection from "../../../collections/lib/UserCollection";
@@ -28,7 +28,7 @@ function searchText(u: UserCollection.UserDAO): string {
 
 export default function GroupMembers(): JSX.Element {
   const { groupName, members } = useTracker(() => {
-    const groupId = FlowRouter.getParam("groupId");
+    const groupId = Routes.getParam("groupId");
     Meteor.subscribe("groupMembers", groupId);
 
     return {

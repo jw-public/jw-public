@@ -14,6 +14,7 @@ test.describe("Profile", () => {
     const form = page.locator("form").filter({ has: page.locator("input[name='profile.placeName']") }).first();
     await form.locator("input[name='profile.placeName']").fill(newPlace);
     await form.locator("button.submit-change").click();
+    await expect(form.getByText("Dein Profil wurde gespeichert.")).toBeVisible({ timeout: 10_000 });
 
     // Reload (full page) and verify persistence.
     await page.goto("/my-profile");

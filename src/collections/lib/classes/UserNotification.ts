@@ -1,10 +1,10 @@
 import { check } from "meteor/check";
 import { AssignmentEventType as AssignmentType } from "../../../imports/assignments/interfaces/AssignmentEventType";
+import { Def, buildPath } from "../../../lib/RoutePaths";
 
 import Assignment from "./Assignment";
 import * as EnumUtil from "./EnumUtil";
 
-import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 import * as moment from "moment";
 import "../ValidationFunctions/requiredFor";
 
@@ -296,7 +296,7 @@ class AssignmentWrapper implements Wrapper {
     }
 
     get link(): string {
-        return FlowRouter.path("singleAssignment", { assignmentId: this.dataAccessObject.assignmentOptions.id });
+        return buildPath(Def.AssignmentSingleView, { assignmentId: this.dataAccessObject.assignmentOptions.id });
     }
 
     get data(): NotificationDAO {

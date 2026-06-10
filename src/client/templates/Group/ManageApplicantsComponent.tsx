@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Meteor } from "meteor/meteor";
 import { useTracker } from "meteor/react-meteor-data";
-import { FlowRouter } from "meteor/ostrio:flow-router-extra";
+import { Routes } from "../../../lib/client/routes";
 
 import User from "../../../collections/lib/classes/User";
 import { Groups } from "../../../collections/lib/GroupCollection";
@@ -11,7 +11,7 @@ import * as ServerMethodsWrapper from "../../../lib/classes/ServerMethodsWrapper
 import DataTable, { DataTableColumn } from "../../react/components/DataTable";
 
 function acceptUser(userId: string): void {
-  const groupId = FlowRouter.getParam("groupId");
+  const groupId = Routes.getParam("groupId");
   console.log("Adding User " + userId + " zur Gruppe " + groupId);
 
   const proxy = new ServerMethodsWrapper.GroupProxy(groupId);
@@ -24,7 +24,7 @@ function acceptUser(userId: string): void {
 }
 
 function denyUser(userId: string): void {
-  const groupId = FlowRouter.getParam("groupId");
+  const groupId = Routes.getParam("groupId");
   const user = User.createFromId(userId);
 
   console.log("Denying User " + userId + " " + groupId);
@@ -68,7 +68,7 @@ function searchText(u: UserCollection.UserDAO): string {
 
 export default function ManageApplicants(): JSX.Element {
   const { groupName, applicants } = useTracker(() => {
-    const groupId = FlowRouter.getParam("groupId");
+    const groupId = Routes.getParam("groupId");
     Meteor.subscribe("groupApplicants", groupId);
 
     return {

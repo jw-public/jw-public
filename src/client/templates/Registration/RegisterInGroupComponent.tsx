@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Accounts } from "meteor/accounts-base";
 import { Meteor } from "meteor/meteor";
 import { useTracker } from "meteor/react-meteor-data";
-import { FlowRouter } from "meteor/ostrio:flow-router-extra";
+import { Routes } from "../../../lib/client/routes";
 
 import { Groups } from "../../../collections/lib/GroupCollection";
 import * as Registration from "../../../collections/lib/Registration";
@@ -52,7 +52,7 @@ export default function RegisterInGroup(): JSX.Element {
   const [alerts, setAlerts] = useState<InlineAlert[]>([]);
 
   const groupName = useTracker(
-    () => Groups.findOne({ _id: FlowRouter.getParam("groupId") })?.name ?? "",
+    () => Groups.findOne({ _id: Routes.getParam("groupId") })?.name ?? "",
   );
 
   const onSubmitStepOne = (event: React.FormEvent) => {
@@ -94,7 +94,7 @@ export default function RegisterInGroup(): JSX.Element {
         mobile,
         placeName,
         zip,
-        pendingGroups: [FlowRouter.getParam("groupId")],
+        pendingGroups: [Routes.getParam("groupId")],
       } as any,
     };
 
@@ -115,7 +115,7 @@ export default function RegisterInGroup(): JSX.Element {
           alert(err.details ?? err.reason ?? String(err));
           console.error(err);
         } else {
-          FlowRouter.go("home");
+          Routes.go(Routes.Def.Home);
         }
       },
     );

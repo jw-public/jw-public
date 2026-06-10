@@ -1,13 +1,12 @@
-import { Template } from "meteor/templating";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Meteor } from "meteor/meteor";
+import { Routes } from "../../../lib/client/routes";
 
 //import { AutoForm, AutoField, TextField, SubmitField, HiddenField } from 'uniforms-bootstrap3';
 
 import { WeekBlueprintSchema, Blueprints } from "../../../collections/lib/BlueprintCollection"
 import { WeekBlueprint } from "../../../imports/blueprint/interfaces/WeekBlueprint";
-import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 
 
 
@@ -19,7 +18,7 @@ export class ManageBlueprintsComponent extends React.Component<{}, {}> {
     }
 
     private getGroupId(): string {
-        return FlowRouter.getParam("groupId");
+        return Routes.getParam("groupId");
     }
 
     public render(): JSX.Element {

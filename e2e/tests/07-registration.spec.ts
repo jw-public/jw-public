@@ -55,11 +55,11 @@ test.describe("Registration", () => {
 
     await flowGoto(page, `/group/${groupId}/bewerber`);
     await expect(page.locator("h1.page-header")).toContainText("Bewerbungen", { timeout: 20_000 });
-    const row = page.locator(".dataTables_wrapper tr", { hasText: "Musterfrau" });
+    const row = page.locator(".dataTables_wrapper tr", { hasText: email });
     await row.locator("button.accept-user").click();
 
     // The applicant disappears from the table once accepted.
-    await expect(page.locator(".dataTables_wrapper tr", { hasText: "Musterfrau" })).toHaveCount(0, {
+    await expect(page.locator(".dataTables_wrapper tr", { hasText: email })).toHaveCount(0, {
       timeout: 15_000,
     });
 
