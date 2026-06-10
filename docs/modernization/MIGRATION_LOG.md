@@ -57,8 +57,16 @@ Infrastructure built: `client/react/components/DataTable.tsx` (tabular/DataTable
 - jQuery slide animations on admin edit panels dropped
 - showOverview filter state no longer persists across page navigation (was a module-level ReactiveVar)
 
-## Phase 3 — Meteor 3 (NOT in this PR — next project)
-Deliberately stopped before this step. Honest scoping after Phase 2:
+## Phase 3 — Meteor 3 — STARTED on branch `meteor3` (stacked on this PR)
+Progress on the stacked branch (each step suite-validated until the final jump):
+- ✅ Meteor 2.7 → **2.16** (suite 17/17)
+- ✅ simpl-schema migration: atmosphere v1 → npm simpl-schema + collection2 v3 (suite 17/17)
+- ✅ alanning:roles v1 → **v4** incl. data migration to Meteor.roleAssignment, null publication, admin role editing via method (suite 17/17)
+- ✅ ongoworks:security → native collection allow() rules (suite 17/17)
+- ✅ Meteor **3.3.2 installed and booting**: all atmosphere packages M3-ready (legacy wrappers replaced by npm: bootstrap JS, bootbox, font-awesome, google-libphonenumber, own publish-counts), schema layer on aldeed:simple-schema@2 + collection2 v4, startup/seed async. **Suite: 9/17 green.**
+- ⏳ REMAINING: the async sweep of the server domain layer — publish.ts/methods.ts/security.ts entry points plus the synchronous isomorphic domain classes used by the DI controllers (server/assignments/*, server/user/*, mailing) and their TypeMoq unit tests. The exception histogram in the meteor3 branch's last commit message is the exact work list.
+
+Original scoping notes:
 1. **Isomorphic domain layer must go async.** The classes in `collections/lib/classes/` (User, Group, Assignment, …) call `findOne()/fetch()/count()` synchronously and run on BOTH client (minimongo, stays sync) and server (Fibers gone in Meteor 3 → must be `*Async`). This needs an explicit design decision (split client/server paths vs. async-everywhere) — not something to decide overnight without review.
 2. **simpl-schema migration.** aldeed:simple-schema v1 (atmosphere) → npm simpl-schema + collection2 v4; all schema definitions need porting.
 3. Remaining atmosphere packages need M3-compatible versions: alanning:roles v4 (role document format migration!), flow-router-extra, blaze-layout (or go straight to Phase 4 first), publish-composite, publish-counts, collection-helpers, ongoworks:security, emgee:libphonenumber (→ npm libphonenumber-js), mizzao:bootboxjs (→ React modals), mrt:gsap (→ npm gsap or CSS).
