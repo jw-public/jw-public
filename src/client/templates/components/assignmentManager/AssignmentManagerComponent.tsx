@@ -235,8 +235,8 @@ export default function AssignmentManager(props: AssignmentManagerProps): JSX.El
             )}
             <li className="list-group-item">
               <form onSubmit={addParticipant}>
-                <div className="input-group">
-                  <div style={{ minWidth: "200px", width: "100%" }} id="userSelect2">
+                <div className="d-flex gap-2">
+                  <div className="flex-grow-1" id="userSelect2">
                     <Select
                       inputId="addParticipantSelect"
                       placeholder="Benutzer"
@@ -247,11 +247,9 @@ export default function AssignmentManager(props: AssignmentManagerProps): JSX.El
                       }
                     />
                   </div>
-                  <span>
-                    <button type="submit" className="btn btn-success">
-                      <i className="fa fa-user-plus fa-fw"></i>
-                    </button>
-                  </span>
+                  <button type="submit" className="btn btn-success" title="Teilnehmer hinzufügen">
+                    <i className="fa fa-user-plus fa-fw"></i>
+                  </button>
                 </div>
               </form>
             </li>

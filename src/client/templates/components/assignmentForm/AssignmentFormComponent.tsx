@@ -192,22 +192,20 @@ export default function AssignmentForm(props: AssignmentFormProps): JSX.Element 
             <div className="form-group" data-required="true">
               <label htmlFor="durationDisplay">Dauer</label>
               <div className="input-group duration">
-                <span>
-                  <button
-                    className="btn btn-primary increase"
-                    type="button"
-                    onClick={() => increaseDuration(-30)}
-                  >
-                    -30 Min
-                  </button>
-                  <button
-                    className="btn btn-info increase"
-                    type="button"
-                    onClick={() => increaseDuration(-15)}
-                  >
-                    -15 Min
-                  </button>
-                </span>
+                <button
+                  className="btn btn-primary increase"
+                  type="button"
+                  onClick={() => increaseDuration(-30)}
+                >
+                  -30 Min
+                </button>
+                <button
+                  className="btn btn-info increase"
+                  type="button"
+                  onClick={() => increaseDuration(-15)}
+                >
+                  -15 Min
+                </button>
                 <input
                   id="durationDisplay"
                   style={{ textAlign: "center" }}
@@ -217,22 +215,20 @@ export default function AssignmentForm(props: AssignmentFormProps): JSX.Element 
                   className="form-control"
                   title={formatDuration(duration)}
                 />
-                <span>
-                  <button
-                    className="btn btn-info increase"
-                    type="button"
-                    onClick={() => increaseDuration(15)}
-                  >
-                    +15 Min
-                  </button>
-                  <button
-                    className="btn btn-primary increase"
-                    type="button"
-                    onClick={() => increaseDuration(30)}
-                  >
-                    +30 Min
-                  </button>
-                </span>
+                <button
+                  className="btn btn-info increase"
+                  type="button"
+                  onClick={() => increaseDuration(15)}
+                >
+                  +15 Min
+                </button>
+                <button
+                  className="btn btn-primary increase"
+                  type="button"
+                  onClick={() => increaseDuration(30)}
+                >
+                  +30 Min
+                </button>
               </div>
             </div>
 

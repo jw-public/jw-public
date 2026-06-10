@@ -81,11 +81,9 @@ function ForgottenPasswordModal(props: { onClose: () => void }): JSX.Element {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
-                  <span>
-                    <button className="btn btn-success" type="submit">
-                      <i className="fa fa-envelope"></i> Absenden
-                    </button>
-                  </span>
+                  <button className="btn btn-success" type="submit">
+                    <i className="fa fa-envelope"></i> Absenden
+                  </button>
                 </div>
               </form>
             </div>
