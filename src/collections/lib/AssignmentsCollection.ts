@@ -1,3 +1,4 @@
+import SimpleSchema from "./SimpleSchema";
 import { Meteor } from "meteor/meteor";
 import { Mongo } from "meteor/mongo";
 
@@ -65,18 +66,15 @@ export const AssignmentSchema = new SimpleSchema({
   group: {
     type: String,
     regEx: SimpleSchema.RegEx.Id,
-    index: 1
   },
   copyActionId: {
     type: String,
     regEx: SimpleSchema.RegEx.Id,
-    index: 1,
     optional: true
   },
   start: {
     type: Date,
     label: "Beginn",
-    index: 1
   },
   end: {
     type: Date,
@@ -84,10 +82,9 @@ export const AssignmentSchema = new SimpleSchema({
   },
   yearOfIsoWeek: {
     type: Number,
-    index: 1,
     min: 2014,
     autoValue: function (): number {
-      var context = <CustomValidatorContext>this;
+      var context = <any>this;
       var startField = context.field("start");
       if (startField.isSet) {
         var startDate = startField.value;
@@ -100,10 +97,9 @@ export const AssignmentSchema = new SimpleSchema({
   },
   year: {
     type: Number,
-    index: 1,
     min: 2015,
     autoValue: function (): number {
-      var context = <CustomValidatorContext>this;
+      var context = <any>this;
       var startField = context.field("start");
       if (startField.isSet) {
         var startDate = startField.value;
@@ -116,11 +112,10 @@ export const AssignmentSchema = new SimpleSchema({
   },
   month: {
     type: Number,
-    index: 1,
     min: 0,
     max: 11,
     autoValue: function (): number {
-      var context = <CustomValidatorContext>this;
+      var context = <any>this;
       var startField = context.field("start");
       if (startField.isSet) {
         var startDate = startField.value;
@@ -133,11 +128,10 @@ export const AssignmentSchema = new SimpleSchema({
   },
   isoWeek: {
     type: Number,
-    index: 1,
     min: 1,
     max: 53,
     autoValue: function (): number {
-      var context = <CustomValidatorContext>this;
+      var context = <any>this;
       var startField = context.field("start");
       if (startField.isSet) {
         var startDate = startField.value;
@@ -165,7 +159,7 @@ export const AssignmentSchema = new SimpleSchema({
     label: "Grund für Absage",
     optional: true,
     custom: function () {
-      var context = <CustomValidatorContext>this;
+      var context = <any>this;
 
       var shouldBeRequired = AssignmentState[<string>context.field('state').value] === AssignmentState.Canceled;
 
@@ -217,7 +211,7 @@ export const AssignmentSchema = new SimpleSchema({
     type: AssignmentUserEntrySchema
   },
   contacts: {
-    type: [String],
+    type: Array,
     label: "Ansprechpersonen",
     minCount: 1
   },
@@ -225,7 +219,7 @@ export const AssignmentSchema = new SimpleSchema({
     type: String,
     regEx: SimpleSchema.RegEx.Id,
     /*        custom: function() {
-                var context = <CustomValidatorContext>this;
+                var context = <any>this;
                 if (Meteor.isServer && !CollectionConf.IS_TEST && context.isSet) {
                     var groupId = <string>(context.field("group").value);
                     var group = new Group(groupId);
@@ -294,7 +288,6 @@ export const AssignmentSchema = new SimpleSchema({
         return new Date();
       }
     },
-    denyInsert: true,
     optional: true
   }
 });

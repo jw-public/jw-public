@@ -1,3 +1,4 @@
+import SimpleSchema from "./SimpleSchema";
 import { Mongo } from "meteor/mongo";
 
 export interface UserEntry {
@@ -22,7 +23,6 @@ export const AssignmentCopyActionSchema = new SimpleSchema({
   group: {
     type: String,
     regEx: SimpleSchema.RegEx.Id,
-    index: 1
   },
   fromYearOfIsoWeek: {
     type: Number,
@@ -48,7 +48,6 @@ export const AssignmentCopyActionSchema = new SimpleSchema({
   },
   executedDate: {
     type: Date,
-    index: 1
   }
 });
 

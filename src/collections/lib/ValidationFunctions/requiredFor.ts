@@ -1,12 +1,11 @@
 import { Match } from "meteor/check";
+import SimpleSchema from "../SimpleSchema";
 
 // Extend the schema options allowed by SimpleSchema
-SimpleSchema.extendOptions({
-  requiredFor: Match.Optional(String)
-});
+SimpleSchema.extendOptions(["requiredFor"]);
 
-export default function requiredForValidator(context: CustomValidatorContext) {
-  let requiredFor = context.definition.requiredFor;
+export default function requiredForValidator(context: any) {
+  let requiredFor = context.definition && context.definition.requiredFor;
   let hasSchemaKeyRequiredFor: boolean = requiredFor !== undefined && requiredFor !== null && requiredFor !== "";
   let typeField = context.field("type");
 
@@ -48,5 +47,5 @@ export default function requiredForValidator(context: CustomValidatorContext) {
  */
 
 SimpleSchema.addValidator(function () {
-  requiredForValidator(<CustomValidatorContext>this);
+  return requiredForValidator(this);
 });

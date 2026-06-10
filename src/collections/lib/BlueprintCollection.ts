@@ -1,3 +1,4 @@
+import SimpleSchema from "./SimpleSchema";
 import { Mongo } from "meteor/mongo";
 import { WeekBlueprint } from './../../imports/blueprint/interfaces/WeekBlueprint.d';
 
@@ -57,14 +58,16 @@ export const SingleBlueprintSchema = new SimpleSchema({
 
 export const WeekBlueprintSchema = new SimpleSchema({
     assignments: {
-        type: [SingleBlueprintSchema],
+        type: Array,
         label: "Termine",
         defaultValue: new Array()
+    },
+    "assignments.$": {
+        type: SingleBlueprintSchema
     },
     group: {
         type: String,
         regEx: SimpleSchema.RegEx.Id,
-        index: 1
     },
     name: {
         type: String,
@@ -94,7 +97,6 @@ export const WeekBlueprintSchema = new SimpleSchema({
                 return new Date();
             }
         },
-        denyInsert: true,
         optional: true
     }
 });

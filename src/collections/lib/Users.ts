@@ -1,4 +1,5 @@
 import { Meteor } from "meteor/meteor";
+import SimpleSchema from "./SimpleSchema";
 import * as _ from "underscore";
 import { SUPPORTED_LANGUAGES } from '../../imports/i18n/classes/I18nProvider';
 
@@ -48,7 +49,7 @@ export const UserProfileSchema = new SimpleSchema({
     label: "Handynummer",
     optional: true,
     custom: function () {
-      var context = <CustomValidatorContext>this;
+      var context = <any>this;
 
       if (!CollectionConf.IS_TEST && !(context.isSet && context.value)) { // Damit bei Dummy Usern keine Fehler entstehen
         return "required";
@@ -68,11 +69,11 @@ export const UserProfileSchema = new SimpleSchema({
 
               if (!isValid) {
                 // Alle Formulare, die die Telefonnummer beinhalten benachrichtigen
-                Registration.getStepTwoContext().addInvalidKeys([{
+                Registration.getStepTwoContext().addValidationErrors([{
                   name: "profile.mobile",
                   type: "phoneNumberInvalid"
                 }]);
-                ProfileEdit.getValidationContext().addInvalidKeys([{
+                ProfileEdit.getValidationContext().addValidationErrors([{
                   name: "profile.mobile",
                   type: "phoneNumberInvalid"
                 }]);
@@ -88,7 +89,7 @@ export const UserProfileSchema = new SimpleSchema({
     label: "Formatierte Handynummer",
     optional: true,
     custom: function () {
-      var context = <CustomValidatorContext>this;
+      var context = <any>this;
 
       if (Meteor.isServer && !CollectionConf.IS_TEST && !(context.isSet && context.value)) {
         return "required";
@@ -99,7 +100,7 @@ export const UserProfileSchema = new SimpleSchema({
         return;
       }
 
-      var context = <CustomValidatorContext>this;
+      var context = <any>this;
       var mobileField = context.siblingField("mobile");
 
       if (mobileField.isSet) {
@@ -122,7 +123,7 @@ export const UserProfileSchema = new SimpleSchema({
     label: "Formatierte Handynummer",
     optional: true,
     custom: function () {
-      var context = <CustomValidatorContext>this;
+      var context = <any>this;
 
       if (Meteor.isServer && !CollectionConf.IS_TEST && !(context.isSet && context.value)) {
         return "required";
@@ -133,7 +134,7 @@ export const UserProfileSchema = new SimpleSchema({
         return;
       }
 
-      var context = <CustomValidatorContext>this;
+      var context = <any>this;
       var mobileField = context.siblingField("mobile");
 
       if (mobileField.isSet) {
@@ -157,7 +158,7 @@ export const UserProfileSchema = new SimpleSchema({
     optional: true
   },
   pendingGroups: {
-    type: [String],
+    type: Array,
     label: "Ausstehende Gruppenbewerbungen",
     optional: true
   },
@@ -166,7 +167,7 @@ export const UserProfileSchema = new SimpleSchema({
     regEx: SimpleSchema.RegEx.Id,
     custom: function () { // Sicherheitsüberprüfung, sodass keine ungültigen IDs referenziert werden.
       if (Meteor.isServer && !CollectionConf.IS_TEST && this.isSet) {
-        var context = <CustomValidatorContext>this;
+        var context = <any>this;
         var groupExists = Group.groupExists(context.value);
 
         if (!groupExists) {
@@ -179,11 +180,10 @@ export const UserProfileSchema = new SimpleSchema({
   zip: {
     type: String,
     optional: true,
-    trim: true,
     label: "Postleitzahl",
     regEx: /^[0-9]{4,5}$/,
     custom: function () {
-      var context = <CustomValidatorContext>this;
+      var context = <any>this;
 
       var shouldBeRequired: boolean = context.isInsert;
 
@@ -205,10 +205,9 @@ export const UserProfileSchema = new SimpleSchema({
   placeName: {
     type: String,
     optional: true,
-    trim: true,
     label: "Wohnort",
     custom: function () {
-      var context = <CustomValidatorContext>this;
+      var context = <any>this;
 
       var shouldBeRequired: boolean = context.isInsert;
 
@@ -238,17 +237,19 @@ export const UserSchema = new SimpleSchema({
     optional: true
   },
   emails: {
-    type: [Object],
+    type: Array,
     label: "E-Mail",
     // this must be optional if you also use other login services like facebook,
     // but if you use only accounts-password, then it can be required
     optional: true
   },
+  "emails.$": {
+    type: Object,
+  },
   "emails.$.address": {
     type: String,
     label: "Adresse",
     regEx: SimpleSchema.RegEx.Email,
-    trim: true,
     autoValue: function () {
       if (this.isSet) {
         return this.value.trim().toLowerCase(); // Alles kleinschreiben
@@ -269,7 +270,7 @@ export const UserSchema = new SimpleSchema({
     blackbox: true
   },
   roles: {
-    type: [String],
+    type: Array,
     label: "Rollen",
     optional: true
   },
@@ -277,17 +278,16 @@ export const UserSchema = new SimpleSchema({
     type: String
   },
   groups: {
-    type: [String],
+    type: Array,
     label: "Gruppen",
-    defaultValue: [],
-    index: 1
+    defaultValue: []
   },
   "groups.$": {
     type: String,
     regEx: SimpleSchema.RegEx.Id,
     custom: function () { // Sicherheitsüberprüfung, sodass keine ungültigen IDs referenziert werden.
       if (Meteor.isServer && !CollectionConf.IS_TEST && this.isSet) {
-        var context = <CustomValidatorContext>this;
+        var context = <any>this;
         var groupExists = Group.groupExists(context.value);
 
         if (!groupExists) {
@@ -320,7 +320,6 @@ export const UserSchema = new SimpleSchema({
         return new Date();
       }
     },
-    denyInsert: true,
     optional: true
   },
   banned: {
@@ -350,7 +349,6 @@ export const JustEmail = new SimpleSchema({
     type: String,
     label: "E-Mail",
     optional: false,
-    trim: true,
     regEx: SimpleSchema.RegEx.Email,
     autoValue: function () {
       if (this.isSet) {

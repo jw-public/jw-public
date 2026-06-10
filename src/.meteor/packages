@@ -11,13 +11,12 @@ ecmascript@0.16.8
 pfafman:font-awesome-4
 reactive-var@1.0.12
 ongoworks:security
-aldeed:collection2
+aldeed:collection2@3.5.0
 dburles:collection-helpers
 email@2.2.6
 service-configuration@1.3.4
 underscorestring:underscore.string
 mizzao:bootboxjs
-davidyaha:collection2-migrations
 emgee:libphonenumber
 reywood:publish-composite
 tmeasday:publish-counts

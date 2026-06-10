@@ -1,3 +1,4 @@
+import SimpleSchema from "./SimpleSchema";
 import { Meteor } from "meteor/meteor";
 
 export const CONTEXT_NAME_STEP_TWO = "register-secondStep-register";
@@ -15,7 +16,6 @@ export const NewUserSchema = new SimpleSchema({
   email: {
     type: String,
     label: "E-Mail",
-    trim: true,
     // this must be optional if you also use other login services like facebook,
     // but if you use only accounts-password, then it can be required
     optional: false,
@@ -24,7 +24,7 @@ export const NewUserSchema = new SimpleSchema({
       if (Meteor.isClient && this.isSet) {
         Meteor.call("userExists", this.value, function (error, result) {
           if (result) {
-            getStepTwoContext().addInvalidKeys([{
+            getStepTwoContext().addValidationErrors([{
               name: "email",
               type: "userAlreadyExisting"
             }]);

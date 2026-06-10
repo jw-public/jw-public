@@ -1,3 +1,4 @@
+import SimpleSchema from "../../collections/lib/SimpleSchema";
 import * as React from "react";
 import { useState } from "react";
 import { Accounts } from "meteor/accounts-base";

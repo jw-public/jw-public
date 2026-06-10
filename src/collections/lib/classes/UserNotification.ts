@@ -1,3 +1,4 @@
+import SimpleSchema from "../SimpleSchema";
 import { check } from "meteor/check";
 import { AssignmentEventType as AssignmentType } from "../../../imports/assignments/interfaces/AssignmentEventType";
 import { Def, buildPath } from "../../../lib/RoutePaths";
@@ -29,7 +30,6 @@ export const AssignmentOptionsSchema = new SimpleSchema({
     /** Grund einer Re-Aktivierung eines Termins */
     reenablingReason: {
         type: String,
-        trim: true,
         optional: true,
         requiredFor: AssignmentType[AssignmentType.Reenable]
     },
@@ -39,26 +39,22 @@ export const AssignmentOptionsSchema = new SimpleSchema({
 export const NotificationDataSchema = new SimpleSchema({
     title: {
         type: String,
-        trim: true
     },
     details: {
         type: String,
-        trim: true
     },
     icon: {
         type: String,
-        trim: true
     },
     hasLink: {
         type: Boolean,
     },
     link: {
         type: String,
-        trim: true,
         regEx: SimpleSchema.RegEx.Url,
         optional: true,
         custom: function () {
-            let context = <CustomValidatorContext>this;
+            let context = <any>this;
             let customCondition = context.field("hasLink").value === true;
             if (customCondition && !context.isSet && (!context.operator || (context.value === null || context.value === ""))) {
                 return "required";
@@ -73,7 +69,6 @@ export const NotificationSchema = new SimpleSchema({
     userId: {
         type: String,
         regEx: SimpleSchema.RegEx.Id,
-        index: 1
     },
     type: {
         type: String,
@@ -81,7 +76,6 @@ export const NotificationSchema = new SimpleSchema({
     },
     when: {
         type: Date,
-        index: -1, // Index auf absteigende Reihenfolge
         autoValue: function (): any {
             if (this.isInsert) {
                 return new Date;
@@ -96,7 +90,7 @@ export const NotificationSchema = new SimpleSchema({
         type: Boolean,
         optional: true,
         autoValue: function () {
-            let context = <CustomValidatorContext>this;
+            let context = <any>this;
             let gotPushed = context.isUpdate && context.operator === "$push";
 
             if (context.isInsert || gotPushed) {
@@ -108,14 +102,14 @@ export const NotificationSchema = new SimpleSchema({
         type: Date,
         optional: true,
         custom: function () {
-            let context = <CustomValidatorContext>this;
+            let context = <any>this;
             let customCondition = context.field("seen").value === true;
             if (customCondition && !context.isSet && (!context.operator || (context.value === null || context.value === ""))) {
                 return "required";
             }
         },
         autoValue: function () {
-            let context = <CustomValidatorContext>this;
+            let context = <any>this;
             let seenField = context.siblingField("seen");
 
             if (seenField.isSet && (seenField.value === true)) {
@@ -176,7 +170,9 @@ export interface Wrapper extends DisplayableNotifcation {
 
 export function wrap(notification: NotificationDAO): Wrapper {
     delete notification._id; // Remove _id field, becaus it is not in the schema
-    check(notification, NotificationSchema);
+    // simpl-schema instances are no longer valid `check` patterns; the doc
+    // was already validated by collection2 on insert.
+    check(notification, Object);
     let wrapper: Wrapper = null;
 
     let type: Type = Type[notification.type];

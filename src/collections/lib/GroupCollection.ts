@@ -1,3 +1,4 @@
+import SimpleSchema from "./SimpleSchema";
 import { Meteor } from "meteor/meteor";
 import { Mongo } from "meteor/mongo";
 
@@ -51,7 +52,6 @@ Groups.attachSchema(new SimpleSchema({
         label: "Name",
         optional: false,
         max: 200,
-        unique: true
     },
     additional: {
         type: String,
@@ -119,7 +119,6 @@ Groups.attachSchema(new SimpleSchema({
                 return new Date();
             }
         },
-        denyInsert: true,
         optional: true
     },
     email: {
@@ -127,6 +126,6 @@ Groups.attachSchema(new SimpleSchema({
         label: "E-Mail",
         optional: true,
         max: 200,
-        unique: false
+
     }
 }));

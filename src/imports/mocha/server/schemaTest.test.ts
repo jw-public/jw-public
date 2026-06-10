@@ -1,3 +1,4 @@
+import SimpleSchema from "../../../collections/lib/SimpleSchema";
 import { Match } from "meteor/check";
 import "../../../collections/lib/ValidationFunctions/requiredFor";
 

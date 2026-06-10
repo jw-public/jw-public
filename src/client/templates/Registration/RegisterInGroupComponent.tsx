@@ -1,3 +1,4 @@
+import SimpleSchema from "../../../collections/lib/SimpleSchema";
 import * as React from "react";
 import { useState } from "react";
 import { Accounts } from "meteor/accounts-base";
@@ -99,11 +100,11 @@ export default function RegisterInGroup(): JSX.Element {
     };
 
     // Same validation source as the old AutoForm: the SimpleSchema context.
-    Registration.NewUserSchema.clean(doc);
+    Registration.NewUserSchema.clean(doc, { mutate: true });
     const context = Registration.getStepTwoContext();
     const valid = context.validate(doc, {});
     if (!valid) {
-      const messages = context.invalidKeys().map((k: any) => context.keyErrorMessage(k.name));
+      const messages = context.validationErrors().map((k: any) => context.keyErrorMessage(k.name));
       setAlerts(messages.map((message: string) => ({ message, type: "danger" as const })));
       return;
     }

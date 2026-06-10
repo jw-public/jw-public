@@ -125,7 +125,7 @@ export default function AssignmentForm(props: AssignmentFormProps): JSX.Element 
     const callback = (err: any) => {
       if (err) {
         const context = (Assignments as any).simpleSchema().namedContext();
-        const invalidKeys = context.invalidKeys ? context.invalidKeys() : [];
+        const invalidKeys = context.validationErrors ? context.validationErrors() : [];
         if (invalidKeys.length > 0) {
           setAlerts(
             invalidKeys.map((k: any) => ({
