@@ -1,4 +1,4 @@
-import * as moment from 'moment-timezone';
+import moment from 'moment-timezone';
 import { IDateParser } from '../interfaces/IDateParser';
 import { II18nProvider } from '../interfaces/II18nProvider';
 import { ILocale } from '../interfaces/ILocale';

@@ -1,4 +1,4 @@
-import * as moment from 'moment';
+import moment from 'moment';
 import { AssignmentDAO } from "../../../collections/lib/AssignmentsCollection";
 import { GroupDAO } from "../../../collections/lib/GroupCollection";
 import { UserDAO } from "../../../collections/lib/UserCollection";

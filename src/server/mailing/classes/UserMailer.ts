@@ -10,7 +10,7 @@ import { IUserMailer, IUserMailerOptions } from "../interfaces/IUserMailer";
 import { IUserFactory } from "../../user/interfaces/IUserFactory";
 
 import { marked } from 'marked';
-import * as removeMarkdown from 'remove-markdown';
+import removeMarkdown from 'remove-markdown';
 
 export class UserMailer implements IUserMailer {
   private logger: Logger;

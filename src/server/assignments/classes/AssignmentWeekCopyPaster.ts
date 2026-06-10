@@ -1,4 +1,4 @@
-import * as moment from "moment";
+import moment from "moment";
 import { AssignmentCopyActionDAO } from "../../../collections/lib/AssignmentCopyActionsCollection";
 import { AssignmentDAO } from "../../../collections/lib/AssignmentsCollection";
 import { AssignmentState } from "../../../collections/lib/classes/AssignmentState";

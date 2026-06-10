@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import * as moment from "moment";
+import moment from "moment";
 
 // Props interface for the DateDisplay component
 interface DateDisplayProps {

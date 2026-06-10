@@ -1,6 +1,6 @@
 import { AssignmentDAO } from "../../../../collections/lib/AssignmentsCollection";
 
-import * as moment from "moment";
+import moment from "moment";
 require("moment-duration-format");
 
 import { Tracker } from "meteor/tracker";
@@ -164,7 +164,7 @@ export function formatDuration(value: number): string {
 export function formatDurationShort(value: number): string {
     var duration = moment.duration(value, 'minutes');
 
-    return duration.format('h[h ] m[min]');
+    return (duration as any).format('h[h ] m[min]');
 }
 
 export interface TemplateOptions {

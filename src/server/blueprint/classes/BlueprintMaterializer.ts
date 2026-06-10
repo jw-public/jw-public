@@ -5,7 +5,7 @@ import { Logger } from './../../../imports/logging/Logger.d';
 import { BlueprintMaterializerOptions, IBlueprintMaterializer } from './../interfaces/IBlueprintMaterializer';
 
 import { LoggerFactory } from 'imports/logging/LoggerFactory';
-import * as moment from 'moment';
+import moment from 'moment';
 import { Types } from "../../Types";
 
 export class BlueprintMaterializer implements IBlueprintMaterializer {

@@ -4,16 +4,16 @@
         "module": "commonjs",
         "isolatedModules": false,
         "jsx": "react",
-        "declaration": false,
         "noImplicitAny": false,
         "removeComments": false,
         "preserveConstEnums": true,
-        "sourceMap": true,
         "skipLibCheck": true,
         "typeRoots": [
             "node_modules/@types/"
         ],
-        "baseUrl": "."
+        "baseUrl": ".",
+        "esModuleInterop": true,
+        "noEmit": true
     },
     "include": [
         "**/*"

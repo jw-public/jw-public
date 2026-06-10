@@ -2,7 +2,7 @@ import * as React from "react";
 import { useMemo, useState } from "react";
 import { Meteor } from "meteor/meteor";
 import { useTracker } from "meteor/react-meteor-data";
-import * as moment from "moment";
+import moment from "moment";
 
 import DatePicker, { registerLocale } from "react-datepicker";
 import { de } from "date-fns/locale";

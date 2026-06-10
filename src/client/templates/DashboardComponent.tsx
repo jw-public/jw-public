@@ -5,7 +5,7 @@ import { useTracker } from "meteor/react-meteor-data";
 import * as _ from "underscore";
 import { Routes } from "../../lib/client/routes";
 
-import * as moment from "moment";
+import moment from "moment";
 
 import Assignment from "../../collections/lib/classes/Assignment";
 import AssignmentCountAccessor from "../../collections/lib/classes/AssignmentCountAccessor";

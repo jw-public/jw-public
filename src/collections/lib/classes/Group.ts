@@ -12,7 +12,7 @@ import { GroupDAO, Groups } from "../GroupCollection";
 
 import { AssignmentDAO, Assignments } from "../AssignmentsCollection";
 
-import * as moment from "moment";
+import moment from "moment";
 
 
 /**

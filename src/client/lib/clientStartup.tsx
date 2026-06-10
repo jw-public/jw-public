@@ -7,7 +7,7 @@ import { RouterProvider } from "react-router-dom";
 
 import { router, Routes } from "../../lib/client/routes";
 
-import * as moment from "moment";
+import moment from "moment";
 require("moment/locale/de");
 
 Meteor.startup(function () {

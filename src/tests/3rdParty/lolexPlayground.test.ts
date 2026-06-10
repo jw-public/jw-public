@@ -1,6 +1,6 @@
 import { assert } from "chai";
 import * as lolex from 'lolex';
-import * as moment from 'moment';
+import moment from 'moment';
 
 
 

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useState } from "react";
 import { Meteor } from "meteor/meteor";
-import * as moment from "moment";
+import moment from "moment";
 import { Routes } from "../../../lib/client/routes";
 
 import * as ServerMethodsWrapper from "../../../lib/classes/ServerMethodsWrapper";

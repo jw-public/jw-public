@@ -6,7 +6,7 @@ import { AssignmentDAO, Assignments } from "../AssignmentsCollection";
 
 import { Counts } from "../../../lib/Counts";
 
-import * as moment from "moment";
+import moment from "moment";
 
 export default class AssignmentCountAccessor {
 

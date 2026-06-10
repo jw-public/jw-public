@@ -5,7 +5,7 @@ import AssignmentPanelBody from "./AssignmentPanelBody";
 import {AssignmentPanelProps} from "../AssignmentPanel";
 import Assignment from "../../../../../collections/lib/classes/Assignment";
 
-import * as moment from "moment";
+import moment from "moment";
 
 
 export default class AssignmentPanelHeading extends React.Component<AssignmentPanelProps, {}> {

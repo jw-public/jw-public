@@ -6,7 +6,7 @@ import { Def, buildPath } from "../../../lib/RoutePaths";
 import Assignment from "./Assignment";
 import * as EnumUtil from "./EnumUtil";
 
-import * as moment from "moment";
+import moment from "moment";
 import "../ValidationFunctions/requiredFor";
 
 

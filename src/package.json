@@ -53,16 +53,17 @@
     "mocha": "^11.7.6",
     "mock-require": "3.0.3",
     "sinon": "14.0.0",
+    "tsx": "^4.22.4",
     "typemoq": "0.3.3"
   },
   "scripts": {
-    "test:watch": "mocha --watch --reporter spec --recursive tests/",
+    "test:watch": "mocha --require tsx/cjs --watch --reporter spec --recursive 'tests/**/*.test.ts'",
     "test": "npm run compile && npm run test:unit",
-    "test:coverage": "npm run compile && c8 --reporter=text --reporter=html --report-dir=../coverage-report --include 'server/**' --include 'collections/**' --include 'lib/**' mocha --recursive tests/",
+    "test:coverage": "npm run compile && c8 --reporter=text --reporter=html --report-dir=../coverage-report --include 'server/**' --include 'collections/**' --include 'lib/**' mocha --require tsx/cjs --recursive 'tests/**/*.test.ts'",
     "start": "meteor run",
     "compile": "./node_modules/.bin/tsc",
     "compile:watch": "./node_modules/.bin/tsc -w",
-    "test:unit": "mocha --reporter spec --recursive tests/"
+    "test:unit": "mocha --require tsx/cjs --reporter spec --recursive 'tests/**/*.test.ts'"
   },
   "author": "",
   "license": "ISC"

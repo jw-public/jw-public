@@ -8,7 +8,7 @@ import Group from "./Group";
 
 import { AssignmentDAO, Assignments, UserEntry } from "../AssignmentsCollection";
 
-import * as moment from "moment";
+import moment from "moment";
 
 
 /**

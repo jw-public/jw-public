@@ -22,7 +22,7 @@ import { AssignmentState } from "../collections/lib/classes/AssignmentState";
 
 import AssignmentCountAccessor from "../collections/lib/classes/AssignmentCountAccessor";
 
-import * as moment from "moment";
+import moment from "moment";
 
 /**
  * Damit im Client bestimmte Daten gelesen werden können, müssen diese "gepublished" werden.

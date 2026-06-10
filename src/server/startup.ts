@@ -6,7 +6,7 @@ import * as _ from "underscore";
 import * as EmailSettingsManager from "./EmailSettingsManager";
 import { initData } from "./InitialData";
 
-import * as moment from "moment";
+import moment from "moment";
 require('moment/locale/de');
 
 // Erstellt User, wenn keine im System vorhanden sind. Dies ist vorallem für Tests notwendig.

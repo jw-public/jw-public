@@ -7,7 +7,7 @@ import { GroupApplicationController } from "./classes/Group";
 import { CollectionConf } from "./collectionConfig/CollectionConf";
 
 
-import * as moment from "moment";
+import moment from "moment";
 
 export const Groups: Mongo.Collection<GroupDAO> = new Mongo.Collection("groups");
 
