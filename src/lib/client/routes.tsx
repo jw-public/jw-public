@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Meteor } from "meteor/meteor";
-import { Roles } from "meteor/alanning:roles";
 import { ReactiveVar } from "meteor/reactive-var";
 import { useTracker } from "meteor/react-meteor-data";
 import {
@@ -87,10 +86,11 @@ function RequireAdmin(props: { children: JSX.Element }): JSX.Element {
     if (!userId) {
       return { decision: loggingIn ? "wait" : "redirect-login" };
     }
-    // Wait for the own-roles null publication (alanning:roles) before
-    // deciding — otherwise admins get bounced on cold loads.
-    const rolesReady = !(Roles as any).subscription || (Roles as any).subscription.ready();
-    if (!Meteor.user() || !rolesReady) {
+    // Wait for the own role assignments before deciding — otherwise admins
+    // get bounced to the dashboard on cold loads. (The null publication has
+    // no client-side ready() signal, hence the named twin "ownRoles".)
+    const rolesSub = Meteor.subscribe("ownRoles");
+    if (!Meteor.user() || !rolesSub.ready()) {
       return { decision: "wait" };
     }
     return { decision: new User(userId).isAdmin() ? "render" : "redirect-home" };

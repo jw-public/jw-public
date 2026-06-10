@@ -63,6 +63,16 @@ Meteor.publish(null, function () {
   return Meteor.roleAssignment.find({ "user._id": this.userId });
 });
 
+// Same data as a NAMED publication: null publications expose no ready()
+// signal on the client, but the admin route guard must wait for the role
+// assignments before deciding (cold-load race).
+Meteor.publish("ownRoles", function () {
+  if (!this.userId) {
+    return this.ready();
+  }
+  return Meteor.roleAssignment.find({ "user._id": this.userId });
+});
+
 Meteor.publish("roles", async function () {
   if (await RolesHelper.userIsAdminAsync(this.userId)) {
     // Die folgenden Daten werden nur freigegeben, wenn ein Benutzer ein Admin ist.
