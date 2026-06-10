@@ -1,3 +1,6 @@
+// CLIENT-ONLY domain view helpers: synchronous minimongo reads for Tracker/
+// React. The Meteor 3 server must use server/services.ts or inline async
+// queries instead — the constructors below enforce this at runtime.
 import { Meteor } from "meteor/meteor";
 import { Mongo } from "meteor/mongo";
 import * as _ from "underscore";
@@ -57,6 +60,12 @@ export default class Assignment {
    * @param id Die ID eines Einsatzes.
    */
   constructor(id: string) {
+    if (Meteor.isServer) {
+      // Diese Klasse liest synchron aus Minimongo — auf dem Meteor-3-Server
+      // ist die Mongo-API async-only. Serverseitig: server/services.ts bzw.
+      // Inline-Queries verwenden (ADR 0005).
+      throw new Error("Assignment is a client-only view helper");
+    }
     this.id = id;
   }
 
