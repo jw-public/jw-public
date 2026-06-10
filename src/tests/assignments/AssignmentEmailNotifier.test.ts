@@ -9,9 +9,9 @@ import { MailingTypes } from '../../server/mailing/MailingTypes';
 import { TestCase } from '../common/TestCase';
 
 
-describe("AssignmentEmailNotifier", function () {
+describe("AssignmentEmailNotifier", async function () {
 
-  it("should not be null or undefined", function () {
+  it("should not be null or undefined", async function () {
     // Arrange
     let testCase = new AssignmentEmailNotifierTestCase();
 
@@ -22,12 +22,12 @@ describe("AssignmentEmailNotifier", function () {
     assert.isNotNull(testCase.notifier);
   });
 
-  it("should send E-Mail when accepted. Group has email address.", function () {
+  it("should send E-Mail when accepted. Group has email address.", async function () {
     // Arrange
     let testCase = new AssignmentEmailNotifierTestCase();
 
     // Act
-    testCase.notifier.notifyUserAboutAssignmentViaEmail({
+    await testCase.notifier.notifyUserAboutAssignmentViaEmail({
       userId: testCase.testUserId,
       assignmentId: "sampleAssignmentId",
       eventType: AssignmentEventType.Accept
@@ -54,13 +54,13 @@ Dort findest du die Kontaktdaten. Bitte sende uns deinen Bericht dieser Schicht 
   });
 
 
-  it("should send E-Mail when removed", function () {
+  it("should send E-Mail when removed", async function () {
     // Arrange
     let testCase = new AssignmentEmailNotifierTestCase();
 
 
     // Act
-    testCase.notifier.notifyUserAboutAssignmentViaEmail({
+    await testCase.notifier.notifyUserAboutAssignmentViaEmail({
       userId: testCase.testUserId,
       assignmentId: "sampleAssignmentId",
       eventType: AssignmentEventType.Removed
@@ -86,13 +86,13 @@ Dort findest du die Kontaktdaten. Bitte sende uns deinen Bericht dieser Schicht 
 
 
 
-  it("should send E-Mail when canceled", function () {
+  it("should send E-Mail when canceled", async function () {
     // Arrange
     let testCase = new AssignmentEmailNotifierTestCase();
 
 
     // Act
-    testCase.notifier.notifyUserAboutAssignmentViaEmail({
+    await testCase.notifier.notifyUserAboutAssignmentViaEmail({
       userId: testCase.testUserId,
       assignmentId: "sampleAssignmentId",
       eventType: AssignmentEventType.Cancel,
@@ -120,13 +120,13 @@ Dort findest du die Kontaktdaten. Bitte sende uns deinen Bericht dieser Schicht 
 
   });
 
-  it("should send E-Mail when changed", function () {
+  it("should send E-Mail when changed", async function () {
     // Arrange
     let testCase = new AssignmentEmailNotifierTestCase();
 
 
     // Act
-    testCase.notifier.notifyUserAboutAssignmentViaEmail({
+    await testCase.notifier.notifyUserAboutAssignmentViaEmail({
       userId: testCase.testUserId,
       assignmentId: "sampleAssignmentId",
       eventType: AssignmentEventType.Modified,
@@ -154,13 +154,13 @@ Dort findest du die Kontaktdaten. Bitte sende uns deinen Bericht dieser Schicht 
 
   });
 
-  it("should send E-Mail when reenabled", function () {
+  it("should send E-Mail when reenabled", async function () {
     // Arrange
     let testCase = new AssignmentEmailNotifierTestCase();
 
 
     // Act
-    testCase.notifier.notifyUserAboutAssignmentViaEmail({
+    await testCase.notifier.notifyUserAboutAssignmentViaEmail({
       userId: testCase.testUserId,
       assignmentId: "sampleAssignmentId",
       eventType: AssignmentEventType.Reenable,
@@ -188,7 +188,7 @@ Dort findest du die Kontaktdaten. Bitte sende uns deinen Bericht dieser Schicht 
     });
   });
 
-  it("should not send E-Mail when user disabled it", function () {
+  it("should not send E-Mail when user disabled it", async function () {
     // Arrange
     let testCase = new AssignmentEmailNotifierTestCase();
     testCase.userCollection.update({ _id: testCase.testUserId }, {
@@ -197,8 +197,8 @@ Dort findest du die Kontaktdaten. Bitte sende uns deinen Bericht dieser Schicht 
       }
     });
 
-    let triggerNotification = (eventType: AssignmentEventType) => {
-      testCase.notifier.notifyUserAboutAssignmentViaEmail({
+    let triggerNotification = async (eventType: AssignmentEventType) => {
+      await testCase.notifier.notifyUserAboutAssignmentViaEmail({
         userId: testCase.testUserId,
         assignmentId: "sampleAssignmentId",
         eventType: eventType,
@@ -207,10 +207,10 @@ Dort findest du die Kontaktdaten. Bitte sende uns deinen Bericht dieser Schicht 
     }
 
     // Act
-    triggerNotification(AssignmentEventType.Accept);
-    triggerNotification(AssignmentEventType.Removed);
-    triggerNotification(AssignmentEventType.Reenable);
-    triggerNotification(AssignmentEventType.Cancel);
+    await triggerNotification(AssignmentEventType.Accept);
+    await triggerNotification(AssignmentEventType.Removed);
+    await triggerNotification(AssignmentEventType.Reenable);
+    await triggerNotification(AssignmentEventType.Cancel);
     // Assert
     testCase.emailAssert.noEmailWasSent();
 

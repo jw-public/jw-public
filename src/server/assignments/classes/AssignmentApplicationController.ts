@@ -24,10 +24,10 @@ export class AssignmentApplicationController implements IAssignmentApplicationCo
   }
 
 
-  public addUserAsApplicantById(userId: string): void {
+  public async addUserAsApplicantById(userId: string): Promise<void> {
     this.logger.info(`User ${userId} applies to ${this.assignmentId}`)
 
-    this.collection.update({
+    await this.collection.updateAsync({
       _id: this.assignmentId,
       "applicants.user": { // User darf nicht sich bereits beworben haben.
         $ne: userId
@@ -44,10 +44,10 @@ export class AssignmentApplicationController implements IAssignmentApplicationCo
     });
   };
 
-  public removeUserAsApplicantById(userId: string): void {
+  public async removeUserAsApplicantById(userId: string): Promise<void> {
     this.logger.info(`User ${userId} removes application from ${this.assignmentId}`)
 
-    this.collection.update({
+    await this.collection.updateAsync({
       _id: this.assignmentId
     }, {
       $pull: {

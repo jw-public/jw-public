@@ -8,12 +8,12 @@ export interface IAssignmentParticipantController {
      * Notifies the user, if he was removed.
      * @param userId The user ID of the participants.
      */
-    removeUserAsParticipantAndNotify(userId: string): boolean;
+    removeUserAsParticipantAndNotify(userId: string): Promise<boolean>;
 
     /**
      * Marks any given user by id as participant for the assignment.
      * Notifies the user, if he was removed.
      * @param userId The user ID of the participants.
      */
-    addUserAsParticipantAndNotify(userId: string): boolean;
+    addUserAsParticipantAndNotify(userId: string): Promise<boolean>;
 }

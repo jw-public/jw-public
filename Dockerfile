@@ -3,20 +3,13 @@ COPY src/build/src.tar.gz /bundle/meteor.tar.gz
 WORKDIR /tmp
 RUN tar xvf /bundle/meteor.tar.gz
 
-FROM node:14
+# Meteor 3.3 bundles target Node 22 — no fibers, no bcrypt rebuild hack.
+FROM node:22
 COPY --from=prepare /tmp/bundle /bundle
 
-# renovate: datasource=npm depName=fibers
-ENV FIBERS_VERSION=4.0.3
-# renovate: datasource=npm depName=bcrypt
-ENV BCRYPT_VERSION=5.0.1
-
-WORKDIR /bundle/programs/server/npm/node_modules/meteor/accounts-password/
-RUN npm install bcrypt@${BCRYPT_VERSION}
-
 WORKDIR /bundle/programs/server/
+RUN npm install
 
-RUN npm install fibers@${FIBERS_VERSION} && npm install bcrypt@${BCRYPT_VERSION} && npm install
 WORKDIR /bundle
 CMD [ "node", "main.js" ]
 EXPOSE 8080

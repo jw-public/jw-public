@@ -11,11 +11,11 @@ export interface IAssignmentParticipationNotifier {
     /**
     * Notifies given users about their acceptance to the assignment.
     */
-    notifyUsersAreAccepted(options: IAssignmentNotifierOptions);
+    notifyUsersAreAccepted(options: IAssignmentNotifierOptions): Promise<void>;
 
     /**
     * Notifies given users about their removal from the assignment.
     */
-    notifyUsersAreNotAccepted(options: IAssignmentNotifierOptions);
+    notifyUsersAreNotAccepted(options: IAssignmentNotifierOptions): Promise<void>;
 
 }

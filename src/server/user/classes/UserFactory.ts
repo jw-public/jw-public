@@ -15,19 +15,16 @@ export class UserFactory implements IUserFactory {
     @inject(Types.Collection) @named("user") private users: SimpleCollection<UserDAO>) {
   }
 
-  createUser(userId: string) {
-    return new UserBE(userId, this.users);
+  async createUser(userId: string): Promise<IUserBE> {
+    const user = await this.users.findOneAsync({ _id: userId });
+    return new UserBE(user);
   }
 
 }
 
 class UserBE implements IUserBE {
-  private user: UserDAO;
 
-  constructor(
-    private userId: string,
-    private users: SimpleCollection<UserDAO>) {
-    this.user = this.users.findOne({ _id: this.userId });
+  constructor(private user: UserDAO) {
   }
 
   public exists(): boolean {

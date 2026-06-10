@@ -7,9 +7,9 @@ import { assert } from "chai";
 
 import { IAssignmentRemover } from "../../server/assignments/interfaces/IAssignmentRemover";
 
-describe("AssignmentRemover", function () {
+describe("AssignmentRemover", async function () {
 
-    it("should not be null or undefined", function () {
+    it("should not be null or undefined", async function () {
         // Arrange
         let testCase = new AssignmentRemoverTestCase();
 
@@ -20,7 +20,7 @@ describe("AssignmentRemover", function () {
         assert.isNotNull(testCase.remover);
     });
 
-    it("should remove assignment", function () {
+    it("should remove assignment", async function () {
         // Arrange
         let testCase = new AssignmentRemoverTestCase();
         let toBeDeletedId = testCase.collection.insert({
@@ -32,14 +32,14 @@ describe("AssignmentRemover", function () {
         });
 
         // Act
-        testCase.remover.removeAssignment(toBeDeletedId);
+        await testCase.remover.removeAssignment(toBeDeletedId);
 
         // Assert
         assert.equal(testCase.collection.find().count(), 1, "Did not remove assignment correctly.");
         assert.equal(testCase.collection.findOne().name, "NOT to be deleted", "Did remove the wrong one.");
     });
 
-    it("should notify participants", function () {
+    it("should notify participants", async function () {
         // Arrange
         let testCase = new AssignmentRemoverTestCase();
         let toBeDeletedId = testCase.collection.insert({
@@ -52,7 +52,7 @@ describe("AssignmentRemover", function () {
         });
 
         // Act
-        testCase.remover.removeAssignment(toBeDeletedId);
+        await testCase.remover.removeAssignment(toBeDeletedId);
 
         // Assert
         assert.equal(testCase.collection.find().count(), 0, "Did not remove assignment correctly.");
@@ -70,7 +70,7 @@ describe("AssignmentRemover", function () {
         });
     });
 
-    it("should notify applicants", function () {
+    it("should notify applicants", async function () {
         // Arrange
         let testCase = new AssignmentRemoverTestCase();
         let toBeDeletedId = testCase.collection.insert({
@@ -83,7 +83,7 @@ describe("AssignmentRemover", function () {
         });
 
         // Act
-        testCase.remover.removeAssignment(toBeDeletedId);
+        await testCase.remover.removeAssignment(toBeDeletedId);
 
         // Assert
         assert.equal(testCase.collection.find().count(), 0, "Did not remove assignment correctly.");

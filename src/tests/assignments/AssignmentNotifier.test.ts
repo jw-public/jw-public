@@ -16,9 +16,9 @@ import { TestCase } from '../common/TestCase';
 
 
 
-describe("AssignmentNotifier", function () {
+describe("AssignmentNotifier", async function () {
 
-  it("should not be null or undefined", function () {
+  it("should not be null or undefined", async function () {
     // Arrange
     let testCase = new AssignmentNotifierTestCase();
 
@@ -29,12 +29,12 @@ describe("AssignmentNotifier", function () {
     assert.isNotNull(testCase.notifier);
   });
 
-  it("should add a notification for given user", function () {
+  it("should add a notification for given user", async function () {
     // Arrange
     let testCase = new AssignmentNotifierTestCase();
 
     // Act
-    testCase.notifier.notifyUserAboutAssignment({
+    await testCase.notifier.notifyUserAboutAssignment({
       userId: testCase.testUserId,
       assignmentId: "randomAssignmentId",
       eventType: AssignmentEventType.Accept
@@ -45,12 +45,12 @@ describe("AssignmentNotifier", function () {
 
   });
 
-  it("should add send notification via email", function () {
+  it("should add send notification via email", async function () {
     // Arrange
     let testCase = new AssignmentNotifierTestCase();
 
     // Act
-    testCase.notifier.notifyUserAboutAssignment({
+    await testCase.notifier.notifyUserAboutAssignment({
       userId: testCase.testUserId,
       assignmentId: "randomAssignmentId",
       eventType: AssignmentEventType.Accept
@@ -64,12 +64,12 @@ describe("AssignmentNotifier", function () {
   });
 
 
-  it("should add a reenabling notification for given user", function () {
+  it("should add a reenabling notification for given user", async function () {
     // Arrange
     let testCase = new AssignmentNotifierTestCase();
 
     // Act
-    testCase.notifier.notifyUserAboutAssignment({
+    await testCase.notifier.notifyUserAboutAssignment({
       userId: testCase.testUserId,
       assignmentId: "randomAssignmentId",
       eventType: AssignmentEventType.Reenable,
@@ -80,32 +80,35 @@ describe("AssignmentNotifier", function () {
     testCase.notificationAssert.thereIsOneNotificationForTestUser().hasReenablingReason("Test Reason");
   });
 
-  it("should throw error if reenabling notification without reason", function () {
+  it("should throw error if reenabling notification without reason", async function () {
     // Arrange
     let testCase = new AssignmentNotifierTestCase();
 
     // Act
-    let functionCall = () => {
-      testCase.notifier.notifyUserAboutAssignment({
+    let rejectionMessage: string = null;
+    try {
+      await testCase.notifier.notifyUserAboutAssignment({
         userId: testCase.testUserId,
         assignmentId: "randomAssignmentId",
         eventType: AssignmentEventType.Reenable,
       });
-    };
+    } catch (error) {
+      rejectionMessage = (error as Error).message;
+    }
 
     // Assert
-    expect(functionCall).to.throw(Error, "Reenabling notification needs a reason.");
+    expect(rejectionMessage).to.equal("Reenabling notification needs a reason.");
     testCase.notificationAssert.assignmentNotificationCountIs(0);
 
   });
 
-  it("should map correct event types", function () {
+  it("should map correct event types", async function () {
 
-    let testForMapping = (enumValue: AssignmentEventType, expectedString: string) => {
+    let testForMapping = async (enumValue: AssignmentEventType, expectedString: string) => {
       // Arrange
       let testCase = new AssignmentNotifierTestCase();
       // Act
-      testCase.notifier.notifyUserAboutAssignment({
+      await testCase.notifier.notifyUserAboutAssignment({
         userId: testCase.testUserId,
         assignmentId: "randomAssignmentId",
         eventType: enumValue
@@ -115,19 +118,19 @@ describe("AssignmentNotifier", function () {
     };
 
 
-    testForMapping(AssignmentEventType.Accept, "Accept");
-    testForMapping(AssignmentEventType.Removed, "Removed");
-    testForMapping(AssignmentEventType.Cancel, "Cancel");
+    await testForMapping(AssignmentEventType.Accept, "Accept");
+    await testForMapping(AssignmentEventType.Removed, "Removed");
+    await testForMapping(AssignmentEventType.Cancel, "Cancel");
 
   });
 
-  it("should link to correct assignment", function () {
+  it("should link to correct assignment", async function () {
 
     // Arrange
     let testCase = new AssignmentNotifierTestCase();
 
     // Act
-    testCase.notifier.notifyUserAboutAssignment({
+    await testCase.notifier.notifyUserAboutAssignment({
       userId: testCase.testUserId,
       assignmentId: "randomAssignmentId",
       eventType: AssignmentEventType.Accept

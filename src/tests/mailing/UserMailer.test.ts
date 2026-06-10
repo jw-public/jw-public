@@ -7,9 +7,9 @@ import { MailTestCase } from "./common/MailTestCase";
 
 import * as marked from "marked";
 
-describe("UserMailer", function () {
+describe("UserMailer", async function () {
 
-  it("should not be null or undefined", function () {
+  it("should not be null or undefined", async function () {
     // Arrange
     let testCase = new UserMailerTestCase();
 
@@ -22,12 +22,12 @@ describe("UserMailer", function () {
   });
 
 
-  it("should not send Email when user not existing", function () {
+  it("should not send Email when user not existing", async function () {
     // Arrange
     let testCase = new UserMailerTestCase();
 
     // Act
-    testCase.sender.send({
+    await testCase.sender.send({
       recepientId: "someUserId",
       subject: "My Test",
       markdownContent: "Test Text",
@@ -38,7 +38,7 @@ describe("UserMailer", function () {
     testCase.emailAssert.noEmailWasSent();
   });
 
-  it("should send correct email to given user, default sender address", function () {
+  it("should send correct email to given user, default sender address", async function () {
     // Arrange
     let testCase = new UserMailerTestCase();
 
@@ -52,7 +52,7 @@ describe("UserMailer", function () {
     });
 
     // Act
-    testCase.sender.send({
+    await testCase.sender.send({
       recepientId: someUserId,
       subject: "My Test",
       markdownContent: "Test __Text__"
@@ -69,7 +69,7 @@ describe("UserMailer", function () {
     });
   });
 
-  it("should send correct email to given user", function () {
+  it("should send correct email to given user", async function () {
     // Arrange
     let testCase = new UserMailerTestCase();
 
@@ -83,7 +83,7 @@ describe("UserMailer", function () {
     });
 
     // Act
-    testCase.sender.send({
+    await testCase.sender.send({
       recepientId: someUserId,
       subject: "My Test",
       markdownContent: "Test __Text__",

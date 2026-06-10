@@ -31,8 +31,8 @@ export class UserMailer implements IUserMailer {
   }
 
 
-  public send(options: IUserMailerOptions) {
-    let user = this.userFactory.createUser(options.recepientId);
+  public async send(options: IUserMailerOptions): Promise<void> {
+    let user = await this.userFactory.createUser(options.recepientId);
 
     if (!user.exists()) {
       return;

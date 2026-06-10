@@ -8,6 +8,6 @@ export interface IAssignmentEmailNotifier {
   /**
   * Notifies given user about their acceptance to the assignment via email.
   */
-  notifyUserAboutAssignmentViaEmail(options: IAssignmentSingleNotifierOptions);
+  notifyUserAboutAssignmentViaEmail(options: IAssignmentSingleNotifierOptions): Promise<void>;
 
 }

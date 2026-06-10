@@ -166,16 +166,9 @@ export const UserProfileSchema = new SimpleSchema({
   "pendingGroups.$": {
     type: String, // TODO: Zeitstempel integrieren, damit man sehen kann, wie alt eine Bewerbung ist.
     regEx: SimpleSchema.RegEx.Id,
-    custom: function () { // Sicherheitsüberprüfung, sodass keine ungültigen IDs referenziert werden.
-      if (Meteor.isServer && !CollectionConf.IS_TEST && this.isSet) {
-        var context = <any>this;
-        var groupExists = Group.groupExists(context.value);
-
-        if (!groupExists) {
-          return "groupIdNotValid";
-        }
-      }
-    }
+    // Referential safety (group must exist) lives in Accounts.validateNewUser
+    // (server/startup.ts): SimpleSchema custom validators are synchronous and
+    // Meteor 3's server Mongo API is async-only.
   },
 
   zip: {
@@ -286,16 +279,10 @@ export const UserSchema = new SimpleSchema({
   "groups.$": {
     type: String,
     regEx: SimpleSchema.RegEx.Id,
-    custom: function () { // Sicherheitsüberprüfung, sodass keine ungültigen IDs referenziert werden.
-      if (Meteor.isServer && !CollectionConf.IS_TEST && this.isSet) {
-        var context = <any>this;
-        var groupExists = Group.groupExists(context.value);
-
-        if (!groupExists) {
-          return "groupIdNotValid";
-        }
-      }
-    }
+    // Referential safety (group must exist) is enforced where groups are
+    // granted (methods.ts addToGroup loads the group first): SimpleSchema
+    // custom validators are synchronous and Meteor 3's server Mongo API is
+    // async-only.
   },
   // Force value to be current date (on server) upon insert
   // and prevent updates thereafter.

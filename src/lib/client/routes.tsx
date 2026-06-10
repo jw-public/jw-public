@@ -117,10 +117,38 @@ function RequireLoggedOut(props: { children: JSX.Element }): JSX.Element {
 }
 
 function Logout(): JSX.Element {
+  // On a Meteor 3 cold load the client looks fully logged out until the DDP
+  // connection is up AND the async resume login has hydrated the session —
+  // Meteor.userId() and Meteor.loggingIn() are both falsy in that window.
+  // Logging out (or leaving) during the window is a server-side no-op and
+  // the resume re-establishes the session right afterwards. So we poll: log
+  // out whenever a settled user appears, and only leave once the client has
+  // stayed logged-out past a grace deadline.
   React.useEffect(() => {
-    Meteor.logout(() => {
+    let cancelled = false;
+    const graceDeadline = Date.now() + 3000;
+    const tick = () => {
+      if (cancelled) {
+        return;
+      }
+      if (Meteor.loggingIn()) {
+        setTimeout(tick, 100);
+        return;
+      }
+      if (Meteor.userId()) {
+        Meteor.logout(() => tick());
+        return;
+      }
+      if (Date.now() < graceDeadline) {
+        setTimeout(tick, 100);
+        return;
+      }
       router.navigate(buildPath(Def.Login));
-    });
+    };
+    tick();
+    return () => {
+      cancelled = true;
+    };
   }, []);
   return <LoadingSpinner />;
 }

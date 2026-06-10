@@ -21,6 +21,6 @@ export interface IAssignmentNotifier {
   /**
   * Notifies given user about their acceptance to the assignment.
   */
-  notifyUserAboutAssignment(options: IAssignmentSingleNotifierOptions);
+  notifyUserAboutAssignment(options: IAssignmentSingleNotifierOptions): Promise<void>;
 
 }

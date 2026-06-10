@@ -19,9 +19,9 @@ import { assert } from "chai";
 
 
 
-describe("AssignmentParticipantController.addUserAsParticipantAndNotify()", function () {
+describe("AssignmentParticipantController.addUserAsParticipantAndNotify()", async function () {
 
-  it("should be able to add a user as participant, when no other user is applicant or participant", function () {
+  it("should be able to add a user as participant, when no other user is applicant or participant", async function () {
     // Arrange
     let addUserTestCase = new AddUserTestCase({
       initialAssignment:
@@ -32,7 +32,7 @@ describe("AssignmentParticipantController.addUserAsParticipantAndNotify()", func
     });
 
     // Act
-    let appliedChanges = addUserTestCase.executeWith(testData.userId);
+    let appliedChanges = await addUserTestCase.executeWith(testData.userId);
 
     // Assert
     let assignmentAssert = addUserTestCase.assignmentAssert;
@@ -42,7 +42,7 @@ describe("AssignmentParticipantController.addUserAsParticipantAndNotify()", func
 
   });
 
-  it("should be able to add a user as participant, when user is applicant. Also removes applicant.", function () {
+  it("should be able to add a user as participant, when user is applicant. Also removes applicant.", async function () {
     // Arrange
     let addUserTestCase = new AddUserTestCase({
       initialAssignment:
@@ -55,7 +55,7 @@ describe("AssignmentParticipantController.addUserAsParticipantAndNotify()", func
     });
 
     // Act
-    let appliedChanges = addUserTestCase.executeWith(testData.userId);
+    let appliedChanges = await addUserTestCase.executeWith(testData.userId);
 
     // Assert
     let assignmentAssert = addUserTestCase.assignmentAssert;
@@ -67,7 +67,7 @@ describe("AssignmentParticipantController.addUserAsParticipantAndNotify()", func
 
   });
 
-  it("should not add participant twice", function () {
+  it("should not add participant twice", async function () {
     // Arrange
     let addUserTestCase = new AddUserTestCase({
       initialAssignment:
@@ -80,7 +80,7 @@ describe("AssignmentParticipantController.addUserAsParticipantAndNotify()", func
     });
 
     // Act
-    let appliedChanges = addUserTestCase.executeWith(testData.userId);
+    let appliedChanges = await addUserTestCase.executeWith(testData.userId);
 
     // Assert
     let assignmentAssert = addUserTestCase.assignmentAssert;
@@ -91,7 +91,7 @@ describe("AssignmentParticipantController.addUserAsParticipantAndNotify()", func
     assert.isFalse(appliedChanges, "Method shall indicate no change")
   });
 
-  it("should notify user, when adding as participant", function () {
+  it("should notify user, when adding as participant", async function () {
     // Arrange
     let addUserTestCase = new AddUserTestCase({
       initialAssignment:
@@ -102,7 +102,7 @@ describe("AssignmentParticipantController.addUserAsParticipantAndNotify()", func
     });
 
     // Act
-    addUserTestCase.executeWith(testData.userId);
+    await addUserTestCase.executeWith(testData.userId);
 
     // Assert
     let assignmentAssert = addUserTestCase.assignmentAssert;
@@ -117,9 +117,9 @@ describe("AssignmentParticipantController.addUserAsParticipantAndNotify()", func
 
 
 
-describe("AssignmentParticipantController.removeUserAsParticipantAndNotify()", function () {
+describe("AssignmentParticipantController.removeUserAsParticipantAndNotify()", async function () {
 
-  it("should be able to remove a user from participants and user is notified", function () {
+  it("should be able to remove a user from participants and user is notified", async function () {
     // Arrange
     let removeUserTestCase = new RemoveUserTestCase({
       initialAssignment:
@@ -132,7 +132,7 @@ describe("AssignmentParticipantController.removeUserAsParticipantAndNotify()", f
     });
 
     // Act
-    let appliedChanges = removeUserTestCase.executeWith(testData.userId);
+    let appliedChanges = await removeUserTestCase.executeWith(testData.userId);
 
     // Assert
     let assignmentAssert = removeUserTestCase.assignmentAssert;
@@ -143,7 +143,7 @@ describe("AssignmentParticipantController.removeUserAsParticipantAndNotify()", f
 
   });
 
-  it("should not throw an error if already not an participant", function () {
+  it("should not throw an error if already not an participant", async function () {
     // Arrange
     let removeUserTestCase = new RemoveUserTestCase({
       initialAssignment:
@@ -156,7 +156,7 @@ describe("AssignmentParticipantController.removeUserAsParticipantAndNotify()", f
     });
 
     // Act
-    let appliedChanges = removeUserTestCase.executeWith(testData.userId);
+    let appliedChanges = await removeUserTestCase.executeWith(testData.userId);
 
     // Assert
     let assignmentAssert = removeUserTestCase.assignmentAssert;
@@ -238,7 +238,7 @@ class AssignmentParticipantControllerTestCase extends AssignmentTestCaseWithNoti
 
 class AddUserTestCase extends AssignmentParticipantControllerTestCase {
 
-  public executeWith(userId: string): boolean {
+  public executeWith(userId: string): Promise<boolean> {
     return this.participantController.addUserAsParticipantAndNotify(userId);
   }
 
@@ -246,7 +246,7 @@ class AddUserTestCase extends AssignmentParticipantControllerTestCase {
 
 class RemoveUserTestCase extends AssignmentParticipantControllerTestCase {
 
-  public executeWith(userId: string): boolean {
+  public executeWith(userId: string): Promise<boolean> {
     return this.participantController.removeUserAsParticipantAndNotify(userId);
   }
 

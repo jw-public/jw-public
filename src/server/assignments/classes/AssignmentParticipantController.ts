@@ -25,13 +25,13 @@ export class AssignmentParticipantController extends AssignmentAction implements
         return this.assignmentContext.getAssignmentId();
     }
 
-    public addUserAsParticipantAndNotify(userId: string): boolean {
+    public async addUserAsParticipantAndNotify(userId: string): Promise<boolean> {
 
-        let isNotAlreadyParticipant = this.userIsNotAlreadyParticipant(userId);
+        let isNotAlreadyParticipant = await this.userIsNotAlreadyParticipant(userId);
 
         if (isNotAlreadyParticipant) {
-            this.addUserAsParticipantInDatabase(userId);
-            this.participationNotifier.notifyUsersAreAccepted({
+            await this.addUserAsParticipantInDatabase(userId);
+            await this.participationNotifier.notifyUsersAreAccepted({
                 assignmentId: this.assignmentId,
                 userIds: [userId]
             });
@@ -40,18 +40,18 @@ export class AssignmentParticipantController extends AssignmentAction implements
         return isNotAlreadyParticipant;
     }
 
-    private userIsNotAlreadyParticipant(userId: string): boolean {
-        return !this.userIsParticipant(userId);
+    private async userIsNotAlreadyParticipant(userId: string): Promise<boolean> {
+        return !(await this.userIsParticipant(userId));
     }
 
-    private userIsParticipant(userId: string): boolean {
-        let assignment = this.getAssignment(this.assignmentId);
+    private async userIsParticipant(userId: string): Promise<boolean> {
+        let assignment = await this.getAssignment(this.assignmentId);
         let participants = extractIdsFromUserEntryArray(assignment.participants);
         return _.contains(participants, userId);
     }
 
-    private addUserAsParticipantInDatabase(userId: string) {
-        this.collection.update({
+    private async addUserAsParticipantInDatabase(userId: string): Promise<void> {
+        await this.collection.updateAsync({
             _id: this.assignmentId,
             "participants.user": { // User darf nicht bereits ein Teilnehmer sein.
                 $ne: userId
@@ -70,11 +70,11 @@ export class AssignmentParticipantController extends AssignmentAction implements
         });
     }
 
-    public removeUserAsParticipantAndNotify(userId: string): boolean {
-        let userIsParticipant = this.userIsParticipant(userId);
+    public async removeUserAsParticipantAndNotify(userId: string): Promise<boolean> {
+        let userIsParticipant = await this.userIsParticipant(userId);
 
         if (userIsParticipant) {
-            this.collection.update({
+            await this.collection.updateAsync({
                 _id: this.assignmentId
             }, {
                 $pull: {
@@ -84,7 +84,7 @@ export class AssignmentParticipantController extends AssignmentAction implements
                 }
             });
 
-            this.participationNotifier.notifyUsersAreNotAccepted({
+            await this.participationNotifier.notifyUsersAreNotAccepted({
                 assignmentId: this.assignmentId,
                 userIds: [userId]
             });

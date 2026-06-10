@@ -20,7 +20,7 @@ export class AssignmentWeekCopyPaster {
     this.logger = loggerFactory.createLogger("AssignmentWeekCopyPaster");
   }
 
-  public copyPasteCalendarWeekInGroup({ groupId, from, to }: {
+  public async copyPasteCalendarWeekInGroup({ groupId, from, to }: {
     groupId: string;
     from: {
       calendarWeek: number;
@@ -30,7 +30,7 @@ export class AssignmentWeekCopyPaster {
       calendarWeek: number;
       year: number;
     };
-  }): number {
+  }): Promise<number> {
     const assignments = this.assignmentCollection.find({
       group: groupId,
       isoWeek: from.calendarWeek,
@@ -40,23 +40,25 @@ export class AssignmentWeekCopyPaster {
     const toMoment = moment().isoWeek(to.calendarWeek).isoWeekYear(to.year)
     const diff = toMoment.diff(fromMoment)
 
+    const assignmentDocs = await assignments.fetchAsync();
+
     const copyAction: AssignmentCopyActionDAO = {
       executedDate: new Date(),
-      totalCopied: assignments.count(),
+      totalCopied: assignmentDocs.length,
       group: groupId,
       fromIsoWeek: from.calendarWeek,
       toIsoWeek: to.calendarWeek,
       fromYearOfIsoWeek: from.year,
       toYearOfIsoWeek: to.year
     }
-    const copyActionId = this.copyActionsCollection.insert(copyAction)
+    const copyActionId = await this.copyActionsCollection.insertAsync(copyAction)
 
     this.logger.info({
       _id: copyActionId,
       ...copyAction
     })
 
-    assignments.forEach((assignment, index, cursor): void => {
+    for (const assignment of assignmentDocs) {
       const fromDate = {
         start: moment(assignment.start).tz('Europe/Berlin'),
         end: moment(assignment.end).tz('Europe/Berlin'),
@@ -87,8 +89,8 @@ export class AssignmentWeekCopyPaster {
       delete copied.createdAt;
       delete copied.updatedAt;
 
-      this.assignmentCollection.insert(copied)
-    });
+      await this.assignmentCollection.insertAsync(copied)
+    }
 
     this.logger.info("Copied " + copyAction.totalCopied + " assignments")
 

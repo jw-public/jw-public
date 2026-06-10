@@ -60,7 +60,7 @@ declare module "meteor/meteor" {
     export function publishComposite(
       name: string,
       configFunc: (...args: any[]) =>
-        PublishCompositeConfig<any> | PublishCompositeConfig<any>[]
+        PublishCompositeConfig<any> | PublishCompositeConfig<any>[] | Promise<PublishCompositeConfig<any>> | Promise<PublishCompositeConfig<any>[]>
     ): void;
   }
 }

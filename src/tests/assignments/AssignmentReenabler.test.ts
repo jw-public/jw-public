@@ -7,9 +7,9 @@ import { assert } from "chai";
 
 import { IAssignmentReenabler } from "../../server/assignments/interfaces/IAssignmentReenabler";
 
-describe("AssignmentReenabler", function () {
+describe("AssignmentReenabler", async function () {
 
-  it("should not be null or undefined", function () {
+  it("should not be null or undefined", async function () {
     // Arrange
     let testCase = new AssignmentReenablerTestCase();
 
@@ -21,7 +21,7 @@ describe("AssignmentReenabler", function () {
   });
 
 
-  it("should set state to Closed by default", function () {
+  it("should set state to Closed by default", async function () {
     // Arrange
     let testCase = new AssignmentReenablerTestCase();
     let toBeReenabledId = testCase.collection.insert({
@@ -30,14 +30,14 @@ describe("AssignmentReenabler", function () {
     });
 
     // Act
-    testCase.reenabler.reenableAssignment(toBeReenabledId, "I don't know");
+    await testCase.reenabler.reenableAssignment(toBeReenabledId, "I don't know");
 
     // Assert
     let actualAssignment = testCase.collection.findOne();
     assert.equal(actualAssignment.state, "Closed", "Did not reenable the assignment.");
   });
 
-  it("should restore valid state before cancelment", function () {
+  it("should restore valid state before cancelment", async function () {
     // Arrange
     let testCase = new AssignmentReenablerTestCase();
     let toBeReenabledId = testCase.collection.insert({
@@ -47,14 +47,14 @@ describe("AssignmentReenabler", function () {
     });
 
     // Act
-    testCase.reenabler.reenableAssignment(toBeReenabledId, "I don't know");
+    await testCase.reenabler.reenableAssignment(toBeReenabledId, "I don't know");
 
     // Assert
     let actualAssignment = testCase.collection.findOne();
     assert.equal(actualAssignment.state, "Closed", "Did not reenable the assignment with desired state.");
   });
 
-  it("should not restore invalid state before cancelment", function () {
+  it("should not restore invalid state before cancelment", async function () {
     // Arrange
     let testCase = new AssignmentReenablerTestCase();
     let toBeReenabledId = testCase.collection.insert({
@@ -64,14 +64,14 @@ describe("AssignmentReenabler", function () {
     });
 
     // Act
-    testCase.reenabler.reenableAssignment(toBeReenabledId, "I don't know");
+    await testCase.reenabler.reenableAssignment(toBeReenabledId, "I don't know");
 
     // Assert
     let actualAssignment = testCase.collection.findOne();
     assert.equal(actualAssignment.state, "Closed", "Did not reenable the assignment with desired state.");
   });
 
-  it("should notify participants", function () {
+  it("should notify participants", async function () {
     // Arrange
     let testCase = new AssignmentReenablerTestCase();
     let toBeReenabledId = testCase.collection.insert({
@@ -85,7 +85,7 @@ describe("AssignmentReenabler", function () {
     });
 
     // Act
-    testCase.reenabler.reenableAssignment(toBeReenabledId, "I don't know");
+    await testCase.reenabler.reenableAssignment(toBeReenabledId, "I don't know");
 
     // Assert
     testCase.expectAmountOfNotificationsIs(2);
@@ -104,7 +104,7 @@ describe("AssignmentReenabler", function () {
     });
   });
 
-  it("should not notify applicants", function () {
+  it("should not notify applicants", async function () {
     // Arrange
     let testCase = new AssignmentReenablerTestCase();
     let toBeReenabledId = testCase.collection.insert({
@@ -118,7 +118,7 @@ describe("AssignmentReenabler", function () {
     });
 
     // Act
-    testCase.reenabler.reenableAssignment(toBeReenabledId, "I don't know");
+    await testCase.reenabler.reenableAssignment(toBeReenabledId, "I don't know");
 
     // Assert
     testCase.expectAmountOfNotificationsIs(0);

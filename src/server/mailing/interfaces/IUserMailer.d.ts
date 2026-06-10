@@ -10,5 +10,5 @@ export interface IUserMailerOptions {
 
 /** I send an email to given mail address */
 export interface IUserMailer {
-  send(options: IUserMailerOptions);
+  send(options: IUserMailerOptions): Promise<void>;
 }

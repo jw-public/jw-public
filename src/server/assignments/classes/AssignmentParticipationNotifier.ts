@@ -11,10 +11,10 @@ export class AssignmentParticipationNotifier implements IAssignmentParticipation
 
     }
 
-    notifyUsersAreAccepted(options: IAssignmentNotifierOptions) {
+    async notifyUsersAreAccepted(options: IAssignmentNotifierOptions): Promise<void> {
 
         for (const userId of options.userIds) {
-            this.assignmentNotifier.notifyUserAboutAssignment({
+            await this.assignmentNotifier.notifyUserAboutAssignment({
                 userId,
                 assignmentId: options.assignmentId,
                 eventType: AssignmentEventType.Accept
@@ -24,9 +24,9 @@ export class AssignmentParticipationNotifier implements IAssignmentParticipation
     }
 
 
-    notifyUsersAreNotAccepted(options: IAssignmentNotifierOptions) {
+    async notifyUsersAreNotAccepted(options: IAssignmentNotifierOptions): Promise<void> {
         for (const userId of options.userIds) {
-            this.assignmentNotifier.notifyUserAboutAssignment({
+            await this.assignmentNotifier.notifyUserAboutAssignment({
                 userId,
                 assignmentId: options.assignmentId,
                 eventType: AssignmentEventType.Removed

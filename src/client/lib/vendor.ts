@@ -10,3 +10,12 @@ import "bootstrap/dist/js/bootstrap.js";
 const bootboxModule = require("bootbox/dist/bootbox.all.min.js");
 
 (window as any).bootbox = (bootboxModule as any).default ?? bootboxModule;
+
+// bootbox 5 templates ship aria-hidden="true"; Bootstrap 4+ removes it on
+// show, Bootstrap 3 never does — leaving visible dialogs (and all their
+// buttons) excluded from the accessibility tree. Strip it whenever a modal
+// is shown.
+const $doc = (window as any).$(document);
+$doc.on("show.bs.modal shown.bs.modal", ".modal", function (this: HTMLElement) {
+    (window as any).$(this).removeAttr("aria-hidden");
+});

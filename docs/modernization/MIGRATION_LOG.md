@@ -66,6 +66,19 @@ Deliberately stopped before this step. Honest scoping after Phase 2:
 
 Recommendation: do Phase 4 (router swap) BEFORE Meteor 3 — it removes blaze-layout, react-template-helper, blaze-html-templates and the layouts, shrinking the package surface further.
 
+## Phase 3 (continued) — Meteor 3 async sweep (branch meteor3)
+- ✅ Server domain layer fully async: publish.ts/methods.ts/security.ts rewritten; all 11 assignment controller classes + UserFactory/UserSettingsReaderFactory/UserMailer on `*Async` APIs; interface contracts annotated `Promise<...>`
+- ✅ Unit tests adapted: minimongo-standalone test double got `*Async` shims (Promise-wrapped sync calls — same as client minimongo); all test call sites await; throw-assertions became rejection-assertions. **101/101 green**, tsc clean.
+- 🐛→✅ `/logout` cold-load race: on Meteor 3 the client briefly looks "settled" before the DDP connection is up; calling `Meteor.logout()` in that window is a server no-op and the resume login re-establishes the session (and wedges `Meteor.loggingIn()` at `true`, which also blanks the login form — broke specs 01/07/08). Logout route now waits for `connected && !loggingIn` and stays mounted until the user is really gone.
+- ✅ Reset-password URL had `//` (ROOT_URL trailing slash) — normalized.
+- ⚠️ Lesson: never edit files under src/ while the Playwright suite runs — the dev-server rebuild hot-code-pushes mid-test and produces identical-looking timeout failures across specs.
+- ‼️ **Build-pipeline gotcha (cost ~2h):** the app has NO `typescript` Meteor package — Meteor bundles the **tsc-emitted `.js` files** (`npm run compile`), the `.ts/.tsx` sources are invisible to it. Every TS edit needs `npm run compile` before the dev server/e2e sees it. (Candidate for Phase 5: add the `typescript` package and make tsc `noEmit`.) Sandboxed dev server also needs `METEOR_WATCH_FORCE_POLLING=true` on macOS.
+- 🐛→✅ bootbox 5 + Bootstrap 3: dialogs keep template `aria-hidden="true"` when shown (BS4+ removes it, BS3 never) → visible dialogs invisible to `getByRole`; broke specs 03/04/05/10 whenever focus sat outside the dialog. vendor.ts now strips `aria-hidden` on `show.bs.modal`.
+- 🐛→✅ Meteor 3 client writes validate against the `insertAsync/updateAsync/removeAsync` allow keys — groups registering only the legacy sync keys leave client writes deny-by-default (broke notification clearing). security.ts registers every rule under both keys.
+- 🐛→✅ SimpleSchema `custom` validators are sync → the two `Group.groupExists()` (`.count()`) checks in Users.ts blew up `createUser`/`addToGroup` on M3. Moved to async `Accounts.validateNewUser` resp. covered by `addToGroup`'s existing group fetch.
+- ✅ **Meteor 3.3.2 green: 101/101 unit tests, 17/17 Playwright (50.8s)**
+- ✅ CI meteor pin 2.16→3.3.2 + Dockerfile node:14+fibers → node:22 (same step, per plan)
+
 ## Phase 4 — react-router ✅ (added to this PR after review continued)
 - ✅ flow-router + BlazeLayout → **react-router v6** (`lib/client/routes.tsx`); guards as components. **Blaze is completely gone** (blaze-html-templates → static-html; react-template-helper, blaze-layout, spacebars, gsap, bootstrap-alerts, subs-cache, jquery-scrollto removed — 9 more packages).
 - ✅ MainLayout/Sidebar/ParallaxScreen React; metisMenu JS + TweenLite + vendored jQuery pickers + customTemplateHelpers deleted.

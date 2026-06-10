@@ -17,19 +17,16 @@ export class UserSettingsReaderFactory implements IUserSettingsReaderFactory {
     @inject(Types.Collection) @named("user") private users: SimpleCollection<UserDAO>) {
   }
 
-  createSettingsReaderFor(userId: string): IUserSettingsReader {
-    return new UserSettingsReader(userId, this.users);
+  async createSettingsReaderFor(userId: string): Promise<IUserSettingsReader> {
+    const user = await this.users.findOneAsync({ _id: userId });
+    return new UserSettingsReader(user);
   }
 
 }
 
 class UserSettingsReader implements IUserSettingsReader {
-  private user: UserDAO;
 
-  constructor(
-    private userId: string,
-    private users: SimpleCollection<UserDAO>) {
-    this.user = this.users.findOne({ _id: this.userId });
+  constructor(private user: UserDAO) {
   }
 
   public wantsToReceiveNotificationAsEmail() {

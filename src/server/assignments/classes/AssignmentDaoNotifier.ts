@@ -12,22 +12,22 @@ export class AssignmentDaoNotifier implements IAssignmentDaoNotifier {
 
     }
 
-    public notifyUsersOfAssignment(options: IAssignmentMultiNotifierOptions) {
-        this.notifyParticipantsOfAssignment(options);
-        this.notifyApplicantsOfAssignment(options);
+    public async notifyUsersOfAssignment(options: IAssignmentMultiNotifierOptions): Promise<void> {
+        await this.notifyParticipantsOfAssignment(options);
+        await this.notifyApplicantsOfAssignment(options);
     }
 
-    public notifyParticipantsOfAssignment(options: IAssignmentMultiNotifierOptions) {
+    public async notifyParticipantsOfAssignment(options: IAssignmentMultiNotifierOptions): Promise<void> {
         let participants = extractIdsFromUserEntryArray(options.assignment.participants);
-        this.notifyUserIds(participants, options);
+        await this.notifyUserIds(participants, options);
     }
 
-    public notifyApplicantsOfAssignment(options: IAssignmentMultiNotifierOptions) {
+    public async notifyApplicantsOfAssignment(options: IAssignmentMultiNotifierOptions): Promise<void> {
         let applicants = extractIdsFromUserEntryArray(options.assignment.applicants);
-        this.notifyUserIds(applicants, options);
+        await this.notifyUserIds(applicants, options);
     }
 
-    private notifyUserIds(userIds: Array<string>, options: IAssignmentMultiNotifierOptions) {
+    private async notifyUserIds(userIds: Array<string>, options: IAssignmentMultiNotifierOptions): Promise<void> {
         for (const userId of userIds) {
             let notifierOptions: IAssignmentSingleNotifierOptions = {
                 userId,
@@ -39,7 +39,7 @@ export class AssignmentDaoNotifier implements IAssignmentDaoNotifier {
                 notifierOptions.reenablingReason = options.reenablingReason;
             }
 
-            this.assignmentNotifier.notifyUserAboutAssignment(notifierOptions);
+            await this.assignmentNotifier.notifyUserAboutAssignment(notifierOptions);
         }
     }
 

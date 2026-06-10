@@ -20,18 +20,18 @@ export class AssignmentCanceler extends AssignmentAction implements IAssignmentC
         super(collection);
     }
 
-    cancelAssignment(assignmentId: string, reason: string): void {
-        let assignment = this.getAssignment(assignmentId);
+    async cancelAssignment(assignmentId: string, reason: string): Promise<void> {
+        let assignment = await this.getAssignment(assignmentId);
 
-        this.updateDatabaseEntry(assignment, reason);
-        this.assignmentNotifier.notifyParticipantsOfAssignment({
+        await this.updateDatabaseEntry(assignment, reason);
+        await this.assignmentNotifier.notifyParticipantsOfAssignment({
             assignment,
             eventType: AssignmentEventType.Cancel
         });
     }
 
-    private updateDatabaseEntry(assignment: AssignmentDAO, reason: string): void {
-        this.collection.update({ _id: assignment._id }, {
+    private async updateDatabaseEntry(assignment: AssignmentDAO, reason: string): Promise<void> {
+        await this.collection.updateAsync({ _id: assignment._id }, {
             $set: {
                 state: AssignmentState[AssignmentState.Canceled],
                 cancelationReason: reason,

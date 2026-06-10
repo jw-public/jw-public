@@ -13,8 +13,8 @@ export class AssignmentAction {
 
     }
 
-    protected getAssignment(assignmentId: string): AssignmentDAO {
+    protected async getAssignment(assignmentId: string): Promise<AssignmentDAO> {
         assignmentId = assignmentId.toString();
-        return this.collection.findOne({ _id: assignmentId });
+        return await this.collection.findOneAsync({ _id: assignmentId });
     }
 }

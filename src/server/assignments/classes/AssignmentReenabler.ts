@@ -19,21 +19,21 @@ export class AssignmentReenabler extends AssignmentAction implements IAssignment
     super(collection);
   }
 
-  reenableAssignment(assignmentId: string, reason: string): void {
-    let assignment = this.getAssignment(assignmentId);
+  async reenableAssignment(assignmentId: string, reason: string): Promise<void> {
+    let assignment = await this.getAssignment(assignmentId);
 
-    this.updateDatabaseEntry(assignment, reason);
-    this.assignmentNotifier.notifyParticipantsOfAssignment({
+    await this.updateDatabaseEntry(assignment, reason);
+    await this.assignmentNotifier.notifyParticipantsOfAssignment({
       assignment,
       eventType: AssignmentEventType.Reenable,
       reenablingReason: reason
     });
   }
 
-  private updateDatabaseEntry(assignment: AssignmentDAO, reason: string): void {
+  private async updateDatabaseEntry(assignment: AssignmentDAO, reason: string): Promise<void> {
 
 
-    this.collection.update({ _id: assignment._id }, {
+    await this.collection.updateAsync({ _id: assignment._id }, {
       $set: {
         state: AssignmentState[this.determineDesiredState(assignment)]
       }

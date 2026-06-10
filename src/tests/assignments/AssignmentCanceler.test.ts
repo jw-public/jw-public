@@ -7,9 +7,9 @@ import { assert } from "chai";
 
 import { IAssignmentCanceler } from "../../server/assignments/interfaces/IAssignmentCanceler";
 
-describe("AssignmentCanceler", function () {
+describe("AssignmentCanceler", async function () {
 
-    it("should not be null or undefined", function () {
+    it("should not be null or undefined", async function () {
         // Arrange
         let testCase = new AssignmentCancelerTestCase();
 
@@ -20,7 +20,7 @@ describe("AssignmentCanceler", function () {
         assert.isNotNull(testCase.canceler);
     });
 
-    it("should cancel assignment", function () {
+    it("should cancel assignment", async function () {
         // Arrange
         let testCase = new AssignmentCancelerTestCase();
         let toBeCanceledId = testCase.collection.insert({
@@ -29,7 +29,7 @@ describe("AssignmentCanceler", function () {
         });
 
         // Act
-        testCase.canceler.cancelAssignment(toBeCanceledId, "I don't know");
+        await testCase.canceler.cancelAssignment(toBeCanceledId, "I don't know");
 
         // Assert
         let actualAssignment = testCase.collection.findOne();
@@ -39,7 +39,7 @@ describe("AssignmentCanceler", function () {
     });
 
 
-    it("should notify participants", function () {
+    it("should notify participants", async function () {
         // Arrange
         let testCase = new AssignmentCancelerTestCase();
         let toBeCanceledId = testCase.collection.insert({
@@ -52,7 +52,7 @@ describe("AssignmentCanceler", function () {
         });
 
         // Act
-        testCase.canceler.cancelAssignment(toBeCanceledId, "I don't know");
+        await testCase.canceler.cancelAssignment(toBeCanceledId, "I don't know");
 
         // Assert
         testCase.expectNotificationWith({
@@ -68,7 +68,7 @@ describe("AssignmentCanceler", function () {
         });
     });
 
-    it("should not notify applicants", function () {
+    it("should not notify applicants", async function () {
         // Arrange
         let testCase = new AssignmentCancelerTestCase();
         let toBeCanceledId = testCase.collection.insert({
@@ -82,7 +82,7 @@ describe("AssignmentCanceler", function () {
         });
 
         // Act
-        testCase.canceler.cancelAssignment(toBeCanceledId, "I don't know");
+        await testCase.canceler.cancelAssignment(toBeCanceledId, "I don't know");
 
         // Assert
 

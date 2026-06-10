@@ -20,19 +20,19 @@ export class AssignmentRemover extends AssignmentAction implements IAssignmentRe
         super(collection);
     }
 
-    removeAssignment(assignmentId: string): void {
-        let assignment = this.getAssignment(assignmentId);
+    async removeAssignment(assignmentId: string): Promise<void> {
+        let assignment = await this.getAssignment(assignmentId);
 
-        this.removeFromDatabase(assignment);
-        this.assignmentNotifier.notifyUsersOfAssignment({
+        await this.removeFromDatabase(assignment);
+        await this.assignmentNotifier.notifyUsersOfAssignment({
             assignment,
             eventType: AssignmentEventType.Removed
         });
     }
 
-    private removeFromDatabase(assignment: AssignmentDAO) {
+    private async removeFromDatabase(assignment: AssignmentDAO): Promise<void> {
         let query = { _id: assignment._id };
-        this.collection.remove(query);
+        await this.collection.removeAsync(query);
     }
 
 }

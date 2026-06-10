@@ -26,8 +26,24 @@ Meteor.startup(async function () {
     }
 
     // Validate username, without a specific error message.
-    Accounts.validateNewUser(function (user) { // Wir lehnen einen User ohne Gruppenbewerbung ab
-        return user.username === "root" || (!_.isUndefined(user.profile.pendingGroups) && user.profile.pendingGroups.length > 0);
+    Accounts.validateNewUser(async function (user: any) { // Wir lehnen einen User ohne Gruppenbewerbung ab
+        if (user.username === "root") {
+            return true;
+        }
+        const pendingGroups: string[] = (user.profile && user.profile.pendingGroups) || [];
+        if (pendingGroups.length === 0) {
+            return false;
+        }
+        // Referential safety: every applied-for group must exist (used to be a
+        // SimpleSchema custom validator, which cannot be async on Meteor 3).
+        const { Groups } = require("../collections/lib/GroupCollection");
+        for (const groupId of pendingGroups) {
+            const exists = await Groups.find({ _id: groupId }, { fields: { _id: 1 } }).countAsync();
+            if (!exists) {
+                return false;
+            }
+        }
+        return true;
     });
 
     if (await Meteor.users.find().countAsync() === 0) {

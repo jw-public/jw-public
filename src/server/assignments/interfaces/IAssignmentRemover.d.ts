@@ -1,3 +1,3 @@
 export interface IAssignmentRemover {
-  removeAssignment(assignmentId: string): void;
+  removeAssignment(assignmentId: string): Promise<void>;
 }

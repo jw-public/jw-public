@@ -1,7 +1,6 @@
 import * as _ from "underscore";
 import { Blueprints } from './../collections/lib/BlueprintCollection';
 
-import { Roles } from "meteor/alanning:roles";
 import * as RolesHelper from "../lib/RolesHelper";
 import { check } from "meteor/check";
 import { Meteor, Subscription } from "meteor/meteor";
@@ -9,11 +8,9 @@ import { Mongo } from "meteor/mongo";
 
 import { publishCount } from "../lib/Counts";
 
+import { GroupApplicationController } from "../collections/lib/classes/Group";
+import { GroupDAO, Groups } from "../collections/lib/GroupCollection";
 
-import Group, { GroupApplicationController } from "../collections/lib/classes/Group";
-import { Groups } from "../collections/lib/GroupCollection";
-
-import User from "../collections/lib/classes/User";
 import * as UserNotification from "../collections/lib/classes/UserNotification";
 import * as UserCollection from "../collections/lib/UserCollection";
 
@@ -23,17 +20,40 @@ import { AssignmentDAO, Assignments } from "../collections/lib/AssignmentsCollec
 import Assignment from "../collections/lib/classes/Assignment";
 import { AssignmentState } from "../collections/lib/classes/AssignmentState";
 
-
 import AssignmentCountAccessor from "../collections/lib/classes/AssignmentCountAccessor";
 
 import * as moment from "moment";
 
 /**
  * Damit im Client bestimmte Daten gelesen werden können, müssen diese "gepublished" werden.
+ *
+ * Meteor 3: Alle Berechtigungs-Checks laufen async mit Inline-Queries — die
+ * isomorphen Domänenklassen sind synchron und damit client-only.
  */
 
+// --- Async access helpers ---------------------------------------------------
 
-// Rollenbezeichnungen
+async function getGroupDoc(groupId: string): Promise<GroupDAO | undefined> {
+  return await Groups.findOneAsync({ _id: groupId });
+}
+
+function isCoordinatorOf(group: GroupDAO, userId: string): boolean {
+  return !!group && _.contains(group.coordinators || [], userId);
+}
+
+async function isMemberOf(group: GroupDAO, userId: string): Promise<boolean> {
+  if (!group || !userId) {
+    return false;
+  }
+  const member = await Meteor.users.findOneAsync(
+    { _id: userId, groups: { $in: [group._id] } },
+    { fields: { _id: 1 } },
+  );
+  return !!member;
+}
+
+// --- Rollen ------------------------------------------------------------------
+
 // alanning:roles v4: publish the logged-in user's own role assignments
 // (v4 does not auto-publish them).
 Meteor.publish(null, function () {
@@ -43,8 +63,8 @@ Meteor.publish(null, function () {
   return Meteor.roleAssignment.find({ "user._id": this.userId });
 });
 
-Meteor.publish("roles", function () {
-  if (RolesHelper.userIsAdmin(this.userId)) {
+Meteor.publish("roles", async function () {
+  if (await RolesHelper.userIsAdminAsync(this.userId)) {
     // Die folgenden Daten werden nur freigegeben, wenn ein Benutzer ein Admin ist.
     return [Meteor.roles.find(), Meteor.roleAssignment.find()]; // Rollen + Zuweisungen freigeben
   } else {
@@ -53,15 +73,16 @@ Meteor.publish("roles", function () {
   }
 });
 
-Meteor.publish("groupMembers", function (groupId: string) {
+Meteor.publish("groupMembers", async function (groupId: string) {
   check(groupId, String);
 
-  let group = new Group(groupId);
-  let user = new User(this.userId);
+  if (!this.userId) {
+    return null;
+  }
 
-  let isCoordinator = group.isCoordinator(user) || RolesHelper.userIsAdmin(user.getId());
-  let hasRight: boolean = user.exists() && isCoordinator;
-  if (!hasRight) {
+  const group = await getGroupDoc(groupId);
+  const isCoordinator = isCoordinatorOf(group, this.userId) || await RolesHelper.userIsAdminAsync(this.userId);
+  if (!isCoordinator) {
     return null;
   }
   return UserPublication.usersNonReactive({
@@ -72,8 +93,8 @@ Meteor.publish("groupMembers", function (groupId: string) {
 });
 
 // Replaces aldeed:tabular's internal publication for the admin user table.
-Meteor.publish("adminAllUsers", function () {
-  if (!RolesHelper.userIsAdmin(this.userId)) {
+Meteor.publish("adminAllUsers", async function () {
+  if (!(await RolesHelper.userIsAdminAsync(this.userId))) {
     return null;
   }
   return Meteor.users.find({}, {
@@ -82,21 +103,21 @@ Meteor.publish("adminAllUsers", function () {
       profile: 1,
       emails: 1,
       groups: 1,
-      roles: 1,
       notice: 1,
     }
   });
 });
 
-Meteor.publish("groupApplicants", function (groupId: string) {
+Meteor.publish("groupApplicants", async function (groupId: string) {
   check(groupId, String);
 
-  let group = new Group(groupId);
-  let user = new User(this.userId);
+  if (!this.userId) {
+    return null;
+  }
 
-  let isCoordinator = group.isCoordinator(user) || RolesHelper.userIsAdmin(user.getId());
-  let hasRight: boolean = user.exists() && isCoordinator;
-  if (!hasRight) {
+  const group = await getGroupDoc(groupId);
+  const isCoordinator = isCoordinatorOf(group, this.userId) || await RolesHelper.userIsAdminAsync(this.userId);
+  if (!isCoordinator) {
     return null;
   }
   return Meteor.users.find({
@@ -112,18 +133,20 @@ Meteor.publish("groupApplicants", function (groupId: string) {
   });
 });
 
-Meteor.publish("groupCoordinators", function (groupId: string) {
+Meteor.publish("groupCoordinators", async function (groupId: string) {
   check(groupId, String);
-  let group = new Group(groupId);
-  let user = new User(this.userId);
 
-  let isGroupMemberOrCoordinator = (group.isMember(user) || group.isCoordinator(user));
-  let hasRight: boolean = user.exists() && isGroupMemberOrCoordinator;
-  if (!hasRight) {
+  if (!this.userId) {
     return null;
   }
 
-  let ids = _.toArray<string>(group.getCoordinatorIds());
+  const group = await getGroupDoc(groupId);
+  const isMemberOrCoordinator = isCoordinatorOf(group, this.userId) || await isMemberOf(group, this.userId);
+  if (!isMemberOrCoordinator) {
+    return null;
+  }
+
+  const ids = _.toArray<string>(group.coordinators || []);
 
   return UserPublication.users({ "_id": { "$in": ids } });
 });
@@ -256,37 +279,30 @@ namespace NotificationPublication {
   }
 }
 
-Meteor.publish(GroupApplicationController.APPLICATION_COUNT_SUBSCRIPTION, function (groupId: string) {
+Meteor.publish(GroupApplicationController.APPLICATION_COUNT_SUBSCRIPTION, async function (groupId: string) {
   check(groupId, String);
 
-  let context: Subscription = this;
   let applicationController = new GroupApplicationController(groupId);
-
-
   let cursor = applicationController.getApplicantsIdCursorReactive();
 
-
-  publishCount(this, applicationController.counterName, cursor);
+  await publishCount(this, applicationController.counterName, cursor);
 });
 
-Meteor.publish(AssignmentCountAccessor.ASSIGNMENT_COUNT_SUBSCRIPTION, function (groupId: string) {
+Meteor.publish(AssignmentCountAccessor.ASSIGNMENT_COUNT_SUBSCRIPTION, async function (groupId: string) {
   check(groupId, String);
 
-  let context: Subscription = this;
   let countAccessor = new AssignmentCountAccessor(groupId);
-
-
   let cursor = countAccessor.getAssignmentsCursor();
 
-  publishCount(this, countAccessor.counterName, cursor);
+  await publishCount(this, countAccessor.counterName, cursor);
 });
 
 
 // Gruppen
-Meteor.publish("coordinatingGroups", function () {
+Meteor.publish("coordinatingGroups", async function () {
   if (this.userId) {
 
-    if (RolesHelper.userIsAdmin(this.userId)) { // Admin darf alle Gruppen sehen
+    if (await RolesHelper.userIsAdminAsync(this.userId)) { // Admin darf alle Gruppen sehen
       return Groups.find();
     }
 
@@ -303,36 +319,40 @@ Meteor.publish("coordinatingGroups", function () {
 
 
 // Gruppe
-Meteor.publish("singleGroup", function (groupId: string) {
-  if (this.userId) {
-    let group: Group = new Group(groupId);
-    if (!group.exists()) {
-      return null;
-    }
+Meteor.publish("singleGroup", async function (groupId: string) {
+  check(groupId, String);
 
-    if (group.isMemberById(this.userId) || RolesHelper.userIsAdmin(this.userId)) { // Admin darf alle Gruppen sehen
-      return Groups.find({ _id: group.getId() });
-    } else {
-      return null;
-    }
+  if (!this.userId) {
+    return null;
+  }
+
+  const group = await getGroupDoc(groupId);
+  if (!group) {
+    return null;
+  }
+
+  if (await isMemberOf(group, this.userId) || isCoordinatorOf(group, this.userId) || await RolesHelper.userIsAdminAsync(this.userId)) { // Admin darf alle Gruppen sehen
+    return Groups.find({ _id: groupId });
   } else {
     return null;
   }
 });
 
 
-Meteor.publish("allBlueprintsOfGroup", function (groupId: string) {
-  if (this.userId) {
-    let group: Group = new Group(groupId);
-    if (!group.exists()) {
-      return null;
-    }
+Meteor.publish("allBlueprintsOfGroup", async function (groupId: string) {
+  check(groupId, String);
 
-    if (group.isCoordinatorById(this.userId) || RolesHelper.userIsAdmin(this.userId)) { // Admin darf alle Gruppen sehen
-      return Blueprints.find({ group: group.getId() });
-    } else {
-      return null;
-    }
+  if (!this.userId) {
+    return null;
+  }
+
+  const group = await getGroupDoc(groupId);
+  if (!group) {
+    return null;
+  }
+
+  if (isCoordinatorOf(group, this.userId) || await RolesHelper.userIsAdminAsync(this.userId)) { // Admin darf alle Gruppen sehen
+    return Blueprints.find({ group: groupId });
   } else {
     return null;
   }
@@ -344,58 +364,30 @@ Meteor.publish("allBlueprintsOfGroup", function (groupId: string) {
 
 
 
-Meteor.publishComposite("singleAssignment", function (assignmentId: string): Meteor.PublishCompositeConfig<AssignmentDAO> {
+Meteor.publishComposite("singleAssignment", async function (assignmentId: string): Promise<Meteor.PublishCompositeConfig<AssignmentDAO>> {
 
   check(assignmentId, String);
 
-  let context = <Subscription>this;
-
-  if (!context.userId) {
+  if (!this.userId) {
     return null;
   }
 
-
-
-  return {
-    find: AssignmentPublication.singleAssignmentAndOtherAssignmentsOnSameDay(this.userId, assignmentId),
-    children: [{
-      find: (assignment: AssignmentDAO) => {
-        let participants = assignment.participants.map((entry) => entry.user);
-        let applicants = assignment.applicants.map((entry) => entry.user);
-        let contactPersons = assignment.contacts;
-
-        let allUsers = _.union(participants, applicants, contactPersons);
-
-        let fieldsToPublish: Mongo.FieldSpecifier = { "_id": 1, "profile": 1, "emails.address": 1 }; // Profilinfos und E-Mail-Adressen für jeden User sichtbar
-
-        let cursor = Meteor.users.find({ "_id": { "$in": allUsers } }, { fields: fieldsToPublish });
-        return cursor;
-      }
-    }
-    ]
-  };
-});
-
-namespace AssignmentPublication {
-
-  function userHasRightToSeeAssignment(user: User, assignment: Assignment): boolean {
-    let group = assignment.getGroup();
-    return (group.isMember(user) || user.isGroupCoordinator(group));
+  const assignmentDao = await Assignments.findOneAsync({ _id: assignmentId });
+  if (!assignmentDao) {
+    return null;
   }
 
-  export function singleAssignmentAndOtherAssignmentsOnSameDay(userId: string, assignmentId: string) {
-    let assignment = new Assignment(assignmentId);
-    let user = new User(userId);
+  const group = await getGroupDoc(assignmentDao.group);
+  const hasRight = isCoordinatorOf(group, this.userId) || await isMemberOf(group, this.userId);
+  if (!hasRight) {
+    return null;
+  }
 
-    if (!userHasRightToSeeAssignment(user, assignment)) {
-      return null;
-    }
+  const startOfDay = moment(assignmentDao.start).startOf("day");
+  const endOfDay = startOfDay.clone().endOf("day");
 
-    let assignmentDao = Assignments.findOne({ "_id": assignmentId });
-    let startOfDay = moment(assignmentDao.start).startOf("day");
-    let endOfDay = startOfDay.clone().endOf("day");
-
-    return () => {
+  return {
+    find: () => {
       /*
       *  Query: Gibt Details zum gegebenen Assignment und allen anderen Assignments des gleichen Tages.
       *  Die Termine müssen alle den gleichen Namen haben, geschlossen sein und mindestens einen Teilnehmer haben.
@@ -419,23 +411,41 @@ namespace AssignmentPublication {
           }
         ]
       });
-    };
-  }
-}
+    },
+    children: [{
+      find: (assignment: AssignmentDAO) => {
+        let participants = assignment.participants.map((entry) => entry.user);
+        let applicants = assignment.applicants.map((entry) => entry.user);
+        let contactPersons = assignment.contacts;
+
+        let allUsers = _.union(participants, applicants, contactPersons);
+
+        let fieldsToPublish: Mongo.FieldSpecifier = { "_id": 1, "profile": 1, "emails.address": 1 }; // Profilinfos und E-Mail-Adressen für jeden User sichtbar
+
+        let cursor = Meteor.users.find({ "_id": { "$in": allUsers } }, { fields: fieldsToPublish });
+        return cursor;
+      }
+    }
+    ]
+  };
+});
 
 
 
 // Replaces aldeed:tabular's internal publication for the coordinator's
 // assignment table. The one-month-back cap matches the old tabular selector.
-Meteor.publish("assignmentsForGroupTable", function (groupId: string, startDate: Date, endDate: Date) {
+Meteor.publish("assignmentsForGroupTable", async function (groupId: string, startDate: Date, endDate: Date) {
   check(groupId, String);
   check(startDate, Date);
   check(endDate, Date);
 
-  let group = new Group(groupId);
-  let user = new User(this.userId);
-  let isCoordinator = group.isCoordinator(user) || RolesHelper.userIsAdmin(user.getId());
-  if (!(user.exists() && isCoordinator)) {
+  if (!this.userId) {
+    return null;
+  }
+
+  const group = await getGroupDoc(groupId);
+  const isCoordinator = isCoordinatorOf(group, this.userId) || await RolesHelper.userIsAdminAsync(this.userId);
+  if (!isCoordinator) {
     return null;
   }
 
@@ -449,15 +459,17 @@ Meteor.publish("assignmentsForGroupTable", function (groupId: string, startDate:
   });
 });
 
-Meteor.publish("assignmentsInMonthPerGroup", function (groupId: string, monthYear: string) {
+Meteor.publish("assignmentsInMonthPerGroup", async function (groupId: string, monthYear: string) {
   check(groupId, String);
   check(monthYear, String);
 
-  let group = new Group(groupId);
-  let user = new User(this.userId);
+  if (!this.userId) {
+    return null;
+  }
 
-  let isValidUser: boolean = !_.isNull(this.userId) && user.exists();
-  if (isValidUser && (group.isMember(user) || user.isGroupCoordinator(group))) {
+  const group = await getGroupDoc(groupId);
+  const hasRight = isCoordinatorOf(group, this.userId) || await isMemberOf(group, this.userId);
+  if (hasRight) {
     let date = moment(monthYear, Assignment.MonthStringFormat);
 
     return Assignments.find({
@@ -485,26 +497,7 @@ Meteor.publish("assignmentsInMonthPerGroup", function (groupId: string, monthYea
   } else {
     return null;
   }
-}, {
-  url: "assignmentsInMonthPerGroup/:0/:1",
-  httpMethod: "get"
 });
-
-// Publish für Tests
-if (process.env.IS_MIRROR || process.env.VELOCITY_CI) { // Nur auf Test-Mirror
-
-  Meteor.publish("allAssignmentsForTest", function () {
-    if (this.userId) {
-      console.log("Publishing all assignments for testing.");
-      return Assignments.find();
-    }
-    else {
-      return null;
-    }
-  });
-
-}
-
 
 
 Meteor.publish("groupName", function (id) {

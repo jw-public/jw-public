@@ -13,11 +13,11 @@ export class AssignmentParticipationNotifierMock implements IAssignmentParticipa
 
   }
 
-  notifyUsersAreAccepted(options: IAssignmentNotifierOptions) {
+  async notifyUsersAreAccepted(options: IAssignmentNotifierOptions): Promise<void> {
     this.lastAcceptanceNotificationOptions = options;
   }
 
-  notifyUsersAreNotAccepted(options: IAssignmentNotifierOptions) {
+  async notifyUsersAreNotAccepted(options: IAssignmentNotifierOptions): Promise<void> {
     this.lastRemovalNotificationOptions = options;
   }
 

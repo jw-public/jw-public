@@ -9,7 +9,9 @@ export function initEmailSettings() {
   Accounts.emailTemplates.siteName = "Public Assistant";
 
   (<any>Accounts).urls.resetPassword = function (token) {
-    return `${process.env.ROOT_URL}/reset-password/${token}`;
+    // ROOT_URL may or may not carry a trailing slash
+    const base = (process.env.ROOT_URL || "").replace(/\/+$/, "");
+    return `${base}/reset-password/${token}`;
   };
 
   let resetPasswordTemplate: Meteor.EmailFields = {

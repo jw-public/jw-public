@@ -54,6 +54,24 @@ export interface SimpleCollection<T> {
   upsert(selector: Selector | string, modifier: Modifier, options?: {
     multi?: boolean;
   }, callback?: Function): { numberAffected?: number; insertedId?: string; };
+
+  // ---- Meteor 3 async API (server side) ----------------------------------
+  findOneAsync(selector?: Selector | string, options?: {
+    sort?: SortSpecifier;
+    skip?: number;
+    fields?: FieldSpecifier;
+    reactive?: boolean;
+    transform?: Function;
+  }): Promise<T>;
+  insertAsync(doc: T, callback?: Function): Promise<string>;
+  removeAsync(selector: Selector | string): Promise<number>;
+  updateAsync(selector: Selector | string, modifier: Modifier, options?: {
+    multi?: boolean;
+    upsert?: boolean;
+  }): Promise<number>;
+  upsertAsync(selector: Selector | string, modifier: Modifier, options?: {
+    multi?: boolean;
+  }): Promise<{ numberAffected?: number; insertedId?: string; }>;
 }
 
 interface CursorStatic {
@@ -65,6 +83,12 @@ interface Cursor<T> {
   fetch(): Array<T>;
   forEach(callback: (doc: T, index: number, cursor: Cursor<T>) => void, thisArg?: any): void;
   map<U>(callback: (doc: T, index: number, cursor: Cursor<T>) => U, thisArg?: any): Array<U>;
+
+  // ---- Meteor 3 async API (server side) ----------------------------------
+  countAsync(): Promise<number>;
+  fetchAsync(): Promise<Array<T>>;
+  forEachAsync(callback: (doc: T, index: number, cursor: Cursor<T>) => void, thisArg?: any): Promise<void>;
+  mapAsync<U>(callback: (doc: T, index: number, cursor: Cursor<T>) => U, thisArg?: any): Promise<Array<U>>;
 }
 
 interface ObjectIDStatic {

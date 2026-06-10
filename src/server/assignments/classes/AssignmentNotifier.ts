@@ -25,15 +25,15 @@ export class AssignmentNotifier implements IAssignmentNotifier {
 
   }
 
-  notifyUserAboutAssignment(options: IAssignmentSingleNotifierOptions) {
+  async notifyUserAboutAssignment(options: IAssignmentSingleNotifierOptions): Promise<void> {
     this.logger.debug("Notify user about assignment with " + JSON.stringify(options));
     this.verifyOptions(options);
-    this.notifyViaDatabaseEntry(options);
-    this.emailNotifier.notifyUserAboutAssignmentViaEmail(options);
+    await this.notifyViaDatabaseEntry(options);
+    await this.emailNotifier.notifyUserAboutAssignmentViaEmail(options);
   }
 
-  private notifyViaDatabaseEntry(options: IAssignmentSingleNotifierOptions) {
-    this.collection.insert({
+  private async notifyViaDatabaseEntry(options: IAssignmentSingleNotifierOptions): Promise<void> {
+    await this.collection.insertAsync({
       type: "Assignment",
       userId: options.userId,
       assignmentOptions: {

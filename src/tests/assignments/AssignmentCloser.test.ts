@@ -8,9 +8,9 @@ import { AssignmentTestCaseWithNotifications } from './common/AssignmentTestCase
 
 
 
-describe("AssignmentCloser", function () {
+describe("AssignmentCloser", async function () {
 
-    it("should not be null or undefined", function () {
+    it("should not be null or undefined", async function () {
         // Arrange
         let testCase = new AssignmentCloserTestCase();
 
@@ -21,7 +21,7 @@ describe("AssignmentCloser", function () {
         assert.isNotNull(testCase.closer);
     });
 
-    it("should update database entry correctly", function () {
+    it("should update database entry correctly", async function () {
         // Arrange
         let testCase = new AssignmentCloserTestCase();
         let toBeClosedId = testCase.collection.insert({
@@ -35,7 +35,7 @@ describe("AssignmentCloser", function () {
         });
         // Act
 
-        testCase.closer.closeAssignment({
+        await testCase.closer.closeAssignment({
             assignmentId: toBeClosedId,
             participantIds: []
         });
@@ -49,7 +49,7 @@ describe("AssignmentCloser", function () {
     });
 
 
-    it("should set participants correctly", function () {
+    it("should set participants correctly", async function () {
         // Arrange
         let testCase = new AssignmentCloserTestCase();
         let toBeClosedId = testCase.collection.insert({
@@ -64,7 +64,7 @@ describe("AssignmentCloser", function () {
 
         // Act
 
-        testCase.closer.closeAssignment({
+        await testCase.closer.closeAssignment({
             assignmentId: toBeClosedId,
             participantIds: ["user3", "user2"]
         });
@@ -78,7 +78,7 @@ describe("AssignmentCloser", function () {
         testCase.assert(toBeClosedAssignment).containsUserIdInParticipants("user2");
     });
 
-    it("should notify new participants", function () {
+    it("should notify new participants", async function () {
         // Arrange
         let testCase = new AssignmentCloserTestCase();
         let toBeClosedId = testCase.collection.insert({
@@ -92,7 +92,7 @@ describe("AssignmentCloser", function () {
 
         // Act
 
-        testCase.closer.closeAssignment({
+        await testCase.closer.closeAssignment({
             assignmentId: toBeClosedId,
             participantIds: ["user3", "user2", "user1"]
         });
@@ -112,7 +112,7 @@ describe("AssignmentCloser", function () {
         });
     });
 
-    it("should notify removed applicants and remaining participants", function () {
+    it("should notify removed applicants and remaining participants", async function () {
         // Arrange
         let testCase = new AssignmentCloserTestCase();
         let toBeClosedId = testCase.collection.insert({
@@ -129,7 +129,7 @@ describe("AssignmentCloser", function () {
         });
 
         // Act
-        testCase.closer.closeAssignment({
+        await testCase.closer.closeAssignment({
             assignmentId: toBeClosedId,
             participantIds: ["user3", "user2"]
         });
@@ -164,7 +164,7 @@ describe("AssignmentCloser", function () {
         });
     });
 
-    it("should notify remaining participants if user gets removed", function () {
+    it("should notify remaining participants if user gets removed", async function () {
         // Arrange
         let testCase = new AssignmentCloserTestCase();
         let toBeClosedId = testCase.collection.insert({
@@ -178,7 +178,7 @@ describe("AssignmentCloser", function () {
         });
 
         // Act
-        testCase.closer.closeAssignment({
+        await testCase.closer.closeAssignment({
             assignmentId: toBeClosedId,
             participantIds: ["user3"]
         });
@@ -192,7 +192,7 @@ describe("AssignmentCloser", function () {
     });
 
 
-    it("should not notify participants if nothing changes", function () {
+    it("should not notify participants if nothing changes", async function () {
         // Arrange
         let testCase = new AssignmentCloserTestCase();
         let toBeClosedId = testCase.collection.insert({
@@ -206,7 +206,7 @@ describe("AssignmentCloser", function () {
         });
 
         // Act
-        testCase.closer.closeAssignment({
+        await testCase.closer.closeAssignment({
             assignmentId: toBeClosedId,
             participantIds: ["user3", "user5"]
         });

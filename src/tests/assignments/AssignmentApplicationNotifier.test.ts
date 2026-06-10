@@ -20,9 +20,9 @@ import { NotificationsAsserts } from '../common/NotificationsAsserts';
 
 
 
-describe("AssignmentParticipationNotifier", function () {
+describe("AssignmentParticipationNotifier", async function () {
 
-    it("should not be null or undefined", function () {
+    it("should not be null or undefined", async function () {
         // Arrange
         let testCase = new AssignmentNotifierTestCase();
 
@@ -33,13 +33,13 @@ describe("AssignmentParticipationNotifier", function () {
         assert.isNotNull(testCase.notifier);
     });
 
-    it("notifyUsersAreAccepted should call notifier correctly", function () {
+    it("notifyUsersAreAccepted should call notifier correctly", async function () {
         // Arrange
         let testCase = new AssignmentNotifierTestCase();
 
 
         // Act
-        testCase.notifier.notifyUsersAreAccepted({
+        await testCase.notifier.notifyUsersAreAccepted({
             userIds: [testCase.testUser, "someOtherGuy"],
             assignmentId: "randomAssignmentId"
         });
@@ -59,12 +59,12 @@ describe("AssignmentParticipationNotifier", function () {
 
     });
 
-    it("notifyUsersAreNotAccepted should call notifier correctly", function () {
+    it("notifyUsersAreNotAccepted should call notifier correctly", async function () {
         // Arrange
         let testCase = new AssignmentNotifierTestCase();
 
         // Act
-        testCase.notifier.notifyUsersAreNotAccepted({
+        await testCase.notifier.notifyUsersAreNotAccepted({
             userIds: [testCase.testUser, "someOtherGuy"],
             assignmentId: "randomAssignmentId"
         });

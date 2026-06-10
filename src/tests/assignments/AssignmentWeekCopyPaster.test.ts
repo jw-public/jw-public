@@ -7,7 +7,7 @@ import { JsnLogFactory } from '../../imports/logging/JsnLogFactory';
 import { AssignmentWeekCopyPaster } from '../../server/assignments/classes/AssignmentWeekCopyPaster';
 import { LocalCollection } from '../3rdParty/minimongo-standalone/minimongo-standalone';
 
-describe("AssignmentWeekCopyPaster.copyPasteCalendarWeek()", function () {
+describe("AssignmentWeekCopyPaster.copyPasteCalendarWeek()", async function () {
   let lolexHandle: lolex.Clock;
   beforeEach(function () {
     lolexHandle = lolex.install();
@@ -18,7 +18,7 @@ describe("AssignmentWeekCopyPaster.copyPasteCalendarWeek()", function () {
     lolexHandle.reset();
   });
 
-  it("should be able to copy one assignment", function () {
+  it("should be able to copy one assignment", async function () {
     // Arrange
     const systemTimeNow = new Date("2035-10-24T12:00:00.000+02:00")
     lolexHandle.setSystemTime(systemTimeNow);
@@ -60,7 +60,7 @@ describe("AssignmentWeekCopyPaster.copyPasteCalendarWeek()", function () {
     fixtureCollection.insert(fromAnotherGroup)
 
     // Act
-    const totalCopied = toBeTested.copyPasteCalendarWeekInGroup({
+    const totalCopied = await toBeTested.copyPasteCalendarWeekInGroup({
       groupId: original.group,
       from: {
         calendarWeek: 1,
@@ -117,7 +117,7 @@ describe("AssignmentWeekCopyPaster.copyPasteCalendarWeek()", function () {
     chai.assert.strictEqual(copyAction.toYearOfIsoWeek, result.yearOfIsoWeek)
   });
 
-  it("should be able to copy one assignment", function () {
+  it("should be able to copy one assignment", async function () {
     // Arrange
     const systemTimeNow = new Date("2035-10-24T12:00:00.000+02:00")
     lolexHandle.setSystemTime(systemTimeNow);
@@ -155,7 +155,7 @@ describe("AssignmentWeekCopyPaster.copyPasteCalendarWeek()", function () {
     fixtureCollection.insert(original)
 
     // Act
-    const totalCopied = toBeTested.copyPasteCalendarWeekInGroup({
+    const totalCopied = await toBeTested.copyPasteCalendarWeekInGroup({
       groupId: original.group,
       from: {
         calendarWeek: 23,
