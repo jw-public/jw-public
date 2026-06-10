@@ -7,7 +7,7 @@ import { check } from "meteor/check";
 import { Meteor, Subscription } from "meteor/meteor";
 import { Mongo } from "meteor/mongo";
 
-import { Counts } from "meteor/tmeasday:publish-counts";
+import { publishCount } from "../lib/Counts";
 
 
 import Group, { GroupApplicationController } from "../collections/lib/classes/Group";
@@ -266,7 +266,7 @@ Meteor.publish(GroupApplicationController.APPLICATION_COUNT_SUBSCRIPTION, functi
   let cursor = applicationController.getApplicantsIdCursorReactive();
 
 
-  Counts.publish(this, applicationController.counterName, cursor);
+  publishCount(this, applicationController.counterName, cursor);
 });
 
 Meteor.publish(AssignmentCountAccessor.ASSIGNMENT_COUNT_SUBSCRIPTION, function (groupId: string) {
@@ -278,10 +278,7 @@ Meteor.publish(AssignmentCountAccessor.ASSIGNMENT_COUNT_SUBSCRIPTION, function (
 
   let cursor = countAccessor.getAssignmentsCursor();
 
-  let thereAreSomeAssignmentsAvailable = cursor.count() > 0;
-  let nonReactive = thereAreSomeAssignmentsAvailable;
-
-  Counts.publish(this, countAccessor.counterName, cursor, { nonReactive });
+  publishCount(this, countAccessor.counterName, cursor);
 });
 
 

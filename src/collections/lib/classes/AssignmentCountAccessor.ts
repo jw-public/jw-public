@@ -4,7 +4,7 @@ import { Mongo } from "meteor/mongo";
 
 import { AssignmentDAO, Assignments } from "../AssignmentsCollection";
 
-import { Counts } from "meteor/tmeasday:publish-counts";
+import { Counts } from "../../../lib/Counts";
 
 import * as moment from "moment";
 

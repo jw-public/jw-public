@@ -1,7 +1,7 @@
 import { Blaze } from "meteor/blaze";
 import { Meteor } from "meteor/meteor";
 import { Mongo } from "meteor/mongo";
-import { Counts } from "meteor/tmeasday:publish-counts";
+import { Counts } from "../../../lib/Counts";
 import * as _ from "underscore";
 
 

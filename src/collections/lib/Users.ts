@@ -1,3 +1,4 @@
+import * as LibPhoneNumber from "../../lib/LibPhoneNumber";
 import { Meteor } from "meteor/meteor";
 import SimpleSchema from "./SimpleSchema";
 import * as _ from "underscore";

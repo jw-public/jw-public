@@ -1,3 +1,4 @@
+import * as LibPhoneNumber from "../../../lib/LibPhoneNumber";
 
   export function isValidNumber(phoneNumber: string) {
     let util = LibPhoneNumber.phoneUtil;
