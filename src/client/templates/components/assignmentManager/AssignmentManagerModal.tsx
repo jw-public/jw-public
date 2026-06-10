@@ -10,25 +10,24 @@ const HTML_ID = "AssignmentManagerModalDialogNode";
 export function dialog(templateOptions: AssignmentManagerProps, options?: { title?: string }) {
   contentDialog({
     title: options?.title ?? "Termin abschließen",
-    body: (close) =>
-      React.createElement(
-        "div",
-        { id: HTML_ID },
-        React.createElement(AssignmentManagerComponent, {
-          assignmentId: templateOptions.assignmentId,
-          onSuccess: function () {
+    body: (close) => (
+      <div id={HTML_ID}>
+        <AssignmentManagerComponent
+          assignmentId={templateOptions.assignmentId}
+          onSuccess={() => {
             close();
             if (!_.isUndefined(templateOptions.onSuccess) && _.isFunction(templateOptions.onSuccess)) {
               templateOptions.onSuccess();
             }
-          },
-          onCancel: function (event: any) {
+          }}
+          onCancel={(event: any) => {
             close();
             if (!_.isUndefined(templateOptions.onCancel) && _.isFunction(templateOptions.onCancel)) {
               templateOptions.onCancel(event);
             }
-          },
-        }),
-      ),
+          }}
+        />
+      </div>
+    ),
   });
 }
