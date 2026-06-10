@@ -1,3 +1,4 @@
+import { confirmDialog } from "../../../../../react/components/dialogs";
 import * as _ from "underscore";
 
 import { Meteor } from "meteor/meteor";
@@ -7,7 +8,6 @@ import { AssignmentDAO } from "../../../../../../collections/lib/AssignmentsColl
 
 import * as ServerMethodsWrapper from "../../../../../../lib/classes/ServerMethodsWrapper";
 import { Routes } from "../../../../../../lib/client/routes";
-import * as ResponsiveHelper from "../../../../../lib/plugins/responsive-toolkit/ResponsiveHelper";
 
 export default class AssignmentInteraction {
 
@@ -43,7 +43,9 @@ export default class AssignmentInteraction {
   }
 
   private isMobileScreen(): boolean {
-    return ResponsiveHelper.isBootstrapEnvironment("xs") || ResponsiveHelper.isBootstrapEnvironment("sm");
+    // Bootstrap md breakpoint (the old ResponsiveHelper probed BS3 hidden-*
+    // classes, which no longer exist in Bootstrap 5).
+    return window.matchMedia("(max-width: 991px)").matches;
   }
 
   public applyWithConfirmation() {
@@ -55,7 +57,7 @@ export default class AssignmentInteraction {
   }
 
   private confirmAndApplyOnYes() {
-    bootbox.confirm("Auf Termin " + this.assignment.name + " bewerben?", (userPressedOnYes: boolean) => {
+    confirmDialog({ message: "Auf Termin " + this.assignment.name + " bewerben?" }).then((userPressedOnYes) => {
       if (userPressedOnYes) {
         this.apply();
       }

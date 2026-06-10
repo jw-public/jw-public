@@ -1,3 +1,4 @@
+import { confirmDialog } from "../../../react/components/dialogs";
 import * as React from "react";
 import { useState } from "react";
 import { Meteor } from "meteor/meteor";
@@ -169,9 +170,7 @@ function EditUserPanel(props: {
 }
 
 function removeUser(userId: string): void {
-  bootbox.confirm({
-    message: "Den User wirklich löschen?",
-    callback(result: boolean) {
+  confirmDialog({ message: "Den User wirklich löschen?" }).then((result) => {
       if (!result) {
         return;
       }
@@ -182,7 +181,6 @@ function removeUser(userId: string): void {
           alert("Fehler: " + error.toString());
         }
       });
-    },
   });
 }
 

@@ -76,7 +76,9 @@ export class SmallProgressbar extends React.Component < DataContext, {} > {
         let width: string = `${this.getPercent()}%`;
 
         // Den Tooltip resetten, da sich der Inhalt geändert hat.
-        $(`[data-bs-toggle="tooltip"]`).tooltip();
+        document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((el) => {
+            (window as any).bootstrap?.Tooltip?.getOrCreateInstance(el);
+        });
 
         let background = data.barColor;
 

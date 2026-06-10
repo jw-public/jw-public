@@ -42,7 +42,7 @@ test.describe("Assignment lifecycle", () => {
     await panel.locator("button.dropdown-toggle").click();
     await panel.getByText("Abschließen").click();
 
-    // The manager opens inside a bootbox modal.
+    // The manager opens inside the app modal shell.
     const manager = page.locator("#AssignmentManagerModalDialogNode");
     await expect(manager.getByText("Admin User")).toBeVisible({ timeout: 10_000 });
     await manager.locator("button.toggle-application").first().click();
@@ -52,7 +52,7 @@ test.describe("Assignment lifecycle", () => {
 
     // Confirmation dialog: "Der Termin wird geschlossen und den restlichen
     // Bewerbern wird abgesagt."
-    const confirmDialog = page.locator(".bootbox", { hasText: "Abschließen bestätigen" });
+    const confirmDialog = page.locator(".app-modal", { hasText: "Abschließen bestätigen" });
     await confirmDialog.getByRole("button", { name: "Ja" }).click();
 
     const mail = await findMail(

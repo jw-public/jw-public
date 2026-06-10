@@ -34,7 +34,7 @@ test.describe("Assignment cancel & re-enable", () => {
     await manager.locator("button.toggle-application").first().click();
     await manager.locator("button.close-application").click();
     await page
-      .locator(".bootbox", { hasText: "Abschließen bestätigen" })
+      .locator(".app-modal", { hasText: "Abschließen bestätigen" })
       .getByRole("button", { name: "Ja" })
       .click();
     await findMail((m) => m.Subject.includes("Zusage") && m.Subject.includes(name), 20_000);
@@ -47,9 +47,9 @@ test.describe("Assignment cancel & re-enable", () => {
     await closedPanel.locator("button.dropdown-toggle").click();
     await closedPanel.getByText("Absagen").click();
 
-    // Cancel prompt (bootbox.prompt) asks for a reason.
-    const cancelModal = page.locator(".bootbox", { hasText: "Grund für die Terminabsage" });
-    await cancelModal.locator(".bootbox-input").fill("Schlechtwetter");
+    // Cancel prompt asks for a reason.
+    const cancelModal = page.locator(".app-modal", { hasText: "Grund für die Terminabsage" });
+    await cancelModal.locator(".app-modal-input").fill("Schlechtwetter");
     await cancelModal.getByRole("button", { name: "Akzeptieren" }).click();
 
     const cancelMail = await findMail(
@@ -69,8 +69,8 @@ test.describe("Assignment cancel & re-enable", () => {
     await canceledPanel.locator("button.dropdown-toggle").click();
     await canceledPanel.getByText("Termin stattfinden lassen").click();
 
-    const reenableModal = page.locator(".bootbox", { hasText: "Re-Aktivierung" });
-    await reenableModal.locator(".bootbox-input").fill("Sonne ist zurück");
+    const reenableModal = page.locator(".app-modal", { hasText: "Re-Aktivierung" });
+    await reenableModal.locator(".app-modal-input").fill("Sonne ist zurück");
     await reenableModal.getByRole("button", { name: "Akzeptieren" }).click();
 
     // Participants get notified that the assignment takes place again.

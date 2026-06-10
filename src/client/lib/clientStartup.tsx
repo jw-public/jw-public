@@ -12,7 +12,6 @@ require("moment/locale/de");
 
 Meteor.startup(function () {
   moment.locale("de");
-  bootbox.setLocale("de");
 
   Accounts.onLogout(function () {
     Routes.go(Routes.Def.Login); // Wenn sich ein Benutzer ausgeloggt hat, wollen wir ihn zum Login schicken.

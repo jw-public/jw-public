@@ -1,3 +1,4 @@
+import { confirmDialog } from "../../../react/components/dialogs";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { Meteor } from "meteor/meteor";
@@ -139,50 +140,27 @@ export default function AssignmentManager(props: AssignmentManagerProps): JSX.El
   const onCloseClick = (event: React.MouseEvent) => {
     event.preventDefault();
     if (participants.length > 0) {
-      const dialog = bootbox.dialog({
+      confirmDialog({
         title: "Abschließen bestätigen",
-        message: "Der Termin wird geschlossen und den restlichen Bewerbern wird abgesagt.\nAktion durchführen?",
-        backdrop: true,
-        buttons: {
-          yesButton: {
-            label: "Ja",
-            className: "btn-primary",
-            callback: () => {
-              dialog.modal("hide");
-              closeAndSubmit();
-            },
-          },
-          noButton: {
-            label: "Nein",
-            className: "btn-outline-secondary",
-            callback: () => {
-              dialog.modal("hide");
-            },
-          },
-        },
+        message: "Der Termin wird geschlossen und den restlichen Bewerbern wird abgesagt. Aktion durchführen?",
+        yesLabel: "Ja",
+        noLabel: "Nein",
+      }).then((yes) => {
+        if (yes) {
+          closeAndSubmit();
+        }
       });
     } else {
-      const dialog = bootbox.dialog({
+      confirmDialog({
         title: "Leeren Termin schließen",
-        message: "Der Termin wird <b>ohne Teilnehmer</b> geschlossen. Allen Bewerbern wird abgesagt.",
-        backdrop: true,
-        buttons: {
-          yesButton: {
-            label: "Ohne Teilnehmer schließen",
-            className: "btn-warning",
-            callback: () => {
-              dialog.modal("hide");
-              closeAndSubmit();
-            },
-          },
-          noButton: {
-            label: "Abbrechen",
-            className: "btn-outline-secondary",
-            callback: () => {
-              dialog.modal("hide");
-            },
-          },
-        },
+        message: <span>Der Termin wird <b>ohne Teilnehmer</b> geschlossen. Allen Bewerbern wird abgesagt.</span>,
+        yesLabel: "Ohne Teilnehmer schließen",
+        yesVariant: "warning",
+        noLabel: "Abbrechen",
+      }).then((yes) => {
+        if (yes) {
+          closeAndSubmit();
+        }
       });
     }
   };

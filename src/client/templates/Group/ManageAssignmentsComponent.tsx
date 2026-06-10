@@ -1,3 +1,4 @@
+import { confirmDialog } from "../../react/components/dialogs";
 import * as React from "react";
 import { useState } from "react";
 import { Meteor } from "meteor/meteor";
@@ -18,9 +19,7 @@ import AssignmentManagerComponent from "../components/assignmentManager/Assignme
 import * as AssignmentManagerModal from "../components/assignmentManager/AssignmentManagerModal";
 
 function removeAssignment(assignmentId: string): void {
-  bootbox.confirm({
-    message: "Den Termin wirklich löschen?",
-    callback(result: boolean) {
+  confirmDialog({ message: "Den Termin wirklich löschen?" }).then((result) => {
       if (!result) {
         return;
       }
@@ -31,7 +30,6 @@ function removeAssignment(assignmentId: string): void {
           alert("Fehler: " + error.toString());
         }
       });
-    },
   });
 }
 

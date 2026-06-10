@@ -6,6 +6,7 @@ import { Routes } from "../../../lib/client/routes";
 import User from "../../../collections/lib/classes/User";
 import { Groups } from "../../../collections/lib/GroupCollection";
 import * as UserCollection from "../../../collections/lib/UserCollection";
+import { confirmDialog } from "../../react/components/dialogs";
 import * as ServerMethodsWrapper from "../../../lib/classes/ServerMethodsWrapper";
 
 import DataTable, { DataTableColumn } from "../../react/components/DataTable";
@@ -29,7 +30,7 @@ function denyUser(userId: string): void {
 
   console.log("Denying User " + userId + " " + groupId);
 
-  bootbox.confirm("Anfrage von " + user.fullName + " (" + user.email + ") ablehnen.", (result: boolean) => {
+  confirmDialog({ message: "Anfrage von " + user.fullName + " (" + user.email + ") ablehnen." }).then((result) => {
     if (result) {
       const proxy = new ServerMethodsWrapper.GroupProxy(groupId);
       proxy.denyUser(userId, (err: Meteor.Error) => {

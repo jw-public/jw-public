@@ -1,10 +1,11 @@
 
 import * as ServerMethodsWrapper from "../../../../lib/classes/ServerMethodsWrapper";
+import { promptDialog } from "../../../react/components/dialogs";
 
 
 export function cancelDialog(assignmentId: string) {
 
-  bootbox.prompt("Was ist der Grund für die Terminabsage?",
+  promptDialog({ title: "Was ist der Grund für die Terminabsage?" }).then(
     function(result: string) {
       if (result === null) {
         // Prompt dismissed
@@ -26,7 +27,7 @@ export function cancelDialog(assignmentId: string) {
 
 export function reenableDialog(assignmentId: string) {
 
-  bootbox.prompt("Was ist der Grund für die Re-Aktivierung des Termins?",
+  promptDialog({ title: "Was ist der Grund für die Re-Aktivierung des Termins?" }).then(
     function(result: string) {
       if (result === null) {
         // Prompt dismissed

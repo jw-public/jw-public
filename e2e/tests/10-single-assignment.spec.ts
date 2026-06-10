@@ -30,7 +30,7 @@ test.describe("Single assignment view", () => {
     await manager.locator("button.toggle-application").first().click();
     await manager.locator("button.close-application").click();
     await page
-      .locator(".bootbox", { hasText: "Abschließen bestätigen" })
+      .locator(".app-modal", { hasText: "Abschließen bestätigen" })
       .getByRole("button", { name: "Ja" })
       .click();
 
