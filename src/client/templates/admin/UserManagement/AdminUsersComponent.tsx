@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useState } from "react";
 import { Meteor } from "meteor/meteor";
+import { Roles } from "meteor/alanning:roles";
 import { useTracker } from "meteor/react-meteor-data";
 import { Groups } from "../../../../collections/lib/GroupCollection";
 import * as UserCollection from "../../../../collections/lib/UserCollection";
@@ -30,7 +31,7 @@ function EditUserPanel(props: {
   const [zip, setZip] = useState(profile.zip ?? "");
   const [pendingGroups, setPendingGroups] = useState<string[]>(profile.pendingGroups ?? []);
   const [groups, setGroups] = useState<string[]>((props.user as any).groups ?? []);
-  const [roles, setRoles] = useState<string[]>((props.user as any).roles ?? []);
+  const [roles, setRoles] = useState<string[]>(Roles.getRolesForUser(props.user._id) as string[]);
   const [email, setEmail] = useState(props.user.emails?.[0]?.address ?? "");
   const [notificationAsEmail, setNotificationAsEmail] = useState(profile.notificationAsEmail ?? true);
   const [notice, setNotice] = useState((props.user as any).notice ?? "");
@@ -51,7 +52,6 @@ function EditUserPanel(props: {
         "profile.pendingGroups": pendingGroups,
         "profile.notificationAsEmail": notificationAsEmail,
         groups,
-        roles,
         "emails.0.address": email,
         notice,
       },
@@ -60,7 +60,15 @@ function EditUserPanel(props: {
         console.error("Was trying to update an user: ", err);
         setAlerts([{ message: "Speichern fehlgeschlagen: " + (err.reason ?? err.message), type: "danger" }]);
       } else {
-        props.onClose();
+        // Roles live in their own collection since alanning:roles v4.
+        Meteor.call("adminSetUserRoles", props.user._id, roles, (rolesErr: any) => {
+          if (rolesErr) {
+            console.error("Was trying to set roles: ", rolesErr);
+            setAlerts([{ message: "Rollen speichern fehlgeschlagen: " + (rolesErr.reason ?? rolesErr.message), type: "danger" }]);
+          } else {
+            props.onClose();
+          }
+        });
       }
     });
   };

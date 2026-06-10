@@ -1,61 +1,73 @@
 import { Meteor } from "meteor/meteor";
-import { Blueprints } from './../collections/lib/BlueprintCollection';
+import * as RolesHelper from "../lib/RolesHelper";
+import * as _ from "underscore";
 
-import Group from "../collections/lib/classes/Group";
-import { GroupDAO, Groups } from "../collections/lib/GroupCollection";
-
-import User from "../collections/lib/classes/User";
-import * as UserNotification from "../collections/lib/classes/UserNotification";
-
+import { Blueprints } from "./../collections/lib/BlueprintCollection";
+import { Groups } from "../collections/lib/GroupCollection";
 import { Notifications } from "../collections/lib/NotificationCollection";
+import { Assignments } from "../collections/lib/AssignmentsCollection";
 
-import { AssignmentDAO, Assignments } from "../collections/lib/AssignmentsCollection";
+// Native allow rules (replacing ongoworks:security, which never got a
+// Meteor-3-compatible release). Deny-by-default still applies: anything not
+// allowed here must go through a Meteor method.
 
-import { Security } from "meteor/ongoworks:security";
+function isAdmin(userId: string): boolean {
+  return RolesHelper.userIsAdmin(userId);
+}
 
-Security.defineMethod<GroupDAO>("ifIsGroupCoordinator", {
-  fetch: ["coordinators"],
-  transform: null,
-  deny: function (type, arg, userId, doc) {
-    let group = Group.createFromDAO(doc);
-    return !group.isCoordinatorById(userId);
+function isGroupCoordinator(userId: string, groupId: string): boolean {
+  if (!userId || !groupId) {
+    return false;
   }
+  return !!Groups.findOne({ _id: groupId, coordinators: { $in: [userId] } }, { fields: { _id: 1 } });
+}
+
+// --- Groups -------------------------------------------------------------
+
+Groups.allow({
+  insert: (userId) => isAdmin(userId),
+  remove: (userId) => isAdmin(userId),
+  // Coordinators may edit their group but never the coordinator list.
+  update: (userId, doc, fields) => {
+    if (isAdmin(userId)) {
+      return true;
+    }
+    return isGroupCoordinator(userId, doc._id) && !_.contains(fields, "coordinators");
+  },
 });
 
-Security.defineMethod<Meteor.User>("isOwnUserEntry", {
-  fetch: [],
-  transform: null,
-  deny: function (type, arg, userId, doc) {
-    return doc._id !== userId;
-  }
+// --- Assignments & Blueprints --------------------------------------------
+
+function allowAssignmentWrite(userId: string, doc: { group?: string }): boolean {
+  return isGroupCoordinator(userId, doc.group);
+}
+
+Assignments.allow({
+  insert: allowAssignmentWrite,
+  update: allowAssignmentWrite,
 });
 
-Security.defineMethod<AssignmentDAO>("ifGroupOfAssignmentIsCoordinatedByUser", {
-  fetch: ["group"],
-  transform: null,
-  deny: function (type, arg, userId, doc) {
-    let group = Group.createFromId(doc.group);
-    let user = User.createFromId(userId);
-    return !(user.isCoordinatorInAnyGroup() && group.isCoordinatorById(userId));
-  }
+Blueprints.allow({
+  insert: allowAssignmentWrite,
+  update: allowAssignmentWrite,
 });
 
-Security.defineMethod<UserNotification.NotificationDAO>("ifIsOwnNotification", {
-  fetch: ["userId"],
-  transform: null,
-  deny: function (type, arg, userId, doc) {
-    return doc.userId !== userId;
-  }
+// --- Users ----------------------------------------------------------------
+
+Meteor.users.allow({
+  update: (userId, doc, fields) => {
+    if (isAdmin(userId)) {
+      return true;
+    }
+    // Own profile only, and only the whitelisted top-level fields.
+    const allowedOwnFields = ["profile", "updatedAt"];
+    return doc._id === userId && _.difference(fields, allowedOwnFields).length === 0;
+  },
 });
 
+// --- Notifications ----------------------------------------------------------
 
-Security.permit(["insert", "update", "remove"]).collections(Groups).ifHasRole("admin").allowInClientCode();
-
-/* Gruppenkoordinatoren dürfen alles außer die Koordinatoren-Berechtigungen ändern */
-Security.permit(["update"]).collections(Groups).ifIsGroupCoordinator().exceptProps(["coordinators"]).allowInClientCode();
-
-Security.permit(["insert", "update"]).collections(Assignments).ifGroupOfAssignmentIsCoordinatedByUser().allowInClientCode();
-Security.permit(["insert", "update"]).collections(Blueprints).ifGroupOfAssignmentIsCoordinatedByUser().allowInClientCode();
-Security.permit(["update"]).collections(Meteor.users).ifHasRole("admin").allowInClientCode();
-Security.permit(["update"]).collections(Meteor.users).isOwnUserEntry().onlyProps(["profile", "updatedAt"]).allowInClientCode();
-Security.permit(["update", "remove"]).collections(Notifications).ifIsOwnNotification().allowInClientCode();
+Notifications.allow({
+  update: (userId, doc) => !!userId && doc.userId === userId,
+  remove: (userId, doc) => !!userId && doc.userId === userId,
+});

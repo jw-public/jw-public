@@ -16,6 +16,7 @@ declare module "meteor/meteor" {
 
     export module Meteor {
         var roles: Mongo.Collection<Roles.Role>;
+        var roleAssignment: Mongo.Collection<any>;
     }
 
 }
@@ -274,3 +275,18 @@ declare module "meteor/alanning:roles" {
         }
     }
 } // module
+
+
+// ---- alanning:roles v4 additions -------------------------------------------
+declare module "meteor/alanning:roles" {
+    module Roles {
+        function createRole(roleName: string, options?: { unlessExists?: boolean }): string;
+        function createRoleAsync(roleName: string, options?: { unlessExists?: boolean }): Promise<string>;
+        function addUsersToRolesAsync(users: any, roles: any, group?: string): Promise<void>;
+        function setUserRolesAsync(userId: string | string[], roles: string | string[], options?: any): Promise<void>;
+        function userIsInRoleAsync(userId: string, roles: string | string[], group?: string): Promise<boolean>;
+        function setUserRoles(userId: string | string[], roles: string | string[], options?: any): void;
+        function getRolesForUser(userId: string, options?: any): string[];
+        var subscription: { ready(): boolean };
+    }
+}

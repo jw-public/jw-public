@@ -64,7 +64,8 @@ function initUser() {
     }
   });
   if (adminUser.roles.length > 0) {
-    Roles.addUsersToRoles([id], adminUser.roles);
+    adminUser.roles.forEach(function (r) { (Promise as any).await(Roles.createRoleAsync(r, { unlessExists: true })); });
+    (Promise as any).await(Roles.addUsersToRolesAsync([id], adminUser.roles));
   }
   console.log("Added new user: ", adminUser.email);
   return id;

@@ -2,6 +2,7 @@ import * as _ from "underscore";
 import { app } from "./App";
 
 import { Roles } from "meteor/alanning:roles";
+import * as RolesHelper from "../lib/RolesHelper";
 import { check } from "meteor/check";
 import { Meteor } from "meteor/meteor";
 
@@ -24,9 +25,24 @@ Meteor.startup(function () {
     /**
      * Gesamtzahl aller Nutzer einsehen.
      */
+    /**
+     * Rollen eines Users setzen (roles v4: Zuweisungen liegen nicht mehr am
+     * User-Dokument, daher kein Client-Update mehr möglich).
+     */
+    adminSetUserRoles: function (targetUserId: string, roles: string[]): void {
+      check(targetUserId, String);
+      check(roles, [String]);
+
+      if (!this.userId || !RolesHelper.userIsAdmin(this.userId)) {
+        throw new Meteor.Error(403, "Zugriff verweigert.");
+      }
+
+      roles.forEach(function (r) { (Promise as any).await(Roles.createRoleAsync(r, { unlessExists: true })); });
+      (Promise as any).await(Roles.setUserRolesAsync(targetUserId, roles));
+    },
     getAllUsersCount: function (): number {
 
-      if (this.userId && Roles.userIsInRole(this.userId, ["admin"])) {
+      if (this.userId && RolesHelper.userIsAdmin(this.userId)) {
         return Meteor.users.find({}, { fields: { "_id": 1 } }).count();
       } else {
         return -1;

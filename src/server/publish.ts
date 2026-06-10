@@ -2,6 +2,7 @@ import * as _ from "underscore";
 import { Blueprints } from './../collections/lib/BlueprintCollection';
 
 import { Roles } from "meteor/alanning:roles";
+import * as RolesHelper from "../lib/RolesHelper";
 import { check } from "meteor/check";
 import { Meteor, Subscription } from "meteor/meteor";
 import { Mongo } from "meteor/mongo";
@@ -33,10 +34,19 @@ import * as moment from "moment";
 
 
 // Rollenbezeichnungen
+// alanning:roles v4: publish the logged-in user's own role assignments
+// (v4 does not auto-publish them).
+Meteor.publish(null, function () {
+  if (!this.userId) {
+    return this.ready();
+  }
+  return Meteor.roleAssignment.find({ "user._id": this.userId });
+});
+
 Meteor.publish("roles", function () {
-  if (Roles.userIsInRole(this.userId, ["admin"])) {
+  if (RolesHelper.userIsAdmin(this.userId)) {
     // Die folgenden Daten werden nur freigegeben, wenn ein Benutzer ein Admin ist.
-    return Meteor.roles.find(); // Rollen freigeben
+    return [Meteor.roles.find(), Meteor.roleAssignment.find()]; // Rollen + Zuweisungen freigeben
   } else {
     // user not authorized.
     return null;
@@ -49,7 +59,7 @@ Meteor.publish("groupMembers", function (groupId: string) {
   let group = new Group(groupId);
   let user = new User(this.userId);
 
-  let isCoordinator = group.isCoordinator(user) || Roles.userIsInRole(user.getId(), "admin");
+  let isCoordinator = group.isCoordinator(user) || RolesHelper.userIsAdmin(user.getId());
   let hasRight: boolean = user.exists() && isCoordinator;
   if (!hasRight) {
     return null;
@@ -63,7 +73,7 @@ Meteor.publish("groupMembers", function (groupId: string) {
 
 // Replaces aldeed:tabular's internal publication for the admin user table.
 Meteor.publish("adminAllUsers", function () {
-  if (!Roles.userIsInRole(this.userId, ["admin"])) {
+  if (!RolesHelper.userIsAdmin(this.userId)) {
     return null;
   }
   return Meteor.users.find({}, {
@@ -84,7 +94,7 @@ Meteor.publish("groupApplicants", function (groupId: string) {
   let group = new Group(groupId);
   let user = new User(this.userId);
 
-  let isCoordinator = group.isCoordinator(user) || Roles.userIsInRole(user.getId(), "admin");
+  let isCoordinator = group.isCoordinator(user) || RolesHelper.userIsAdmin(user.getId());
   let hasRight: boolean = user.exists() && isCoordinator;
   if (!hasRight) {
     return null;
@@ -279,7 +289,7 @@ Meteor.publish(AssignmentCountAccessor.ASSIGNMENT_COUNT_SUBSCRIPTION, function (
 Meteor.publish("coordinatingGroups", function () {
   if (this.userId) {
 
-    if (Roles.userIsInRole(this.userId, ["admin"])) { // Admin darf alle Gruppen sehen
+    if (RolesHelper.userIsAdmin(this.userId)) { // Admin darf alle Gruppen sehen
       return Groups.find();
     }
 
@@ -303,7 +313,7 @@ Meteor.publish("singleGroup", function (groupId: string) {
       return null;
     }
 
-    if (group.isMemberById(this.userId) || Roles.userIsInRole(this.userId, ["admin"])) { // Admin darf alle Gruppen sehen
+    if (group.isMemberById(this.userId) || RolesHelper.userIsAdmin(this.userId)) { // Admin darf alle Gruppen sehen
       return Groups.find({ _id: group.getId() });
     } else {
       return null;
@@ -321,7 +331,7 @@ Meteor.publish("allBlueprintsOfGroup", function (groupId: string) {
       return null;
     }
 
-    if (group.isCoordinatorById(this.userId) || Roles.userIsInRole(this.userId, ["admin"])) { // Admin darf alle Gruppen sehen
+    if (group.isCoordinatorById(this.userId) || RolesHelper.userIsAdmin(this.userId)) { // Admin darf alle Gruppen sehen
       return Blueprints.find({ group: group.getId() });
     } else {
       return null;
@@ -427,7 +437,7 @@ Meteor.publish("assignmentsForGroupTable", function (groupId: string, startDate:
 
   let group = new Group(groupId);
   let user = new User(this.userId);
-  let isCoordinator = group.isCoordinator(user) || Roles.userIsInRole(user.getId(), "admin");
+  let isCoordinator = group.isCoordinator(user) || RolesHelper.userIsAdmin(user.getId());
   if (!(user.exists() && isCoordinator)) {
     return null;
   }

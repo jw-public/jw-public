@@ -4,6 +4,7 @@ import Group from "./Group";
 
 import { Roles } from "meteor/alanning:roles";
 import { Meteor } from "meteor/meteor";
+import * as RolesHelper from "../../../lib/RolesHelper";
 import { Mongo } from "meteor/mongo";
 import Assignment from "./Assignment";
 
@@ -136,7 +137,7 @@ export default class User {
   }
 
   public isAdmin(): boolean {
-    return Roles.userIsInRole(this.id, ['admin']);
+    return RolesHelper.userIsInRole(this.id, ['admin']);
   }
 
   public isGroupCoordinator(group: Group, reactive?: boolean): boolean {

@@ -4,20 +4,19 @@
 # 'meteor add' and 'meteor remove' will edit this file for you,
 # but you can also edit it by hand.
 
-less@2.7.12
+less
 accounts-password@2.4.0
-alanning:roles
+alanning:roles@4.0.0
 ecmascript@0.16.8
 pfafman:font-awesome-4
 reactive-var@1.0.12
-ongoworks:security
 aldeed:collection2@3.5.0
-dburles:collection-helpers
+dburles:collection-helpers@2.0.0
 email@2.2.6
 service-configuration@1.3.4
 underscorestring:underscore.string
 mizzao:bootboxjs
-emgee:libphonenumber
+emgee:libphonenumber@=0.1.0
 reywood:publish-composite
 tmeasday:publish-counts
 meteor-base@1.5.1
@@ -33,12 +32,10 @@ ejson@1.1.3
 check@1.4.1
 standard-minifier-css@1.9.2
 standard-minifier-js@2.8.1
-react-meteor-data@2.5.1
-stylus@2.513.9
+react-meteor-data
 browser-policy@1.1.2
 shell-server@0.5.0
 dynamic-import@0.7.3
-sevki:prometheus-exporter
 underscore@1.6.1
 twbs:bootstrap
 static-html@1.3.2
