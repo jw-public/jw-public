@@ -66,8 +66,13 @@ Deliberately stopped before this step. Honest scoping after Phase 2:
 
 Recommendation: do Phase 4 (router swap) BEFORE Meteor 3 — it removes blaze-layout, react-template-helper, blaze-html-templates and the layouts, shrinking the package surface further.
 
-## Phase 4 — react-router (NOT in this PR)
-Prepared but not executed: all routes still in `lib/client/routes.ts` (flow-router + BlazeLayout). Once swapped, MainLayout/Sidebar/ParallaxScreen become React, the `{{> React}}` wrapper shells disappear, and the cold-load blank-page bug fixes itself.
+## Phase 4 — react-router ✅ (added to this PR after review continued)
+- ✅ flow-router + BlazeLayout → **react-router v6** (`lib/client/routes.tsx`); guards as components. **Blaze is completely gone** (blaze-html-templates → static-html; react-template-helper, blaze-layout, spacebars, gsap, bootstrap-alerts, subs-cache, jquery-scrollto removed — 9 more packages).
+- ✅ MainLayout/Sidebar/ParallaxScreen React; metisMenu JS + TweenLite + vendored jQuery pickers + customTemplateHelpers deleted.
+- ✅ Reactive `Routes.getParam()` bridge keeps Tracker reactivity for non-component code; isomorphic link building in `lib/RoutePaths.ts`.
+- 🐛→✅ Fixed for real (not just documented): cold-load blank page on /manage-assignments, admin cold-load redirect (guard now waits for the roles null-publication), two subscription races that crashed the React tree on cold loads (Dashboard pendingGroups, ShowOverview group doc).
+- ⚠️ ADR 0004: react-router **v6** not v7 — v7's `import.meta` breaks Meteor 2.7's bundler. Bump with Meteor 3.
+- Validated: tsc clean, 101 unit tests, suite 17/17 ×3.
 
 ## Phase 5 — Bootstrap 5 + dependency sweep (NOT in this PR)
 All React components intentionally still emit Bootstrap-3 markup (panel/btn-xs/col-xs…). The BS3→BS5 class sweep stays one atomic, suite-validated step. Tier-3 list unchanged (moment→dayjs etc.).

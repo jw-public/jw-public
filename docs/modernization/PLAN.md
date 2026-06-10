@@ -38,7 +38,7 @@ Decisions agreed with Dominik (see ADRs 0001, 0002):
 - [x] Phase 0 — Playwright suite (17 specs) green vs legacy app, Mailpit email assertions, Cypress removed
 - [x] Phase 1 — React 18.3, TypeScript 5.9, react-meteor-data 2.5 (hooks)
 - [x] Phase 2 — all page templates React; tabular/AutoForm/select2/jquery-ui stack removed
-- [ ] Phase 3 — Meteor 3 (scoped in MIGRATION_LOG; do Phase 4 first)
-- [ ] Phase 4 — react-router + layouts
+- [ ] Phase 3 — Meteor 3 (scoped in MIGRATION_LOG; package surface now minimal)
+- [x] Phase 4 — react-router v6 + layouts; Blaze fully removed (ADR 0004)
 - [ ] Phase 5 — Bootstrap 3→5 sweep
 - [x] Phase 6 — MIGRATION_LOG.md is the report
