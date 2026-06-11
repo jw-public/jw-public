@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { Meteor } from "meteor/meteor";
+import { callMethod } from "../../imports/methods/MethodContracts";
 import { useTracker } from "meteor/react-meteor-data";
 import * as _ from "underscore";
 import { Routes } from "../../lib/client/routes";
@@ -71,7 +72,7 @@ function useUserCount(loggedIn: boolean): string {
     if (!loggedIn) {
       return;
     }
-    (Meteor.callAsync("getAllUsersCount") as Promise<number>)
+    callMethod("getAllUsersCount")
       .then((asyncValue) => setUserCount(String(asyncValue)))
       .catch((err: Meteor.Error) => console.log(err));
   }, [loggedIn]);

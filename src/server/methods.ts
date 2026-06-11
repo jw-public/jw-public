@@ -2,6 +2,7 @@ import * as _ from "underscore";
 import { app } from "./App";
 
 import { Roles } from "meteor/alanning:roles";
+import { MethodImplementations } from "../imports/methods/MethodContracts";
 import * as RolesHelper from "../lib/RolesHelper";
 import { check } from "meteor/check";
 import { Meteor } from "meteor/meteor";
@@ -51,7 +52,9 @@ async function requireCoordinatorOrAdmin(userId: string | null, groupId: string)
 }
 
 Meteor.startup(function () {
-  Meteor.methods({
+  // Typed against the shared wire contract: signature drift between client
+  // and server is a compile error here, not a runtime surprise.
+  const methods: MethodImplementations = {
     /**
      * Rollen eines Users setzen (roles v4: Zuweisungen liegen nicht mehr am
      * User-Dokument, daher kein Client-Update mehr möglich).
@@ -468,5 +471,7 @@ Meteor.startup(function () {
         throw new Meteor.Error("403", "Access denied");
       }
     },
-  });
+  };
+
+  Meteor.methods(methods);
 });

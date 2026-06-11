@@ -1,5 +1,6 @@
 import SimpleSchema, { SchemaContext } from "./SimpleSchema";
 import { Meteor } from "meteor/meteor";
+import { callMethod } from "../../imports/methods/MethodContracts";
 
 export const CONTEXT_NAME_STEP_TWO = "register-secondStep-register";
 
@@ -21,18 +22,16 @@ export const NewUserSchema = new SimpleSchema({
     custom: function (this: SchemaContext) {
       // Überprüft, ob der Nutzer schon im System ist und gibt ggf. eine Fehlermeldung aus.
       if (Meteor.isClient && this.isSet) {
-        void (Meteor.callAsync("userExists", this.value) as Promise<boolean>).then(
-          function (result) {
-            if (result) {
-              getStepTwoContext().addValidationErrors([
-                {
-                  name: "email",
-                  type: "userAlreadyExisting",
-                },
-              ]);
-            }
-          },
-        );
+        void callMethod("userExists", this.value).then(function (result) {
+          if (result) {
+            getStepTwoContext().addValidationErrors([
+              {
+                name: "email",
+                type: "userAlreadyExisting",
+              },
+            ]);
+          }
+        });
       }
     },
     autoValue: function (this: SchemaContext) {

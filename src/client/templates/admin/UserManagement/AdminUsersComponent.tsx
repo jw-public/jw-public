@@ -2,6 +2,7 @@ import { alertDialog, confirmDialog } from "../../../react/components/dialogs";
 import * as React from "react";
 import { useState } from "react";
 import { Meteor } from "meteor/meteor";
+import { callMethod } from "../../../../imports/methods/MethodContracts";
 import { Roles } from "meteor/alanning:roles";
 import { useTracker } from "meteor/react-meteor-data";
 import { Groups } from "../../../../collections/lib/GroupCollection";
@@ -70,7 +71,7 @@ function EditUserPanel(props: {
           ]);
         } else {
           // Roles live in their own collection since alanning:roles v4.
-          Meteor.callAsync("adminSetUserRoles", props.user._id, roles)
+          callMethod("adminSetUserRoles", props.user._id!, roles)
             .then(() => props.onClose())
             .catch((rolesErr: any) => {
               console.error("Was trying to set roles: ", rolesErr);

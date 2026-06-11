@@ -4,6 +4,7 @@ import * as React from "react";
 import { useState } from "react";
 import { Accounts } from "meteor/accounts-base";
 import { Meteor } from "meteor/meteor";
+import { callMethod } from "../../../imports/methods/MethodContracts";
 import { useTracker } from "meteor/react-meteor-data";
 import { Routes } from "../../../lib/client/routes";
 
@@ -69,7 +70,7 @@ export default function RegisterInGroup(): JSX.Element {
       return;
     }
 
-    void (Meteor.callAsync("userExists", cleaned) as Promise<boolean>).then((userExists) => {
+    void callMethod("userExists", cleaned).then((userExists) => {
       if (userExists) {
         console.log("Benutzer ist bereits registriert!");
         void alertDialog(
