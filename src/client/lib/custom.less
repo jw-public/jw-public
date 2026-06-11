@@ -65,6 +65,26 @@ ul.pagination > li.active > a {
   margin-bottom: 1rem;
 }
 
+// BS3 panels carried a 20px bottom margin; BS5 cards have none, so stacked
+// cards (and grid rows that wrap) collapse onto each other without this.
+.card {
+  margin-bottom: 20px;
+}
+
+// ...except inside accordions, where BS3 panel-groups used a tight 5px gap
+// (the 20px margin then sits on the accordion itself).
+.accordion {
+  margin-bottom: 20px;
+}
+
+.accordion > .card {
+  margin-bottom: 0;
+}
+
+.accordion > .card + .card {
+  margin-top: 5px;
+}
+
 dl.dl-horizontal {
   dt {
     float: left;

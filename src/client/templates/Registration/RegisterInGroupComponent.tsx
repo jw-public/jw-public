@@ -53,9 +53,11 @@ export default function RegisterInGroup(): JSX.Element {
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [alerts, setAlerts] = useState<InlineAlert[]>([]);
 
-  const groupName = useTracker(
-    () => Groups.findOne({ _id: Routes.getParam("groupId") })?.name ?? "",
-  );
+  const groupName = useTracker(() => {
+    const groupId = Routes.getParam("groupId");
+    Meteor.subscribe("groupName", groupId);
+    return Groups.findOne({ _id: groupId })?.name ?? "";
+  });
 
   const onSubmitStepOne = (event: React.FormEvent) => {
     event.preventDefault();
