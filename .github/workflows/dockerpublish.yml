@@ -50,6 +50,10 @@ jobs:
       # which tsc resolves via the tsconfig "paths" mapping.
       - name: Generate Meteor package types
         run: cd src && meteor lint
+      # the one accepted moderate finding (qs via meteor-node-stubs
+      # bundledDependencies) stays below the high threshold
+      - name: Audit production dependencies
+        run: cd src && meteor npm audit --omit=dev --audit-level=high
       - run: cd src && meteor npm run compile
       - run: cd src && meteor npm run lint
       - run: cd src && meteor npm run format:check
