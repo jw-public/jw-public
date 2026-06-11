@@ -36,8 +36,8 @@ describe("AssignmentCloser", async function () {
     });
 
     // Assert
-    let toBeClosedAssignment = testCase.collection.findOne({ _id: toBeClosedId });
-    let notToBeClosedAssignment = testCase.collection.findOne({ _id: notToBeClosedId });
+    let toBeClosedAssignment = testCase.collection.findOne({ _id: toBeClosedId })!;
+    let notToBeClosedAssignment = testCase.collection.findOne({ _id: notToBeClosedId })!;
 
     assert.equal(toBeClosedAssignment.state, "Closed", "Did not close assignment");
     assert.equal(notToBeClosedAssignment.state, "Online", "Should not close other assignments");
@@ -61,7 +61,7 @@ describe("AssignmentCloser", async function () {
     });
 
     // Assert
-    let toBeClosedAssignment = testCase.collection.findOne({ _id: toBeClosedId });
+    let toBeClosedAssignment = testCase.collection.findOne({ _id: toBeClosedId })!;
 
     testCase.assert(toBeClosedAssignment).participantCountIs(2);
     testCase.assert(toBeClosedAssignment).applicantCountIs(0);
@@ -194,7 +194,7 @@ describe("AssignmentCloser", async function () {
 });
 
 class AssignmentCloserTestCase extends AssignmentTestCaseWithNotifications<IAssignmentCloser> {
-  private _closer: IAssignmentCloser = null;
+  private _closer: IAssignmentCloser | null = null;
 
   constructor() {
     super(Types.IAssignmentCloser);
@@ -202,6 +202,6 @@ class AssignmentCloserTestCase extends AssignmentTestCaseWithNotifications<IAssi
   }
 
   get closer(): IAssignmentCloser {
-    return this._closer;
+    return this._closer!;
   }
 }

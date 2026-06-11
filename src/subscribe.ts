@@ -3,14 +3,14 @@ import { Tracker } from "meteor/tracker";
 
 import * as SubscriptionHelper from "./Subscription";
 
-let userDataSubscription: Meteor.SubscriptionHandle = null;
+let userDataSubscription: Meteor.SubscriptionHandle | null = null;
 
 export function getUserDataSubscription(): Meteor.SubscriptionHandle {
   if (userDataSubscription === null) {
     init();
   }
 
-  return userDataSubscription;
+  return userDataSubscription!;
 }
 
 function init() {

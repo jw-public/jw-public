@@ -57,7 +57,7 @@ describe("UserBE", function () {
 
 class UserBETestCase extends TestCase<IUserFactory> {
   private userId: string;
-  constructor(private userDao: UserDAO) {
+  constructor(private userDao: Partial<UserDAO>) {
     super(UserTypes.IUserFactory);
 
     this.userId = this.userCollection.insert(userDao);

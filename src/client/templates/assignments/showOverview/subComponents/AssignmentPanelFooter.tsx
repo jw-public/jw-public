@@ -18,7 +18,7 @@ interface AssignmentPanelFooterProps {
 }
 
 namespace PanelFooterConsts {
-  let textMap: Map<DisplayState, string> = null;
+  let textMap: Map<DisplayState, string> | null = null;
 
   export function getColorClassName(): Map<DisplayState, string> {
     if (textMap === null) {
@@ -34,10 +34,10 @@ namespace PanelFooterConsts {
   }
 
   export function getText(displayState: DisplayState): string {
-    return getColorClassName().get(displayState);
+    return getColorClassName().get(displayState)!;
   }
 
-  let iconMap: Map<DisplayState, string> = null;
+  let iconMap: Map<DisplayState, string> | null = null;
 
   export function getIcons(): Map<DisplayState, string> {
     if (iconMap === null) {
@@ -53,7 +53,7 @@ namespace PanelFooterConsts {
   }
 
   export function getIconName(displayState: DisplayState): string {
-    return getIcons().get(displayState);
+    return getIcons().get(displayState)!;
   }
 }
 

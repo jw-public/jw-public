@@ -15,7 +15,7 @@ export interface IAssignmentDisplayStateReader {
 class AssignmentDisplayStateReaderFactorySecondStep {
   constructor(private stateReader: IAssignmentStateReader) {}
 
-  withUserId(userId: string): IAssignmentDisplayStateReader {
+  withUserId(userId: string | null): IAssignmentDisplayStateReader {
     return new AssignmentDisplayStateReader(this.stateReader, userId);
   }
 }
@@ -27,7 +27,7 @@ export class AssignmentDisplayStateReader implements IAssignmentDisplayStateRead
 
   constructor(
     private assignmentStateReader: IAssignmentStateReader,
-    private userId: string,
+    private userId: string | null,
   ) {}
 
   private get assignmentState() {

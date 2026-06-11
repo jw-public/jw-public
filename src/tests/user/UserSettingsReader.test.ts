@@ -92,7 +92,7 @@ describe("UserSettingsReader", function () {
 
 class UserSettingsReaderTestCase extends TestCase<IUserSettingsReaderFactory> {
   private userId: string;
-  constructor(private userDao: UserDAO) {
+  constructor(private userDao: Partial<UserDAO>) {
     super(UserTypes.IUserSettingsReaderFactory);
 
     this.userId = this.userCollection.insert(userDao);

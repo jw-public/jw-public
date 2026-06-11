@@ -91,7 +91,8 @@ function mapToUserEntries(userIds: Array<string>): Array<UserEntry> {
 }
 
 function assertAssignment(simpleAssignment: SimpleAssignment) {
-  let assignment: AssignmentDAO = {
+  // deliberately partial: the state reader only touches these three fields
+  let assignment = <AssignmentDAO>{
     state: AssignmentState[simpleAssignment.state],
     participants: mapToUserEntries(simpleAssignment.participants),
     applicants: mapToUserEntries(simpleAssignment.applicants),

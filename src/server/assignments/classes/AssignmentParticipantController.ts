@@ -11,7 +11,8 @@ export class AssignmentParticipantController
   extends AssignmentAction
   implements IAssignmentParticipantController
 {
-  private assignmentContext: IAssignmentContext;
+  // injected post-construction by services.ts
+  private assignmentContext!: IAssignmentContext;
 
   constructor(
     protected collection: SimpleCollection<AssignmentDAO>,

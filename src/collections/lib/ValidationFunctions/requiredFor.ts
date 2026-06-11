@@ -46,6 +46,6 @@ export default function requiredForValidator(context: any) {
  *
  */
 
-SimpleSchema.addValidator(function () {
+SimpleSchema.addValidator(function (this: any) {
   return requiredForValidator(this);
 });

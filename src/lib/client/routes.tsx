@@ -269,8 +269,8 @@ export namespace Routes {
   }
 
   /** Reactive read of a current query param (Tracker-aware). */
-  export function getQueryParam(name: string): string {
+  export function getQueryParam(name: string): string | undefined {
     const search = new URLSearchParams(currentSearchVar.get());
-    return search.has(name) ? search.get(name) : undefined;
+    return search.get(name) ?? undefined;
   }
 }

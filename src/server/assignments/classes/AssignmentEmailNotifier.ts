@@ -72,9 +72,11 @@ export class AssignmentEmailNotifier extends AssignmentAction implements IAssign
     return subject;
   }
 
-  private async getGroupEmail(options: IAssignmentSingleNotifierOptions): Promise<string> {
+  private async getGroupEmail(
+    options: IAssignmentSingleNotifierOptions,
+  ): Promise<string | undefined> {
     let assignment = await this.getAssignment(options.assignmentId);
-    return (await this.groups.findOneAsync({ _id: assignment.group })).email;
+    return (await this.groups.findOneAsync({ _id: assignment.group }))?.email;
   }
 
   private async createText(
@@ -101,11 +103,15 @@ export class AssignmentEmailNotifier extends AssignmentAction implements IAssign
         message = emailMessageLocale.canceled(
           assignment.name,
           dateTime,
-          assignment.cancelationReason,
+          assignment.cancelationReason!,
         );
         break;
       case AssignmentEventType.Reenable:
-        message = emailMessageLocale.reenabled(assignment.name, dateTime, options.reenablingReason);
+        message = emailMessageLocale.reenabled(
+          assignment.name,
+          dateTime,
+          options.reenablingReason!,
+        );
         break;
     }
 
@@ -115,7 +121,7 @@ export class AssignmentEmailNotifier extends AssignmentAction implements IAssign
     }
 
     let greeting = await this.createGreeting(options, i18nProvider.getI18n());
-    let footerMessage = emailLocale.footer.replyInformation.concat(replyToAddress);
+    let footerMessage = emailLocale.footer.replyInformation.concat(replyToAddress ?? "");
     if (replyToAddress == null) {
       footerMessage = emailLocale.footer.noReplyInformation;
     }
@@ -138,6 +144,6 @@ ${footerMessage}`;
     locale: ILocale,
   ): Promise<string> {
     let user = await this.users.findOneAsync({ _id: options.userId });
-    return `${locale.hello} ${user.profile.first_name}`;
+    return `${locale.hello} ${user?.profile?.first_name}`;
   }
 }

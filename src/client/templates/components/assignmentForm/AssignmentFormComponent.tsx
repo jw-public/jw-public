@@ -82,13 +82,17 @@ export default function AssignmentForm(props: AssignmentFormProps): JSX.Element 
         { _id: { $in: group.getCoordinatorIds() } },
         { fields: { "profile.first_name": 1, "profile.last_name": 1 } },
       )
-      .map((c: Meteor.User) => ({ label: User.createFromDAO(c as any).fullName, value: c._id }));
+      .map((c: Meteor.User) => ({
+        label: User.createFromDAO(c as any).fullName ?? "",
+        value: c._id,
+      }));
   }, [props.currentGroupId]);
 
   const end = useMemo(() => moment(start).add(duration, "minutes").toDate(), [start, duration]);
 
   const isCanceled =
-    props.doc != null && AssignmentState[props.doc.state] === AssignmentState.Canceled;
+    props.doc != null &&
+    AssignmentState[props.doc.state as keyof typeof AssignmentState] === AssignmentState.Canceled;
 
   const increaseDuration = (minutes: number) => {
     setDuration((d) =>
@@ -158,7 +162,7 @@ export default function AssignmentForm(props: AssignmentFormProps): JSX.Element 
     if (props.formType === "insert") {
       Assignments.insert(fields as any, callback);
     } else {
-      Assignments.update(props.doc._id, { $set: fields }, {}, callback);
+      Assignments.update(props.doc!._id!, { $set: fields }, {}, callback);
     }
   };
 
@@ -178,7 +182,7 @@ export default function AssignmentForm(props: AssignmentFormProps): JSX.Element 
               <div className="datetimepicker">
                 <DatePicker
                   selected={start}
-                  onChange={(date: Date) => date && setStart(date)}
+                  onChange={(date: Date | null) => date && setStart(date)}
                   inline
                   showTimeSelect
                   timeIntervals={15}

@@ -1,4 +1,4 @@
-import { SimpleCollectionStatic } from "../../../imports/interfaces/SimpleCollection";
+import { SimpleCollection } from "../../../imports/interfaces/SimpleCollection";
 
 const RawLocalCollection: any = require("./minimongo-standalone-js").LocalCollection;
 
@@ -37,4 +37,22 @@ cursorProto.mapAsync = async function (callback: any, thisArg?: any) {
   return this.map(callback, thisArg);
 };
 
-export const LocalCollection: SimpleCollectionStatic = RawLocalCollection;
+// Tests seed deliberately partial fixture documents, so the test double's
+// insert is typed against Partial<T> (the real schema is not attached here).
+export interface TestCollection<T> extends Omit<SimpleCollection<T>, "insert" | "insertAsync"> {
+  insert(doc: Partial<T>, callback?: Function): string;
+  insertAsync(doc: Partial<T>, callback?: Function): Promise<string>;
+}
+
+export interface TestCollectionStatic {
+  new <T>(
+    name: string,
+    options?: {
+      connection?: object;
+      idGeneration?: string;
+      transform?: Function;
+    },
+  ): TestCollection<T>;
+}
+
+export const LocalCollection: TestCollectionStatic = RawLocalCollection;

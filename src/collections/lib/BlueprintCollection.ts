@@ -1,4 +1,4 @@
-import SimpleSchema from "./SimpleSchema";
+import SimpleSchema, { SchemaContext } from "./SimpleSchema";
 import { Mongo } from "meteor/mongo";
 import { WeekBlueprint } from "./../../imports/blueprint/interfaces/WeekBlueprint.d";
 
@@ -74,7 +74,7 @@ export const WeekBlueprintSchema = new SimpleSchema({
   // and prevent updates thereafter.
   createdAt: {
     type: Date,
-    autoValue: function () {
+    autoValue: function (this: SchemaContext) {
       if (this.isInsert) {
         return new Date();
       } else if (this.isUpsert) {
@@ -89,7 +89,7 @@ export const WeekBlueprintSchema = new SimpleSchema({
   // and don't allow it to be set upon insert.
   updatedAt: {
     type: Date,
-    autoValue: function () {
+    autoValue: function (this: SchemaContext) {
       if (this.isUpdate) {
         return new Date();
       }

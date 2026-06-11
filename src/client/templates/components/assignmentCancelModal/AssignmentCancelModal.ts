@@ -3,7 +3,7 @@ import * as ServerMethodsWrapper from "../../../../lib/classes/ServerMethodsWrap
 
 export function cancelDialog(assignmentId: string) {
   promptDialog({ title: "Was ist der Grund für die Terminabsage?" }).then(function (
-    result: string,
+    result: string | null,
   ) {
     if (result === null) {
       // Prompt dismissed
@@ -20,7 +20,7 @@ export function cancelDialog(assignmentId: string) {
 
 export function reenableDialog(assignmentId: string) {
   promptDialog({ title: "Was ist der Grund für die Re-Aktivierung des Termins?" }).then(function (
-    result: string,
+    result: string | null,
   ) {
     if (result === null) {
       // Prompt dismissed

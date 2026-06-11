@@ -23,7 +23,7 @@ function isAdmin(userId: string): Promise<boolean> {
   return RolesHelper.userIsAdminAsync(userId);
 }
 
-async function isGroupCoordinator(userId: string, groupId: string): Promise<boolean> {
+async function isGroupCoordinator(userId: string, groupId: string | undefined): Promise<boolean> {
   if (!userId || !groupId) {
     return false;
   }

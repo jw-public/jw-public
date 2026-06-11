@@ -23,7 +23,7 @@ export class BlueprintMaterializer implements IBlueprintMaterializer {
   ): Array<AssignmentDAO> {
     let result = new Array<AssignmentDAO>();
 
-    blueprint.assignments.forEach((element) => {
+    (blueprint.assignments ?? []).forEach((element) => {
       let singleAssignment: AssignmentDAO = this.processSingleAssignment(
         element,
         options,
@@ -56,6 +56,9 @@ export class BlueprintMaterializer implements IBlueprintMaterializer {
       end: endDate.toDate(),
       group: group,
       contacts: options.contacts,
+      // filled by the schema's defaultValue on insert
+      participants: [],
+      applicants: [],
     };
   }
 }

@@ -27,6 +27,8 @@ export async function initData(): Promise<void> {
     creator: adminUserId,
     group: groupId,
     name: "Test-Termin",
+    participants: [],
+    applicants: [],
     start: new Date(),
     end: new Date(),
   });

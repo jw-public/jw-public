@@ -47,12 +47,12 @@ function Submenu(props: {
 
 function GroupMenuEntry(props: { group: GroupDAO }): JSX.Element {
   const pendingUsersCount = useTracker(() => {
-    const controller = new GroupApplicationController(props.group._id);
+    const controller = new GroupApplicationController(props.group._id!);
     controller.subscribeCount();
     return controller.applicationsCount;
   }, [props.group._id]);
 
-  const groupParam = { [ParamNames.GroupId]: props.group._id };
+  const groupParam = { [ParamNames.GroupId]: props.group._id! };
 
   return (
     <Submenu
@@ -100,13 +100,14 @@ export default function Sidebar(): JSX.Element {
     Meteor.subscribe("coordinatingGroups");
 
     const userId = Meteor.userId();
-    const user = new User(userId);
+    // userId is null while logged out; User tolerates that (exists() is false)
+    const user = new User(userId!);
 
     return {
       isAdmin: user.exists() ? user.isAdmin() : false,
       isCoordinatorInAnyGroup: user.exists() ? user.isCoordinatorInAnyGroup(true) : false,
       coordinatingGroups: Groups.find(
-        { coordinators: { $in: [userId] } },
+        { coordinators: { $in: [userId!] } },
         { sort: { name: 1 } },
       ).fetch(),
     };

@@ -96,7 +96,7 @@ const assertDateIs = function (date: moment.Moment, expectedDate: string) {
 };
 
 class AssignmentDateParserTestCase extends AssignmentTestCaseWithNotifications<IAssignmentDateParser> {
-  private _dateParser: IAssignmentDateParser = null;
+  private _dateParser: IAssignmentDateParser | null = null;
 
   constructor() {
     super(AssignmentServiceTypes.IAssignmentDateParser);
@@ -104,6 +104,6 @@ class AssignmentDateParserTestCase extends AssignmentTestCaseWithNotifications<I
   }
 
   get dateParser(): IAssignmentDateParser {
-    return this._dateParser;
+    return this._dateParser!;
   }
 }

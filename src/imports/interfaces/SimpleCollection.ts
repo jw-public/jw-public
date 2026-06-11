@@ -18,21 +18,9 @@ export interface SimpleCollectionStatic {
     },
   ): SimpleCollection<T>;
 }
+// allow/deny intentionally omitted: security rules are attached to the real
+// collections in server/security.ts, never through this narrowed view.
 export interface SimpleCollection<T> {
-  allow(options: {
-    insert?: (userId: string, doc: T) => boolean;
-    update?: (userId: string, doc: T, fieldNames: string[], modifier: any) => boolean;
-    remove?: (userId: string, doc: T) => boolean;
-    fetch?: string[];
-    transform?: Function;
-  }): boolean;
-  deny(options: {
-    insert?: (userId: string, doc: T) => boolean;
-    update?: (userId: string, doc: T, fieldNames: string[], modifier: any) => boolean;
-    remove?: (userId: string, doc: T) => boolean;
-    fetch?: string[];
-    transform?: Function;
-  }): boolean;
   find(
     selector?: Selector | string,
     options?: {
@@ -53,7 +41,7 @@ export interface SimpleCollection<T> {
       reactive?: boolean;
       transform?: Function;
     },
-  ): T;
+  ): T | undefined;
   insert(doc: T, callback?: Function): string;
   remove(selector: Selector | string, callback?: Function): number;
   update(
@@ -84,7 +72,7 @@ export interface SimpleCollection<T> {
       reactive?: boolean;
       transform?: Function;
     },
-  ): Promise<T>;
+  ): Promise<T | undefined>;
   insertAsync(doc: T, callback?: Function): Promise<string>;
   removeAsync(selector: Selector | string): Promise<number>;
   updateAsync(

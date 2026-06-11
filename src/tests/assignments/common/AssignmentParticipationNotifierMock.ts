@@ -6,8 +6,8 @@ import {
 } from "../../../server/assignments/interfaces/IAssignmentParticipationNotifier";
 
 export class AssignmentParticipationNotifierMock implements IAssignmentParticipationNotifier {
-  public lastAcceptanceNotificationOptions: IAssignmentNotifierOptions = null;
-  public lastRemovalNotificationOptions: IAssignmentNotifierOptions = null;
+  public lastAcceptanceNotificationOptions: IAssignmentNotifierOptions | null = null;
+  public lastRemovalNotificationOptions: IAssignmentNotifierOptions | null = null;
 
   constructor(private assignmentContext: IAssignmentContext) {}
 

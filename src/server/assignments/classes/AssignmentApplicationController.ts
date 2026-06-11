@@ -6,7 +6,8 @@ import { IAssignmentApplicationController } from "../interfaces/IAssignmentAppli
 import { IAssignmentContext } from "../interfaces/IAssignmentContext";
 
 export class AssignmentApplicationController implements IAssignmentApplicationController {
-  private assignmentContext: IAssignmentContext;
+  // injected post-construction by services.ts
+  private assignmentContext!: IAssignmentContext;
   private logger: Logger;
 
   constructor(

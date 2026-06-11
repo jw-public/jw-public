@@ -40,7 +40,7 @@ export class AssignmentReenabler extends AssignmentAction implements IAssignment
     let state;
 
     if (this.isValidState(assignment.stateBeforeLastClose)) {
-      state = AssignmentState[assignment.stateBeforeLastClose];
+      state = AssignmentState[assignment.stateBeforeLastClose as keyof typeof AssignmentState];
     } else {
       state = AssignmentState.Closed;
     }
@@ -48,7 +48,10 @@ export class AssignmentReenabler extends AssignmentAction implements IAssignment
     return state;
   }
 
-  private isValidState(stateAsString: string): boolean {
-    return AssignmentState[stateAsString] !== undefined;
+  private isValidState(stateAsString: string | undefined): boolean {
+    return (
+      stateAsString !== undefined &&
+      AssignmentState[stateAsString as keyof typeof AssignmentState] !== undefined
+    );
   }
 }

@@ -271,7 +271,7 @@ function removeUser(userId: string): void {
 }
 
 export default function AdminUsers(): JSX.Element {
-  const [selectedUserId, setSelectedUserId] = useState<string>(null);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
   const data = useTracker(() => {
     Meteor.subscribe("adminAllUsers");
@@ -282,7 +282,7 @@ export default function AdminUsers(): JSX.Element {
       users: Meteor.users
         .find({}, { sort: { "profile.last_name": 1 } })
         .fetch() as UserCollection.UserDAO[],
-      groupsOptions: Groups.find({}, {}).map((c) => ({ label: c.name, value: c._id })),
+      groupsOptions: Groups.find({}, {}).map((c) => ({ label: c.name, value: c._id! })),
       rolesOptions: Meteor.roles.find({}, {}).map((c: any) => ({ label: c.name, value: c.name })),
     };
   });
@@ -349,7 +349,7 @@ export default function AdminUsers(): JSX.Element {
               <DataTable
                 columns={columns}
                 rows={data.users}
-                rowKey={(u) => u._id}
+                rowKey={(u) => u._id!}
                 searchText={(u) =>
                   [
                     u.profile?.first_name,

@@ -7,6 +7,10 @@ export class AssignmentAction {
 
   protected async getAssignment(assignmentId: string): Promise<AssignmentDAO> {
     assignmentId = assignmentId.toString();
-    return await this.collection.findOneAsync({ _id: assignmentId });
+    const assignment = await this.collection.findOneAsync({ _id: assignmentId });
+    if (!assignment) {
+      throw new Error(`Assignment ${assignmentId} not found`);
+    }
+    return assignment;
   }
 }

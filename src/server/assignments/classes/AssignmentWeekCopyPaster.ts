@@ -91,6 +91,6 @@ export class AssignmentWeekCopyPaster {
 
     this.logger.info("Copied " + copyAction.totalCopied + " assignments");
 
-    return copyAction.totalCopied;
+    return copyAction.totalCopied ?? 0;
   }
 }

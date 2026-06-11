@@ -1,7 +1,7 @@
 function toType(obj: any): string {
   return {}.toString
     .call(obj)
-    .match(/\s([a-zA-Z]+)/)[1]
+    .match(/\s([a-zA-Z]+)/)![1]
     .toLowerCase();
 }
 

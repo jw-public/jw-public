@@ -1,4 +1,4 @@
-import SimpleSchema from "../SimpleSchema";
+import SimpleSchema, { SchemaContext } from "../SimpleSchema";
 import { check } from "meteor/check";
 import { AssignmentEventType as AssignmentType } from "../../../imports/assignments/interfaces/AssignmentEventType";
 import { Def, buildPath } from "../../../lib/RoutePaths";
@@ -55,7 +55,7 @@ export const NotificationDataSchema = new SimpleSchema({
     type: String,
     regEx: SimpleSchema.RegEx.Url,
     optional: true,
-    custom: function () {
+    custom: function (this: SchemaContext) {
       let context = <any>this;
       let customCondition = context.field("hasLink").value === true;
       if (
@@ -81,7 +81,7 @@ export const NotificationSchema = new SimpleSchema({
   },
   when: {
     type: Date,
-    autoValue: function (): any {
+    autoValue: function (this: SchemaContext): any {
       if (this.isInsert) {
         return new Date();
       } else if (this.isUpsert) {
@@ -94,7 +94,7 @@ export const NotificationSchema = new SimpleSchema({
   seen: {
     type: Boolean,
     optional: true,
-    autoValue: function () {
+    autoValue: function (this: SchemaContext) {
       let context = <any>this;
       let gotPushed = context.isUpdate && context.operator === "$push";
 
@@ -106,7 +106,7 @@ export const NotificationSchema = new SimpleSchema({
   seenDate: {
     type: Date,
     optional: true,
-    custom: function () {
+    custom: function (this: SchemaContext) {
       let context = <any>this;
       let customCondition = context.field("seen").value === true;
       if (
@@ -117,7 +117,7 @@ export const NotificationSchema = new SimpleSchema({
         return "required";
       }
     },
-    autoValue: function () {
+    autoValue: function (this: SchemaContext) {
       let context = <any>this;
       let seenField = context.siblingField("seen");
 
@@ -154,9 +154,11 @@ export interface AssignmentOptions extends AssignmentOptionsParameters {
 
 export interface NotificationDAO {
   _id?: string;
-  type?: string;
+  // required by the schema and provided by every insert site
+  type: string;
+  // autoValue, absent in insert documents
   when?: Date;
-  userId?: string;
+  userId: string;
   seen?: boolean;
   seenDate?: Date;
   assignmentOptions?: AssignmentOptions;
@@ -175,14 +177,14 @@ export interface Wrapper extends DisplayableNotifcation {
   data: NotificationDAO;
 }
 
-export function wrap(notification: NotificationDAO): Wrapper {
+export function wrap(notification: NotificationDAO): Wrapper | null {
   delete notification._id; // Remove _id field, becaus it is not in the schema
   // simpl-schema instances are no longer valid `check` patterns; the doc
   // was already validated by collection2 on insert.
   check(notification, Object);
-  let wrapper: Wrapper = null;
+  let wrapper: Wrapper | null = null;
 
-  let type: Type = Type[notification.type];
+  let type: Type = Type[notification.type as keyof typeof Type];
 
   switch (type) {
     case Type.Assignment:
@@ -202,8 +204,8 @@ class AssignmentWrapper implements Wrapper {
 
   constructor(notification: NotificationDAO) {
     this.dataAccessObject = notification;
-    this.type = AssignmentType[notification.assignmentOptions.type];
-    this.assignmentId = this.dataAccessObject.assignmentOptions.id;
+    this.type = AssignmentType[notification.assignmentOptions!.type as keyof typeof AssignmentType];
+    this.assignmentId = this.dataAccessObject.assignmentOptions!.id;
   }
 
   get title(): string {
@@ -227,7 +229,7 @@ class AssignmentWrapper implements Wrapper {
   }
 
   get details(): string {
-    let details: string = null; // Default Wert
+    let details: string | null = null; // Default Wert
 
     if (this.assignmentDoesExist()) {
       let assignment: Assignment = new Assignment(this.assignmentId);
@@ -237,10 +239,10 @@ class AssignmentWrapper implements Wrapper {
           details = `Du nimmst am Termin "${assignment.name}" teil.\nDatum: ${date}`;
           break;
         case AssignmentType.Cancel:
-          details = `Der Termin "${assignment.name}" am ${date} wurde abgesagt: ${assignment.getDAO({ cancelationReason: 1 }, true).cancelationReason}`;
+          details = `Der Termin "${assignment.name}" am ${date} wurde abgesagt: ${assignment.getDAO({ cancelationReason: 1 }, true)!.cancelationReason}`;
           break;
         case AssignmentType.Reenable:
-          details = `Der Termin "${assignment.name}" am ${date} findet doch statt: ${this.dataAccessObject.assignmentOptions.reenablingReason}`;
+          details = `Der Termin "${assignment.name}" am ${date} findet doch statt: ${this.dataAccessObject.assignmentOptions!.reenablingReason}`;
           break;
         case AssignmentType.Removed:
           details = `Leider konnte Deine Bewerbung zum Termin ${assignment.name} am ${date} nicht berücksichtigt werden.`;
@@ -253,7 +255,7 @@ class AssignmentWrapper implements Wrapper {
       details = "Der Termin wurde gelöscht.";
     }
 
-    return details;
+    return details ?? "";
   }
 
   private assignmentDoesExist(): boolean {
@@ -295,7 +297,7 @@ class AssignmentWrapper implements Wrapper {
 
   get link(): string {
     return buildPath(Def.AssignmentSingleView, {
-      assignmentId: this.dataAccessObject.assignmentOptions.id,
+      assignmentId: this.dataAccessObject.assignmentOptions!.id,
     });
   }
 
@@ -310,7 +312,7 @@ class SimpleWrapper implements Wrapper {
 
   constructor(notification: NotificationDAO) {
     this.dataAccessObject = notification;
-    this.notificationData = this.dataAccessObject.simpleData;
+    this.notificationData = this.dataAccessObject.simpleData!;
   }
 
   get title(): string {
@@ -329,7 +331,7 @@ class SimpleWrapper implements Wrapper {
     return this.notificationData.hasLink;
   }
 
-  get link(): string {
+  get link(): string | undefined {
     return this.notificationData.link;
   }
 

@@ -25,4 +25,22 @@ if (!SimpleSchema.RegEx) {
 }
 /* eslint-enable no-useless-escape */
 
+/**
+ * `this` context of SimpleSchema `custom`/`autoValue` functions. simpl-schema
+ * ships no usable types through the atmosphere wrapper, so the shape used by
+ * this app is pinned down here.
+ */
+export interface SchemaContext {
+  isSet: boolean;
+  value: any;
+  operator: string | null;
+  isInsert: boolean;
+  isUpdate: boolean;
+  isUpsert: boolean;
+  field(name: string): { isSet: boolean; value: any };
+  siblingField(name: string): { isSet: boolean; value: any };
+  unset(): void;
+  addValidationErrors(errors: Array<{ name: string; type: string }>): void;
+}
+
 export default SimpleSchema;

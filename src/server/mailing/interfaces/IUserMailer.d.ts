@@ -1,9 +1,9 @@
 /** I send mails to a given user */
 
 export interface IUserMailerOptions {
-  recepientId?: string;
-  subject?: string;
-  markdownContent?: string;
+  recepientId: string;
+  subject: string;
+  markdownContent: string;
   replyToAddress?: string;
 }
 

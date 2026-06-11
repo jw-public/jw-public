@@ -14,13 +14,14 @@ export class UserFactory implements IUserFactory {
 }
 
 class UserBE implements IUserBE {
-  constructor(private user: UserDAO) {}
+  constructor(private user: UserDAO | undefined) {}
 
   public exists(): boolean {
     return this.user !== undefined;
   }
 
+  /** Only valid after a positive exists() check. */
   public getEmailAddress(): string {
-    return this.user.emails[0].address;
+    return this.user!.emails![0].address;
   }
 }

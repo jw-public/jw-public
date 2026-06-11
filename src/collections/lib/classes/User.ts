@@ -22,7 +22,7 @@ import { Notifications } from "../NotificationCollection";
  */
 export default class User {
   private id: string;
-  private _notificationManager: UserNotificationManager;
+  private _notificationManager: UserNotificationManager | null;
   /**
    * Überprüft, ob ein Benutzer mit dem Username oder E-Mail Adresse bereits im System ist.
    * @param username Einen Usernamen oder eine E-Mail-Adresse
@@ -49,29 +49,27 @@ export default class User {
   }
 
   public static createFromEmail(email: string): User {
-    if (!User.userExists(email)) {
-      throw new Meteor.Error("404", 'User "' + email + '" not found.');
-    }
-
-    let id = UserCollection.users.findOne(
+    const dao = UserCollection.users.findOne(
       {
         "emails.address": email,
       },
       { fields: { _id: 1 } },
-    )._id;
+    );
 
-    return User.createFromId(id);
+    if (!dao) {
+      throw new Meteor.Error("404", 'User "' + email + '" not found.');
+    }
+
+    return User.createFromId(dao._id);
   }
 
-  public static current(): User {
-    let userId: string = Meteor.userId();
-    let notLoggedIn: boolean = !userId;
+  public static current(): User | null {
+    const userId = Meteor.userId();
 
-    if (notLoggedIn) {
+    if (!userId) {
       return null;
-    } else {
-      return User.createFromId(Meteor.userId());
     }
+    return User.createFromId(userId);
   }
 
   public static createFromDAO(dao: Meteor.User | UserCollection.UserDAO): User {
@@ -132,10 +130,10 @@ export default class User {
       reactive = false;
     }
 
-    return UserCollection.users.findOne(
-      { _id: this.id },
-      { fields: { _id: 1, groups: 1 }, reactive },
-    ).groups;
+    return (
+      UserCollection.users.findOne({ _id: this.id }, { fields: { _id: 1, groups: 1 }, reactive })
+        ?.groups ?? []
+    );
   }
 
   public getGroupIdsReactive(): Array<string> {
@@ -201,19 +199,17 @@ export default class User {
   }
 
   get notificationManager(): UserNotificationManager {
-    if (_.isNull(this._notificationManager)) {
+    if (this._notificationManager === null) {
       this._notificationManager = new UserNotificationManager(this);
     }
     return this._notificationManager;
   }
 
-  get fullName(): string {
+  get fullName(): string | null {
     let userDAO = this.getDAO({ "profile.first_name": 1, "profile.last_name": 1 });
-    let firstName = userDAO.profile.first_name;
-    let lastName = userDAO.profile.last_name;
 
-    if (!_.isUndefined(userDAO)) {
-      return `${firstName} ${lastName}`;
+    if (userDAO?.profile) {
+      return `${userDAO.profile.first_name} ${userDAO.profile.last_name}`;
     } else {
       return null;
     }
@@ -222,58 +218,36 @@ export default class User {
   get carMostlyAvailable(): boolean {
     let userDAO = this.getDAO({ "profile.carMostlyAvailable": 1 });
 
-    if (!_.isUndefined(userDAO)) {
-      return userDAO.profile.carMostlyAvailable;
-    } else {
-      return false;
-    }
+    return userDAO?.profile?.carMostlyAvailable ?? false;
   }
 
   get pioneer(): boolean {
-    let userDAO: UserCollection.UserDAO = this.getDAO({ "profile.pioneer": 1 });
+    let userDAO = this.getDAO({ "profile.pioneer": 1 });
 
-    if (!_.isUndefined(userDAO)) {
-      return userDAO.profile.pioneer;
-    } else {
-      return false;
-    }
+    return userDAO?.profile?.pioneer ?? false;
   }
 
-  get email(): string {
-    let userDAO: UserCollection.UserDAO = this.getDAO({ "emails.address": 1 });
+  get email(): string | null {
+    let userDAO = this.getDAO({ "emails.address": 1 });
 
-    if (!_.isUndefined(userDAO)) {
-      return userDAO.emails[0].address;
-    } else {
-      return null;
-    }
+    return userDAO?.emails?.[0]?.address ?? null;
   }
 
-  get mobilePhone(): string {
-    let userDAO: UserCollection.UserDAO = this.getDAO({ "profile.mobileNat": 1 });
+  get mobilePhone(): string | null {
+    let userDAO = this.getDAO({ "profile.mobileNat": 1 });
 
-    if (!_.isUndefined(userDAO)) {
-      let profile = userDAO.profile;
-      return profile.mobileNat;
-    } else {
-      return null;
-    }
+    return userDAO?.profile?.mobileNat ?? null;
   }
 
-  get formattedMobilePhone(): string {
-    let userDAO: UserCollection.UserDAO = this.getDAO({ "profile.mobileE164": 1 });
+  get formattedMobilePhone(): string | null {
+    let userDAO = this.getDAO({ "profile.mobileE164": 1 });
 
-    if (!_.isUndefined(userDAO)) {
-      let profile = userDAO.profile;
-      return profile.mobileE164;
-    } else {
-      return null;
-    }
+    return userDAO?.profile?.mobileE164 ?? null;
   }
 
   get pendingGroups(): Array<Group> {
-    let groupIds: Array<string> = this.getDAO({ "profile.pendingGroups": 1 }, true).profile
-      .pendingGroups;
+    let groupIds: Array<string> =
+      this.getDAO({ "profile.pendingGroups": 1 }, true)?.profile?.pendingGroups ?? [];
 
     let pendingGroups: Array<Group> = [];
 
@@ -285,25 +259,25 @@ export default class User {
   }
 
   get pendingGroupIdsOnce(): Array<string> {
-    return this.getDAO({ "profile.pendingGroups": 1 }, false).profile.pendingGroups;
+    return this.getDAO({ "profile.pendingGroups": 1 }, false)?.profile?.pendingGroups ?? [];
   }
 
   get pendingGroupIds(): Array<string> {
-    return this.getDAO({ "profile.pendingGroups": 1 }, true).profile.pendingGroups;
+    return this.getDAO({ "profile.pendingGroups": 1 }, true)?.profile?.pendingGroups ?? [];
   }
 
-  get placeName(): string {
-    return this.getDAO({ "profile.placeName": 1 }, true).profile.placeName;
+  get placeName(): string | null {
+    return this.getDAO({ "profile.placeName": 1 }, true)?.profile?.placeName ?? null;
   }
 
-  get zip(): string {
-    return this.getDAO({ "profile.zip": 1 }, true).profile.zip;
+  get zip(): string | null {
+    return this.getDAO({ "profile.zip": 1 }, true)?.profile?.zip ?? null;
   }
 
   public getCoordinatingGroups(reactive?: boolean): Array<Group> {
     let groupDAOs: Array<GroupDAO> = Groups.find(
       {
-        coordinators: { $in: [Meteor.userId()] },
+        coordinators: { $in: [Meteor.userId()!] },
       },
       { sort: { _id: 1 }, reactive: reactive },
     ).fetch();

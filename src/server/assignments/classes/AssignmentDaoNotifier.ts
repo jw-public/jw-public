@@ -37,7 +37,7 @@ export class AssignmentDaoNotifier implements IAssignmentDaoNotifier {
     for (const userId of userIds) {
       let notifierOptions: IAssignmentSingleNotifierOptions = {
         userId,
-        assignmentId: options.assignment._id,
+        assignmentId: options.assignment._id!,
         eventType: options.eventType,
       };
 

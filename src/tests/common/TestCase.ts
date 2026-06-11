@@ -7,7 +7,10 @@ import { IEmailSender, IEmailSendOptions } from "../../server/mailing/interfaces
 import { NullEmailSender } from "./NullEmailSender";
 
 import { SimpleCollection } from "../../imports/interfaces/SimpleCollection";
-import { LocalCollection } from "../3rdParty/minimongo-standalone/minimongo-standalone";
+import {
+  LocalCollection,
+  TestCollection,
+} from "../3rdParty/minimongo-standalone/minimongo-standalone";
 
 import { Meteor } from "meteor/meteor";
 import { NotificationDAO } from "../../collections/lib/classes/UserNotification";
@@ -23,14 +26,14 @@ import { overrideKeyFor, serviceKeyFor } from "./serviceSymbols";
 // Subclass constructors may swap collaborators via replace*() BEFORE the
 // first getTestObject() call — the graph is built lazily.
 export class TestCase<T> {
-  public userCollection: SimpleCollection<Meteor.User>;
-  private notificationCollection: SimpleCollection<NotificationDAO>;
-  public assignmentsCollection: SimpleCollection<AssignmentDAO>;
-  public groupCollection: SimpleCollection<GroupDAO>;
-  private copyActionsCollection: SimpleCollection<AssignmentCopyActionDAO>;
+  public userCollection: TestCollection<Meteor.User>;
+  private notificationCollection: TestCollection<NotificationDAO>;
+  public assignmentsCollection: TestCollection<AssignmentDAO>;
+  public groupCollection: TestCollection<GroupDAO>;
+  private copyActionsCollection: TestCollection<AssignmentCopyActionDAO>;
 
   protected overrides: ServiceOverrides = {};
-  private _services: Services = null;
+  private _services: Services | null = null;
   public _emailSenderMock: TypeMoq.Mock<IEmailSender>;
 
   constructor(private testee: symbol) {
@@ -52,7 +55,7 @@ export class TestCase<T> {
           assignments: this.assignmentsCollection,
           assignmentCopyActions: this.copyActionsCollection,
           notifications: this.notificationCollection,
-          users: this.userCollection as SimpleCollection<UserDAO>,
+          users: this.userCollection as unknown as SimpleCollection<UserDAO>,
           groups: this.groupCollection,
         },
         this._emailSenderMock.object,
@@ -112,7 +115,7 @@ export class TestCase<T> {
   }
 
   get testUserEmail() {
-    return testData.emails[0].address;
+    return testData.emails![0].address;
   }
 }
 

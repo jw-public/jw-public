@@ -80,7 +80,7 @@ describe("AssignmentNotifier", async function () {
     let testCase = new AssignmentNotifierTestCase();
 
     // Act
-    let rejectionMessage: string = null;
+    let rejectionMessage: string | null = null;
     try {
       await testCase.notifier.notifyUserAboutAssignment({
         userId: testCase.testUserId,

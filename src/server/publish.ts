@@ -37,11 +37,11 @@ async function getGroupDoc(groupId: string): Promise<GroupDAO | undefined> {
   return await Groups.findOneAsync({ _id: groupId });
 }
 
-function isCoordinatorOf(group: GroupDAO, userId: string): boolean {
+function isCoordinatorOf(group: GroupDAO | undefined, userId: string): boolean {
   return !!group && _.contains(group.coordinators || [], userId);
 }
 
-async function isMemberOf(group: GroupDAO, userId: string): Promise<boolean> {
+async function isMemberOf(group: GroupDAO | undefined, userId: string): Promise<boolean> {
   if (!group || !userId) {
     return false;
   }
@@ -79,7 +79,7 @@ Meteor.publish("roles", async function () {
     return [Meteor.roles.find(), Meteor.roleAssignment.find()]; // Rollen + Zuweisungen freigeben
   } else {
     // user not authorized.
-    return null;
+    return this.ready();
   }
 });
 
@@ -87,14 +87,14 @@ Meteor.publish("groupMembers", async function (groupId: string) {
   check(groupId, String);
 
   if (!this.userId) {
-    return null;
+    return this.ready();
   }
 
   const group = await getGroupDoc(groupId);
   const isCoordinator =
     isCoordinatorOf(group, this.userId) || (await RolesHelper.userIsAdminAsync(this.userId));
   if (!isCoordinator) {
-    return null;
+    return this.ready();
   }
   return UserPublication.usersNonReactive({
     groups: {
@@ -106,7 +106,7 @@ Meteor.publish("groupMembers", async function (groupId: string) {
 // Replaces aldeed:tabular's internal publication for the admin user table.
 Meteor.publish("adminAllUsers", async function () {
   if (!(await RolesHelper.userIsAdminAsync(this.userId))) {
-    return null;
+    return this.ready();
   }
   return Meteor.users.find(
     {},
@@ -126,14 +126,14 @@ Meteor.publish("groupApplicants", async function (groupId: string) {
   check(groupId, String);
 
   if (!this.userId) {
-    return null;
+    return this.ready();
   }
 
   const group = await getGroupDoc(groupId);
   const isCoordinator =
     isCoordinatorOf(group, this.userId) || (await RolesHelper.userIsAdminAsync(this.userId));
   if (!isCoordinator) {
-    return null;
+    return this.ready();
   }
   return Meteor.users.find(
     {
@@ -155,14 +155,14 @@ Meteor.publish("groupCoordinators", async function (groupId: string) {
   check(groupId, String);
 
   if (!this.userId) {
-    return null;
+    return this.ready();
   }
 
   const group = await getGroupDoc(groupId);
   const isMemberOrCoordinator =
     isCoordinatorOf(group, this.userId) || (await isMemberOf(group, this.userId));
-  if (!isMemberOrCoordinator) {
-    return null;
+  if (!group || !isMemberOrCoordinator) {
+    return this.ready();
   }
 
   const ids = _.toArray<string>(group.coordinators || []);
@@ -173,7 +173,7 @@ Meteor.publish("groupCoordinators", async function (groupId: string) {
 // Userdaten
 Meteor.publishComposite(
   "ownUserData",
-  function (): Meteor.PublishCompositeConfig<UserCollection.UserDAO> {
+  function (): Meteor.PublishCompositeConfig<UserCollection.UserDAO> | null {
     if (!this.userId) {
       return null;
     }
@@ -194,7 +194,7 @@ Meteor.publishComposite(
 
 namespace UserPublication {
   export function usersNonReactive(
-    selector: Mongo.Selector,
+    selector: Mongo.Selector<UserCollection.UserDAO>,
     limit?: number,
   ): Mongo.Cursor<UserCollection.UserDAO> {
     if (!limit) {
@@ -214,7 +214,7 @@ namespace UserPublication {
   }
 
   export function users(
-    selector: Mongo.Selector,
+    selector: Mongo.Selector<UserCollection.UserDAO>,
     limit?: number,
   ): Mongo.Cursor<UserCollection.UserDAO> {
     if (!limit) {
@@ -244,7 +244,7 @@ namespace UserPublication {
   }
 
   export function pendingGroupsOfUser(user: UserCollection.UserDAO) {
-    let groupIds = user.profile.pendingGroups;
+    let groupIds = user.profile?.pendingGroups;
 
     if (!_.isArray(groupIds)) {
       groupIds = [];
@@ -256,7 +256,9 @@ namespace UserPublication {
 
 Meteor.publishComposite(
   "notifications",
-  function (limit?: number): Meteor.PublishCompositeConfig<UserNotification.NotificationDAO> {
+  function (
+    limit?: number,
+  ): Meteor.PublishCompositeConfig<UserNotification.NotificationDAO> | null {
     if (!this.userId) {
       return null;
     }
@@ -288,15 +290,14 @@ namespace NotificationPublication {
   }
 
   export function assignmentsOfNotification(notification: UserNotification.NotificationDAO) {
-    let notificationLinksToAssignment: boolean =
-      _.has(notification, "assignmentOptions") && _.has(notification.assignmentOptions, "id");
+    const assignmentOptions = notification.assignmentOptions;
 
-    if (!notificationLinksToAssignment) {
+    if (!assignmentOptions || !_.has(assignmentOptions, "id")) {
       return null;
     }
 
     let assignmentsCursor = Assignments.find(
-      { _id: notification.assignmentOptions.id },
+      { _id: assignmentOptions.id },
       {
         fields: {
           name: 1,
@@ -350,7 +351,7 @@ Meteor.publish("coordinatingGroups", async function () {
       coordinators: { $in: [this.userId] },
     });
   } else {
-    return null;
+    return this.ready();
   }
 });
 
@@ -359,12 +360,12 @@ Meteor.publish("singleGroup", async function (groupId: string) {
   check(groupId, String);
 
   if (!this.userId) {
-    return null;
+    return this.ready();
   }
 
   const group = await getGroupDoc(groupId);
   if (!group) {
-    return null;
+    return this.ready();
   }
 
   if (
@@ -375,7 +376,7 @@ Meteor.publish("singleGroup", async function (groupId: string) {
     // Admin darf alle Gruppen sehen
     return Groups.find({ _id: groupId });
   } else {
-    return null;
+    return this.ready();
   }
 });
 
@@ -383,89 +384,92 @@ Meteor.publish("allBlueprintsOfGroup", async function (groupId: string) {
   check(groupId, String);
 
   if (!this.userId) {
-    return null;
+    return this.ready();
   }
 
   const group = await getGroupDoc(groupId);
   if (!group) {
-    return null;
+    return this.ready();
   }
 
   if (isCoordinatorOf(group, this.userId) || (await RolesHelper.userIsAdminAsync(this.userId))) {
     // Admin darf alle Gruppen sehen
     return Blueprints.find({ group: groupId });
   } else {
-    return null;
+    return this.ready();
   }
 });
 
-Meteor.publishComposite("singleAssignment", async function (assignmentId: string): Promise<
-  Meteor.PublishCompositeConfig<AssignmentDAO>
-> {
-  check(assignmentId, String);
+Meteor.publishComposite(
+  "singleAssignment",
+  async function (
+    assignmentId: string,
+  ): Promise<Meteor.PublishCompositeConfig<AssignmentDAO> | null> {
+    check(assignmentId, String);
 
-  if (!this.userId) {
-    return null;
-  }
+    if (!this.userId) {
+      return null;
+    }
 
-  const assignmentDao = await Assignments.findOneAsync({ _id: assignmentId });
-  if (!assignmentDao) {
-    return null;
-  }
+    const assignmentDao = await Assignments.findOneAsync({ _id: assignmentId });
+    if (!assignmentDao) {
+      return null;
+    }
 
-  const group = await getGroupDoc(assignmentDao.group);
-  const hasRight = isCoordinatorOf(group, this.userId) || (await isMemberOf(group, this.userId));
-  if (!hasRight) {
-    return null;
-  }
+    const group = await getGroupDoc(assignmentDao.group);
+    const hasRight = isCoordinatorOf(group, this.userId) || (await isMemberOf(group, this.userId));
+    if (!hasRight) {
+      return null;
+    }
 
-  const startOfDay = moment(assignmentDao.start).startOf("day");
-  const endOfDay = startOfDay.clone().endOf("day");
+    const startOfDay = moment(assignmentDao.start).startOf("day");
+    const endOfDay = startOfDay.clone().endOf("day");
 
-  return {
-    find: () => {
-      /*
-       *  Query: Gibt Details zum gegebenen Assignment und allen anderen Assignments des gleichen Tages.
-       *  Die Termine müssen alle den gleichen Namen haben, geschlossen sein und mindestens einen Teilnehmer haben.
-       */
-      return Assignments.find({
-        // ODER-Verknüpfung der folgenden Bedingungen:
-        $or: [
-          // Die ID entspricht der gegebenen assignmentId
-          { _id: assignmentId },
-          /*
-           *  Termine einer Gruppe, die am gleichen Tag stattfinden,
-           *  müssen alle den gleichen Namen haben, geschlossen sein
-           *  und mindestens einen Teilnehmer haben.
-           */
-          {
-            group: assignmentDao.group,
-            state: AssignmentState[AssignmentState.Closed],
-            name: assignmentDao.name,
-            start: { $gte: startOfDay.toDate(), $lt: endOfDay.toDate() },
-            participants: { $exists: true, $not: { $size: 0 } },
-          },
-        ],
-      });
-    },
-    children: [
-      {
-        find: (assignment: AssignmentDAO) => {
-          let participants = assignment.participants.map((entry) => entry.user);
-          let applicants = assignment.applicants.map((entry) => entry.user);
-          let contactPersons = assignment.contacts;
-
-          let allUsers = _.union(participants, applicants, contactPersons);
-
-          let fieldsToPublish: Mongo.FieldSpecifier = { _id: 1, profile: 1, "emails.address": 1 }; // Profilinfos und E-Mail-Adressen für jeden User sichtbar
-
-          let cursor = Meteor.users.find({ _id: { $in: allUsers } }, { fields: fieldsToPublish });
-          return cursor;
-        },
+    return {
+      find: () => {
+        /*
+         *  Query: Gibt Details zum gegebenen Assignment und allen anderen Assignments des gleichen Tages.
+         *  Die Termine müssen alle den gleichen Namen haben, geschlossen sein und mindestens einen Teilnehmer haben.
+         */
+        return Assignments.find({
+          // ODER-Verknüpfung der folgenden Bedingungen:
+          $or: [
+            // Die ID entspricht der gegebenen assignmentId
+            { _id: assignmentId },
+            /*
+             *  Termine einer Gruppe, die am gleichen Tag stattfinden,
+             *  müssen alle den gleichen Namen haben, geschlossen sein
+             *  und mindestens einen Teilnehmer haben.
+             */
+            {
+              group: assignmentDao.group,
+              state: AssignmentState[AssignmentState.Closed],
+              name: assignmentDao.name,
+              start: { $gte: startOfDay.toDate(), $lt: endOfDay.toDate() },
+              participants: { $exists: true, $not: { $size: 0 } },
+            },
+          ],
+        });
       },
-    ],
-  };
-});
+      children: [
+        {
+          find: (assignment: AssignmentDAO) => {
+            let participants = assignment.participants.map((entry) => entry.user);
+            let applicants = assignment.applicants.map((entry) => entry.user);
+            let contactPersons = assignment.contacts;
+
+            let allUsers = _.union(participants, applicants, contactPersons);
+
+            let fieldsToPublish: Mongo.FieldSpecifier = { _id: 1, profile: 1, "emails.address": 1 }; // Profilinfos und E-Mail-Adressen für jeden User sichtbar
+
+            let cursor = Meteor.users.find({ _id: { $in: allUsers } }, { fields: fieldsToPublish });
+            return cursor;
+          },
+        },
+      ],
+    };
+  },
+);
 
 // Replaces aldeed:tabular's internal publication for the coordinator's
 // assignment table. The one-month-back cap matches the old tabular selector.
@@ -477,14 +481,14 @@ Meteor.publish(
     check(endDate, Date);
 
     if (!this.userId) {
-      return null;
+      return this.ready();
     }
 
     const group = await getGroupDoc(groupId);
     const isCoordinator =
       isCoordinatorOf(group, this.userId) || (await RolesHelper.userIsAdminAsync(this.userId));
     if (!isCoordinator) {
-      return null;
+      return this.ready();
     }
 
     let earliest = moment().subtract(1, "month").toDate();
@@ -503,7 +507,7 @@ Meteor.publish("assignmentsInMonthPerGroup", async function (groupId: string, mo
   check(monthYear, String);
 
   if (!this.userId) {
-    return null;
+    return this.ready();
   }
 
   const group = await getGroupDoc(groupId);
@@ -537,7 +541,7 @@ Meteor.publish("assignmentsInMonthPerGroup", async function (groupId: string, mo
       },
     );
   } else {
-    return null;
+    return this.ready();
   }
 });
 

@@ -1,4 +1,3 @@
-import { Blaze } from "meteor/blaze";
 import { Meteor } from "meteor/meteor";
 import { Mongo } from "meteor/mongo";
 
@@ -17,7 +16,7 @@ export default class AssignmentCountAccessor {
    */
   constructor(private groupId: string) {}
 
-  private getAvailableAssignmentsSelector(): Mongo.Selector {
+  private getAvailableAssignmentsSelector(): Mongo.Selector<AssignmentDAO> {
     return {
       $and: [
         { group: this.groupId },
@@ -43,15 +42,6 @@ export default class AssignmentCountAccessor {
 
   public subscribeCount(): Meteor.SubscriptionHandle {
     return Meteor.subscribe(AssignmentCountAccessor.ASSIGNMENT_COUNT_SUBSCRIPTION, this.groupId);
-  }
-
-  public subscribeCountOnTemplate(
-    templateInstance: Blaze.TemplateInstance,
-  ): Meteor.SubscriptionHandle {
-    return templateInstance.subscribe(
-      AssignmentCountAccessor.ASSIGNMENT_COUNT_SUBSCRIPTION,
-      this.groupId,
-    );
   }
 
   public get count(): number {

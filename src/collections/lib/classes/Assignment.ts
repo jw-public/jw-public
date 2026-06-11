@@ -20,7 +20,7 @@ export default class Assignment {
   private id: string;
 
   public static createFromDAO(dao: AssignmentDAO): Assignment {
-    return new Assignment(dao._id);
+    return new Assignment(dao._id!);
   }
 
   static get MonthStringFormat(): string {
@@ -69,7 +69,7 @@ export default class Assignment {
     this.id = id;
   }
 
-  public getDAO(fields?: Mongo.FieldSpecifier, reactive?: boolean): AssignmentDAO {
+  public getDAO(fields?: Mongo.FieldSpecifier, reactive?: boolean): AssignmentDAO | undefined {
     let options;
 
     if (!reactive) {
@@ -110,11 +110,11 @@ export default class Assignment {
   }
 
   public get applicantsCount(): number {
-    return this.getDAO({ "applicants.user": 1 }, true).applicants.length;
+    return this.getDAO({ "applicants.user": 1 }, true)!.applicants.length;
   }
 
   public get participantsCount(): number {
-    return this.getDAO({ "participants.user": 1 }, true).participants.length;
+    return this.getDAO({ "participants.user": 1 }, true)!.participants.length;
   }
 
   /**
@@ -147,7 +147,7 @@ export default class Assignment {
    * @returns {string}
    */
   public getGroupId(): string {
-    return Assignments.findOne({ _id: this.getAssignmentId() }, { fields: { group: 1 } }).group;
+    return Assignments.findOne({ _id: this.getAssignmentId() }, { fields: { group: 1 } })!.group;
   }
 
   /**
@@ -183,7 +183,7 @@ export default class Assignment {
       Assignments.findOne(
         { _id: this.getAssignmentId() },
         { fields: { participants: 1 }, reactive: reactive },
-      ).participants,
+      )!.participants,
       function (participant: UserEntry) {
         participantIds.push(participant.user);
       },
@@ -203,12 +203,12 @@ export default class Assignment {
       reactive = false;
     }
 
-    let assignmentDAO: AssignmentDAO = Assignments.findOne(
+    let assignmentDAO = Assignments.findOne(
       { _id: this.getAssignmentId() },
       { fields: { participants: 1 }, reactive: reactive },
     );
 
-    if (_.isUndefined(assignmentDAO)) {
+    if (!assignmentDAO) {
       return [];
     }
 
@@ -231,7 +231,7 @@ export default class Assignment {
       Assignments.findOne(
         { _id: this.getAssignmentId() },
         { fields: { state: 1 }, reactive: reactive },
-      ).state === AssignmentState[AssignmentState.Closed]
+      )!.state === AssignmentState[AssignmentState.Closed]
     );
   }
 
@@ -253,7 +253,7 @@ export default class Assignment {
       Assignments.findOne(
         { _id: this.getAssignmentId() },
         { fields: { applicants: 1 }, reactive: reactive },
-      ).applicants,
+      )!.applicants,
       function (applicant: UserEntry) {
         applicantIds.push(applicant.user);
       },
@@ -269,7 +269,7 @@ export default class Assignment {
     return Assignments.findOne(
       { _id: this.getAssignmentId() },
       { fields: { contacts: 1 }, reactive: reactive },
-    ).contacts;
+    )!.contacts;
   }
 
   public getContactsReactive(): Array<User> {
@@ -314,11 +314,11 @@ export default class Assignment {
       reactive = false;
     }
 
-    let assignmentDAO: AssignmentDAO = Assignments.findOne(
+    let assignmentDAO = Assignments.findOne(
       { _id: this.getAssignmentId() },
       { fields: { userGoal: 1 }, reactive: reactive },
     );
-    let userGoal = assignmentDAO.userGoal;
+    let userGoal = assignmentDAO?.userGoal;
 
     if (!userGoal || userGoal === 0) {
       userGoal = -1;
@@ -328,27 +328,27 @@ export default class Assignment {
   }
 
   get name() {
-    let assignmentDAO: AssignmentDAO = Assignments.findOne(
+    let assignmentDAO = Assignments.findOne(
       { _id: this.getAssignmentId() },
       { fields: { name: 1 } },
     );
-    return assignmentDAO.name;
+    return assignmentDAO!.name;
   }
 
   get start() {
-    let assignmentDAO: AssignmentDAO = Assignments.findOne(
+    let assignmentDAO = Assignments.findOne(
       { _id: this.getAssignmentId() },
       { fields: { start: 1 } },
     );
-    return assignmentDAO.start;
+    return assignmentDAO!.start;
   }
 
   public getState(reactive?: boolean): AssignmentState {
     if (!reactive) {
       reactive = false;
     }
-    let stateString: string = this.getDAO({ state: 1 }, reactive).state;
+    let stateString = this.getDAO({ state: 1 }, reactive)!.state;
 
-    return AssignmentState[stateString];
+    return AssignmentState[stateString as keyof typeof AssignmentState];
   }
 }

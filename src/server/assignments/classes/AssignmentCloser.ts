@@ -76,7 +76,7 @@ export class AssignmentCloser extends AssignmentAction implements IAssignmentClo
     let changed = false;
     for (const userId of options.participantIds) {
       let userGotAdded = await this.assignmentParticipantController(
-        options.oldAssignment._id,
+        options.oldAssignment._id!,
       ).addUserAsParticipantAndNotify(userId);
 
       if (userGotAdded) {
@@ -100,7 +100,7 @@ export class AssignmentCloser extends AssignmentAction implements IAssignmentClo
 
     for (const userId of toBeRemoved) {
       let userGotRemoved = await this.assignmentParticipantController(
-        options.oldAssignment._id,
+        options.oldAssignment._id!,
       ).removeUserAsParticipantAndNotify(userId);
 
       if (userGotRemoved) {
@@ -132,7 +132,7 @@ export class AssignmentCloser extends AssignmentAction implements IAssignmentClo
     for (const userId of removedApplicants) {
       await this.assignmentNotifier.notifyUserAboutAssignment({
         userId,
-        assignmentId: assignment._id,
+        assignmentId: assignment._id!,
         eventType: AssignmentEventType.Removed,
       });
     }
@@ -151,7 +151,7 @@ export class AssignmentCloser extends AssignmentAction implements IAssignmentClo
     for (const userId of remainingParticipants) {
       await this.assignmentNotifier.notifyUserAboutAssignment({
         userId,
-        assignmentId: assignment._id,
+        assignmentId: assignment._id!,
         eventType: AssignmentEventType.Modified,
       });
     }

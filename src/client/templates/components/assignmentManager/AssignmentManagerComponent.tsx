@@ -73,7 +73,7 @@ export default function AssignmentManager(props: AssignmentManagerProps): JSX.El
   const [applicants, setApplicants] = useState<string[]>([]);
   const [participants, setParticipants] = useState<string[]>([]);
   const [initialised, setInitialised] = useState(false);
-  const [selectedUserId, setSelectedUserId] = useState<string>(null);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
   // Subscriptions in separate trackers: a conditional subscribe inside one
   // computation flaps between ready states and causes endless re-renders.
@@ -265,7 +265,7 @@ export default function AssignmentManager(props: AssignmentManagerProps): JSX.El
             className="btn btn-outline-secondary cancel"
             onClick={(e) => {
               e.preventDefault();
-              props.onCancel(e);
+              props.onCancel!(e);
             }}
           >
             <i className="fa fa-times"></i> Abbrechen

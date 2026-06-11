@@ -23,7 +23,6 @@ export interface UserProfile {
  * User Data Access Object
  */
 export interface UserDAO extends Meteor.User {
-  _id?: string;
   profile?: UserProfile;
   roles?: string[];
   groups?: string[];

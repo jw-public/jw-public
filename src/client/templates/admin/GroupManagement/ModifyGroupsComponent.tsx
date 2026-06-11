@@ -113,7 +113,7 @@ function GroupApplicationsCount(props: { groupId: string }): JSX.Element {
 }
 
 export default function ModifyGroups(): JSX.Element {
-  const [selectedGroupId, setSelectedGroupId] = useState<string>(null);
+  const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
 
   const data = useTracker(() => {
     Meteor.subscribe("coordinatingGroups");
@@ -128,7 +128,7 @@ export default function ModifyGroups(): JSX.Element {
     };
   });
 
-  const selectedGroup: GroupDAO = selectedGroupId
+  const selectedGroup: GroupDAO | null = selectedGroupId
     ? (data.groups.find((g) => g._id === selectedGroupId) ?? null)
     : null;
 
@@ -188,7 +188,7 @@ export default function ModifyGroups(): JSX.Element {
 
   const updateGroup = (values: GroupFormValues, onError: (m: string) => void) => {
     Groups.update(
-      selectedGroupId,
+      selectedGroupId!,
       {
         $set: {
           name: values.name,
@@ -225,7 +225,7 @@ export default function ModifyGroups(): JSX.Element {
               <DataTable
                 columns={columns}
                 rows={data.groups}
-                rowKey={(g) => g._id}
+                rowKey={(g) => g._id!}
                 searchText={(g) => g.name ?? ""}
                 defaultSort={{ column: 0, direction: "asc" }}
                 tableClassName="table table-responsive"

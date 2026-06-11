@@ -69,7 +69,7 @@ export default function RegisterInGroup(): JSX.Element {
       return;
     }
 
-    Meteor.callAsync("userExists", cleaned).then((userExists: boolean) => {
+    (Meteor.callAsync("userExists", cleaned) as Promise<boolean>).then((userExists) => {
       if (userExists) {
         console.log("Benutzer ist bereits registriert!");
         alertDialog(

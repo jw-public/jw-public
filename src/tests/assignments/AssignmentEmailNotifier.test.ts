@@ -241,7 +241,8 @@ class AssignmentEmailNotifierTestCase extends TestCase<IAssignmentEmailNotifier>
     return this.getTestObject();
   }
 
-  public get emailAssert() {
+  // overrides the base asserts with the user-mailer flavour
+  public get emailAssert(): any {
     return {
       noEmailWasSent: () => {
         this._userMailerMock.verify(

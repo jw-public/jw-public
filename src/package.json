@@ -41,6 +41,7 @@
     "@eslint/js": "^9.39.4",
     "@types/chai": "3.5.2",
     "@types/lolex": "5.1.6",
+    "@types/marked": "^4.3.2",
     "@types/mocha": "^10.0.10",
     "babel-polyfill": "6.26.0",
     "c8": "^10.1.3",

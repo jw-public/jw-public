@@ -13,8 +13,8 @@ export type Timezone = "Europe/Berlin";
 export const SUPPORTED_LANGUAGES: Locale[] = ["de-de", "en-en", "fr-fr"];
 
 export class I18nProvider implements II18nProvider {
-  private i18n: ILocale = null;
-  private moment: moment.Moment;
+  private i18n: ILocale;
+  private moment!: moment.Moment;
 
   constructor(
     private locale: Locale,

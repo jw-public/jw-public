@@ -28,7 +28,7 @@ SimpleSchema.setDefaultMessages({
       passwordMissmatch: "Die eingegebenen Passwörter stimmen nicht überein",
       timezoneNotValid: "Zeitzone nicht gültig",
       phoneNumberInvalid: "Die Telefonnummer ist ungültig",
-      regEx({ label, regExp }) {
+      regEx({ label, regExp }: { label: string; regExp: string }) {
         switch (regExp) {
           case SimpleSchema.RegEx.Email.toString():
           case SimpleSchema.RegEx.EmailWithTLD.toString():

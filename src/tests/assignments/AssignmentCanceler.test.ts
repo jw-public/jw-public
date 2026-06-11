@@ -31,7 +31,7 @@ describe("AssignmentCanceler", async function () {
     await testCase.canceler.cancelAssignment(toBeCanceledId, "I don't know");
 
     // Assert
-    let actualAssignment = testCase.collection.findOne();
+    let actualAssignment = testCase.collection.findOne()!;
     assert.equal(actualAssignment.state, "Canceled", "Did not cancel the assignment.");
     assert.equal(
       actualAssignment.cancelationReason,
@@ -102,7 +102,7 @@ describe("AssignmentCanceler", async function () {
 });
 
 class AssignmentCancelerTestCase extends AssignmentTestCaseWithNotifications<IAssignmentCanceler> {
-  private _canceler: IAssignmentCanceler = null;
+  private _canceler: IAssignmentCanceler | null = null;
 
   constructor() {
     super(Types.IAssignmentCanceler);
@@ -110,6 +110,6 @@ class AssignmentCancelerTestCase extends AssignmentTestCaseWithNotifications<IAs
   }
 
   get canceler(): IAssignmentCanceler {
-    return this._canceler;
+    return this._canceler!;
   }
 }

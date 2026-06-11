@@ -17,14 +17,15 @@ export class UserSettingsReaderFactory implements IUserSettingsReaderFactory {
 }
 
 class UserSettingsReader implements IUserSettingsReader {
-  constructor(private user: UserDAO) {}
+  constructor(private user: UserDAO | undefined) {}
 
   public wantsToReceiveNotificationAsEmail() {
-    let wantsToReceiveNotificationAsEmail = this.user.profile.notificationAsEmail;
+    let wantsToReceiveNotificationAsEmail = this.user?.profile?.notificationAsEmail;
     return wantsToReceiveNotificationAsEmail === undefined || wantsToReceiveNotificationAsEmail;
   }
 
   public getI18nProvider(): II18nProvider {
-    return new I18nProvider(this.user.profile.language, "Europe/Berlin");
+    // language carries a schema defaultValue, so it is present on real users
+    return new I18nProvider(this.user!.profile!.language!, "Europe/Berlin");
   }
 }

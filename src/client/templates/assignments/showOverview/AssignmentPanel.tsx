@@ -17,7 +17,7 @@ export interface AssignmentPanelProps {
 }
 
 export default class AssignmentPanel extends React.Component<AssignmentPanelProps, {}> {
-  private renderAdminMenu(props: AssignmentAdminButtonProps): JSX.Element {
+  private renderAdminMenu(props: AssignmentAdminButtonProps): JSX.Element | undefined {
     if (!this.isEligibleToModifyAssignment()) {
       return undefined;
     }
@@ -56,7 +56,7 @@ export default class AssignmentPanel extends React.Component<AssignmentPanelProp
 
     let adminMenu = this.renderAdminMenu({
       stateReader,
-      assignmentId: assignment._id,
+      assignmentId: assignment._id!,
       bootstrapColorClass: colorClass,
     });
 
@@ -80,7 +80,7 @@ export default class AssignmentPanel extends React.Component<AssignmentPanelProp
 }
 
 namespace PanelConsts {
-  let colorClassMap: Map<DisplayState, string> = null;
+  let colorClassMap: Map<DisplayState, string> | null = null;
 
   export function getColorClassNameMap(): Map<DisplayState, string> {
     if (colorClassMap === null) {
@@ -96,6 +96,6 @@ namespace PanelConsts {
   }
 
   export function getColorClassName(state: DisplayState): string {
-    return getColorClassNameMap().get(state);
+    return getColorClassNameMap().get(state)!;
   }
 }

@@ -8,40 +8,40 @@ export class AssignmentProxy {
     this._id = id;
   }
 
-  public applyOnAssignment(): Promise<void> {
-    return Meteor.callAsync("applyOnAssignment", this._id);
+  public async applyOnAssignment(): Promise<void> {
+    await Meteor.callAsync("applyOnAssignment", this._id);
   }
 
-  public cancelApplication(): Promise<void> {
-    return Meteor.callAsync("cancelApplicationAssignment", this._id);
+  public async cancelApplication(): Promise<void> {
+    await Meteor.callAsync("cancelApplicationAssignment", this._id);
   }
 
   public isApplicant(): Promise<boolean> {
     return Meteor.callAsync("userIsApplicant", this._id);
   }
 
-  public addUserAsParticipant(userId: string): Promise<void> {
-    return Meteor.callAsync("addUserAsAssignmentParticipant", userId, this._id);
+  public async addUserAsParticipant(userId: string): Promise<void> {
+    await Meteor.callAsync("addUserAsAssignmentParticipant", userId, this._id);
   }
 
-  public removeUserAsParticipant(userId: string): Promise<void> {
-    return Meteor.callAsync("removeUserAsAssignmentParticipant", userId, this._id);
+  public async removeUserAsParticipant(userId: string): Promise<void> {
+    await Meteor.callAsync("removeUserAsAssignmentParticipant", userId, this._id);
   }
 
-  public close(participantIds: Array<string>): Promise<void> {
-    return Meteor.callAsync("closeAssignment", participantIds, this._id);
+  public async close(participantIds: Array<string>): Promise<void> {
+    await Meteor.callAsync("closeAssignment", participantIds, this._id);
   }
 
-  public reenable(reason: string): Promise<void> {
-    return Meteor.callAsync("reenableAssignment", this._id, reason);
+  public async reenable(reason: string): Promise<void> {
+    await Meteor.callAsync("reenableAssignment", this._id, reason);
   }
 
-  public cancel(reason: string): Promise<void> {
-    return Meteor.callAsync("cancelAssignment", this._id, reason);
+  public async cancel(reason: string): Promise<void> {
+    await Meteor.callAsync("cancelAssignment", this._id, reason);
   }
 
-  public remove(): Promise<void> {
-    return Meteor.callAsync("removeAssignment", this._id);
+  public async remove(): Promise<void> {
+    await Meteor.callAsync("removeAssignment", this._id);
   }
 }
 
@@ -55,12 +55,12 @@ export class GroupProxy {
     return Meteor.callAsync("getUsersInGroupCount", this._id);
   }
 
-  public addUserToGroup(userId: string): Promise<void> {
-    return Meteor.callAsync("addToGroup", userId, this._id);
+  public async addUserToGroup(userId: string): Promise<void> {
+    await Meteor.callAsync("addToGroup", userId, this._id);
   }
 
-  public denyUser(userId: string): Promise<void> {
-    return Meteor.callAsync("denyUser", userId, this._id);
+  public async denyUser(userId: string): Promise<void> {
+    await Meteor.callAsync("denyUser", userId, this._id);
   }
 
   public isGroupMember(userId: string): Promise<boolean> {
@@ -92,12 +92,17 @@ export class GroupProxy {
 }
 
 export namespace Email {
-  export function send(to: string, from: string, subject: string, text: string): Promise<void> {
-    return Meteor.callAsync("sendEmail", to, from, subject, text);
+  export async function send(
+    to: string,
+    from: string,
+    subject: string,
+    text: string,
+  ): Promise<void> {
+    await Meteor.callAsync("sendEmail", to, from, subject, text);
   }
 
-  export function reloadServerSettings(): Promise<void> {
-    return Meteor.callAsync("reloadEmailSettings");
+  export async function reloadServerSettings(): Promise<void> {
+    await Meteor.callAsync("reloadEmailSettings");
   }
 }
 
@@ -112,7 +117,7 @@ export class AdminUserProxy {
   constructor(id: string) {
     this._id = id;
   }
-  public removeUser(): Promise<void> {
-    return Meteor.callAsync("removeUser", this._id);
+  public async removeUser(): Promise<void> {
+    await Meteor.callAsync("removeUser", this._id);
   }
 }

@@ -1,7 +1,6 @@
 // CLIENT-ONLY domain view helpers: synchronous minimongo reads for Tracker/
 // React. The Meteor 3 server must use server/services.ts or inline async
 // queries instead — the constructors below enforce this at runtime.
-import { Blaze } from "meteor/blaze";
 import { Meteor } from "meteor/meteor";
 import { Mongo } from "meteor/mongo";
 import { Counts } from "../../../lib/Counts";
@@ -23,7 +22,7 @@ export default class Group {
   private id: string;
 
   public static createFromDAO(dao: GroupDAO): Group {
-    return new Group(dao._id);
+    return new Group(dao._id!);
   }
 
   public static createFromId(id: string): Group {
@@ -62,7 +61,7 @@ export default class Group {
    * Gibt ein DAO der Gruppe.
    * @returns Das DAO der Gruppe.
    */
-  public getDAO(fields?: Mongo.FieldSpecifier, reactive?: boolean): GroupDAO {
+  public getDAO(fields?: Mongo.FieldSpecifier, reactive?: boolean): GroupDAO | undefined {
     var projection;
 
     if (!reactive) {
@@ -99,6 +98,10 @@ export default class Group {
       },
       { fields: { _id: 1 } },
     );
+
+    if (!user) {
+      return;
+    }
 
     if (!this.isMemberByDAO(user) && !this.isApplicant(user)) {
       Meteor.users.update(
@@ -154,10 +157,10 @@ export default class Group {
       reactive = false;
     }
 
-    return Groups.findOne(
-      { _id: this.id },
-      { fields: { _id: 1, coordinators: 1 }, reactive: reactive },
-    ).coordinators;
+    return (
+      Groups.findOne({ _id: this.id }, { fields: { _id: 1, coordinators: 1 }, reactive: reactive })
+        ?.coordinators ?? []
+    );
   }
 
   public isMemberByDAO(user: Meteor.User | UserCollection.UserDAO): boolean {
@@ -205,9 +208,9 @@ export default class Group {
     return users;
   }
 
-  public getReplyEmailAddress(): string {
+  public getReplyEmailAddress(): string | undefined {
     return Groups.findOne({ _id: this.id }, { fields: { _id: 1, email: 1 }, reactive: false })
-      .email;
+      ?.email;
   }
 
   public sendNotificationToMembers(title: string, message: string) {
@@ -240,7 +243,7 @@ export default class Group {
     var emailAddresses: Array<string> = cursor.map<string>(function (
       userDao: UserCollection.UserDAO,
     ) {
-      return userDao.emails[0].address;
+      return userDao.emails![0].address;
     });
 
     return emailAddresses;
@@ -366,7 +369,7 @@ export default class Group {
     return this.isCoordinatorById(user._id);
   }
 
-  public isCoordinatorById(userId: string, reactive?: boolean): boolean {
+  public isCoordinatorById(userId: string | null, reactive?: boolean): boolean {
     return _.contains(this.getCoordinatorIds(reactive), userId);
   }
 
@@ -405,7 +408,7 @@ export default class Group {
   }
 
   public get name(): string {
-    return this.getDAO({ name: 1 }).name;
+    return this.getDAO({ name: 1 })!.name;
   }
 
   public get applicationController(): GroupApplicationController {
@@ -441,8 +444,6 @@ export default class Group {
 export class GroupApplicationController {
   public static APPLICATION_COUNT_SUBSCRIPTION = "groupApplicantCount";
 
-  private static subscription: Meteor.SubscriptionHandle = null;
-
   /**
    * Konstruktor.
    * @param id Die ID der Gruppe.
@@ -473,15 +474,6 @@ export class GroupApplicationController {
 
   public subscribeCount(): Meteor.SubscriptionHandle {
     return Meteor.subscribe(
-      GroupApplicationController.APPLICATION_COUNT_SUBSCRIPTION,
-      this.groupId,
-    );
-  }
-
-  public subscribeCountOnTemplate(
-    templateInstance: Blaze.TemplateInstance,
-  ): Meteor.SubscriptionHandle {
-    return templateInstance.subscribe(
       GroupApplicationController.APPLICATION_COUNT_SUBSCRIPTION,
       this.groupId,
     );

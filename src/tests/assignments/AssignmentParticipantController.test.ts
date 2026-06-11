@@ -1,5 +1,5 @@
 import { AssignmentDAO } from "../../collections/lib/AssignmentsCollection";
-import { SimpleCollection } from "../../imports/interfaces/SimpleCollection";
+import { TestCollection } from "../3rdParty/minimongo-standalone/minimongo-standalone";
 import { AssignmentServiceTypes } from "../../server/assignments/AssignmentServiceTypes";
 import { IAssignmentContext } from "../../server/assignments/interfaces/IAssignmentContext";
 import { IAssignmentParticipantController } from "../../server/assignments/interfaces/IAssignmentParticipantController";
@@ -157,7 +157,7 @@ const testData = {
 };
 
 interface ApplicationControllerTestData {
-  initialAssignment: AssignmentDAO;
+  initialAssignment: Partial<AssignmentDAO>;
 }
 
 class AssignmentParticipantControllerTestCase
@@ -183,11 +183,11 @@ class AssignmentParticipantControllerTestCase
   }
 
   public getAssignmentId() {
-    return this.assignment._id;
+    return this.assignment._id!;
   }
 
   get assignment(): AssignmentDAO {
-    return this.collection.findOne();
+    return this.collection.findOne()!;
   }
 
   get assignmentAssert() {
@@ -223,8 +223,8 @@ class RemoveUserTestCase extends AssignmentParticipantControllerTestCase {
 }
 
 function insertAnAssignmentIntoCollection(
-  collection: SimpleCollection<AssignmentDAO>,
-  assignment: AssignmentDAO,
+  collection: TestCollection<AssignmentDAO>,
+  assignment: Partial<AssignmentDAO>,
 ): IAssignmentContext {
   let assignmentId = collection.insert(assignment);
 

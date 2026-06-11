@@ -10,7 +10,7 @@ import {
 } from "../interfaces/IAssignmentNotifier";
 
 export class AssignmentNotifier implements IAssignmentNotifier {
-  private logger: Logger;
+  private logger!: Logger;
 
   constructor(
     private emailNotifier: IAssignmentEmailNotifier,

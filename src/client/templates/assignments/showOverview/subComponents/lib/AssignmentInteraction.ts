@@ -10,13 +10,13 @@ import * as ServerMethodsWrapper from "../../../../../../lib/classes/ServerMetho
 import { Routes } from "../../../../../../lib/client/routes";
 
 export default class AssignmentInteraction {
-  private proxy: ServerMethodsWrapper.AssignmentProxy = null;
+  private proxy: ServerMethodsWrapper.AssignmentProxy;
 
   private sessionKeyForVariable: string;
   private assignmentId: string;
 
   constructor(private assignment: AssignmentDAO) {
-    this.assignmentId = assignment._id;
+    this.assignmentId = assignment._id!;
     this.proxy = new ServerMethodsWrapper.AssignmentProxy(this.assignmentId);
     this.sessionKeyForVariable = `pending_request_for_${this.assignmentId}`;
   }

@@ -123,10 +123,10 @@ export default function SingleAssignmentView(): JSX.Element {
     const isCoordinator = assignment.getGroup().isCoordinatorById(Meteor.userId());
 
     const infos: { label: string; value: string }[] = [];
-    if (!_.isUndefined(assignmentDao.pickup_point)) {
+    if (assignmentDao.pickup_point !== undefined) {
       infos.push({ label: "Abholpunkt", value: assignmentDao.pickup_point });
     }
-    if (!_.isUndefined(assignmentDao.return_point)) {
+    if (assignmentDao.return_point !== undefined) {
       infos.push({ label: "Rückgabepunkt", value: assignmentDao.return_point });
     }
 

@@ -75,8 +75,11 @@ export default function NotificationsDropdown(): JSX.Element {
       const notifications = user.notificationManager.getAllNotifications(true).fetch();
       let isFirstEntry = true;
       _.forEach(notifications, (notification) => {
-        items.push({ divider: !isFirstEntry, notification: UserNotification.wrap(notification) });
-        isFirstEntry = false;
+        const wrapped = UserNotification.wrap(notification);
+        if (wrapped) {
+          items.push({ divider: !isFirstEntry, notification: wrapped });
+          isFirstEntry = false;
+        }
       });
     }
 
@@ -87,7 +90,7 @@ export default function NotificationsDropdown(): JSX.Element {
   const close = () => {
     setOpen((wasOpen) => {
       if (wasOpen) {
-        new User(Meteor.userId()).notificationManager.markAllNotificationsAsSeen();
+        new User(Meteor.userId()!).notificationManager.markAllNotificationsAsSeen();
       }
       return false;
     });
@@ -117,7 +120,7 @@ export default function NotificationsDropdown(): JSX.Element {
 
   const onRemoveAll = (e: React.MouseEvent) => {
     e.preventDefault();
-    new User(Meteor.userId()).notificationManager.removeAll();
+    new User(Meteor.userId()!).notificationManager.removeAll();
   };
 
   return (

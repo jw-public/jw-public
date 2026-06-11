@@ -4,8 +4,10 @@ import {
   IAssignmentSingleNotifierOptions,
 } from "../../../server/assignments/interfaces/IAssignmentNotifier";
 
-import { SimpleCollection } from "../../../imports/interfaces/SimpleCollection";
-import { LocalCollection } from "../../3rdParty/minimongo-standalone/minimongo-standalone";
+import {
+  LocalCollection,
+  TestCollection,
+} from "../../3rdParty/minimongo-standalone/minimongo-standalone";
 
 import { AssignmentDAO } from "../../../collections/lib/AssignmentsCollection";
 import { AssignmentCopyActionDAO } from "../../../collections/lib/AssignmentCopyActionsCollection";
@@ -25,9 +27,9 @@ const testData = {
 // Assignment-focused test composition root with a mocked IAssignmentNotifier
 // (replaces the old InversifyJS test kernel, ADR 0005).
 export class AssignmentTestCaseWithNotifications<T> {
-  public collection: SimpleCollection<AssignmentDAO>;
+  public collection: TestCollection<AssignmentDAO>;
   protected overrides: ServiceOverrides = {};
-  private _services: Services = null;
+  private _services: Services | null = null;
   private _assignmentNotifierMock: TypeMoq.Mock<IAssignmentNotifier>;
 
   constructor(private testee: symbol) {

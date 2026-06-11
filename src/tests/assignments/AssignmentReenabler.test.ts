@@ -31,7 +31,7 @@ describe("AssignmentReenabler", async function () {
     await testCase.reenabler.reenableAssignment(toBeReenabledId, "I don't know");
 
     // Assert
-    let actualAssignment = testCase.collection.findOne();
+    let actualAssignment = testCase.collection.findOne()!;
     assert.equal(actualAssignment.state, "Closed", "Did not reenable the assignment.");
   });
 
@@ -48,7 +48,7 @@ describe("AssignmentReenabler", async function () {
     await testCase.reenabler.reenableAssignment(toBeReenabledId, "I don't know");
 
     // Assert
-    let actualAssignment = testCase.collection.findOne();
+    let actualAssignment = testCase.collection.findOne()!;
     assert.equal(
       actualAssignment.state,
       "Closed",
@@ -69,7 +69,7 @@ describe("AssignmentReenabler", async function () {
     await testCase.reenabler.reenableAssignment(toBeReenabledId, "I don't know");
 
     // Assert
-    let actualAssignment = testCase.collection.findOne();
+    let actualAssignment = testCase.collection.findOne()!;
     assert.equal(
       actualAssignment.state,
       "Closed",
@@ -138,7 +138,7 @@ describe("AssignmentReenabler", async function () {
 });
 
 class AssignmentReenablerTestCase extends AssignmentTestCaseWithNotifications<IAssignmentReenabler> {
-  private _reenabler: IAssignmentReenabler = null;
+  private _reenabler: IAssignmentReenabler | null = null;
 
   constructor() {
     super(Types.IAssignmentReenabler);
@@ -146,6 +146,6 @@ class AssignmentReenablerTestCase extends AssignmentTestCaseWithNotifications<IA
   }
 
   get reenabler(): IAssignmentReenabler {
-    return this._reenabler;
+    return this._reenabler!;
   }
 }

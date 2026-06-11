@@ -82,7 +82,7 @@ const testData = {
 
 class AssignmentNotifierTestCase {
   private collection: SimpleCollection<NotificationDAO>;
-  private _notifier: IAssignmentParticipationNotifier = null;
+  private _notifier: IAssignmentParticipationNotifier | null = null;
   private _assignmentNotifierMock: TypeMoq.Mock<IAssignmentNotifier>;
 
   constructor() {
@@ -112,7 +112,7 @@ class AssignmentNotifierTestCase {
   }
 
   get notifier() {
-    return this._notifier;
+    return this._notifier!;
   }
 
   get assert() {

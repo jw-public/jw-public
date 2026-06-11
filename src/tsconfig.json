@@ -4,12 +4,16 @@
     "module": "commonjs",
     "isolatedModules": false,
     "jsx": "react",
-    "noImplicitAny": false,
+    "strict": true,
     "removeComments": false,
     "preserveConstEnums": true,
     "skipLibCheck": true,
     "typeRoots": ["node_modules/@types/"],
     "baseUrl": ".",
+    "preserveSymlinks": true,
+    "paths": {
+      "meteor/*": [".meteor/local/types/packages.d.ts"]
+    },
     "esModuleInterop": true,
     "noEmit": true
   },

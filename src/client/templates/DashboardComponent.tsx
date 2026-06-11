@@ -11,6 +11,7 @@ import Assignment from "../../collections/lib/classes/Assignment";
 import AssignmentCountAccessor from "../../collections/lib/classes/AssignmentCountAccessor";
 import Group, { GroupApplicationController } from "../../collections/lib/classes/Group";
 import User from "../../collections/lib/classes/User";
+import * as UserCollection from "../../collections/lib/UserCollection";
 
 import { getUserDataSubscription } from "../../subscribe";
 
@@ -21,7 +22,7 @@ interface DashboardPanelData {
   smallContent: string;
   footerDescription: string;
   showLink: boolean;
-  link: string;
+  link: string | null;
 }
 
 function DashboardPanel(props: DashboardPanelData): JSX.Element {
@@ -57,7 +58,7 @@ function DashboardPanel(props: DashboardPanelData): JSX.Element {
             </div>
           </div>
         </div>
-        {props.showLink ? <a href={props.link}>{footer}</a> : footer}
+        {props.showLink ? <a href={props.link ?? undefined}>{footer}</a> : footer}
       </div>
     </div>
   );
@@ -70,8 +71,8 @@ function useUserCount(loggedIn: boolean): string {
     if (!loggedIn) {
       return;
     }
-    Meteor.callAsync("getAllUsersCount")
-      .then((asyncValue: number) => setUserCount(String(asyncValue)))
+    (Meteor.callAsync("getAllUsersCount") as Promise<number>)
+      .then((asyncValue) => setUserCount(String(asyncValue)))
       .catch((err: Meteor.Error) => console.log(err));
   }, [loggedIn]);
 
@@ -85,7 +86,7 @@ export default function Dashboard(): JSX.Element {
   const data = useTracker(() => {
     const userDAO = Meteor.user();
 
-    if (_.isUndefined(userDAO) || _.isNull(userDAO)) {
+    if (userDAO === undefined || userDAO === null) {
       return {
         greeting: "Hallo, hier ist deine Übersicht",
         trolleyPanels: [] as DashboardPanelData[],
@@ -165,7 +166,7 @@ export default function Dashboard(): JSX.Element {
     });
 
     return {
-      greeting: `Hallo ${userDAO.profile.first_name}, hier ist deine Übersicht`,
+      greeting: `Hallo ${(userDAO as UserCollection.UserDAO).profile?.first_name}, hier ist deine Übersicht`,
       trolleyPanels,
       coordinatorPanels,
       ownPendingPanels,
@@ -173,7 +174,7 @@ export default function Dashboard(): JSX.Element {
     };
   });
 
-  const adminPanel: DashboardPanelData = data.isAdmin
+  const adminPanel: DashboardPanelData | null = data.isAdmin
     ? {
         panelClass: "card-green",
         fontAwesomeIcon: "fa-users",

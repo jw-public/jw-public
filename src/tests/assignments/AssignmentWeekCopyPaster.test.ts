@@ -88,8 +88,8 @@ describe("AssignmentWeekCopyPaster.copyPasteCalendarWeek()", async function () {
 
     const result = fixtureCollection.findOne({
       isoWeek: 2,
-    });
-    const copyAction = copyActionsCollection.findOne();
+    })!;
+    const copyAction = copyActionsCollection.findOne()!;
 
     // calculate correct date
     chai.assert.strictEqual(result.yearOfIsoWeek, 2023);
@@ -124,7 +124,7 @@ describe("AssignmentWeekCopyPaster.copyPasteCalendarWeek()", async function () {
     chai.assert.strictEqual(result.state, AssignmentState[AssignmentState.Online]);
 
     // check copy action
-    chai.assert.strictEqual(copyAction.executedDate.toISOString(), systemTimeNow.toISOString());
+    chai.assert.strictEqual(copyAction.executedDate!.toISOString(), systemTimeNow.toISOString());
     chai.assert.strictEqual(copyAction.totalCopied, 1);
     chai.assert.strictEqual(copyAction.group, original.group);
     chai.assert.strictEqual(copyAction.fromIsoWeek, original.isoWeek);
@@ -197,8 +197,8 @@ describe("AssignmentWeekCopyPaster.copyPasteCalendarWeek()", async function () {
     const result = fixtureCollection.findOne({
       isoWeek: 2,
       yearOfIsoWeek: 2023,
-    });
-    const copyAction = copyActionsCollection.findOne();
+    })!;
+    const copyAction = copyActionsCollection.findOne()!;
 
     // calculate correct date
     chai.assert.strictEqual(result.yearOfIsoWeek, 2023);
@@ -212,7 +212,7 @@ describe("AssignmentWeekCopyPaster.copyPasteCalendarWeek()", async function () {
     );
 
     // check copy action
-    chai.assert.strictEqual(copyAction.executedDate.toISOString(), systemTimeNow.toISOString());
+    chai.assert.strictEqual(copyAction.executedDate!.toISOString(), systemTimeNow.toISOString());
     chai.assert.strictEqual(copyAction.totalCopied, 1);
     chai.assert.strictEqual(copyAction.group, original.group);
     chai.assert.strictEqual(copyAction.fromIsoWeek, original.isoWeek);

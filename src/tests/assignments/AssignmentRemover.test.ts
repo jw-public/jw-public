@@ -36,7 +36,7 @@ describe("AssignmentRemover", async function () {
     // Assert
     assert.equal(testCase.collection.find().count(), 1, "Did not remove assignment correctly.");
     assert.equal(
-      testCase.collection.findOne().name,
+      testCase.collection.findOne()!.name,
       "NOT to be deleted",
       "Did remove the wrong one.",
     );
@@ -112,7 +112,7 @@ describe("AssignmentRemover", async function () {
 });
 
 class AssignmentRemoverTestCase extends AssignmentTestCaseWithNotifications<IAssignmentRemover> {
-  private _remover: IAssignmentRemover = null;
+  private _remover: IAssignmentRemover | null = null;
 
   constructor() {
     super(Types.IAssignmentRemover);
@@ -120,6 +120,6 @@ class AssignmentRemoverTestCase extends AssignmentTestCaseWithNotifications<IAss
   }
 
   get remover(): IAssignmentRemover {
-    return this._remover;
+    return this._remover!;
   }
 }

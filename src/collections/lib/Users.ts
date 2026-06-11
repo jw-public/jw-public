@@ -1,6 +1,6 @@
 import * as LibPhoneNumber from "../../lib/LibPhoneNumber";
 import { Meteor } from "meteor/meteor";
-import SimpleSchema from "./SimpleSchema";
+import SimpleSchema, { SchemaContext } from "./SimpleSchema";
 import * as _ from "underscore";
 import { SUPPORTED_LANGUAGES } from "../../imports/i18n/classes/I18nProvider";
 
@@ -46,7 +46,7 @@ export const UserProfileSchema = new SimpleSchema({
     type: String,
     label: "Handynummer",
     optional: true,
-    custom: function () {
+    custom: function (this: SchemaContext) {
       var context = <any>this;
 
       if (!CollectionConf.IS_TEST && !(context.isSet && context.value)) {
@@ -92,14 +92,14 @@ export const UserProfileSchema = new SimpleSchema({
     type: String,
     label: "Formatierte Handynummer",
     optional: true,
-    custom: function () {
+    custom: function (this: SchemaContext) {
       var context = <any>this;
 
       if (Meteor.isServer && !CollectionConf.IS_TEST && !(context.isSet && context.value)) {
         return "required";
       }
     },
-    autoValue: function (): string {
+    autoValue: function (this: SchemaContext): string | undefined {
       if (!Meteor.isServer) {
         return;
       }
@@ -126,14 +126,14 @@ export const UserProfileSchema = new SimpleSchema({
     type: String,
     label: "Formatierte Handynummer",
     optional: true,
-    custom: function () {
+    custom: function (this: SchemaContext) {
       var context = <any>this;
 
       if (Meteor.isServer && !CollectionConf.IS_TEST && !(context.isSet && context.value)) {
         return "required";
       }
     },
-    autoValue: function (): string {
+    autoValue: function (this: SchemaContext): string | undefined {
       if (!Meteor.isServer) {
         return;
       }
@@ -179,7 +179,7 @@ export const UserProfileSchema = new SimpleSchema({
     optional: true,
     label: "Postleitzahl",
     regEx: /^[0-9]{4,5}$/,
-    custom: function () {
+    custom: function (this: SchemaContext) {
       var context = <any>this;
 
       var shouldBeRequired: boolean = context.isInsert;
@@ -204,7 +204,7 @@ export const UserProfileSchema = new SimpleSchema({
     type: String,
     optional: true,
     label: "Wohnort",
-    custom: function () {
+    custom: function (this: SchemaContext) {
       var context = <any>this;
 
       var shouldBeRequired: boolean = context.isInsert;
@@ -247,7 +247,7 @@ export const UserSchema = new SimpleSchema({
     type: String,
     label: "Adresse",
     regEx: SimpleSchema.RegEx.Email,
-    autoValue: function () {
+    autoValue: function (this: SchemaContext) {
       if (this.isSet) {
         return this.value.trim().toLowerCase(); // Alles kleinschreiben
       }
@@ -291,7 +291,7 @@ export const UserSchema = new SimpleSchema({
   // and prevent updates thereafter.
   createdAt: {
     type: Date,
-    autoValue: function (): any {
+    autoValue: function (this: SchemaContext): any {
       if (this.isInsert) {
         return new Date();
       } else if (this.isUpsert) {
@@ -306,7 +306,7 @@ export const UserSchema = new SimpleSchema({
   // and don't allow it to be set upon insert.
   updatedAt: {
     type: Date,
-    autoValue: function () {
+    autoValue: function (this: SchemaContext) {
       if (this.isUpdate) {
         return new Date();
       }
@@ -338,7 +338,7 @@ export const JustEmail = new SimpleSchema({
     label: "E-Mail",
     optional: false,
     regEx: SimpleSchema.RegEx.Email,
-    autoValue: function () {
+    autoValue: function (this: SchemaContext) {
       if (this.isSet) {
         return this.value.toLowerCase(); // Alles kleinschreiben
       }

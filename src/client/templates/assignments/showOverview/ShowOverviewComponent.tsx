@@ -156,7 +156,7 @@ export default function ShowOverview(): JSX.Element {
       groupName: groupDoc?.name ?? "",
       // The group doc may not be delivered yet on a cold load.
       isCoordinator: groupDoc
-        ? new User(Meteor.userId()).isGroupCoordinator(new Group(groupId))
+        ? new User(Meteor.userId()!).isGroupCoordinator(new Group(groupId))
         : false,
       assignments: Assignments.find(assignmentSelector(groupId, filter), {
         sort: { start: 1, name: 1, _id: 1 },

@@ -1,4 +1,4 @@
-import SimpleSchema from "./SimpleSchema";
+import SimpleSchema, { SchemaContext } from "./SimpleSchema";
 import { Meteor } from "meteor/meteor";
 import { Mongo } from "meteor/mongo";
 
@@ -15,7 +15,8 @@ export const Groups: Mongo.Collection<GroupDAO> = new Mongo.Collection("groups")
  */
 export interface GroupDAO {
   _id?: string;
-  name?: string;
+  // required by the schema and by every insert site
+  name: string;
   additional?: string;
   coordinators?: Array<string>;
   createdAt?: Date;
@@ -75,7 +76,7 @@ Groups.attachSchema(
     // and prevent updates thereafter.
     createdAt: {
       type: Date,
-      autoValue: function (): any {
+      autoValue: function (this: SchemaContext): any {
         if (this.isInsert) {
           return new Date();
         } else if (this.isUpsert) {
@@ -90,12 +91,12 @@ Groups.attachSchema(
       regEx: SimpleSchema.RegEx.Id,
       label: "Ersteller",
       optional: true,
-      custom: function () {
+      custom: function (this: SchemaContext) {
         if (!CollectionConf.IS_TEST && !(this.isSet && this.value)) {
           return "required";
         }
       },
-      autoValue: function (): any {
+      autoValue: function (this: SchemaContext): any {
         if (Meteor.isServer && this.isSet) {
           return;
         }
@@ -113,7 +114,7 @@ Groups.attachSchema(
     // and don't allow it to be set upon insert.
     updatedAt: {
       type: Date,
-      autoValue: function () {
+      autoValue: function (this: SchemaContext) {
         if (this.isUpdate) {
           return new Date();
         }

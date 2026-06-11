@@ -27,7 +27,7 @@ async function getAssignmentDoc(assignmentId: string): Promise<AssignmentDAO | u
   return await Assignments.findOneAsync({ _id: assignmentId });
 }
 
-function isCoordinatorOf(group: GroupDAO, userId: string): boolean {
+function isCoordinatorOf(group: GroupDAO | undefined, userId: string | null): boolean {
   return !!group && _.contains(group.coordinators || [], userId);
 }
 
@@ -42,7 +42,7 @@ async function isMemberOf(groupId: string, userId: string): Promise<boolean> {
   return !!member;
 }
 
-async function requireCoordinatorOrAdmin(userId: string, groupId: string): Promise<void> {
+async function requireCoordinatorOrAdmin(userId: string | null, groupId: string): Promise<void> {
   const group = await getGroupDoc(groupId);
   const hasRight = isCoordinatorOf(group, userId) || (await RolesHelper.userIsAdminAsync(userId));
   if (!hasRight) {
@@ -148,6 +148,9 @@ Meteor.startup(function () {
       await requireCoordinatorOrAdmin(this.userId, groupId);
 
       const group = await getGroupDoc(groupId);
+      if (!group) {
+        throw new Meteor.Error("404", "Group not found");
+      }
       const userToBeAdded = await Meteor.users.findOneAsync(
         { _id: userToBeAddedId },
         { fields: { _id: 1, groups: 1, emails: 1 } },

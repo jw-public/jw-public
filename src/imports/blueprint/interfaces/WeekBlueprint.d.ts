@@ -1,14 +1,17 @@
 export interface WeekBlueprint {
   id?: string;
-  name?: string;
-  group?: string;
+  // required by WeekBlueprintSchema
+  name: string;
+  group: string;
+  // defaultValue [], absent in insert documents
   assignments?: Array<BlueprintAssignmentDAO>;
 }
 
 export interface BlueprintAssignmentDAO {
   _id?: string;
-  name?: string;
-  isoWeekday?: number;
+  // required by SingleBlueprintSchema
+  name: string;
+  isoWeekday: number;
   startHour: number;
   startMinute: number;
   durationMinutes: number;

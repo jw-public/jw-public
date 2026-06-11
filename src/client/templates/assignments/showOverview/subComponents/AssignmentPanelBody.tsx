@@ -30,8 +30,8 @@ class AssignmentPanelProgressBar extends React.Component<AssignmentPanelProps, {
     return AssignmentPanelBody.assignmentHasProgressBar(this.assignment);
   }
 
-  public progressBarWrapperClasses(): string {
-    let wrapperClasses: string = null;
+  public progressBarWrapperClasses(): string | null {
+    let wrapperClasses: string | null = null;
     if (this.totalUsers <= 0) {
       wrapperClasses = "bar-glow-effect";
     }
@@ -76,14 +76,14 @@ class AssignmentPanelProgressBar extends React.Component<AssignmentPanelProps, {
         backgroundColor={Color.GrayLighter}
         barColor={this.barColor()}
         height="10px"
-        wrapperClasses={this.progressBarWrapperClasses()}
+        wrapperClasses={this.progressBarWrapperClasses() ?? undefined}
         striped={true}
         active={true}
       />
     );
   }
 
-  public render(): JSX.Element {
+  public render(): JSX.Element | null {
     if (!this.hasProgressBar()) {
       return null;
     }

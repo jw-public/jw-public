@@ -35,7 +35,7 @@ export class NotificationsAsserts {
     let assertMessage = `Total sum of notifcations is ${notifcationCountForUser}, but expected was ${expected}.`;
 
     assert.strictEqual(notifcationCountForUser, expected, assertMessage);
-    return new NotificationAsserts(this.collection.findOne(query));
+    return new NotificationAsserts(this.collection.findOne(query)!);
   }
 
   public notificationCountForAssignmentIs(options: {
@@ -69,6 +69,6 @@ class NotificationAsserts {
   }
 
   optionFieldEqualsValue(field: string, value: any) {
-    assert.equal(this.notification.assignmentOptions[field], value);
+    assert.equal((this.notification.assignmentOptions as any)?.[field], value);
   }
 }

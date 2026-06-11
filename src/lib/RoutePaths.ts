@@ -51,7 +51,7 @@ export class Def {
   static ResetPassword = new Def("resetPassword", "/reset-password/:" + ParamNames.Token);
 
   /** Find a definition by its (FlowRouter era) route name. */
-  static byName(name: string): Def {
+  static byName(name: string): Def | undefined {
     const all = Object.keys(Def)
       .map((k) => (Def as any)[k])
       .filter((v) => v instanceof Def) as Def[];

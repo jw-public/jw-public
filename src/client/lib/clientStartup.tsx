@@ -23,7 +23,7 @@ Meteor.startup(function () {
     }
   });
 
-  const container = document.getElementById("react-target");
+  const container = document.getElementById("react-target")!;
   const root = createRoot(container);
   root.render(<RouterProvider router={router} />);
 });

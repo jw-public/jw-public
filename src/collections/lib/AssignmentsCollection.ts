@@ -1,4 +1,4 @@
-import SimpleSchema from "./SimpleSchema";
+import SimpleSchema, { SchemaContext } from "./SimpleSchema";
 import { Meteor } from "meteor/meteor";
 import { Mongo } from "meteor/mongo";
 
@@ -10,19 +10,24 @@ import * as EnumUtil from "./classes/EnumUtil";
 import { CollectionConf } from "./collectionConfig/CollectionConf";
 
 export interface UserEntry {
-  user?: string;
+  // required by AssignmentUserEntrySchema
+  user: string;
+  // autoValue, absent in insert documents
   when?: Date;
 }
 
+// Required fields mirror the schema: no `optional: true` and provided by every
+// insert site. autoValue/defaultValue fields stay optional (set by the schema,
+// absent in insert documents and lean field projections).
 export interface AssignmentDAO {
   _id?: string;
-  name?: string;
-  group?: string;
+  name: string;
+  group: string;
   copyActionId?: string;
-  start?: Date;
-  end?: Date;
-  participants?: Array<UserEntry>;
-  applicants?: Array<UserEntry>;
+  start: Date;
+  end: Date;
+  participants: Array<UserEntry>;
+  applicants: Array<UserEntry>;
   note?: string;
   state?: string;
   stateBeforeLastClose?: string;
@@ -33,7 +38,7 @@ export interface AssignmentDAO {
   pickup_point?: string;
   return_point?: string;
   userGoal?: number;
-  contacts?: Array<string>;
+  contacts: Array<string>;
   month?: number;
   year?: number;
   isoWeek?: number;
@@ -52,7 +57,7 @@ export const AssignmentUserEntrySchema = new SimpleSchema({
   },
   when: {
     type: Date,
-    autoValue: function () {
+    autoValue: function (this: SchemaContext) {
       if (this.isUpdate && this.operator !== "$pull") {
         return new Date();
       }
@@ -81,7 +86,7 @@ export const AssignmentSchema = new SimpleSchema({
   yearOfIsoWeek: {
     type: Number,
     min: 2014,
-    autoValue: function (): number {
+    autoValue: function (this: SchemaContext): number | undefined {
       var context = <any>this;
       var startField = context.field("start");
       if (startField.isSet) {
@@ -96,7 +101,7 @@ export const AssignmentSchema = new SimpleSchema({
   year: {
     type: Number,
     min: 2015,
-    autoValue: function (): number {
+    autoValue: function (this: SchemaContext): number | undefined {
       var context = <any>this;
       var startField = context.field("start");
       if (startField.isSet) {
@@ -112,7 +117,7 @@ export const AssignmentSchema = new SimpleSchema({
     type: Number,
     min: 0,
     max: 11,
-    autoValue: function (): number {
+    autoValue: function (this: SchemaContext): number | undefined {
       var context = <any>this;
       var startField = context.field("start");
       if (startField.isSet) {
@@ -128,7 +133,7 @@ export const AssignmentSchema = new SimpleSchema({
     type: Number,
     min: 1,
     max: 53,
-    autoValue: function (): number {
+    autoValue: function (this: SchemaContext): number | undefined {
       var context = <any>this;
       var startField = context.field("start");
       if (startField.isSet) {
@@ -156,11 +161,12 @@ export const AssignmentSchema = new SimpleSchema({
     type: String,
     label: "Grund für Absage",
     optional: true,
-    custom: function () {
+    custom: function (this: SchemaContext) {
       var context = <any>this;
 
       var shouldBeRequired =
-        AssignmentState[<string>context.field("state").value] === AssignmentState.Canceled;
+        AssignmentState[<keyof typeof AssignmentState>context.field("state").value] ===
+        AssignmentState.Canceled;
 
       if (shouldBeRequired) {
         // inserts
@@ -244,7 +250,7 @@ export const AssignmentSchema = new SimpleSchema({
   // and prevent updates thereafter.
   createdAt: {
     type: Date,
-    autoValue: function () {
+    autoValue: function (this: SchemaContext) {
       if (this.isInsert) {
         return new Date();
       } else if (this.isUpsert) {
@@ -259,12 +265,12 @@ export const AssignmentSchema = new SimpleSchema({
     regEx: SimpleSchema.RegEx.Id,
     label: "Ersteller",
     optional: true,
-    custom: function () {
+    custom: function (this: SchemaContext) {
       if (!CollectionConf.IS_TEST && !(this.isSet && this.value)) {
         return "required";
       }
     },
-    autoValue: function () {
+    autoValue: function (this: SchemaContext) {
       if (Meteor.isServer && this.isSet) {
         return;
       }
@@ -282,7 +288,7 @@ export const AssignmentSchema = new SimpleSchema({
   // and don't allow it to be set upon insert.
   updatedAt: {
     type: Date,
-    autoValue: function () {
+    autoValue: function (this: SchemaContext) {
       if (this.isUpdate) {
         return new Date();
       }

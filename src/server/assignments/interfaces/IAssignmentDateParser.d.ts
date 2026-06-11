@@ -1,5 +1,5 @@
 import { AssignmentDAO } from "../../../collections/lib/AssignmentsCollection";
 
 export interface IAssignmentDateParser {
-  getStartDate(assignment: AssignmentDAO): moment.Moment;
+  getStartDate(assignment: Pick<AssignmentDAO, "start">): moment.Moment;
 }

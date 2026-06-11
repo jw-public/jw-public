@@ -10,7 +10,7 @@ import { marked } from "marked";
 import removeMarkdown from "remove-markdown";
 
 export class UserMailer implements IUserMailer {
-  private logger: Logger;
+  private logger!: Logger;
 
   constructor(
     private mailSender: IEmailSender,

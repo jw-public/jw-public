@@ -38,8 +38,8 @@ export default function ManageAssignments(): JSX.Element {
 
   const [filterStart, setFilterStart] = useState<Date>(moment().subtract(1, "weeks").toDate());
   const [filterEnd, setFilterEnd] = useState<Date>(moment().add(4, "months").toDate());
-  const [selectedId, setSelectedId] = useState<string>(null);
-  const [copiedId, setCopiedId] = useState<string>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const data = useTracker(() => {
     Meteor.subscribe("assignmentsForGroupTable", groupId, filterStart, filterEnd);
@@ -65,7 +65,7 @@ export default function ManageAssignments(): JSX.Element {
       setSelectedId(null);
     } else {
       setCopiedId(null);
-      setSelectedId(assignment._id);
+      setSelectedId(assignment._id!);
     }
   };
 
@@ -74,7 +74,7 @@ export default function ManageAssignments(): JSX.Element {
       setCopiedId(null);
     } else {
       setSelectedId(null);
-      setCopiedId(assignment._id);
+      setCopiedId(assignment._id!);
     }
   };
 
@@ -98,7 +98,7 @@ export default function ManageAssignments(): JSX.Element {
               type="button"
               className="btn btn-sm btn-trash remove-assignment"
               title="Termin löschen"
-              onClick={() => removeAssignment(a._id)}
+              onClick={() => removeAssignment(a._id!)}
             >
               <i className="fa fa-fw fa-trash"></i>
             </button>
@@ -107,7 +107,7 @@ export default function ManageAssignments(): JSX.Element {
               className={`btn btn-sm ${isClosed ? "btn-warning" : "btn-danger"} manage-assignment`}
               title={isClosed ? "Termin erneut abschließen" : "Termin abschließen"}
               onClick={() =>
-                AssignmentManagerModal.dialog({ assignmentId: a._id, onSuccess: () => {} })
+                AssignmentManagerModal.dialog({ assignmentId: a._id!, onSuccess: () => {} })
               }
             >
               <i className={`fa fa-fw ${isClosed ? "fa-lock" : "fa-unlock"}`}></i>
@@ -165,7 +165,7 @@ export default function ManageAssignments(): JSX.Element {
   } else {
     formProps = {
       formType: "insert",
-      doc: null,
+      doc: undefined,
       resetOnSuccess: true,
       submitButtonText: "Erstellen",
       fontAwesomeLogo: "fa-plus",
@@ -201,7 +201,7 @@ export default function ManageAssignments(): JSX.Element {
                       <label>Von: </label>{" "}
                       <DatePicker
                         selected={filterStart}
-                        onChange={(date: Date) => date && setFilterStart(date)}
+                        onChange={(date: Date | null) => date && setFilterStart(date)}
                         dateFormat="dd.MM.yyyy"
                         locale="de"
                         className="form-control input-sm"
@@ -211,7 +211,7 @@ export default function ManageAssignments(): JSX.Element {
                       <label>Bis: </label>{" "}
                       <DatePicker
                         selected={filterEnd}
-                        onChange={(date: Date) => date && setFilterEnd(date)}
+                        onChange={(date: Date | null) => date && setFilterEnd(date)}
                         dateFormat="dd.MM.yyyy"
                         locale="de"
                         className="form-control input-sm"
@@ -225,11 +225,11 @@ export default function ManageAssignments(): JSX.Element {
                   <DataTable
                     columns={columns}
                     rows={data.assignments}
-                    rowKey={(a) => a._id}
+                    rowKey={(a) => a._id!}
                     searchText={(a) => `${a.name} ${a.state} ${moment(a.start).format("L LT")}`}
                     defaultSort={{ column: 1, direction: "desc" }}
                     tableClassName="table table-responsive"
-                    rowClassName={(a) => (a._id === selectedId ? "active" : undefined)}
+                    rowClassName={(a) => (a._id === selectedId ? "active" : "")}
                   />
                 </div>
               </div>
@@ -240,7 +240,7 @@ export default function ManageAssignments(): JSX.Element {
             <div className="well">
               <AssignmentManagerComponent
                 key={selectedAssignment._id}
-                assignmentId={selectedAssignment._id}
+                assignmentId={selectedAssignment._id!}
                 onSuccess={() => setSelectedId(null)}
               />
             </div>

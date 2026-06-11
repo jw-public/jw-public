@@ -96,7 +96,7 @@ export default class AssignmentAdminButton extends React.Component<
       },
     ];
 
-    let cancelationManagementEntry: AssignmentAdminDropdownEntryProps = null;
+    let cancelationManagementEntry: AssignmentAdminDropdownEntryProps | null = null;
 
     if (!this.props.stateReader.isCanceled()) {
       cancelationManagementEntry = {
