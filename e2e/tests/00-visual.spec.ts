@@ -19,8 +19,9 @@ test.use({ viewport: { width: 1440, height: 900 } });
 const screenshotOptions = { fullPage: true };
 
 async function settle(page: Page) {
-  await page.waitForLoadState("networkidle");
-  await page.waitForTimeout(500);
+  // no networkidle: Meteor's livedata connection keeps the network busy
+  // forever on some pages, the caller already asserted visible content
+  await page.waitForTimeout(800);
 }
 
 async function readStandardgruppeId(page: Page): Promise<string> {
