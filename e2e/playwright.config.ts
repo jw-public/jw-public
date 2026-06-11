@@ -9,6 +9,17 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   timeout: 60_000,
   reporter: process.env.CI ? [["list"], ["html", { open: "never" }]] : "list",
+  // Visual snapshots are Linux renderings, generated and enforced in CI only;
+  // local (macOS) runs skip the pixel comparisons.
+  ignoreSnapshots: !process.env.CI,
+  expect: {
+    toHaveScreenshot: {
+      // absorb sub-pixel antialiasing drift without hiding layout breakage
+      maxDiffPixelRatio: 0.002,
+      animations: "disabled",
+      caret: "hide",
+    },
+  },
   use: {
     baseURL: process.env.E2E_BASE_URL ?? "http://localhost:4000",
     screenshot: "only-on-failure",
