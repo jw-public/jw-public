@@ -16,7 +16,7 @@ import { LocalCollection } from "../3rdParty/minimongo-standalone/minimongo-stan
 import { NotificationsAsserts } from "../common/NotificationsAsserts";
 import { NullEmailSender } from "../common/NullEmailSender";
 
-describe("AssignmentParticipationNotifier", async function () {
+describe("AssignmentParticipationNotifier", function () {
   it("should not be null or undefined", async function () {
     // Arrange
     let testCase = new AssignmentNotifierTestCase();

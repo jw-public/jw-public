@@ -4,7 +4,7 @@ import { IAssignmentCloser } from "../../server/assignments/interfaces/IAssignme
 import { Types } from "../../server/Types";
 import { AssignmentTestCaseWithNotifications } from "./common/AssignmentTestCaseWithNotifications";
 
-describe("AssignmentCloser", async function () {
+describe("AssignmentCloser", function () {
   it("should not be null or undefined", async function () {
     // Arrange
     let testCase = new AssignmentCloserTestCase();

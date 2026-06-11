@@ -7,7 +7,7 @@ import { MailTestCase } from "./common/MailTestCase";
 
 import { marked } from "marked";
 
-describe("UserMailer", async function () {
+describe("UserMailer", function () {
   it("should not be null or undefined", async function () {
     // Arrange
     let testCase = new UserMailerTestCase();

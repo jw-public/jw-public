@@ -10,7 +10,7 @@ import {
 } from "../../server/assignments/interfaces/IAssignmentNotifier";
 import { TestCase } from "../common/TestCase";
 
-describe("AssignmentNotifier", async function () {
+describe("AssignmentNotifier", function () {
   it("should not be null or undefined", async function () {
     // Arrange
     let testCase = new AssignmentNotifierTestCase();

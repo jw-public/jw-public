@@ -214,7 +214,7 @@ function ChangePasswordForm(): JSX.Element {
       return;
     }
 
-    Accounts.changePassword(oldPassword, password, (err: any) => {
+    void Accounts.changePassword(oldPassword, password, (err: any) => {
       if (err) {
         console.log("Fehler: ", err);
         const errorMessage =
@@ -293,7 +293,7 @@ export default function ModifyProfile(): JSX.Element {
     UserCollection.users.update(user._id, { $set: { [field]: value } }, {}, (err: any) => {
       if (err) {
         console.log(`Fehler beim Speichern von ${field}: `, err);
-        alertDialog("Speichern fehlgeschlagen: " + (err.reason ?? err.message), "Fehler");
+        void alertDialog("Speichern fehlgeschlagen: " + (err.reason ?? err.message), "Fehler");
       }
     });
   };

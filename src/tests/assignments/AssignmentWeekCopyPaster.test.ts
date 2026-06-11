@@ -7,7 +7,7 @@ import { JsnLogFactory } from "../../imports/logging/JsnLogFactory";
 import { AssignmentWeekCopyPaster } from "../../server/assignments/classes/AssignmentWeekCopyPaster";
 import { LocalCollection } from "../3rdParty/minimongo-standalone/minimongo-standalone";
 
-describe("AssignmentWeekCopyPaster.copyPasteCalendarWeek()", async function () {
+describe("AssignmentWeekCopyPaster.copyPasteCalendarWeek()", function () {
   let lolexHandle: lolex.Clock;
   beforeEach(function () {
     lolexHandle = lolex.install();

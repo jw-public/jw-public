@@ -8,7 +8,7 @@ import { IUserMailer, IUserMailerOptions } from "../../server/mailing/interfaces
 import { MailingTypes } from "../../server/mailing/MailingTypes";
 import { TestCase } from "../common/TestCase";
 
-describe("AssignmentEmailNotifier", async function () {
+describe("AssignmentEmailNotifier", function () {
   it("should not be null or undefined", async function () {
     // Arrange
     let testCase = new AssignmentEmailNotifierTestCase();

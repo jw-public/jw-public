@@ -30,7 +30,7 @@ function ForgottenPasswordModal(props: { onClose: () => void }): JSX.Element {
       return;
     }
 
-    Accounts.forgotPassword({ email: trimmed }, (err: any) => {
+    void Accounts.forgotPassword({ email: trimmed }, (err: any) => {
       if (err) {
         if (err.message === "User not found [403]") {
           setAlerts([{ message: "Diese Email Adresse ist unbekannt.", type: "danger" }]);

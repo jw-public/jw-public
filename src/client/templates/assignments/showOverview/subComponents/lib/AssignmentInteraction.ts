@@ -58,7 +58,7 @@ export default class AssignmentInteraction {
   }
 
   private confirmAndApplyOnYes() {
-    confirmDialog({ message: "Auf Termin " + this.assignment.name + " bewerben?" }).then(
+    void confirmDialog({ message: "Auf Termin " + this.assignment.name + " bewerben?" }).then(
       (userPressedOnYes) => {
         if (userPressedOnYes) {
           this.apply();
@@ -69,7 +69,7 @@ export default class AssignmentInteraction {
 
   private handleError(error: Meteor.Error) {
     if (!_.isUndefined(error)) {
-      alertDialog(error.reason, "Fehler");
+      void alertDialog(error.reason, "Fehler");
       console.error(error);
     }
   }

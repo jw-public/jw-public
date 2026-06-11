@@ -166,7 +166,7 @@ export default function CopyAssignments(): JSX.Element {
       displaySummaryAlerts();
     };
 
-    processAll();
+    void processAll();
   };
 
   return (

@@ -151,7 +151,7 @@ function Logout(): JSX.Element {
         setTimeout(tick, 100);
         return;
       }
-      router.navigate(buildPath(Def.Login));
+      void router.navigate(buildPath(Def.Login));
     };
     tick();
     return () => {
@@ -252,11 +252,11 @@ export namespace Routes {
   export type Def = PathDef;
 
   export function go(route: PathDef, params?: { [key: string]: string }): void {
-    router.navigate(buildPath(route, params));
+    void router.navigate(buildPath(route, params));
   }
 
   export function goToPath(path: string): void {
-    router.navigate(path);
+    void router.navigate(path);
   }
 
   export function path(route: PathDef, params?: { [key: string]: string }): string {

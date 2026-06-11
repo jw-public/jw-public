@@ -21,14 +21,14 @@ import AssignmentManagerComponent from "../components/assignmentManager/Assignme
 import * as AssignmentManagerModal from "../components/assignmentManager/AssignmentManagerModal";
 
 function removeAssignment(assignmentId: string): void {
-  confirmDialog({ message: "Den Termin wirklich löschen?" }).then((result) => {
+  void confirmDialog({ message: "Den Termin wirklich löschen?" }).then((result) => {
     if (!result) {
       return;
     }
     const proxy = new ServerMethodsWrapper.AssignmentProxy(assignmentId);
     proxy.remove().catch((error: any) => {
       console.error("Was trying to remove an assignment: ", error);
-      alertDialog("Fehler: " + error.toString(), "Fehler");
+      void alertDialog("Fehler: " + error.toString(), "Fehler");
     });
   });
 }

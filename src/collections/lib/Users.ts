@@ -61,7 +61,7 @@ export const UserProfileSchema = new SimpleSchema({
               return "phoneNumberInvalid";
             }
           } else {
-            ServerMethodsWrapper.Validator.validatePhoneNumber(rawNumber)
+            void ServerMethodsWrapper.Validator.validatePhoneNumber(rawNumber)
               .catch((err) => {
                 console.error(err);
                 return false;

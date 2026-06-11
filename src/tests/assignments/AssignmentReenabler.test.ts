@@ -7,7 +7,7 @@ import { assert } from "chai";
 
 import { IAssignmentReenabler } from "../../server/assignments/interfaces/IAssignmentReenabler";
 
-describe("AssignmentReenabler", async function () {
+describe("AssignmentReenabler", function () {
   it("should not be null or undefined", async function () {
     // Arrange
     let testCase = new AssignmentReenablerTestCase();

@@ -1,0 +1,2 @@
+# Shift-left: catch what the CI gate would catch, before the commit exists.
+cd src && npx lint-staged

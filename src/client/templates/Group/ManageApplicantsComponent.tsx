@@ -18,7 +18,7 @@ function acceptUser(userId: string): void {
   const proxy = new ServerMethodsWrapper.GroupProxy(groupId);
   proxy.addUserToGroup(userId).catch((err: Meteor.Error) => {
     console.error("Fehler bei Annehmen:", err);
-    alertDialog(err.reason, "Fehler");
+    void alertDialog(err.reason, "Fehler");
   });
 }
 
@@ -28,14 +28,14 @@ function denyUser(userId: string): void {
 
   console.log("Denying User " + userId + " " + groupId);
 
-  confirmDialog({
+  void confirmDialog({
     message: "Anfrage von " + user.fullName + " (" + user.email + ") ablehnen.",
   }).then((result) => {
     if (result) {
       const proxy = new ServerMethodsWrapper.GroupProxy(groupId);
       proxy.denyUser(userId).catch((err: Meteor.Error) => {
         console.error("Fehler bem Ablehnen:", err);
-        alertDialog(err.reason, "Fehler");
+        void alertDialog(err.reason, "Fehler");
       });
     }
   });

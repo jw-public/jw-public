@@ -69,10 +69,10 @@ export default function RegisterInGroup(): JSX.Element {
       return;
     }
 
-    (Meteor.callAsync("userExists", cleaned) as Promise<boolean>).then((userExists) => {
+    void (Meteor.callAsync("userExists", cleaned) as Promise<boolean>).then((userExists) => {
       if (userExists) {
         console.log("Benutzer ist bereits registriert!");
-        alertDialog(
+        void alertDialog(
           "Du bist bereits schon im System registriert. Eine zweite Registrierung ist zurzeit nicht möglich.",
         );
       } else {
@@ -114,11 +114,11 @@ export default function RegisterInGroup(): JSX.Element {
       return;
     }
 
-    Accounts.createUser(
+    void Accounts.createUser(
       { email: doc.email, password: doc.password, profile: doc.profile },
       (err: any) => {
         if (err) {
-          alertDialog(err.details ?? err.reason ?? String(err), "Fehler");
+          void alertDialog(err.details ?? err.reason ?? String(err), "Fehler");
           console.error(err);
         } else {
           Routes.go(Routes.Def.Home);

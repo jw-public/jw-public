@@ -7,7 +7,7 @@ import { Types } from "../../server/Types";
 import { AssignmentTestCaseWithNotifications } from "./common/AssignmentTestCaseWithNotifications";
 
 describe("AssignmentApplicationController.addUserAsApplicantById()", function () {
-  it("should be able to add a user as applicant, when no other user is applicant", function () {
+  it("should be able to add a user as applicant, when no other user is applicant", async function () {
     // Arrange
     let addUserTestCase = new AddUserTestCase({
       initialAssignment: {
@@ -16,7 +16,7 @@ describe("AssignmentApplicationController.addUserAsApplicantById()", function ()
     });
 
     // Act
-    addUserTestCase.executeWith(testData.userId);
+    await addUserTestCase.executeWith(testData.userId);
 
     // Assert
     let assignmentAssert = addUserTestCase.assignmentAssert;
@@ -25,7 +25,7 @@ describe("AssignmentApplicationController.addUserAsApplicantById()", function ()
     assignmentAssert.containsUserIdInApplicants(testData.userId, "A wrong user id was appended");
   });
 
-  it("should be able to add a user as applicant, when other users are already applicants", function () {
+  it("should be able to add a user as applicant, when other users are already applicants", async function () {
     // Arrange
     let addUserTestCase = new AddUserTestCase({
       initialAssignment: {
@@ -38,7 +38,7 @@ describe("AssignmentApplicationController.addUserAsApplicantById()", function ()
     });
 
     // Act
-    addUserTestCase.executeWith(testData.userId);
+    await addUserTestCase.executeWith(testData.userId);
 
     // Assert
     let assignmentAssert = addUserTestCase.assignmentAssert;
@@ -51,7 +51,7 @@ describe("AssignmentApplicationController.addUserAsApplicantById()", function ()
     assignmentAssert.containsUserIdInApplicants("thisIsSomeOtherGuy");
   });
 
-  it("should not add a user if already an applicant", function () {
+  it("should not add a user if already an applicant", async function () {
     // Arrange
     let addUserTestCase = new AddUserTestCase({
       initialAssignment: {
@@ -64,7 +64,7 @@ describe("AssignmentApplicationController.addUserAsApplicantById()", function ()
     });
 
     // Act
-    addUserTestCase.executeWith(testData.userId);
+    await addUserTestCase.executeWith(testData.userId);
 
     // Assert
     let assignmentAssert = addUserTestCase.assignmentAssert;
@@ -73,7 +73,7 @@ describe("AssignmentApplicationController.addUserAsApplicantById()", function ()
     assignmentAssert.containsUserIdInApplicants(testData.userId);
   });
 
-  it("should not add a user if already an participant", function () {
+  it("should not add a user if already an participant", async function () {
     // Arrange
     let addUserTestCase = new AddUserTestCase({
       initialAssignment: {
@@ -87,7 +87,7 @@ describe("AssignmentApplicationController.addUserAsApplicantById()", function ()
     });
 
     // Act
-    addUserTestCase.executeWith(testData.userId);
+    await addUserTestCase.executeWith(testData.userId);
 
     // Assert
     let assignmentAssert = addUserTestCase.assignmentAssert;
@@ -99,7 +99,7 @@ describe("AssignmentApplicationController.addUserAsApplicantById()", function ()
 });
 
 describe("AssignmentApplicationController.removeUserAsApplicantById()", function () {
-  it("should do nothing, when trying to remove applicant when user is no applicant", function () {
+  it("should do nothing, when trying to remove applicant when user is no applicant", async function () {
     // Arrange
     let removeUserTestCase = new RemoveUserTestCase({
       initialAssignment: {
@@ -112,7 +112,7 @@ describe("AssignmentApplicationController.removeUserAsApplicantById()", function
     });
 
     // Act
-    removeUserTestCase.executeWith(testData.userId);
+    await removeUserTestCase.executeWith(testData.userId);
 
     // Assert
     let assignmentAssert = removeUserTestCase.assignmentAssert;
@@ -121,7 +121,7 @@ describe("AssignmentApplicationController.removeUserAsApplicantById()", function
     assignmentAssert.containsUserIdInApplicants("thisIsSomeOtherGuy");
   });
 
-  it("should remove user, when he is the only applicant", function () {
+  it("should remove user, when he is the only applicant", async function () {
     // Arrange
     let removeUserTestCase = new RemoveUserTestCase({
       initialAssignment: {
@@ -134,7 +134,7 @@ describe("AssignmentApplicationController.removeUserAsApplicantById()", function
     });
 
     // Act
-    removeUserTestCase.executeWith(testData.userId);
+    await removeUserTestCase.executeWith(testData.userId);
 
     // Assert
     let assignmentAssert = removeUserTestCase.assignmentAssert;
@@ -142,7 +142,7 @@ describe("AssignmentApplicationController.removeUserAsApplicantById()", function
     assignmentAssert.applicantCountIs(0, "The given user was not removed.");
   });
 
-  it("should remove user, when there are other applicants", function () {
+  it("should remove user, when there are other applicants", async function () {
     // Arrange
     let removeUserTestCase = new RemoveUserTestCase({
       initialAssignment: {
@@ -158,7 +158,7 @@ describe("AssignmentApplicationController.removeUserAsApplicantById()", function
     });
 
     // Act
-    removeUserTestCase.executeWith(testData.userId);
+    await removeUserTestCase.executeWith(testData.userId);
 
     // Assert
     let assignmentAssert = removeUserTestCase.assignmentAssert;
@@ -211,13 +211,13 @@ class AssignmentApplicationTestCase extends AssignmentTestCaseWithNotifications<
 
 class AddUserTestCase extends AssignmentApplicationTestCase {
   public executeWith(userId: string) {
-    this.applicationController.addUserAsApplicantById(userId);
+    return this.applicationController.addUserAsApplicantById(userId);
   }
 }
 
 class RemoveUserTestCase extends AssignmentApplicationTestCase {
   public executeWith(userId: string) {
-    this.applicationController.removeUserAsApplicantById(userId);
+    return this.applicationController.removeUserAsApplicantById(userId);
   }
 }
 

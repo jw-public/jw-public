@@ -258,14 +258,14 @@ function EditUserPanel(props: {
 }
 
 function removeUser(userId: string): void {
-  confirmDialog({ message: "Den User wirklich löschen?" }).then((result) => {
+  void confirmDialog({ message: "Den User wirklich löschen?" }).then((result) => {
     if (!result) {
       return;
     }
     const proxy = new ServerMethodsWrapper.AdminUserProxy(userId);
     proxy.removeUser().catch((error: any) => {
       console.error("Was trying to remove an user: ", error);
-      alertDialog("Fehler: " + error.toString(), "Fehler");
+      void alertDialog("Fehler: " + error.toString(), "Fehler");
     });
   });
 }

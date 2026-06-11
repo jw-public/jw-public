@@ -7,7 +7,7 @@ import { assert } from "chai";
 
 import { IAssignmentRemover } from "../../server/assignments/interfaces/IAssignmentRemover";
 
-describe("AssignmentRemover", async function () {
+describe("AssignmentRemover", function () {
   it("should not be null or undefined", async function () {
     // Arrange
     let testCase = new AssignmentRemoverTestCase();

@@ -31,11 +31,27 @@ export default tseslint.config(
       "react-hooks": reactHooks,
       "unused-imports": unusedImports,
     },
+    languageOptions: {
+      parserOptions: {
+        // Type-aware rules below need the TS program.
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
     settings: {
       react: { version: "detect" },
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
+      // The whole server is async-only Mongo: a dropped promise is THE bug
+      // class on this codebase (lost writes that tests can race past).
+      "@typescript-eslint/no-floating-promises": "error",
+      "@typescript-eslint/no-misused-promises": [
+        "error",
+        // async handlers on void-returning props (onClick etc.) are fine
+        { checksVoidReturn: { attributes: false } },
+      ],
+      "@typescript-eslint/await-thenable": "error",
       // One-shot subscription→state mirrors are a legitimate Meteor pattern;
       // revisit with the React compiler.
       "react-hooks/set-state-in-effect": "warn",

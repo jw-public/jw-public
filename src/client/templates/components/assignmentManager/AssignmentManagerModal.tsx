@@ -8,7 +8,7 @@ import AssignmentManagerComponent, { AssignmentManagerProps } from "./Assignment
 const HTML_ID = "AssignmentManagerModalDialogNode";
 
 export function dialog(templateOptions: AssignmentManagerProps, options?: { title?: string }) {
-  contentDialog({
+  void contentDialog({
     title: options?.title ?? "Termin abschließen",
     body: (close) => (
       <div id={HTML_ID}>

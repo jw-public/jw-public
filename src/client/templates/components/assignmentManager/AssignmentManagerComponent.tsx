@@ -154,14 +154,14 @@ export default function AssignmentManager(props: AssignmentManagerProps): JSX.El
       })
       .catch((error: any) => {
         console.error(error);
-        alertDialog(String(error), "Fehler");
+        void alertDialog(String(error), "Fehler");
       });
   };
 
   const onCloseClick = (event: React.MouseEvent) => {
     event.preventDefault();
     if (participants.length > 0) {
-      confirmDialog({
+      void confirmDialog({
         title: "Abschließen bestätigen",
         message:
           "Der Termin wird geschlossen und den restlichen Bewerbern wird abgesagt. Aktion durchführen?",
@@ -173,7 +173,7 @@ export default function AssignmentManager(props: AssignmentManagerProps): JSX.El
         }
       });
     } else {
-      confirmDialog({
+      void confirmDialog({
         title: "Leeren Termin schließen",
         message: (
           <span>

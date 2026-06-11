@@ -11,7 +11,7 @@ import { AssignmentTestCaseWithNotifications } from "./common/AssignmentTestCase
 
 import { assert } from "chai";
 
-describe("AssignmentParticipantController.addUserAsParticipantAndNotify()", async function () {
+describe("AssignmentParticipantController.addUserAsParticipantAndNotify()", function () {
   it("should be able to add a user as participant, when no other user is applicant or participant", async function () {
     // Arrange
     let addUserTestCase = new AddUserTestCase({
@@ -101,7 +101,7 @@ describe("AssignmentParticipantController.addUserAsParticipantAndNotify()", asyn
   });
 });
 
-describe("AssignmentParticipantController.removeUserAsParticipantAndNotify()", async function () {
+describe("AssignmentParticipantController.removeUserAsParticipantAndNotify()", function () {
   it("should be able to remove a user from participants and user is notified", async function () {
     // Arrange
     let removeUserTestCase = new RemoveUserTestCase({

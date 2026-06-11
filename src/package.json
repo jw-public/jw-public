@@ -51,8 +51,10 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-unused-imports": "^4.4.1",
+    "husky": "^9.1.7",
     "inversify-dts": "3.0.0",
     "js-base64": "3.7.7",
+    "lint-staged": "^17.0.7",
     "lolex": "5.1.2",
     "mocha": "^11.7.6",
     "mock-require": "3.0.3",
@@ -73,8 +75,18 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "prepare": "cd .. && husky src/.husky || true"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "lint-staged": {
+    "*.{ts,tsx,mjs,js}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,less,md,yml,html}": [
+      "prettier --write"
+    ]
+  }
 }

@@ -15,7 +15,7 @@ export default function ResetPassword(): JSX.Element {
 
     const token = Routes.getParam(Routes.ParamNames.Token);
     console.log("trigger reset");
-    Accounts.resetPassword(token, password, (err: any) => {
+    void Accounts.resetPassword(token, password, (err: any) => {
       if (err) {
         console.log(err);
         if (err.reason === "Token expired") {
