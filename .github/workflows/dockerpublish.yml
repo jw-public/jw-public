@@ -46,6 +46,10 @@ jobs:
         with:
           meteor-release: "3.3.2"
       - run: cd src && meteor npm install
+      # zodern:types writes the package type stubs to .meteor/local/types,
+      # which tsc resolves via the tsconfig "paths" mapping.
+      - name: Generate Meteor package types
+        run: cd src && meteor lint
       - run: cd src && meteor npm run compile
       - run: cd src && meteor npm run lint
       - run: cd src && meteor npm run format:check
@@ -93,6 +97,10 @@ jobs:
         with:
           meteor-release: "3.3.2"
       - run: cd src && meteor npm install
+      # zodern:types writes the package type stubs to .meteor/local/types,
+      # which tsc resolves via the tsconfig "paths" mapping.
+      - name: Generate Meteor package types
+        run: cd src && meteor lint
       - run: cd src && meteor npm run compile
       - run: cd src && meteor build --allow-superuser ./build
       - uses: actions/upload-artifact@v4
@@ -142,6 +150,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-meteor-
       - run: cd src && meteor npm install
+      # zodern:types writes the package type stubs to .meteor/local/types,
+      # which tsc resolves via the tsconfig "paths" mapping.
+      - name: Generate Meteor package types
+        run: cd src && meteor lint
       - run: cd src && meteor npm run compile
       - run: cd src && meteor npm test
       - run: cd src && meteor build --allow-superuser ./build
