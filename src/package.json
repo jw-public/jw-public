@@ -76,7 +76,9 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "cd .. && husky src/.husky || true"
+    "prepare": "cd .. && husky src/.husky || true",
+    "dev": "(docker start jwpublic-mailpit 2>/dev/null || docker run -d --name jwpublic-mailpit -p 11025:1025 -p 18025:8025 axllent/mailpit) && MAIL_URL=smtp://localhost:11025 meteor run --port 4000",
+    "types": "meteor lint"
   },
   "author": "",
   "license": "ISC",

@@ -34,14 +34,9 @@ Architecture decisions live in [`docs/adr/`](docs/adr/); the 2026 modernization 
 ### Start the app
 
 ```bash
-# 1. Mail catcher — all outgoing email lands here instead of the real world
-docker run -d --name jwpublic-mailpit \
-  -p 11025:1025 -p 18025:8025 axllent/mailpit
-
-# 2. Install dependencies and run
 cd src
 meteor npm install
-MAIL_URL=smtp://localhost:11025 meteor run --port 4000
+meteor npm run dev   # starts the Mailpit container + the app on :4000
 ```
 
 The app is now at <http://localhost:4000>, the Mailpit inbox at <http://localhost:18025>.
@@ -58,6 +53,8 @@ Notes:
 - Port 4000 is just a convention to avoid clashes; any port works. CI uses 3000.
 - If file changes are not picked up (some sandboxed/macOS setups), start with `METEOR_WATCH_FORCE_POLLING=true`.
 - `npm run compile` is a pure type-check (`tsc --noEmit`) — Meteor compiles the TypeScript itself.
+- After adding/removing Meteor packages run `npm run types` (regenerates the type stubs zodern:types places under `.meteor/local/types`; a running dev server does this automatically).
+- Commits run `eslint --fix` + Prettier on the staged files (husky + lint-staged).
 
 ## Manual testing
 
@@ -95,6 +92,8 @@ npx playwright test
 The Playwright suite (17 specs) is the regression oracle for the whole app — login, group management, the full assignment lifecycle including email assertions, registration, notifications and password reset. Defaults: `E2E_BASE_URL=http://localhost:4000`, `MAILPIT_URL=http://localhost:18025` (override via env).
 
 **Heads-up:** never edit files under `src/` while the e2e suite is running — the dev server hot-reloads mid-test and produces misleading failures.
+
+The suite also pins six core views as visual snapshots (`tests/00-visual.spec.ts`). The PNGs are Linux renderings and only compared in CI; to update them, let CI fail once and commit the actuals from the `playwright-report` artifact.
 
 ## CI & deployment
 
