@@ -1,23 +1,22 @@
-import { Accounts } from "meteor/accounts-base";
-import { Meteor } from "meteor/meteor";
+import { Accounts, EmailFields } from "meteor/accounts-base";
 import * as UserCollection from "../collections/lib/UserCollection";
 
-
 export function initEmailSettings() {
-
   Accounts.emailTemplates.from = `no-reply@${process.env.VIRTUAL_HOST}`;
   Accounts.emailTemplates.siteName = "Public Assistant";
 
-  (<any>Accounts).urls.resetPassword = function (token) {
-    return `${process.env.ROOT_URL}/reset-password/${token}`;
+  (<any>Accounts).urls.resetPassword = function (token: string) {
+    // ROOT_URL may or may not carry a trailing slash
+    const base = (process.env.ROOT_URL || "").replace(/\/+$/, "");
+    return `${base}/reset-password/${token}`;
   };
 
-  let resetPasswordTemplate: Meteor.EmailFields = {
+  let resetPasswordTemplate: EmailFields = {
     subject(user: UserCollection.UserDAO) {
-      return `Passwort für ${user.profile.first_name} ${user.profile.last_name} zurücksetzen.`;
+      return `Passwort für ${user.profile?.first_name} ${user.profile?.last_name} zurücksetzen.`;
     },
     text(user: UserCollection.UserDAO, url: string) {
-      return `Hallo ${user.profile.first_name} ${user.profile.last_name},
+      return `Hallo ${user.profile?.first_name} ${user.profile?.last_name},
 
 klicke bitte auf den folgenden Link damit Du dein Passwort zurücksetzen kannst.
 Dieser Link öffnet einen Webbrowser:
@@ -31,8 +30,8 @@ Herzlichen Dank!
 
 Liebe Grüße,
 deine Brüder im Organisationsteam`;
-    }
-  }
+    },
+  };
 
   Accounts.emailTemplates.resetPassword = resetPasswordTemplate;
 }

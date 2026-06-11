@@ -1,6 +1,3 @@
 export interface IAssignmentCloser {
-  closeAssignment(options: {
-    assignmentId: string;
-    participantIds: Array<string>
-  }): void;
+  closeAssignment(options: { assignmentId: string; participantIds: Array<string> }): Promise<void>;
 }

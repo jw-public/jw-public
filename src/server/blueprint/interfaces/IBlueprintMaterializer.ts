@@ -1,11 +1,14 @@
-import { AssignmentDAO } from './../../../collections/lib/AssignmentsCollection';
-import { WeekBlueprint } from './../../../imports/blueprint/interfaces/WeekBlueprint.d';
+import { AssignmentDAO } from "./../../../collections/lib/AssignmentsCollection";
+import { WeekBlueprint } from "./../../../imports/blueprint/interfaces/WeekBlueprint.d";
 
 export interface IBlueprintMaterializer {
-    materialize(blueprint: WeekBlueprint, options: BlueprintMaterializerOptions): Array<AssignmentDAO>;
+  materialize(
+    blueprint: WeekBlueprint,
+    options: BlueprintMaterializerOptions,
+  ): Array<AssignmentDAO>;
 }
 
 export interface BlueprintMaterializerOptions {
-    contacts: Array<string>;
-    weekOfGivenDate: Date;
+  contacts: Array<string>;
+  weekOfGivenDate: Date;
 }

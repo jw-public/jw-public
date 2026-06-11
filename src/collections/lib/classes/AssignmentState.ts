@@ -1,3 +1,5 @@
 export enum AssignmentState {
-  Online, Closed, Canceled
+  Online,
+  Closed,
+  Canceled,
 }

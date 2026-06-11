@@ -1,5 +1,3 @@
-import "reflect-metadata";
-
 export const Types = {
   IAssignmentApplicationController: Symbol("IAssignmentApplicationController"),
   IAssignmentApplicationControllerFactory: Symbol("IAssignmentApplicationControllerFactory"),
@@ -11,5 +9,5 @@ export const Types = {
   IAssignmentCloser: Symbol("IAssignmentCloser"),
   IAssignmentReenabler: Symbol("IAssignmentReenabler"),
   LoggerFactory: Symbol("LoggerFactory"),
-  AssignmentWeekCopyPaster: Symbol("AssignmentWeekCopyPaster")
+  AssignmentWeekCopyPaster: Symbol("AssignmentWeekCopyPaster"),
 };

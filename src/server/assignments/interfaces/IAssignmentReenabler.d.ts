@@ -1,3 +1,3 @@
 export interface IAssignmentReenabler {
-  reenableAssignment(assignmentId: string, reason: string): void;
+  reenableAssignment(assignmentId: string, reason: string): Promise<void>;
 }

@@ -2,7 +2,6 @@ import * as _ from "underscore";
 import { AssignmentDAO, UserEntry } from "../../collections/lib/AssignmentsCollection";
 import { AssignmentState } from "../../collections/lib/classes/AssignmentState";
 
-
 export interface AssignmentStateForUser {
   canceled: boolean;
   closed: boolean;
@@ -13,16 +12,14 @@ export interface AssignmentStateForUser {
 export interface IAssignmentStateReader {
   isClosed(): boolean;
   isCanceled(): boolean;
-  isParticipantById(userId: string): boolean;
-  isApplicantById(userId: string): boolean;
-  getAssignmentState(userId: string): AssignmentStateForUser;
+  isParticipantById(userId: string | null): boolean;
+  isApplicantById(userId: string | null): boolean;
+  getAssignmentState(userId: string | null): AssignmentStateForUser;
 }
 
-
 export class AssignmentStateReader implements IAssignmentStateReader {
-
-  private participantIds: Array<string> = null;
-  private applicantIds: Array<string> = null;
+  private participantIds: Array<string> = [];
+  private applicantIds: Array<string> = [];
 
   public static fromAssignmentDAO(assignment: AssignmentDAO): IAssignmentStateReader {
     return new AssignmentStateReader(assignment);
@@ -45,8 +42,7 @@ export class AssignmentStateReader implements IAssignmentStateReader {
     return _.map(userEntries, (userEntry) => userEntry.user);
   }
 
-  getAssignmentState(userId: string): AssignmentStateForUser {
-
+  getAssignmentState(userId: string | null): AssignmentStateForUser {
     return {
       canceled: this.isCanceled(),
       closed: this.isClosed(),
@@ -56,13 +52,19 @@ export class AssignmentStateReader implements IAssignmentStateReader {
   }
 
   isClosed(): boolean {
-    return AssignmentState[this.assignment.state] === AssignmentState.Closed;
+    return (
+      AssignmentState[this.assignment.state as keyof typeof AssignmentState] ===
+      AssignmentState.Closed
+    );
   }
   isCanceled(): boolean {
-    return AssignmentState[this.assignment.state] === AssignmentState.Canceled;
+    return (
+      AssignmentState[this.assignment.state as keyof typeof AssignmentState] ===
+      AssignmentState.Canceled
+    );
   }
 
-  isParticipantById(userId: string): boolean {
+  isParticipantById(userId: string | null): boolean {
     let participantIds = this.getParticipantIds();
     return _.contains(participantIds, userId);
   }
@@ -71,7 +73,7 @@ export class AssignmentStateReader implements IAssignmentStateReader {
     return this.participantIds;
   }
 
-  isApplicantById(userId: string): boolean {
+  isApplicantById(userId: string | null): boolean {
     let applicantIds = this.getApplicantIds();
     return _.contains(applicantIds, userId);
   }
@@ -79,5 +81,4 @@ export class AssignmentStateReader implements IAssignmentStateReader {
   private getApplicantIds(): Array<string> {
     return this.applicantIds;
   }
-
 }

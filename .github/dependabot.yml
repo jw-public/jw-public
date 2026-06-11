@@ -1,0 +1,40 @@
+# Keeps the freshly modernized stack from rotting again: weekly grouped
+# updates, the CI suite (typecheck, lint, unit, e2e, visual snapshots) is the
+# safety net. Majors arrive as individual PRs and deserve a human look.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/src"
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      minor-and-patch:
+        update-types:
+          - minor
+          - patch
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: npm
+    directory: "/e2e"
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      minor-and-patch:
+        update-types:
+          - minor
+          - patch
+    open-pull-requests-limit: 3
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+
+  - package-ecosystem: docker
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday

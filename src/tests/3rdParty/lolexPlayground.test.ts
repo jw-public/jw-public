@@ -1,8 +1,6 @@
 import { assert } from "chai";
-import * as lolex from 'lolex';
-import * as moment from 'moment';
-
-
+import * as lolex from "lolex";
+import moment from "moment";
 
 describe("Lolex", function () {
   let lolexHandle: lolex.Clock;

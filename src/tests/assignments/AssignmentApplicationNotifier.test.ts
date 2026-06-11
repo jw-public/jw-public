@@ -1,140 +1,129 @@
-import { assert } from 'chai';
-import { interfaces, Kernel } from 'inversify';
-import * as TypeMoq from 'typemoq';
-import { NotificationDAO } from '../../collections/lib/classes/UserNotification';
-import { AssignmentEventType } from '../../imports/assignments/interfaces/AssignmentEventType';
-import { SimpleCollection } from '../../imports/interfaces/SimpleCollection';
-import { AssignmentServiceTypes } from '../../server/assignments/AssignmentServiceTypes';
-import { AssignmentNotifier } from '../../server/assignments/classes/AssignmentNotifier';
+import { assert } from "chai";
+import * as TypeMoq from "typemoq";
+import { NotificationDAO } from "../../collections/lib/classes/UserNotification";
+import { AssignmentEventType } from "../../imports/assignments/interfaces/AssignmentEventType";
+import { SimpleCollection } from "../../imports/interfaces/SimpleCollection";
+import { AssignmentNotifier } from "../../server/assignments/classes/AssignmentNotifier";
 import {
-    IAssignmentNotifier,
-    IAssignmentSingleNotifierOptions
-} from '../../server/assignments/interfaces/IAssignmentNotifier';
-import {
-    IAssignmentParticipationNotifier
-} from '../../server/assignments/interfaces/IAssignmentParticipationNotifier';
-import { kernelModule } from '../../server/assignments/KernelModule';
-import { Types } from '../../server/Types';
-import { LocalCollection } from '../3rdParty/minimongo-standalone/minimongo-standalone';
-import { NotificationsAsserts } from '../common/NotificationsAsserts';
-
-
+  IAssignmentNotifier,
+  IAssignmentSingleNotifierOptions,
+} from "../../server/assignments/interfaces/IAssignmentNotifier";
+import { IAssignmentParticipationNotifier } from "../../server/assignments/interfaces/IAssignmentParticipationNotifier";
+import { buildServices } from "../../server/services";
+import { AssignmentCopyActionDAO } from "../../collections/lib/AssignmentCopyActionsCollection";
+import { AssignmentDAO } from "../../collections/lib/AssignmentsCollection";
+import { LocalCollection } from "../3rdParty/minimongo-standalone/minimongo-standalone";
+import { NotificationsAsserts } from "../common/NotificationsAsserts";
+import { NullEmailSender } from "../common/NullEmailSender";
 
 describe("AssignmentParticipationNotifier", function () {
+  it("should not be null or undefined", async function () {
+    // Arrange
+    let testCase = new AssignmentNotifierTestCase();
 
-    it("should not be null or undefined", function () {
-        // Arrange
-        let testCase = new AssignmentNotifierTestCase();
+    // Act
 
-        // Act
+    // Assert
+    assert.isDefined(testCase.notifier);
+    assert.isNotNull(testCase.notifier);
+  });
 
-        // Assert
-        assert.isDefined(testCase.notifier);
-        assert.isNotNull(testCase.notifier);
+  it("notifyUsersAreAccepted should call notifier correctly", async function () {
+    // Arrange
+    let testCase = new AssignmentNotifierTestCase();
+
+    // Act
+    await testCase.notifier.notifyUsersAreAccepted({
+      userIds: [testCase.testUser, "someOtherGuy"],
+      assignmentId: "randomAssignmentId",
+    });
+    // Assert
+
+    testCase.expectNotificationWith({
+      userId: testCase.testUser,
+      eventType: AssignmentEventType.Accept,
+      assignmentId: "randomAssignmentId",
     });
 
-    it("notifyUsersAreAccepted should call notifier correctly", function () {
-        // Arrange
-        let testCase = new AssignmentNotifierTestCase();
+    testCase.expectNotificationWith({
+      userId: "someOtherGuy",
+      eventType: AssignmentEventType.Accept,
+      assignmentId: "randomAssignmentId",
+    });
+  });
 
+  it("notifyUsersAreNotAccepted should call notifier correctly", async function () {
+    // Arrange
+    let testCase = new AssignmentNotifierTestCase();
 
-        // Act
-        testCase.notifier.notifyUsersAreAccepted({
-            userIds: [testCase.testUser, "someOtherGuy"],
-            assignmentId: "randomAssignmentId"
-        });
-        // Assert
-
-        testCase.expectNotificationWith({
-            userId: testCase.testUser,
-            eventType: AssignmentEventType.Accept,
-            assignmentId: "randomAssignmentId"
-        });
-
-        testCase.expectNotificationWith({
-            userId: "someOtherGuy",
-            eventType: AssignmentEventType.Accept,
-            assignmentId: "randomAssignmentId"
-        });
-
+    // Act
+    await testCase.notifier.notifyUsersAreNotAccepted({
+      userIds: [testCase.testUser, "someOtherGuy"],
+      assignmentId: "randomAssignmentId",
+    });
+    // Assert
+    testCase.expectNotificationWith({
+      userId: testCase.testUser,
+      eventType: AssignmentEventType.Removed,
+      assignmentId: "randomAssignmentId",
     });
 
-    it("notifyUsersAreNotAccepted should call notifier correctly", function () {
-        // Arrange
-        let testCase = new AssignmentNotifierTestCase();
-
-        // Act
-        testCase.notifier.notifyUsersAreNotAccepted({
-            userIds: [testCase.testUser, "someOtherGuy"],
-            assignmentId: "randomAssignmentId"
-        });
-        // Assert
-        testCase.expectNotificationWith({
-            userId: testCase.testUser,
-            eventType: AssignmentEventType.Removed,
-            assignmentId: "randomAssignmentId"
-        });
-
-        testCase.expectNotificationWith({
-            userId: "someOtherGuy",
-            eventType: AssignmentEventType.Removed,
-            assignmentId: "randomAssignmentId"
-        });
+    testCase.expectNotificationWith({
+      userId: "someOtherGuy",
+      eventType: AssignmentEventType.Removed,
+      assignmentId: "randomAssignmentId",
     });
-
-
+  });
 });
 
-
 const testData = {
-    userId: "randomUserId",
+  userId: "randomUserId",
 };
 
-
-
-
 class AssignmentNotifierTestCase {
-    private collection: SimpleCollection<NotificationDAO>;
-    private kernel: interfaces.Kernel;
-    private _notifier: IAssignmentParticipationNotifier = null;
-    private _assignmentNotifierMock: TypeMoq.Mock<IAssignmentNotifier>;
+  private collection: SimpleCollection<NotificationDAO>;
+  private _notifier: IAssignmentParticipationNotifier | null = null;
+  private _assignmentNotifierMock: TypeMoq.Mock<IAssignmentNotifier>;
 
-    constructor() {
-        this.kernel = new Kernel();
-        this.kernel.load(kernelModule);
-        this.collection = new LocalCollection<NotificationDAO>("test-notification");
+  constructor() {
+    this.collection = new LocalCollection<NotificationDAO>("test-notification");
 
-        this._assignmentNotifierMock = TypeMoq.Mock.ofType<IAssignmentNotifier>(AssignmentNotifier);
+    this._assignmentNotifierMock = TypeMoq.Mock.ofType<IAssignmentNotifier>(AssignmentNotifier);
 
-        this.kernel.unbind(AssignmentServiceTypes.IAssignmentNotifier);
-        this.kernel.bind<IAssignmentNotifier>(AssignmentServiceTypes.IAssignmentNotifier).toConstantValue(this._assignmentNotifierMock.object);
+    const services = buildServices(
+      {
+        assignments: new LocalCollection<AssignmentDAO>("assignment"),
+        assignmentCopyActions: new LocalCollection<AssignmentCopyActionDAO>("test-copy-actions"),
+        notifications: this.collection,
+        users: new LocalCollection("user"),
+        groups: new LocalCollection("group"),
+      },
+      new NullEmailSender(),
+      { assignmentNotifier: this._assignmentNotifierMock.object },
+    );
+    this._notifier = services.participationNotifier;
+  }
 
-        this.kernel.bind<SimpleCollection<NotificationDAO>>(Types.Collection).toConstantValue(this.collection).whenTargetNamed("notification");
+  expectNotificationWith(expectedOptions: IAssignmentSingleNotifierOptions) {
+    this.notifierMock.verify(
+      (x) => x.notifyUserAboutAssignment(TypeMoq.It.isValue(expectedOptions)),
+      TypeMoq.Times.once(),
+    );
+  }
 
-        this._notifier = this.kernel.get<IAssignmentParticipationNotifier>(AssignmentServiceTypes.IAssignmentParticipationNotifier);
+  get notifier() {
+    return this._notifier!;
+  }
 
-    }
+  get assert() {
+    return new NotificationsAsserts(this.collection, this.testUser);
+  }
 
-    expectNotificationWith(expectedOptions: IAssignmentSingleNotifierOptions) {
-        this.notifierMock
-            .verify(x => x.notifyUserAboutAssignment(TypeMoq.It.isValue(expectedOptions)), TypeMoq.Times.once());
-    }
+  get testUser() {
+    return testData.userId;
+  }
 
-
-    get notifier() {
-        return this._notifier;
-    }
-
-    get assert() {
-        return new NotificationsAsserts(this.collection, this.testUser);
-    }
-
-    get testUser() {
-        return testData.userId;
-    }
-
-    get notifierMock() {
-        return this._assignmentNotifierMock;
-    }
-
+  get notifierMock() {
+    return this._assignmentNotifierMock;
+  }
 }

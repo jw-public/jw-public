@@ -6,13 +6,12 @@ interface TestDAO {
 }
 
 describe("Minimongo Standalone integrates", function () {
-
   it("Test insert", function () {
     // Arrange
     let collection = new LocalCollection<TestDAO>("test");
 
     // Act
-    collection.insert({ "bla": "blub" });
+    collection.insert({ bla: "blub" });
 
     // Assert
     let cursor = collection.find();
@@ -22,17 +21,16 @@ describe("Minimongo Standalone integrates", function () {
     chai.assert.isDefined(retrieved);
     chai.assert.isNotNull(retrieved);
     chai.assert.equal(retrieved.bla, "blub");
-
   });
 
   it("Test remove", function () {
     // Arrange
     let collection = new LocalCollection<TestDAO>("test");
-    collection.insert({ "bla": "blub" });
+    collection.insert({ bla: "blub" });
 
     // Act
     let firstCount = collection.find().count();
-    collection.remove({ "bla": "blub" });
+    collection.remove({ bla: "blub" });
     let secondCount = collection.find().count();
 
     // Assert
@@ -43,13 +41,15 @@ describe("Minimongo Standalone integrates", function () {
   it("Test update", function () {
     // Arrange
     let collection = new LocalCollection<TestDAO>("test");
-    let id = collection.insert({ "bla": "blub" });
+    let id = collection.insert({ bla: "blub" });
 
     // Act
-    collection.update({ "_id": id }, {
-      "$set": { "bla": "yep" }
-    });
-
+    collection.update(
+      { _id: id },
+      {
+        $set: { bla: "yep" },
+      },
+    );
 
     // Assert
     let cursor = collection.find();
@@ -59,5 +59,4 @@ describe("Minimongo Standalone integrates", function () {
     chai.assert.isNotNull(retrieved);
     chai.assert.equal(retrieved.bla, "yep");
   });
-
 });

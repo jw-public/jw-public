@@ -1,17 +1,16 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 
 import AssignmentPanelBody from "./AssignmentPanelBody";
-import {AssignmentPanelProps} from "../AssignmentPanel";
+import { AssignmentPanelProps } from "../AssignmentPanel";
 import Assignment from "../../../../../collections/lib/classes/Assignment";
 
-import * as moment from "moment";
-
+import moment from "moment";
 
 export default class AssignmentPanelHeading extends React.Component<AssignmentPanelProps, {}> {
-
   private panelBodyHasProgressBar(): boolean {
-    return AssignmentPanelBody.assignmentHasProgressBar(Assignment.createFromDAO(this.props.assignment));
+    return AssignmentPanelBody.assignmentHasProgressBar(
+      Assignment.createFromDAO(this.props.assignment),
+    );
   }
 
   public render(): JSX.Element {
@@ -19,7 +18,7 @@ export default class AssignmentPanelHeading extends React.Component<AssignmentPa
     const assignmentDayOfWeekShort = moment(this.props.assignment.start).format("ddd");
     const assignmentDayOfWeekLong = moment(this.props.assignment.start).format("dddd");
 
-    let panelHeadingClassNames = "panel-heading";
+    let panelHeadingClassNames = "card-header";
 
     if (this.panelBodyHasProgressBar()) {
       panelHeadingClassNames += " with-progress-bar";
@@ -28,20 +27,14 @@ export default class AssignmentPanelHeading extends React.Component<AssignmentPa
     return (
       <div className={panelHeadingClassNames}>
         <div className="row">
-          <div className="col-xs-7 text-center">
-            {assignmentName}
-          </div>
+          <div className="col-7 text-center">{assignmentName}</div>
 
-          <div className="col-xs-5 text-center">
-            <span className="visible-lg">{assignmentDayOfWeekShort}</span>
-            <span className="hidden-lg">{assignmentDayOfWeekLong}
-
-            </span>
-
+          <div className="col-5 text-center">
+            <span className="d-none d-lg-inline">{assignmentDayOfWeekShort}</span>
+            <span className="d-lg-none">{assignmentDayOfWeekLong}</span>
           </div>
         </div>
       </div>
     );
   }
-
 }

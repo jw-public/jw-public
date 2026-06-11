@@ -1,56 +1,56 @@
+import * as LibPhoneNumber from "../../lib/LibPhoneNumber";
 import { Meteor } from "meteor/meteor";
+import SimpleSchema, { SchemaContext } from "./SimpleSchema";
 import * as _ from "underscore";
-import { SUPPORTED_LANGUAGES } from '../../imports/i18n/classes/I18nProvider';
+import { SUPPORTED_LANGUAGES } from "../../imports/i18n/classes/I18nProvider";
 
-import Group from "./classes/Group";
-
-import * as ProfileEdit from './ProfileEdit';
-import * as Registration from './Registration';
+import * as ProfileEdit from "./ProfileEdit";
+import * as Registration from "./Registration";
 
 import { CollectionConf } from "./collectionConfig/CollectionConf";
 
-
-import * as ServerMethodsWrapper from '../../lib/classes/ServerMethodsWrapper';
-import * as PhoneValidator from './ValidationFunctions/PhoneValidator';
+import * as ServerMethodsWrapper from "../../lib/classes/ServerMethodsWrapper";
+import * as PhoneValidator from "./ValidationFunctions/PhoneValidator";
 
 export const UserProfileSchema = new SimpleSchema({
   first_name: {
     type: String,
-    label: "Vorname"
+    label: "Vorname",
   },
   last_name: {
     type: String,
-    label: "Nachname"
+    label: "Nachname",
   },
   gender: {
     type: String,
     label: "Geschlecht",
-    allowedValues: ['Male', 'Female']
+    allowedValues: ["Male", "Female"],
   },
   language: {
     type: String,
     label: "Sprache",
     allowedValues: SUPPORTED_LANGUAGES,
-    defaultValue: "de-de"
+    defaultValue: "de-de",
   },
   carMostlyAvailable: {
     type: Boolean,
     label: "Auto meistens verfügbar",
-    optional: true
+    optional: true,
   },
   pioneer: {
     type: Boolean,
     label: "Ich bin ein Pionier",
-    optional: true
+    optional: true,
   },
   mobile: {
     type: String,
     label: "Handynummer",
     optional: true,
-    custom: function () {
-      var context = <CustomValidatorContext>this;
+    custom: function (this: SchemaContext) {
+      var context = <any>this;
 
-      if (!CollectionConf.IS_TEST && !(context.isSet && context.value)) { // Damit bei Dummy Usern keine Fehler entstehen
+      if (!CollectionConf.IS_TEST && !(context.isSet && context.value)) {
+        // Damit bei Dummy Usern keine Fehler entstehen
         return "required";
       } else {
         if (context.isSet && !_.isUndefined(context.value)) {
@@ -61,23 +61,28 @@ export const UserProfileSchema = new SimpleSchema({
               return "phoneNumberInvalid";
             }
           } else {
-            ServerMethodsWrapper.Validator.validatePhoneNumber(rawNumber, function (err, isValid) {
-              if (err) {
+            void ServerMethodsWrapper.Validator.validatePhoneNumber(rawNumber)
+              .catch((err) => {
                 console.error(err);
-              }
-
-              if (!isValid) {
-                // Alle Formulare, die die Telefonnummer beinhalten benachrichtigen
-                Registration.getStepTwoContext().addInvalidKeys([{
-                  name: "profile.mobile",
-                  type: "phoneNumberInvalid"
-                }]);
-                ProfileEdit.getValidationContext().addInvalidKeys([{
-                  name: "profile.mobile",
-                  type: "phoneNumberInvalid"
-                }]);
-              }
-            });
+                return false;
+              })
+              .then(function (isValid) {
+                if (!isValid) {
+                  // Alle Formulare, die die Telefonnummer beinhalten benachrichtigen
+                  Registration.getStepTwoContext().addValidationErrors([
+                    {
+                      name: "profile.mobile",
+                      type: "phoneNumberInvalid",
+                    },
+                  ]);
+                  ProfileEdit.getValidationContext().addValidationErrors([
+                    {
+                      name: "profile.mobile",
+                      type: "phoneNumberInvalid",
+                    },
+                  ]);
+                }
+              });
           }
         }
       }
@@ -87,19 +92,19 @@ export const UserProfileSchema = new SimpleSchema({
     type: String,
     label: "Formatierte Handynummer",
     optional: true,
-    custom: function () {
-      var context = <CustomValidatorContext>this;
+    custom: function (this: SchemaContext) {
+      var context = <any>this;
 
       if (Meteor.isServer && !CollectionConf.IS_TEST && !(context.isSet && context.value)) {
         return "required";
       }
     },
-    autoValue: function (): string {
+    autoValue: function (this: SchemaContext): string | undefined {
       if (!Meteor.isServer) {
         return;
       }
 
-      var context = <CustomValidatorContext>this;
+      var context = <any>this;
       var mobileField = context.siblingField("mobile");
 
       if (mobileField.isSet) {
@@ -115,25 +120,25 @@ export const UserProfileSchema = new SimpleSchema({
       } else {
         this.unset();
       }
-    }
+    },
   },
   mobileNat: {
     type: String,
     label: "Formatierte Handynummer",
     optional: true,
-    custom: function () {
-      var context = <CustomValidatorContext>this;
+    custom: function (this: SchemaContext) {
+      var context = <any>this;
 
       if (Meteor.isServer && !CollectionConf.IS_TEST && !(context.isSet && context.value)) {
         return "required";
       }
     },
-    autoValue: function (): string {
+    autoValue: function (this: SchemaContext): string | undefined {
       if (!Meteor.isServer) {
         return;
       }
 
-      var context = <CustomValidatorContext>this;
+      var context = <any>this;
       var mobileField = context.siblingField("mobile");
 
       if (mobileField.isSet) {
@@ -149,41 +154,33 @@ export const UserProfileSchema = new SimpleSchema({
       } else {
         this.unset();
       }
-    }
+    },
   },
   notificationAsEmail: {
     type: Boolean,
     label: "Benachrichtigungen via E-Mail bekommen",
-    optional: true
+    optional: true,
   },
   pendingGroups: {
-    type: [String],
+    type: Array,
     label: "Ausstehende Gruppenbewerbungen",
-    optional: true
+    optional: true,
   },
   "pendingGroups.$": {
     type: String, // TODO: Zeitstempel integrieren, damit man sehen kann, wie alt eine Bewerbung ist.
     regEx: SimpleSchema.RegEx.Id,
-    custom: function () { // Sicherheitsüberprüfung, sodass keine ungültigen IDs referenziert werden.
-      if (Meteor.isServer && !CollectionConf.IS_TEST && this.isSet) {
-        var context = <CustomValidatorContext>this;
-        var groupExists = Group.groupExists(context.value);
-
-        if (!groupExists) {
-          return "groupIdNotValid";
-        }
-      }
-    }
+    // Referential safety (group must exist) lives in Accounts.validateNewUser
+    // (server/startup.ts): SimpleSchema custom validators are synchronous and
+    // Meteor 3's server Mongo API is async-only.
   },
 
   zip: {
     type: String,
     optional: true,
-    trim: true,
     label: "Postleitzahl",
     regEx: /^[0-9]{4,5}$/,
-    custom: function () {
-      var context = <CustomValidatorContext>this;
+    custom: function (this: SchemaContext) {
+      var context = <any>this;
 
       var shouldBeRequired: boolean = context.isInsert;
 
@@ -195,20 +192,20 @@ export const UserProfileSchema = new SimpleSchema({
 
         // updates
         else if (context.isSet) {
-          if (context.operator === "$set" && context.value === null || context.value === "") return "required";
+          if ((context.operator === "$set" && context.value === null) || context.value === "")
+            return "required";
           if (context.operator === "$unset") return "required";
           if (context.operator === "$rename") return "required";
         }
       }
-    }
+    },
   },
   placeName: {
     type: String,
     optional: true,
-    trim: true,
     label: "Wohnort",
-    custom: function () {
-      var context = <CustomValidatorContext>this;
+    custom: function (this: SchemaContext) {
+      var context = <any>this;
 
       var shouldBeRequired: boolean = context.isInsert;
 
@@ -220,126 +217,116 @@ export const UserProfileSchema = new SimpleSchema({
 
         // updates
         else if (context.isSet) {
-          if (context.operator === "$set" && context.value === null || context.value === "") return "required";
+          if ((context.operator === "$set" && context.value === null) || context.value === "")
+            return "required";
           if (context.operator === "$unset") return "required";
           if (context.operator === "$rename") return "required";
         }
       }
-    }
-  }
+    },
+  },
 });
-
-
 
 export const UserSchema = new SimpleSchema({
   username: {
     type: String,
     regEx: /^[a-z0-9A-Z_]{3,15}$/,
-    optional: true
+    optional: true,
   },
   emails: {
-    type: [Object],
+    type: Array,
     label: "E-Mail",
     // this must be optional if you also use other login services like facebook,
     // but if you use only accounts-password, then it can be required
-    optional: true
+    optional: true,
+  },
+  "emails.$": {
+    type: Object,
   },
   "emails.$.address": {
     type: String,
     label: "Adresse",
     regEx: SimpleSchema.RegEx.Email,
-    trim: true,
-    autoValue: function () {
+    autoValue: function (this: SchemaContext) {
       if (this.isSet) {
         return this.value.trim().toLowerCase(); // Alles kleinschreiben
       }
-    }
+    },
   },
   "emails.$.verified": {
     type: Boolean,
-    label: "E-Mail-Adresse ist verifiziert"
+    label: "E-Mail-Adresse ist verifiziert",
   },
   profile: {
     type: UserProfileSchema,
-    optional: true
+    optional: true,
   },
   services: {
     type: Object,
     optional: true,
-    blackbox: true
+    blackbox: true,
   },
   roles: {
-    type: [String],
+    type: Array,
     label: "Rollen",
-    optional: true
+    optional: true,
   },
   "roles.$": {
-    type: String
+    type: String,
   },
   groups: {
-    type: [String],
+    type: Array,
     label: "Gruppen",
     defaultValue: [],
-    index: 1
   },
   "groups.$": {
     type: String,
     regEx: SimpleSchema.RegEx.Id,
-    custom: function () { // Sicherheitsüberprüfung, sodass keine ungültigen IDs referenziert werden.
-      if (Meteor.isServer && !CollectionConf.IS_TEST && this.isSet) {
-        var context = <CustomValidatorContext>this;
-        var groupExists = Group.groupExists(context.value);
-
-        if (!groupExists) {
-          return "groupIdNotValid";
-        }
-      }
-    }
+    // Referential safety (group must exist) is enforced where groups are
+    // granted (methods.ts addToGroup loads the group first): SimpleSchema
+    // custom validators are synchronous and Meteor 3's server Mongo API is
+    // async-only.
   },
   // Force value to be current date (on server) upon insert
   // and prevent updates thereafter.
   createdAt: {
     type: Date,
-    autoValue: function (): any {
+    autoValue: function (this: SchemaContext): any {
       if (this.isInsert) {
-        return new Date;
+        return new Date();
       } else if (this.isUpsert) {
-        return { $setOnInsert: new Date };
+        return { $setOnInsert: new Date() };
       } else {
         this.unset();
         return;
       }
-    }
+    },
   },
   // Force value to be current date (on server) upon update
   // and don't allow it to be set upon insert.
   updatedAt: {
     type: Date,
-    autoValue: function () {
+    autoValue: function (this: SchemaContext) {
       if (this.isUpdate) {
         return new Date();
       }
     },
-    denyInsert: true,
-    optional: true
+    optional: true,
   },
   banned: {
     type: Boolean,
     label: "Gesperrt",
     optional: true,
-    defaultValue: false
+    defaultValue: false,
   },
   notice: {
     type: String,
     label: "Notiz",
-    optional: true
-  }
+    optional: true,
+  },
 });
 
-
 Meteor.users.attachSchema(UserSchema);
-
-
 
 /**
  * Wird verwendet, wenn eine E-Mail Adresse validiert werden soll.
@@ -350,12 +337,11 @@ export const JustEmail = new SimpleSchema({
     type: String,
     label: "E-Mail",
     optional: false,
-    trim: true,
     regEx: SimpleSchema.RegEx.Email,
-    autoValue: function () {
+    autoValue: function (this: SchemaContext) {
       if (this.isSet) {
         return this.value.toLowerCase(); // Alles kleinschreiben
       }
-    }
-  }
+    },
+  },
 });

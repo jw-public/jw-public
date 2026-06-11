@@ -1,5 +1,5 @@
 import { IUserSettingsReader } from "./IUserSettingsReader";
 
 export interface IUserSettingsReaderFactory {
-  createSettingsReaderFor(userId: string): IUserSettingsReader;
+  createSettingsReaderFor(userId: string): Promise<IUserSettingsReader>;
 }

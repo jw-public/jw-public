@@ -1,3 +1,3 @@
 export interface IAssignmentCanceler {
-  cancelAssignment(assignmentId: string, reason: string): void;
+  cancelAssignment(assignmentId: string, reason: string): Promise<void>;
 }

@@ -2,15 +2,17 @@ name: Docker
 
 on:
   push:
-    # Publish `master` as Docker `latest` image.
+    # Pushes to master build and test, but do NOT publish: production tracks
+    # icereed/jw-public:latest, so publishing is an explicit release act.
     branches:
       - master
 
     # Publish `v1.2.3` tags as releases.
     tags:
       - v*
-    pull_request:
-      - "*"
+
+  # Manual release of the current state (publishes :latest).
+  workflow_dispatch:
 
   # Run tests for any PRs.
   pull_request:
@@ -22,15 +24,21 @@ env:
 jobs:
   test:
     runs-on: ubuntu-latest
+    services:
+      mailpit:
+        image: axllent/mailpit
+        ports:
+          - 1025:1025
+          - 8025:8025
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v3
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: src/.meteor/local
           key: ${{ runner.os }}-node-${{ hashFiles('src/.meteor/versions') }}
@@ -38,50 +46,54 @@ jobs:
             ${{ runner.os }}-meteor-
       - uses: meteorengineer/setup-meteor@v1
         with:
-          meteor-release: "2.7.3" # TODO: automate with Renovate
+          meteor-release: "3.3.2"
       - run: cd src && meteor npm install
+      # zodern:types writes the package type stubs to .meteor/local/types,
+      # which tsc resolves via the tsconfig "paths" mapping.
+      - name: Generate Meteor package types
+        run: cd src && meteor lint
+      # the one accepted moderate finding (qs via meteor-node-stubs
+      # bundledDependencies) stays below the high threshold
+      - name: Audit production dependencies
+        run: cd src && meteor npm audit --omit=dev --audit-level=high
       - run: cd src && meteor npm run compile
+      - run: cd src && meteor npm run lint
+      - run: cd src && meteor npm run format:check
       - run: cd src && meteor npm test
-      - uses: cypress-io/github-action@v2
-        with:
-          project: ./src
-          working-directory: ./src
-          start: meteor
-          # wait for all services to respond
-          install-command: echo "skipped"
-          command: meteor npm run cypress:headless
-          wait-on: "http://localhost:3000"
-          wait-on-timeout: 600 # 10 minutes
-          record: true
-      - uses: actions/upload-artifact@v3
+      - name: Install Playwright
+        run: cd e2e && npm ci && npx playwright install --with-deps chromium
+      - name: Start app
+        run: cd src && (MAIL_URL=smtp://localhost:1025 meteor run --port 3000 &) && npx --yes wait-on -t 600000 http://localhost:3000
+      - name: Run Playwright suite
+        run: cd e2e && npx playwright test
+        env:
+          E2E_BASE_URL: http://localhost:3000
+          MAILPIT_URL: http://localhost:8025
+      - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: cypress-screenshots
-          path: src/cypress/screenshots
-      # Test run video was always captured, so this action uses "always()" condition
-      - uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: cypress-videos
-          path: src/cypress/videos
+          name: playwright-report
+          path: |
+            e2e/playwright-report
+            e2e/test-results
   # Run tests.
   # See also https://docs.docker.com/docker-hub/builds/automated-testing/
   docker:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Run hadolint with reviewdog
         uses: reviewdog/action-hadolint@v1
         with:
           filter_mode: file
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: src/.meteor/local
           key: ${{ runner.os }}-node-${{ hashFiles('src/.meteor/versions') }}
@@ -89,11 +101,15 @@ jobs:
             ${{ runner.os }}-meteor-
       - uses: meteorengineer/setup-meteor@v1
         with:
-          meteor-release: "2.7.3" # TODO: automate with Renovate
+          meteor-release: "3.3.2"
       - run: cd src && meteor npm install
+      # zodern:types writes the package type stubs to .meteor/local/types,
+      # which tsc resolves via the tsconfig "paths" mapping.
+      - name: Generate Meteor package types
+        run: cd src && meteor lint
       - run: cd src && meteor npm run compile
       - run: cd src && meteor build --allow-superuser ./build
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: build_package
@@ -111,14 +127,16 @@ jobs:
   # See also https://docs.docker.com/docker-hub/builds/
   push:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
+    # Releases only: a v* tag or a manual run. Merging to master must not
+    # silently replace :latest (the k8s manifests track it).
+    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: meteorengineer/setup-meteor@v1
         with:
-          meteor-release: "2.7.3" # TODO: automate with Renovate
-      - uses: actions/cache@v3
+          meteor-release: "3.3.2"
+      - uses: actions/cache@v4
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -133,13 +151,17 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: src/.meteor/local
           key: ${{ runner.os }}-node-${{ hashFiles('src/.meteor/versions') }}
           restore-keys: |
             ${{ runner.os }}-meteor-
       - run: cd src && meteor npm install
+      # zodern:types writes the package type stubs to .meteor/local/types,
+      # which tsc resolves via the tsconfig "paths" mapping.
+      - name: Generate Meteor package types
+        run: cd src && meteor lint
       - run: cd src && meteor npm run compile
       - run: cd src && meteor npm test
       - run: cd src && meteor build --allow-superuser ./build
@@ -156,7 +178,7 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
@@ -172,6 +194,6 @@ jobs:
           context: ./userdocs
           file: userdocs/Dockerfile
           platforms: linux/amd64,linux/arm64/v8
-          push: ${{ github.ref == 'refs/heads/master' }}
+          push: ${{ startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch' }}
           tags: |
             icereed/jw-public-docs:latest

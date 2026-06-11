@@ -1,4 +1,4 @@
 export const version = {
   commit: "local",
-  build: "devBuild"
+  build: "devBuild",
 };

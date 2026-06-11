@@ -1,61 +1,109 @@
 import { Meteor } from "meteor/meteor";
-import { Blueprints } from './../collections/lib/BlueprintCollection';
+import * as _ from "underscore";
 
-import Group from "../collections/lib/classes/Group";
-import { GroupDAO, Groups } from "../collections/lib/GroupCollection";
+import * as RolesHelper from "../lib/RolesHelper";
 
-import User from "../collections/lib/classes/User";
-import * as UserNotification from "../collections/lib/classes/UserNotification";
-
+import { Blueprints } from "./../collections/lib/BlueprintCollection";
+import { Groups } from "../collections/lib/GroupCollection";
 import { Notifications } from "../collections/lib/NotificationCollection";
+import { Assignments } from "../collections/lib/AssignmentsCollection";
 
-import { AssignmentDAO, Assignments } from "../collections/lib/AssignmentsCollection";
+// Native allow rules (replacing ongoworks:security, which never got a
+// Meteor-3-compatible release). Deny-by-default still applies: anything not
+// allowed here must go through a Meteor method. Meteor 3 awaits async
+// allow callbacks.
+//
+// Client writes arrive on the *Async method variants on Meteor 3 (the
+// client stubs call /collection/insertAsync etc.), which validate against
+// the insertAsync/updateAsync/removeAsync rule keys — a group that only
+// registers the legacy sync keys leaves the async paths deny-by-default.
+// Register every rule under both keys.
 
-import { Security } from "meteor/ongoworks:security";
+function isAdmin(userId: string): Promise<boolean> {
+  return RolesHelper.userIsAdminAsync(userId);
+}
 
-Security.defineMethod<GroupDAO>("ifIsGroupCoordinator", {
-  fetch: ["coordinators"],
-  transform: null,
-  deny: function (type, arg, userId, doc) {
-    let group = Group.createFromDAO(doc);
-    return !group.isCoordinatorById(userId);
+async function isGroupCoordinator(userId: string, groupId: string | undefined): Promise<boolean> {
+  if (!userId || !groupId) {
+    return false;
   }
-});
+  const group = await Groups.findOneAsync(
+    { _id: groupId, coordinators: { $in: [userId] } },
+    { fields: { _id: 1 } },
+  );
+  return !!group;
+}
 
-Security.defineMethod<Meteor.User>("isOwnUserEntry", {
-  fetch: [],
-  transform: null,
-  deny: function (type, arg, userId, doc) {
-    return doc._id !== userId;
+function allowBoth(rules: { insert?: Function; update?: Function; remove?: Function }): any {
+  const both: any = { ...rules };
+  if (rules.insert) {
+    both.insertAsync = rules.insert;
   }
-});
-
-Security.defineMethod<AssignmentDAO>("ifGroupOfAssignmentIsCoordinatedByUser", {
-  fetch: ["group"],
-  transform: null,
-  deny: function (type, arg, userId, doc) {
-    let group = Group.createFromId(doc.group);
-    let user = User.createFromId(userId);
-    return !(user.isCoordinatorInAnyGroup() && group.isCoordinatorById(userId));
+  if (rules.update) {
+    both.updateAsync = rules.update;
   }
-});
-
-Security.defineMethod<UserNotification.NotificationDAO>("ifIsOwnNotification", {
-  fetch: ["userId"],
-  transform: null,
-  deny: function (type, arg, userId, doc) {
-    return doc.userId !== userId;
+  if (rules.remove) {
+    both.removeAsync = rules.remove;
   }
-});
+  return both;
+}
 
+// --- Groups -------------------------------------------------------------
 
-Security.permit(["insert", "update", "remove"]).collections(Groups).ifHasRole("admin").allowInClientCode();
+Groups.allow(
+  allowBoth({
+    insert: (userId: string) => isAdmin(userId),
+    remove: (userId: string) => isAdmin(userId),
+    // Coordinators may edit their group but never the coordinator list.
+    update: async (userId: string, doc: any, fields: string[]) => {
+      if (await isAdmin(userId)) {
+        return true;
+      }
+      return (await isGroupCoordinator(userId, doc._id)) && !_.contains(fields, "coordinators");
+    },
+  }),
+);
 
-/* Gruppenkoordinatoren dürfen alles außer die Koordinatoren-Berechtigungen ändern */
-Security.permit(["update"]).collections(Groups).ifIsGroupCoordinator().exceptProps(["coordinators"]).allowInClientCode();
+// --- Assignments & Blueprints --------------------------------------------
 
-Security.permit(["insert", "update"]).collections(Assignments).ifGroupOfAssignmentIsCoordinatedByUser().allowInClientCode();
-Security.permit(["insert", "update"]).collections(Blueprints).ifGroupOfAssignmentIsCoordinatedByUser().allowInClientCode();
-Security.permit(["update"]).collections(Meteor.users).ifHasRole("admin").allowInClientCode();
-Security.permit(["update"]).collections(Meteor.users).isOwnUserEntry().onlyProps(["profile", "updatedAt"]).allowInClientCode();
-Security.permit(["update", "remove"]).collections(Notifications).ifIsOwnNotification().allowInClientCode();
+function allowAssignmentWrite(userId: string, doc: { group?: string }): Promise<boolean> {
+  return isGroupCoordinator(userId, doc.group);
+}
+
+Assignments.allow(
+  allowBoth({
+    insert: allowAssignmentWrite,
+    update: allowAssignmentWrite,
+  }),
+);
+
+Blueprints.allow(
+  allowBoth({
+    insert: allowAssignmentWrite,
+    update: allowAssignmentWrite,
+  }),
+);
+
+// --- Users ----------------------------------------------------------------
+
+Meteor.users.allow(
+  allowBoth({
+    update: async (userId: string, doc: any, fields: string[]) => {
+      if (await isAdmin(userId)) {
+        return true;
+      }
+      // Own profile only, and only the whitelisted top-level fields.
+      const allowedOwnFields = ["profile", "updatedAt"];
+      return doc._id === userId && _.difference(fields, allowedOwnFields).length === 0;
+    },
+  }),
+);
+
+// --- Notifications ----------------------------------------------------------
+
+Notifications.allow(
+  allowBoth({
+    update: (userId: string, doc: any) => !!userId && doc.userId === userId,
+    remove: (userId: string, doc: any) => !!userId && doc.userId === userId,
+  }),
+);

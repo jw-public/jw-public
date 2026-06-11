@@ -1,38 +1,29 @@
-import { Logger } from '../../../imports/logging/Logger';
-import { LoggerFactory } from '../../../imports/logging/LoggerFactory';
-import { Types } from "../../Types";
-import { UserTypes } from "../../user/UserTypes";
-import { MailingTypes } from "../MailingTypes";
+import { Logger } from "../../../imports/logging/Logger";
+import { LoggerFactory } from "../../../imports/logging/LoggerFactory";
 
 import { IEmailSender } from "../interfaces/IEmailSender";
 import { IUserMailer, IUserMailerOptions } from "../interfaces/IUserMailer";
 
 import { IUserFactory } from "../../user/interfaces/IUserFactory";
 
-import { inject, injectable } from "inversify";
+import { marked } from "marked";
+import removeMarkdown from "remove-markdown";
 
-import * as marked from 'marked';
-import * as removeMarkdown from 'remove-markdown';
-
-@injectable()
 export class UserMailer implements IUserMailer {
-  private logger: Logger;
+  private logger!: Logger;
 
-
-  constructor(@inject(MailingTypes.IEmailSender) private mailSender: IEmailSender,
-    @inject(UserTypes.IUserFactory) private userFactory: IUserFactory,
-    @inject(Types.LoggerFactory) loggerFactory: LoggerFactory,
+  constructor(
+    private mailSender: IEmailSender,
+    private userFactory: IUserFactory,
+    loggerFactory: LoggerFactory,
   ) {
-
     if (loggerFactory) {
       this.logger = loggerFactory.createLogger("UserMailer");
     }
-
   }
 
-
-  public send(options: IUserMailerOptions) {
-    let user = this.userFactory.createUser(options.recepientId);
+  public async send(options: IUserMailerOptions): Promise<void> {
+    let user = await this.userFactory.createUser(options.recepientId);
 
     if (!user.exists()) {
       return;
@@ -41,7 +32,6 @@ export class UserMailer implements IUserMailer {
     let userEmail = user.getEmailAddress();
 
     this.logger.info("Sending mail to " + userEmail);
-
 
     let senderEmail = "'PublicAssistant' <no-reply@jw-public.org>";
     let replyTo = senderEmail;
@@ -55,8 +45,7 @@ export class UserMailer implements IUserMailer {
       to: userEmail,
       subject: options.subject,
       text: removeMarkdown(options.markdownContent),
-      html: marked(options.markdownContent)
+      html: marked.parse(options.markdownContent) as string,
     });
   }
-
 }

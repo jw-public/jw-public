@@ -1,15 +1,11 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 import { AssignmentPanelProps } from "../AssignmentPanel";
 import { SmallProgressbar } from "../../../../react/components/SmallProgressbar/SmallProgressbar";
 import DateDisplay from "../../../../react/components/DateDisplay";
 import Assignment from "../../../../../collections/lib/classes/Assignment";
 import Color from "../../../../lib/Color";
 
-
-
 export default class AssignmentPanelBody extends React.Component<AssignmentPanelProps, {}> {
-
   public static assignmentHasProgressBar(assignment: Assignment): boolean {
     let usersWanted: number = assignment.getUserGoal(true);
     return !assignment.isClosed(true) && !assignment.isCanceled(true) && usersWanted > 0;
@@ -17,14 +13,13 @@ export default class AssignmentPanelBody extends React.Component<AssignmentPanel
 
   public render(): JSX.Element {
     return (
-      <div className="panel-body text-center assignment-item">
+      <div className="card-body text-center assignment-item">
         <AssignmentPanelProgressBar assignment={this.props.assignment} />
         <DateDisplay start={this.props.assignment.start} end={this.props.assignment.end} />
       </div>
     );
   }
 }
-
 
 class AssignmentPanelProgressBar extends React.Component<AssignmentPanelProps, {}> {
   public get assignment(): Assignment {
@@ -35,8 +30,8 @@ class AssignmentPanelProgressBar extends React.Component<AssignmentPanelProps, {
     return AssignmentPanelBody.assignmentHasProgressBar(this.assignment);
   }
 
-  public progressBarWrapperClasses(): string {
-    let wrapperClasses: string = null;
+  public progressBarWrapperClasses(): string | null {
+    let wrapperClasses: string | null = null;
     if (this.totalUsers <= 0) {
       wrapperClasses = "bar-glow-effect";
     }
@@ -69,39 +64,30 @@ class AssignmentPanelProgressBar extends React.Component<AssignmentPanelProps, {
   }
 
   public renderProgressBar(): React.ReactElement<any> {
-    let assignment = this.assignment;
     let usersWanted: number = this.assignment.getUserGoal(true);
-
 
     let totalUsers = this.totalUsers;
 
-
-    return (<SmallProgressbar
-      value={totalUsers}
-      minValue={0}
-      maxValue={usersWanted}
-      backgroundColor={Color.GrayLighter}
-      barColor={this.barColor()}
-      height="10px"
-      wrapperClasses={this.progressBarWrapperClasses()}
-      striped={true}
-      active={true} />);
-
+    return (
+      <SmallProgressbar
+        value={totalUsers}
+        minValue={0}
+        maxValue={usersWanted}
+        backgroundColor={Color.GrayLighter}
+        barColor={this.barColor()}
+        height="10px"
+        wrapperClasses={this.progressBarWrapperClasses() ?? undefined}
+        striped={true}
+        active={true}
+      />
+    );
   }
 
-  public render(): JSX.Element {
-
+  public render(): JSX.Element | null {
     if (!this.hasProgressBar()) {
       return null;
     }
 
-    return (
-      <div className="row">
-        {this.renderProgressBar()}
-      </div>
-    );
-
+    return <div className="row">{this.renderProgressBar()}</div>;
   }
 }
-
-

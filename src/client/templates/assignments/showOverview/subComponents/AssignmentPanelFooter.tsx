@@ -1,30 +1,24 @@
-import * as _ from "underscore";
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import MeteorComponent from "../../../../react/lib/MeteorComponent";
+import { useTracker } from "meteor/react-meteor-data";
 import Icon from "../../../../react/lib/Icon";
-import * as reactMixin from "react-mixin";
 
-import { IAssignmentStateReader, AssignmentStateForUser } from "../../../../../lib/classes/AssignmentStateReader";
-import { DisplayState, IAssignmentDisplayStateReader } from "../../../../../lib/classes/AssignmentDisplayStateReader";
-import { UserEntry, AssignmentDAO } from "../../../../../collections/lib/AssignmentsCollection";
+import { AssignmentStateForUser } from "../../../../../lib/classes/AssignmentStateReader";
+import {
+  DisplayState,
+  IAssignmentDisplayStateReader,
+} from "../../../../../lib/classes/AssignmentDisplayStateReader";
+import { AssignmentDAO } from "../../../../../collections/lib/AssignmentsCollection";
 
 import AssignmentInteraction from "./lib/AssignmentInteraction";
 
-interface ReactivePanelFooterData {
-  isUpdating: boolean;
-}
-
 interface AssignmentPanelFooterProps {
-
   assignment: AssignmentDAO;
   state: AssignmentStateForUser;
   displayStateReader: IAssignmentDisplayStateReader;
 }
 
-
 namespace PanelFooterConsts {
-  let textMap: Map<DisplayState, string> = null;
+  let textMap: Map<DisplayState, string> | null = null;
 
   export function getColorClassName(): Map<DisplayState, string> {
     if (textMap === null) {
@@ -40,10 +34,10 @@ namespace PanelFooterConsts {
   }
 
   export function getText(displayState: DisplayState): string {
-    return getColorClassName().get(displayState);
+    return getColorClassName().get(displayState)!;
   }
 
-  let iconMap: Map<DisplayState, string> = null;
+  let iconMap: Map<DisplayState, string> | null = null;
 
   export function getIcons(): Map<DisplayState, string> {
     if (iconMap === null) {
@@ -59,112 +53,75 @@ namespace PanelFooterConsts {
   }
 
   export function getIconName(displayState: DisplayState): string {
-    return getIcons().get(displayState);
+    return getIcons().get(displayState)!;
   }
-
-
 }
 
-@reactMixin.decorate(ReactMeteorData)
-export default class AssignmentPanelFooter extends MeteorComponent<AssignmentPanelFooterProps, any, ReactivePanelFooterData> {
+export default function AssignmentPanelFooter(props: AssignmentPanelFooterProps): JSX.Element {
+  const assignmentInteraction = new AssignmentInteraction(props.assignment);
+  const isUpdating = useTracker(() => assignmentInteraction.requestPending, [props.assignment._id]);
 
-  private assignmentInteraction: AssignmentInteraction;
+  const displayState: DisplayState = props.displayStateReader.getDisplayState();
 
-
-
-  public getMeteorData(): ReactivePanelFooterData {
-
-    this.assignmentInteraction = new AssignmentInteraction(this.props.assignment);
-
-    return {
-      isUpdating: this.assignmentInteraction.requestPending
-    };
-  }
-
-  private isUpdating(): boolean {
-    return this.data.isUpdating;
-  }
-
-  private loadingAnimation(): JSX.Element {
-    return (<div>
-      <span className="pull-right"> <Icon name="spinner" pulse /></span>
-      <div className="clearfix" />
-    </div>);
-  }
-
-  private get displayState(): DisplayState {
-    return this.props.displayStateReader.getDisplayState();
-  }
-
-  private get icon(): JSX.Element {
-
-
-    return <Icon name={PanelFooterConsts.getIconName(this.displayState)} />;
-  }
-
-  private get text(): string {
-    return PanelFooterConsts.getText(this.displayState);
-  }
-
-  private get onClickAction(): React.EventHandler<React.MouseEvent<any>> {
-    switch (this.displayState) {
+  const onClickAction = (): void => {
+    switch (displayState) {
       case DisplayState.UserApplicant:
-        return () => { this.assignmentInteraction.cancelApplication(); };
+        assignmentInteraction.cancelApplication();
+        break;
       case DisplayState.Default:
-        return () => { this.assignmentInteraction.applyWithConfirmation(); };
+        assignmentInteraction.applyWithConfirmation();
+        break;
       case DisplayState.Closed:
-        return undefined;
+        break;
       case DisplayState.UserAccepted:
-        return () => { this.assignmentInteraction.goToAssignment(); };
+        assignmentInteraction.goToAssignment();
+        break;
       case DisplayState.Canceled:
-        if (this.props.state.isParticipant) {
-          return () => {
-            this.assignmentInteraction.goToAssignment();
-          };
-        } else {
-          return undefined;
+        if (props.state.isParticipant) {
+          assignmentInteraction.goToAssignment();
         }
+        break;
     }
+  };
 
+  const hasAction =
+    displayState === DisplayState.UserApplicant ||
+    displayState === DisplayState.Default ||
+    displayState === DisplayState.UserAccepted ||
+    (displayState === DisplayState.Canceled && props.state.isParticipant);
 
+  const styles: React.CSSProperties = {};
+  let content: JSX.Element;
+
+  if (isUpdating) {
+    styles["cursor"] = "progress";
+    content = (
+      <div>
+        <span className="float-end">
+          {" "}
+          <Icon name="spinner" pulse />
+        </span>
+        <div className="clearfix" />
+      </div>
+    );
+  } else {
+    if (hasAction) {
+      styles["cursor"] = "pointer";
+    }
+    content = (
+      <div>
+        <span className="float-start">{PanelFooterConsts.getText(displayState)}</span>
+        <span className="float-end">
+          <Icon name={PanelFooterConsts.getIconName(displayState)} />
+        </span>
+        <div className="clearfix"></div>
+      </div>
+    );
   }
 
-
-  private renderContent(): JSX.Element {
-    return (<div>
-      <span className="pull-left">
-        {this.text}
-      </span>
-      <span className="pull-right">{this.icon}</span>
-      <div className="clearfix"></div>
-    </div>);
-  }
-
-  public render(): JSX.Element {
-
-    let content: JSX.Element = <div />;
-
-    let styles: React.CSSProperties = {};
-
-
-    if (this.isUpdating()) {
-      content = this.loadingAnimation();
-      styles["cursor"] = "progress";
-    } else {
-      content = this.renderContent();
-      if (this.hasAction()) {
-        styles["cursor"] = "pointer";
-      }
-    }
-
-
-    return (<div className="panel-footer" style={styles} onClick={this.onClickAction}>
+  return (
+    <div className="card-footer" style={styles} onClick={hasAction ? onClickAction : undefined}>
       {content}
-    </div>);
-  }
-
-  private hasAction(): boolean {
-    return !_.isUndefined(this.onClickAction);
-  }
-
+    </div>
+  );
 }

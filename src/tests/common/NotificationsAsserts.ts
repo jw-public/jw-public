@@ -2,18 +2,18 @@ import { assert } from "chai";
 import { NotificationDAO } from "../../collections/lib/classes/UserNotification";
 import { SimpleCollection } from "../../imports/interfaces/SimpleCollection";
 
-
-
-
 export class NotificationsAsserts {
-  constructor(private collection: SimpleCollection<NotificationDAO>, private testUser: string) {
-
-  }
+  constructor(
+    private collection: SimpleCollection<NotificationDAO>,
+    private testUser: string,
+  ) {}
 
   public assignmentNotificationCountIs(expected: number): void {
-    let notifcationCount = this.collection.find({
-      type: "Assignment"
-    }).count();
+    let notifcationCount = this.collection
+      .find({
+        type: "Assignment",
+      })
+      .count();
     let assertMessage = `Total sum of notifcations is ${notifcationCount}, but expected was ${expected}.`;
 
     assert.strictEqual(notifcationCount, expected, assertMessage);
@@ -24,10 +24,9 @@ export class NotificationsAsserts {
   }
 
   public thereIsOneNotificationFor(userId: string): NotificationAsserts {
-
     let query = {
       type: "Assignment",
-      userId: userId
+      userId: userId,
     };
 
     let notificationCursor = this.collection.find(query);
@@ -36,14 +35,19 @@ export class NotificationsAsserts {
     let assertMessage = `Total sum of notifcations is ${notifcationCountForUser}, but expected was ${expected}.`;
 
     assert.strictEqual(notifcationCountForUser, expected, assertMessage);
-    return new NotificationAsserts(this.collection.findOne(query));
+    return new NotificationAsserts(this.collection.findOne(query)!);
   }
 
-  public notificationCountForAssignmentIs(options: { assignmentId: string, expectedCount: number }): any {
-    let notifcationCountForAssignment = this.collection.find({
-      type: "Assignment",
-      "assignmentOptions.id": options.assignmentId
-    }).count();
+  public notificationCountForAssignmentIs(options: {
+    assignmentId: string;
+    expectedCount: number;
+  }): any {
+    let notifcationCountForAssignment = this.collection
+      .find({
+        type: "Assignment",
+        "assignmentOptions.id": options.assignmentId,
+      })
+      .count();
 
     let expected = options.expectedCount;
 
@@ -51,13 +55,10 @@ export class NotificationsAsserts {
 
     assert.strictEqual(notifcationCountForAssignment, expected, assertMessage);
   }
-
 }
 
 class NotificationAsserts {
-
-  constructor(private notification: NotificationDAO) {
-  }
+  constructor(private notification: NotificationDAO) {}
 
   hasAssignmentEventType(eventType: string) {
     this.optionFieldEqualsValue("type", eventType);
@@ -68,7 +69,6 @@ class NotificationAsserts {
   }
 
   optionFieldEqualsValue(field: string, value: any) {
-    assert.equal(this.notification.assignmentOptions[field], value);
+    assert.equal((this.notification.assignmentOptions as any)?.[field], value);
   }
-
 }

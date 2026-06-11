@@ -1,42 +1,34 @@
 import { IAssignmentStateReader } from "./AssignmentStateReader";
 
-
-
 export enum DisplayState {
-  Canceled, UserAccepted, Closed, UserApplicant, Default
+  Canceled,
+  UserAccepted,
+  Closed,
+  UserApplicant,
+  Default,
 }
 
-
 export interface IAssignmentDisplayStateReader {
-
   getDisplayState(): DisplayState;
-
 }
 
 class AssignmentDisplayStateReaderFactorySecondStep {
+  constructor(private stateReader: IAssignmentStateReader) {}
 
-
-  constructor(private stateReader: IAssignmentStateReader) {
-
-  }
-
-  withUserId(userId: string): IAssignmentDisplayStateReader {
+  withUserId(userId: string | null): IAssignmentDisplayStateReader {
     return new AssignmentDisplayStateReader(this.stateReader, userId);
   }
-
 }
 
-
 export class AssignmentDisplayStateReader implements IAssignmentDisplayStateReader {
-
-
   public static fromAssignmentStateReader(assignmentStateReader: IAssignmentStateReader) {
     return new AssignmentDisplayStateReaderFactorySecondStep(assignmentStateReader);
   }
 
-  constructor(private assignmentStateReader: IAssignmentStateReader, private userId: string) {
-
-  }
+  constructor(
+    private assignmentStateReader: IAssignmentStateReader,
+    private userId: string | null,
+  ) {}
 
   private get assignmentState() {
     let stateReader = this.assignmentStateReader;
@@ -64,5 +56,4 @@ export class AssignmentDisplayStateReader implements IAssignmentDisplayStateRead
 
     return DisplayState.Default;
   }
-
 }

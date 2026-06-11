@@ -1,6 +1,6 @@
 import { Meteor } from "meteor/meteor";
 import { Mongo } from "meteor/mongo";
-import { Locale } from '../../imports/i18n/classes/I18nProvider';
+import { Locale } from "../../imports/i18n/classes/I18nProvider";
 
 export interface UserProfile {
   first_name?: string;
@@ -19,12 +19,10 @@ export interface UserProfile {
   notificationAsEmail?: boolean;
 }
 
-
 /**
  * User Data Access Object
  */
 export interface UserDAO extends Meteor.User {
-  _id?: string;
   profile?: UserProfile;
   roles?: string[];
   groups?: string[];

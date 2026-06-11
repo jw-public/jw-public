@@ -8,8 +8,7 @@ import { assert } from "chai";
 import { IAssignmentReenabler } from "../../server/assignments/interfaces/IAssignmentReenabler";
 
 describe("AssignmentReenabler", function () {
-
-  it("should not be null or undefined", function () {
+  it("should not be null or undefined", async function () {
     // Arrange
     let testCase = new AssignmentReenablerTestCase();
 
@@ -20,72 +19,82 @@ describe("AssignmentReenabler", function () {
     assert.isNotNull(testCase.reenabler);
   });
 
-
-  it("should set state to Closed by default", function () {
+  it("should set state to Closed by default", async function () {
     // Arrange
     let testCase = new AssignmentReenablerTestCase();
     let toBeReenabledId = testCase.collection.insert({
       name: "To be reenabled",
-      state: "Canceled"
+      state: "Canceled",
     });
 
     // Act
-    testCase.reenabler.reenableAssignment(toBeReenabledId, "I don't know");
+    await testCase.reenabler.reenableAssignment(toBeReenabledId, "I don't know");
 
     // Assert
-    let actualAssignment = testCase.collection.findOne();
+    let actualAssignment = testCase.collection.findOne()!;
     assert.equal(actualAssignment.state, "Closed", "Did not reenable the assignment.");
   });
 
-  it("should restore valid state before cancelment", function () {
+  it("should restore valid state before cancelment", async function () {
     // Arrange
     let testCase = new AssignmentReenablerTestCase();
     let toBeReenabledId = testCase.collection.insert({
       name: "To be reenabled",
       state: "Canceled",
-      stateBeforeLastClose: "Closed"
+      stateBeforeLastClose: "Closed",
     });
 
     // Act
-    testCase.reenabler.reenableAssignment(toBeReenabledId, "I don't know");
+    await testCase.reenabler.reenableAssignment(toBeReenabledId, "I don't know");
 
     // Assert
-    let actualAssignment = testCase.collection.findOne();
-    assert.equal(actualAssignment.state, "Closed", "Did not reenable the assignment with desired state.");
+    let actualAssignment = testCase.collection.findOne()!;
+    assert.equal(
+      actualAssignment.state,
+      "Closed",
+      "Did not reenable the assignment with desired state.",
+    );
   });
 
-  it("should not restore invalid state before cancelment", function () {
+  it("should not restore invalid state before cancelment", async function () {
     // Arrange
     let testCase = new AssignmentReenablerTestCase();
     let toBeReenabledId = testCase.collection.insert({
       name: "To be reenabled",
       state: "Canceled",
-      stateBeforeLastClose: "SomeInvalidStateBla"
+      stateBeforeLastClose: "SomeInvalidStateBla",
     });
 
     // Act
-    testCase.reenabler.reenableAssignment(toBeReenabledId, "I don't know");
+    await testCase.reenabler.reenableAssignment(toBeReenabledId, "I don't know");
 
     // Assert
-    let actualAssignment = testCase.collection.findOne();
-    assert.equal(actualAssignment.state, "Closed", "Did not reenable the assignment with desired state.");
+    let actualAssignment = testCase.collection.findOne()!;
+    assert.equal(
+      actualAssignment.state,
+      "Closed",
+      "Did not reenable the assignment with desired state.",
+    );
   });
 
-  it("should notify participants", function () {
+  it("should notify participants", async function () {
     // Arrange
     let testCase = new AssignmentReenablerTestCase();
     let toBeReenabledId = testCase.collection.insert({
       name: "To be reenabled",
       state: "Canceled",
-      participants: [{
-        user: "pleaseNotifyMe"
-      }, {
-        user: "meToo"
-      }]
+      participants: [
+        {
+          user: "pleaseNotifyMe",
+        },
+        {
+          user: "meToo",
+        },
+      ],
     });
 
     // Act
-    testCase.reenabler.reenableAssignment(toBeReenabledId, "I don't know");
+    await testCase.reenabler.reenableAssignment(toBeReenabledId, "I don't know");
 
     // Assert
     testCase.expectAmountOfNotificationsIs(2);
@@ -94,42 +103,42 @@ describe("AssignmentReenabler", function () {
       userId: "pleaseNotifyMe",
       eventType: AssignmentEventType.Reenable,
       reenablingReason: "I don't know",
-      assignmentId: toBeReenabledId
+      assignmentId: toBeReenabledId,
     });
     testCase.expectNotificationWith({
       userId: "meToo",
       eventType: AssignmentEventType.Reenable,
       reenablingReason: "I don't know",
-      assignmentId: toBeReenabledId
+      assignmentId: toBeReenabledId,
     });
   });
 
-  it("should not notify applicants", function () {
+  it("should not notify applicants", async function () {
     // Arrange
     let testCase = new AssignmentReenablerTestCase();
     let toBeReenabledId = testCase.collection.insert({
       name: "To be reenabled",
       state: "Canceled",
-      applicants: [{
-        user: "pleaseDontNotifyMe"
-      }, {
-        user: "meToo"
-      }]
+      applicants: [
+        {
+          user: "pleaseDontNotifyMe",
+        },
+        {
+          user: "meToo",
+        },
+      ],
     });
 
     // Act
-    testCase.reenabler.reenableAssignment(toBeReenabledId, "I don't know");
+    await testCase.reenabler.reenableAssignment(toBeReenabledId, "I don't know");
 
     // Assert
     testCase.expectAmountOfNotificationsIs(0);
-
   });
-
 });
 
-
 class AssignmentReenablerTestCase extends AssignmentTestCaseWithNotifications<IAssignmentReenabler> {
-  private _reenabler: IAssignmentReenabler = null;
+  private _reenabler: IAssignmentReenabler | null = null;
 
   constructor() {
     super(Types.IAssignmentReenabler);
@@ -137,7 +146,6 @@ class AssignmentReenablerTestCase extends AssignmentTestCaseWithNotifications<IA
   }
 
   get reenabler(): IAssignmentReenabler {
-    return this._reenabler;
+    return this._reenabler!;
   }
-
 }

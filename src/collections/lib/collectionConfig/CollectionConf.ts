@@ -1,9 +1,7 @@
-
-
 interface ICollectionConfig {
-    IS_TEST: boolean;
+  IS_TEST: boolean;
 }
 
-export const CollectionConf = {
-    IS_TEST: false
+export const CollectionConf: ICollectionConfig = {
+  IS_TEST: false,
 };

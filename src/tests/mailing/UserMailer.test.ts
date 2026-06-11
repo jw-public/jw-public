@@ -5,40 +5,37 @@ import { IUserMailer } from "../../server/mailing/interfaces/IUserMailer";
 
 import { MailTestCase } from "./common/MailTestCase";
 
-import * as marked from "marked";
+import { marked } from "marked";
 
 describe("UserMailer", function () {
-
-  it("should not be null or undefined", function () {
+  it("should not be null or undefined", async function () {
     // Arrange
     let testCase = new UserMailerTestCase();
 
     // Act
-
 
     // Assert
     assert.isDefined(testCase.sender);
     assert.isNotNull(testCase.sender);
   });
 
-
-  it("should not send Email when user not existing", function () {
+  it("should not send Email when user not existing", async function () {
     // Arrange
     let testCase = new UserMailerTestCase();
 
     // Act
-    testCase.sender.send({
+    await testCase.sender.send({
       recepientId: "someUserId",
       subject: "My Test",
       markdownContent: "Test Text",
-      replyToAddress: "test@testserver.de"
+      replyToAddress: "test@testserver.de",
     });
 
     // Assert
     testCase.emailAssert.noEmailWasSent();
   });
 
-  it("should send correct email to given user, default sender address", function () {
+  it("should send correct email to given user, default sender address", async function () {
     // Arrange
     let testCase = new UserMailerTestCase();
 
@@ -46,16 +43,16 @@ describe("UserMailer", function () {
       emails: [
         {
           address: "someUser@email.com",
-          verified: true
-        }
-      ]
+          verified: true,
+        },
+      ],
     });
 
     // Act
-    testCase.sender.send({
+    await testCase.sender.send({
       recepientId: someUserId,
       subject: "My Test",
-      markdownContent: "Test __Text__"
+      markdownContent: "Test __Text__",
     });
 
     // Assert
@@ -65,11 +62,11 @@ describe("UserMailer", function () {
       to: "someUser@email.com",
       subject: "My Test",
       text: "Test Text",
-      html: marked("Test __Text__")
+      html: marked.parse("Test __Text__") as string,
     });
   });
 
-  it("should send correct email to given user", function () {
+  it("should send correct email to given user", async function () {
     // Arrange
     let testCase = new UserMailerTestCase();
 
@@ -77,17 +74,17 @@ describe("UserMailer", function () {
       emails: [
         {
           address: "someUser@email.com",
-          verified: true
-        }
-      ]
+          verified: true,
+        },
+      ],
     });
 
     // Act
-    testCase.sender.send({
+    await testCase.sender.send({
       recepientId: someUserId,
       subject: "My Test",
       markdownContent: "Test __Text__",
-      replyToAddress: "absender1@test.de"
+      replyToAddress: "absender1@test.de",
     });
 
     // Assert
@@ -97,15 +94,12 @@ describe("UserMailer", function () {
       to: "someUser@email.com",
       subject: "My Test",
       text: "Test Text",
-      html: marked("Test __Text__")
+      html: marked.parse("Test __Text__") as string,
     });
-
   });
 });
 
-
 class UserMailerTestCase extends MailTestCase<IUserMailer> {
-
   constructor() {
     super(MailingTypes.IUserMailer);
   }

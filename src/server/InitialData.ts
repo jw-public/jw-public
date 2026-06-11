@@ -1,8 +1,8 @@
 import { Accounts } from "meteor/accounts-base";
 import { Roles } from "meteor/alanning:roles";
 import { Assignments } from "../collections/lib/AssignmentsCollection";
-import Group from "../collections/lib/classes/Group";
 import { GroupDAO, Groups } from "../collections/lib/GroupCollection";
+import { users } from "../collections/lib/UserCollection";
 
 const adminUser = {
   vorname: "Admin",
@@ -10,47 +10,43 @@ const adminUser = {
   gender: "Male",
   email: "admin@trolley.com",
   roles: ["admin"],
-  password: "admin3210"
-}
+  password: "admin3210",
+};
 
-export function initData() {
-  let adminUserId = initUser();
-  let groupId = initGroup(adminUserId);
+export async function initData(): Promise<void> {
+  let adminUserId = await initUser();
+  let groupId = await initGroup(adminUserId);
 
-  // Group object
-  let group: Group = Group.createFromId(groupId);
-
-  // Add user to group as member
-  group.addUserAsGroupMemberById(adminUserId);
+  // Add user to group as member (raw update — the domain classes are
+  // client-oriented and synchronous).
+  await users.updateAsync(adminUserId, { $addToSet: { groups: groupId } });
   console.log("Adding admin to group");
 
-
-  Assignments.insert({
+  await Assignments.insertAsync({
     contacts: [adminUserId],
     creator: adminUserId,
     group: groupId,
     name: "Test-Termin",
+    participants: [],
+    applicants: [],
     start: new Date(),
     end: new Date(),
-  })
+  });
 }
 
-function initGroup(adminUserId: string): string {
+async function initGroup(adminUserId: string): Promise<string> {
   let group: GroupDAO = {
     name: "Standardgruppe",
-    coordinators: [
-      adminUserId
-    ],
+    coordinators: [adminUserId],
     additional: "Standardgruppe",
-    creator: adminUserId
-  }
+    creator: adminUserId,
+  };
   console.log("Adding new group: ", group.name);
-  return Groups.insert(group)
+  return await Groups.insertAsync(group);
 }
 
-function initUser() {
-
-  let id = Accounts.createUser({
+async function initUser(): Promise<string> {
+  let id = await Accounts.createUserAsync({
     username: "root",
     email: adminUser.email,
     password: adminUser.password,
@@ -60,11 +56,14 @@ function initUser() {
       gender: adminUser.gender,
       mobile: "08122 894327",
       zip: "85435",
-      placeName: "Erding"
-    }
+      placeName: "Erding",
+    },
   });
   if (adminUser.roles.length > 0) {
-    Roles.addUsersToRoles([id], adminUser.roles);
+    for (const r of adminUser.roles) {
+      await Roles.createRoleAsync(r, { unlessExists: true });
+    }
+    await Roles.addUsersToRolesAsync([id], adminUser.roles);
   }
   console.log("Added new user: ", adminUser.email);
   return id;

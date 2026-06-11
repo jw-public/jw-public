@@ -1,20 +1,16 @@
 require("../../Types");
-import { injectable } from 'inversify';
-import { AssignmentDAO } from '../../../collections/lib/AssignmentsCollection';
-import { SimpleCollection } from '../../../imports/interfaces/SimpleCollection';
+import { AssignmentDAO } from "../../../collections/lib/AssignmentsCollection";
+import { SimpleCollection } from "../../../imports/interfaces/SimpleCollection";
 
-
-
-@injectable()
 export class AssignmentAction {
+  constructor(protected collection: SimpleCollection<AssignmentDAO>) {}
 
-
-    constructor(protected collection: SimpleCollection<AssignmentDAO>) {
-
+  protected async getAssignment(assignmentId: string): Promise<AssignmentDAO> {
+    assignmentId = assignmentId.toString();
+    const assignment = await this.collection.findOneAsync({ _id: assignmentId });
+    if (!assignment) {
+      throw new Error(`Assignment ${assignmentId} not found`);
     }
-
-    protected getAssignment(assignmentId: string): AssignmentDAO {
-        assignmentId = assignmentId.toString();
-        return this.collection.findOne({ _id: assignmentId });
-    }
+    return assignment;
+  }
 }

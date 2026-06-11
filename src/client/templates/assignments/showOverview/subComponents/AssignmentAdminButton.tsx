@@ -1,5 +1,4 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 import Icon from "../../../../react/lib/Icon";
 import { IAssignmentStateReader } from "../../../../../lib/classes/AssignmentStateReader";
 import { Routes } from "../../../../../lib/client/routes";
@@ -18,11 +17,7 @@ interface AssignmentAdminDropdownEntryProps {
   action: React.EventHandler<any>;
 }
 
-
-
 class AssignmentAdminDropdownEntry extends React.Component<AssignmentAdminDropdownEntryProps, any> {
-
-
   render(): JSX.Element {
     let executeAction: React.EventHandler<React.MouseEvent<any>>;
 
@@ -36,13 +31,15 @@ class AssignmentAdminDropdownEntry extends React.Component<AssignmentAdminDropdo
         <a href="#" onClick={executeAction}>
           <Icon name={this.props.iconName} fixedWidth /> {this.props.text}
         </a>
-      </li>);
+      </li>
+    );
   }
-
 }
 
-export default class AssignmentAdminButton extends React.Component<AssignmentAdminButtonProps, any> {
-
+export default class AssignmentAdminButton extends React.Component<
+  AssignmentAdminButtonProps,
+  any
+> {
   private goToAssignmentAction(): React.EventHandler<any> {
     return () => {
       Routes.go(Routes.Def.AssignmentSingleView, { assignmentId: this.props.assignmentId });
@@ -53,8 +50,7 @@ export default class AssignmentAdminButton extends React.Component<AssignmentAdm
     return () => {
       AssignmentManagerModal.dialog({
         assignmentId: this.props.assignmentId,
-        onSuccess: function () {
-        }
+        onSuccess: function () {},
       });
     };
   }
@@ -71,14 +67,18 @@ export default class AssignmentAdminButton extends React.Component<AssignmentAdm
     };
   }
 
-
-
-
   private renderMenuEntries(): JSX.Element[] {
     let menuEntries = this.getMenuEntryProps();
 
     return menuEntries.map((entry) => {
-      return <AssignmentAdminDropdownEntry key={entry.text} iconName={entry.iconName} text={entry.text} action={entry.action} />;
+      return (
+        <AssignmentAdminDropdownEntry
+          key={entry.text}
+          iconName={entry.iconName}
+          text={entry.text}
+          action={entry.action}
+        />
+      );
     });
   }
 
@@ -88,14 +88,15 @@ export default class AssignmentAdminButton extends React.Component<AssignmentAdm
         text: "Editieren",
         action: this.goToAssignmentAction(),
         iconName: "pencil",
-      }, {
+      },
+      {
         text: "Abschließen",
         action: this.finalizeAssignment(),
         iconName: "users",
-      }
+      },
     ];
 
-    let cancelationManagementEntry: AssignmentAdminDropdownEntryProps = null;
+    let cancelationManagementEntry: AssignmentAdminDropdownEntryProps | null = null;
 
     if (!this.props.stateReader.isCanceled()) {
       cancelationManagementEntry = {
@@ -117,14 +118,20 @@ export default class AssignmentAdminButton extends React.Component<AssignmentAdm
   }
 
   render(): JSX.Element {
-    let buttonClassName: string = `btn btn-xs btn-${this.props.bootstrapColorClass} dropdown-toggle`;
+    let buttonClassName: string = `btn btn-sm btn-${this.props.bootstrapColorClass} dropdown-toggle`;
 
     return (
       <div className="zero-clipboard dropdown">
         <div className="btn-group btn-clipboard">
-          <button type="button" className={buttonClassName} id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <button
+            type="button"
+            className={buttonClassName}
+            id="dropdownMenu2"
+            data-bs-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
             <Icon name="cog" />
-            <span className="caret"></span>
           </button>
           <ul className="dropdown-menu" aria-labelledby="dropdownMenu2">
             {this.renderMenuEntries()}

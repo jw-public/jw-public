@@ -1,0 +1,10 @@
+node_modules
+.meteor
+typings
+public
+build-utils
+client/lib/bootstrap5.import.less
+client/lib/fontawesome-animated.css
+**/*.less
+**/*.css
+**/*.html

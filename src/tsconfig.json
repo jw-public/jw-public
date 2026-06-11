@@ -1,39 +1,22 @@
 {
-    "version": "2.0",
-    "compilerOptions": {
-        "target": "es2017",
-        "module": "commonjs",
-        "isolatedModules": false,
-        "jsx": "react",
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
-        "declaration": false,
-        "noImplicitAny": false,
-        "removeComments": false,
-        "noLib": false,
-        "preserveConstEnums": true,
-        "suppressImplicitAnyIndexErrors": true,
-        "sourceMap": true,
-        "typeRoots": [
-            "node_modules/@types/"
-        ],
-        "baseUrl": "."
+  "compilerOptions": {
+    "target": "es2017",
+    "module": "commonjs",
+    "isolatedModules": false,
+    "jsx": "react",
+    "strict": true,
+    "removeComments": false,
+    "preserveConstEnums": true,
+    "skipLibCheck": true,
+    "typeRoots": ["node_modules/@types/"],
+    "baseUrl": ".",
+    "preserveSymlinks": true,
+    "paths": {
+      "meteor/*": [".meteor/local/types/packages.d.ts"]
     },
-    "filesGlob": [
-        "./**/*.ts",
-        "./**/*.tsx",
-        "!./node_modules/**/*"
-    ],
-    "include": [
-        "**/*"
-    ],
-    "exclude": [
-        "node_modules",
-        ".meteor",
-        "**/*.spec.ts",
-        "cypress.config.ts"
-    ],
-    "atom": {
-        "rewriteTsconfig": false
-    }
+    "esModuleInterop": true,
+    "noEmit": true
+  },
+  "include": ["**/*"],
+  "exclude": ["node_modules", ".meteor", "**/*.spec.ts"]
 }

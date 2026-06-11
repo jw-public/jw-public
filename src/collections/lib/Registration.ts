@@ -1,10 +1,11 @@
+import SimpleSchema, { SchemaContext } from "./SimpleSchema";
 import { Meteor } from "meteor/meteor";
+import { callMethod } from "../../imports/methods/MethodContracts";
 
 export const CONTEXT_NAME_STEP_TWO = "register-secondStep-register";
 
 import * as UserCollection from "./UserCollection";
 import { UserProfileSchema } from "./Users";
-
 
 /**
  * Wird verwendet, wenn ein neuer Benutzer angelegt werden soll.
@@ -15,28 +16,29 @@ export const NewUserSchema = new SimpleSchema({
   email: {
     type: String,
     label: "E-Mail",
-    trim: true,
     // this must be optional if you also use other login services like facebook,
     // but if you use only accounts-password, then it can be required
     optional: false,
-    custom: function () {
+    custom: function (this: SchemaContext) {
       // Überprüft, ob der Nutzer schon im System ist und gibt ggf. eine Fehlermeldung aus.
       if (Meteor.isClient && this.isSet) {
-        Meteor.call("userExists", this.value, function (error, result) {
+        void callMethod("userExists", this.value).then(function (result) {
           if (result) {
-            getStepTwoContext().addInvalidKeys([{
-              name: "email",
-              type: "userAlreadyExisting"
-            }]);
+            getStepTwoContext().addValidationErrors([
+              {
+                name: "email",
+                type: "userAlreadyExisting",
+              },
+            ]);
           }
         });
       }
     },
-    autoValue: function () {
+    autoValue: function (this: SchemaContext) {
       if (this.isSet) {
         return this.value.trim().toLowerCase(); // Alles kleinschreiben
       }
-    }
+    },
   },
   password: {
     type: String,
@@ -45,21 +47,21 @@ export const NewUserSchema = new SimpleSchema({
     // this must be optional if you also use other login services like facebook,
     // but if you use only accounts-password, then it can be required
     optional: false,
-    min: 6
+    min: 6,
   },
   passwordConfirmation: {
     type: String,
     label: "Passwort bestätigen",
-    custom: function () {
-      if (this.value !== this.field('password').value) {
+    custom: function (this: SchemaContext) {
+      if (this.value !== this.field("password").value) {
         return "passwordMissmatch";
       }
-    }
+    },
   },
   profile: {
     type: UserProfileSchema,
-    optional: false
-  }
+    optional: false,
+  },
 });
 
 export interface INewUser {

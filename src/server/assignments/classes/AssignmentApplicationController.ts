@@ -1,20 +1,18 @@
-import { inject, injectable, named } from "inversify";
 import { AssignmentDAO } from "../../../collections/lib/AssignmentsCollection";
 import { SimpleCollection } from "../../../imports/interfaces/SimpleCollection";
-import { Logger } from '../../../imports/logging/Logger';
-import { LoggerFactory } from '../../../imports/logging/LoggerFactory';
-import { Types } from "../../Types";
+import { Logger } from "../../../imports/logging/Logger";
+import { LoggerFactory } from "../../../imports/logging/LoggerFactory";
 import { IAssignmentApplicationController } from "../interfaces/IAssignmentApplicationController";
 import { IAssignmentContext } from "../interfaces/IAssignmentContext";
 
-@injectable()
 export class AssignmentApplicationController implements IAssignmentApplicationController {
-
-  private assignmentContext: IAssignmentContext;
+  // injected post-construction by services.ts
+  private assignmentContext!: IAssignmentContext;
   private logger: Logger;
 
-  constructor(@inject(Types.Collection) @named("assignment") private collection: SimpleCollection<AssignmentDAO>,
-    @inject(Types.LoggerFactory) loggerFactory: LoggerFactory,
+  constructor(
+    private collection: SimpleCollection<AssignmentDAO>,
+    loggerFactory: LoggerFactory,
   ) {
     this.logger = loggerFactory.createLogger("AssignmentApplicationController");
   }
@@ -23,42 +21,45 @@ export class AssignmentApplicationController implements IAssignmentApplicationCo
     return this.assignmentContext.getAssignmentId();
   }
 
+  public async addUserAsApplicantById(userId: string): Promise<void> {
+    this.logger.info(`User ${userId} applies to ${this.assignmentId}`);
 
-  public addUserAsApplicantById(userId: string): void {
-    this.logger.info(`User ${userId} applies to ${this.assignmentId}`)
-
-    this.collection.update({
-      _id: this.assignmentId,
-      "applicants.user": { // User darf nicht sich bereits beworben haben.
-        $ne: userId
+    await this.collection.updateAsync(
+      {
+        _id: this.assignmentId,
+        "applicants.user": {
+          // User darf nicht sich bereits beworben haben.
+          $ne: userId,
+        },
+        "participants.user": {
+          // User darf auch nicht bereits ein Teilnehmer sein.
+          $ne: userId,
+        },
       },
-      "participants.user": { // User darf auch nicht bereits ein Teilnehmer sein.
-        $ne: userId
-      }
-    }, {
-      $push: {
-        applicants: {
-          user: userId
-        }
-      }
-    });
-  };
+      {
+        $push: {
+          applicants: {
+            user: userId,
+          },
+        },
+      },
+    );
+  }
 
-  public removeUserAsApplicantById(userId: string): void {
-    this.logger.info(`User ${userId} removes application from ${this.assignmentId}`)
+  public async removeUserAsApplicantById(userId: string): Promise<void> {
+    this.logger.info(`User ${userId} removes application from ${this.assignmentId}`);
 
-    this.collection.update({
-      _id: this.assignmentId
-    }, {
-      $pull: {
-        "applicants": {
-          "user": userId
-        } // Wird als Bewerber entfernt.
-      }
-    });
-
-  };
-
-
-
+    await this.collection.updateAsync(
+      {
+        _id: this.assignmentId,
+      },
+      {
+        $pull: {
+          applicants: {
+            user: userId,
+          }, // Wird als Bewerber entfernt.
+        },
+      },
+    );
+  }
 }

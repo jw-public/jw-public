@@ -1,4 +1,8 @@
-import { Meteor } from "meteor/meteor";
+import { callMethod } from "../../imports/methods/MethodContracts";
+
+// Promise-based wrappers around the app's Meteor methods. Names, argument
+// lists and result types come from the shared wire contract
+// (imports/methods/MethodContracts.ts).
 
 export class AssignmentProxy {
   private _id: string;
@@ -6,44 +10,42 @@ export class AssignmentProxy {
     this._id = id;
   }
 
-  public applyOnAssignment(callback: (err: Meteor.Error) => void) {
-    Meteor.call('applyOnAssignment', this._id, callback);
+  public applyOnAssignment(): Promise<void> {
+    return callMethod("applyOnAssignment", this._id);
   }
 
-  public cancelApplication(callback: (err: Meteor.Error) => void) {
-    Meteor.call('cancelApplicationAssignment', this._id, callback);
+  public cancelApplication(): Promise<void> {
+    return callMethod("cancelApplicationAssignment", this._id);
   }
 
-  public isApplicant(callback: (err: Meteor.Error, isApplicant: boolean) => void) {
-    Meteor.call('userIsApplicant', this._id, callback);
+  public isApplicant(): Promise<boolean> {
+    return callMethod("userIsApplicant", this._id);
   }
 
-  public addUserAsParticipant(userId: string, callback: (err: Meteor.Error) => void) {
-    Meteor.call('addUserAsAssignmentParticipant', userId, this._id, callback);
+  public addUserAsParticipant(userId: string): Promise<void> {
+    return callMethod("addUserAsAssignmentParticipant", userId, this._id);
   }
 
-  public removeUserAsParticipant(userId: string, callback: (err: Meteor.Error) => void) {
-    Meteor.call('removeUserAsAssignmentParticipant', userId, this._id, callback);
+  public removeUserAsParticipant(userId: string): Promise<void> {
+    return callMethod("removeUserAsAssignmentParticipant", userId, this._id);
   }
 
-  public close(participantIds: Array<string>, callback: (err: Meteor.Error) => void) {
-    Meteor.call('closeAssignment', participantIds, this._id, callback);
+  public close(participantIds: Array<string>): Promise<void> {
+    return callMethod("closeAssignment", participantIds, this._id);
   }
 
-  public reenable(reason: string, callback: (err: Meteor.Error) => void) {
-    Meteor.call('reenableAssignment', this._id, reason, callback);
+  public reenable(reason: string): Promise<void> {
+    return callMethod("reenableAssignment", this._id, reason);
   }
 
-  public cancel(reason: string, callback: (err: Meteor.Error) => void) {
-    Meteor.call('cancelAssignment', this._id, reason, callback);
+  public cancel(reason: string): Promise<void> {
+    return callMethod("cancelAssignment", this._id, reason);
   }
 
-  public remove(callback: (err: Meteor.Error) => void) {
-    Meteor.call('removeAssignment', this._id, callback);
+  public remove(): Promise<void> {
+    return callMethod("removeAssignment", this._id);
   }
-
 }
-
 
 export class GroupProxy {
   private _id: string;
@@ -51,23 +53,22 @@ export class GroupProxy {
     this._id = id;
   }
 
-  public getUserCountOfGroup(callback: (err: Meteor.Error, count: number) => void) {
-    Meteor.call('getUsersInGroupCount', this._id, callback);
+  public getUserCountOfGroup(): Promise<number> {
+    return callMethod("getUsersInGroupCount", this._id);
   }
 
-  public addUserToGroup(userId: string, callback: (err: Meteor.Error) => void) {
-    Meteor.call('addToGroup', userId, this._id, callback);
+  public addUserToGroup(userId: string): Promise<void> {
+    return callMethod("addToGroup", userId, this._id);
   }
 
-  public denyUser(userId: string, callback: (err: Meteor.Error) => void) {
-    Meteor.call('denyUser', userId, this._id, callback);
+  public denyUser(userId: string): Promise<void> {
+    return callMethod("denyUser", userId, this._id);
   }
 
-  public isGroupMember(userId: string, callback: (err: Meteor.Error, isMember: boolean) => void) {
-    Meteor.call('isGroupMember', userId, this._id, callback);
-  }
-
-  public copyAssignmentWeek({ from, to }: {
+  public copyAssignmentWeek({
+    from,
+    to,
+  }: {
     from: {
       calendarWeek: number;
       year: number;
@@ -76,31 +77,21 @@ export class GroupProxy {
       calendarWeek: number;
       year: number;
     };
-  }, callback: (err: Meteor.Error, totalCopied: number) => void) {
-    Meteor.call('copyAssignmentWeek',
+  }): Promise<number> {
+    return callMethod(
+      "copyAssignmentWeek",
       this._id,
       from.calendarWeek,
       from.year,
       to.calendarWeek,
       to.year,
-      callback);
-  }
-
-}
-
-export module Email {
-  export function send(to: string, from: string, subject: string, text: string, callback: (err: Meteor.Error) => void) {
-    Meteor.call('sendEmail', to, from, subject, text, callback);
-  }
-
-  export function reloadServerSettings(callback: (err: Meteor.Error) => void) {
-    Meteor.call('reloadEmailSettings', callback);
+    );
   }
 }
 
-export module Validator {
-  export function validatePhoneNumber(phoneNumber: string, callback: (err: Meteor.Error, isValid: boolean) => void) {
-    Meteor.call('validatePhoneNumber', phoneNumber, callback);
+export namespace Validator {
+  export function validatePhoneNumber(phoneNumber: string): Promise<boolean> {
+    return callMethod("validatePhoneNumber", phoneNumber);
   }
 }
 
@@ -109,7 +100,7 @@ export class AdminUserProxy {
   constructor(id: string) {
     this._id = id;
   }
-  public removeUser(callback: (err: Meteor.Error) => void) {
-    Meteor.call('removeUser', this._id, callback);
+  public removeUser(): Promise<void> {
+    return callMethod("removeUser", this._id);
   }
 }

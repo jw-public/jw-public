@@ -1,5 +1,4 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 import AssignmentAdminButton from "./subComponents/AssignmentAdminButton";
 import AssignmentPanelHeading from "./subComponents/AssignmentPanelHeading";
 import AssignmentPanelBody from "./subComponents/AssignmentPanelBody";
@@ -7,29 +6,29 @@ import AssignmentPanelFooter from "./subComponents/AssignmentPanelFooter";
 import { AssignmentAdminButtonProps } from "./subComponents/AssignmentAdminButton";
 import { DisplayState } from "../../../../lib/classes/AssignmentDisplayStateReader";
 import { AssignmentStateReader } from "../../../../lib/classes/AssignmentStateReader";
-import { IAssignmentStateReader, AssignmentStateForUser } from "../../../../lib/classes/AssignmentStateReader";
 import { AssignmentDisplayStateReader } from "../../../../lib/classes/AssignmentDisplayStateReader";
 import { Roles } from "meteor/alanning:roles";
 import { Meteor } from "meteor/meteor";
-import { UserEntry, AssignmentDAO, Assignments } from "../../../../collections/lib/AssignmentsCollection";
+import { AssignmentDAO } from "../../../../collections/lib/AssignmentsCollection";
 import Group from "../../../../collections/lib/classes/Group";
-
-
 
 export interface AssignmentPanelProps {
   assignment: AssignmentDAO;
 }
 
 export default class AssignmentPanel extends React.Component<AssignmentPanelProps, {}> {
-
-
-
-  private renderAdminMenu(props: AssignmentAdminButtonProps): JSX.Element {
+  private renderAdminMenu(props: AssignmentAdminButtonProps): JSX.Element | undefined {
     if (!this.isEligibleToModifyAssignment()) {
       return undefined;
     }
 
-    return <AssignmentAdminButton stateReader={props.stateReader} assignmentId={props.assignmentId} bootstrapColorClass={props.bootstrapColorClass} />;
+    return (
+      <AssignmentAdminButton
+        stateReader={props.stateReader}
+        assignmentId={props.assignmentId}
+        bootstrapColorClass={props.bootstrapColorClass}
+      />
+    );
   }
 
   private isEligibleToModifyAssignment(): boolean {
@@ -47,22 +46,21 @@ export default class AssignmentPanel extends React.Component<AssignmentPanelProp
     return group.isCoordinatorById(Meteor.userId());
   }
 
-
-
   public render(): JSX.Element {
     let assignment = this.props.assignment;
     let stateReader = AssignmentStateReader.fromAssignmentDAO(assignment);
-    let displayStateReader = AssignmentDisplayStateReader.fromAssignmentStateReader(stateReader).withUserId(Meteor.userId());
+    let displayStateReader = AssignmentDisplayStateReader.fromAssignmentStateReader(
+      stateReader,
+    ).withUserId(Meteor.userId());
     let colorClass = PanelConsts.getColorClassName(displayStateReader.getDisplayState());
 
     let adminMenu = this.renderAdminMenu({
       stateReader,
-      assignmentId: assignment._id,
-      bootstrapColorClass: colorClass
+      assignmentId: assignment._id!,
+      bootstrapColorClass: colorClass,
     });
 
-
-    let panelClassNames = `panel assignment-panel panel-${colorClass}`;
+    let panelClassNames = `card assignment-panel card-${colorClass}`;
 
     return (
       <div className="col-lg-3 col-md-6">
@@ -70,19 +68,19 @@ export default class AssignmentPanel extends React.Component<AssignmentPanelProp
           {adminMenu}
           <AssignmentPanelHeading assignment={assignment} />
           <AssignmentPanelBody assignment={assignment} />
-          <AssignmentPanelFooter assignment={assignment} state={stateReader.getAssignmentState(Meteor.userId())} displayStateReader={displayStateReader} />
+          <AssignmentPanelFooter
+            assignment={assignment}
+            state={stateReader.getAssignmentState(Meteor.userId())}
+            displayStateReader={displayStateReader}
+          />
         </div>
       </div>
     );
   }
-
 }
 
-
-
-
 namespace PanelConsts {
-  let colorClassMap: Map<DisplayState, string> = null;
+  let colorClassMap: Map<DisplayState, string> | null = null;
 
   export function getColorClassNameMap(): Map<DisplayState, string> {
     if (colorClassMap === null) {
@@ -98,6 +96,6 @@ namespace PanelConsts {
   }
 
   export function getColorClassName(state: DisplayState): string {
-    return getColorClassNameMap().get(state);
+    return getColorClassNameMap().get(state)!;
   }
 }
