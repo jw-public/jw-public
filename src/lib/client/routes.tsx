@@ -17,6 +17,8 @@ import Login from "../../client/templates/LoginComponent";
 import ModifyProfile from "../../client/templates/ModifyProfileComponent";
 import ResetPassword from "../../client/templates/ResetPasswordComponent";
 import RegisterInGroup from "../../client/templates/Registration/RegisterInGroupComponent";
+import RequireTermsConsent from "../../client/templates/Terms/RequireTermsConsent";
+import TermsOfUsePage from "../../client/templates/Terms/TermsOfUsePage";
 import AdminUsers from "../../client/templates/admin/UserManagement/AdminUsersComponent";
 import ModifyGroups from "../../client/templates/admin/GroupManagement/ModifyGroupsComponent";
 import CopyAssignments from "../../client/templates/Group/CopyAssignmentsComponent";
@@ -185,12 +187,15 @@ export const router = createBrowserRouter([
       },
       { path: Def.UserRegistration.path, element: <RegisterInGroup /> },
       { path: Def.ResetPassword.path, element: <ResetPassword /> },
+      { path: Def.TermsOfUse.path, element: <TermsOfUsePage /> },
     ],
   },
   {
     element: (
       <RequireLogin>
-        <MainLayout />
+        <RequireTermsConsent>
+          <MainLayout />
+        </RequireTermsConsent>
       </RequireLogin>
     ),
     children: [

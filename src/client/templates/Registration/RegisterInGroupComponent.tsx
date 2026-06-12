@@ -2,9 +2,11 @@ import { alertDialog } from "../../react/components/dialogs";
 import SimpleSchema from "../../../collections/lib/SimpleSchema";
 import * as React from "react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Accounts } from "meteor/accounts-base";
 import { Meteor } from "meteor/meteor";
 import { callMethod } from "../../../imports/methods/MethodContracts";
+import { TERMS_OF_USE_VERSION } from "../../../imports/terms/TermsOfUse";
 import { useTracker } from "meteor/react-meteor-data";
 import { Routes } from "../../../lib/client/routes";
 
@@ -52,6 +54,7 @@ export default function RegisterInGroup(): JSX.Element {
   const [zip, setZip] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const [alerts, setAlerts] = useState<InlineAlert[]>([]);
 
   const groupName = useTracker(() => {
@@ -109,14 +112,26 @@ export default function RegisterInGroup(): JSX.Element {
     Registration.NewUserSchema.clean(doc, { mutate: true });
     const context = Registration.getStepTwoContext();
     const valid = context.validate(doc, {});
-    if (!valid) {
-      const messages = context.validationErrors().map((k: any) => context.keyErrorMessage(k.name));
+    const messages: string[] = valid
+      ? []
+      : context.validationErrors().map((k: any) => context.keyErrorMessage(k.name));
+    if (!termsAccepted) {
+      messages.push("Bitte stimme den Nutzungsbedingungen zu.");
+    }
+    if (messages.length > 0) {
       setAlerts(messages.map((message: string) => ({ message, type: "danger" as const })));
       return;
     }
 
+    // termsOfUseAccepted ist eine Custom-Option: der Server stempelt daraus
+    // in Accounts.onCreateUser den Consent und lehnt User ohne ihn ab.
     void Accounts.createUser(
-      { email: doc.email, password: doc.password, profile: doc.profile },
+      {
+        email: doc.email,
+        password: doc.password,
+        profile: doc.profile,
+        termsOfUseAccepted: TERMS_OF_USE_VERSION,
+      } as any,
       (err: any) => {
         if (err) {
           void alertDialog(err.details ?? err.reason ?? String(err), "Fehler");
@@ -319,6 +334,23 @@ export default function RegisterInGroup(): JSX.Element {
                           value={passwordConfirmation}
                           onChange={(e) => setPasswordConfirmation(e.target.value)}
                         />
+                      </div>
+                      <div className="form-check form-group">
+                        <input
+                          type="checkbox"
+                          className="form-check-input"
+                          id="registrationTermsCheckbox"
+                          name="termsAccepted"
+                          checked={termsAccepted}
+                          onChange={(e) => setTermsAccepted(e.target.checked)}
+                        />
+                        <label className="form-check-label" htmlFor="registrationTermsCheckbox">
+                          Ich habe die{" "}
+                          <Link to={Routes.path(Routes.Def.TermsOfUse)} target="_blank">
+                            Nutzungsbedingungen
+                          </Link>{" "}
+                          gelesen und stimme ihnen zu.
+                        </label>
                       </div>
                       <div className="form-group">
                         <button type="submit" className="btn btn-primary submit-change">

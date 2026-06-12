@@ -2,6 +2,7 @@ import { Accounts } from "meteor/accounts-base";
 import { Meteor } from "meteor/meteor";
 import { Roles } from "meteor/alanning:roles";
 
+import { TERMS_OF_USE_VERSION } from "../imports/terms/TermsOfUse";
 import * as EmailSettingsManager from "./EmailSettingsManager";
 import { initData } from "./InitialData";
 
@@ -24,11 +25,32 @@ Meteor.startup(async function () {
     await Meteor.users.updateAsync(user._id, { $unset: { roles: "" } });
   }
 
+  // Die Zustimmung zu den Nutzungsbedingungen reist als Custom-Option in
+  // Accounts.createUser mit und wird hier serverseitig gestempelt — der
+  // Client kann das Feld selbst nie schreiben (Allow-Rule erlaubt nur
+  // profile/updatedAt).
+  Accounts.onCreateUser(function (options: any, user: any) {
+    if (options.profile) {
+      user.profile = options.profile;
+    }
+    if (options.termsOfUseAccepted === TERMS_OF_USE_VERSION) {
+      user.termsOfUse = {
+        version: TERMS_OF_USE_VERSION,
+        acceptedAt: new Date(),
+      };
+    }
+    return user;
+  });
+
   // Validate username, without a specific error message.
   Accounts.validateNewUser(async function (user: any) {
     // Wir lehnen einen User ohne Gruppenbewerbung ab
     if (user.username === "root") {
       return true;
+    }
+    // Ohne aktive Zustimmung zu den Nutzungsbedingungen keine Registrierung.
+    if (!user.termsOfUse || user.termsOfUse.version !== TERMS_OF_USE_VERSION) {
+      return false;
     }
     const pendingGroups: string[] = (user.profile && user.profile.pendingGroups) || [];
     if (pendingGroups.length === 0) {

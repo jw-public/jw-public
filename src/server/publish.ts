@@ -233,7 +233,19 @@ namespace UserPublication {
 
   export function theUser(userId: string) {
     return () => {
-      return users({ _id: userId });
+      // Eigenes Dokument: zusätzlich den Consent-Status (termsOfUse), den das
+      // Login-Gate braucht — fremde User-Publikationen bekommen ihn nicht.
+      return Meteor.users.find(
+        { _id: userId },
+        {
+          fields: {
+            _id: 1,
+            profile: 1,
+            groups: 1,
+            termsOfUse: 1,
+          },
+        },
+      );
     };
   }
 
