@@ -324,6 +324,22 @@ export const UserSchema = new SimpleSchema({
     label: "Notiz",
     optional: true,
   },
+  // Zustimmung zu den Nutzungsbedingungen — wird ausschließlich serverseitig
+  // gesetzt (Accounts.onCreateUser / acceptTerms-Method) und ist über die
+  // users-Allow-Rule nicht durch den Client änderbar.
+  termsOfUse: {
+    type: Object,
+    label: "Zustimmung Nutzungsbedingungen",
+    optional: true,
+  },
+  "termsOfUse.version": {
+    type: String,
+    label: "Version der Nutzungsbedingungen",
+  },
+  "termsOfUse.acceptedAt": {
+    type: Date,
+    label: "Zeitpunkt der Zustimmung",
+  },
 });
 
 Meteor.users.attachSchema(UserSchema);

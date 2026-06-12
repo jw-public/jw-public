@@ -46,6 +46,52 @@ export function uniqueName(prefix: string): string {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
 }
 
+// Reads the Standardgruppe id from the registration link in the admin sidebar
+// and logs out again — used by the registration and terms-consent specs.
+export async function readStandardgruppeId(page: Page): Promise<string> {
+  await login(page);
+  const href = await page
+    .locator("ul#side-menu > li", { has: page.getByText("Gruppe Standardgruppe") })
+    .locator("a[href$='/registrierung']")
+    .getAttribute("href");
+  await page.goto("/logout");
+  await expect(page.locator("input#login")).toBeVisible();
+  return /\/group\/([^/]+)\/registrierung/.exec(href!)![1];
+}
+
+// Runs the two-step registration wizard (including terms-of-use consent) and
+// leaves the browser logged in as the freshly registered user.
+export async function registerUserInGroup(
+  page: Page,
+  groupId: string,
+  email: string,
+  password: string,
+  firstName = "Erika",
+  lastName = "Musterfrau",
+): Promise<void> {
+  await page.goto(`/group/${groupId}/registrierung`);
+  await expect(page.locator("h1.page-header")).toContainText("Registrierung", {
+    timeout: 20_000,
+  });
+
+  await page.locator("input[name='email']").fill(email);
+  await page.locator("button.next-button-registration").click();
+
+  await expect(page.getByText("Nur noch ein Schritt!")).toBeVisible({ timeout: 10_000 });
+  await page.locator("input[name='profile.first_name']").fill(firstName);
+  await page.locator("input[name='profile.last_name']").fill(lastName);
+  await page.locator("input[name='profile.gender']").first().check();
+  await page.locator("input[name='profile.mobile']").fill("+49 170 1234567");
+  await page.locator("input[name='profile.placeName']").fill("Erding");
+  await page.locator("input[name='profile.zip']").fill("85435");
+  await page.locator("input[name='password']").fill(password);
+  await page.locator("input[name='passwordConfirmation']").fill(password);
+  await page.locator("input#registrationTermsCheckbox").check();
+  await page.locator("button.submit-change").click();
+
+  await expect(page.locator("div#page-wrapper #greeting")).toBeVisible({ timeout: 20_000 });
+}
+
 // --- Domain flows --------------------------------------------------------------
 
 // Creates an assignment in Standardgruppe via the coordinator form and returns

@@ -16,6 +16,7 @@ import { AssignmentState } from "../collections/lib/classes/AssignmentState";
 import { Notifications } from "../collections/lib/NotificationCollection";
 import * as UserNotification from "../collections/lib/classes/UserNotification";
 import * as UserCollection from "../collections/lib/UserCollection";
+import { TERMS_OF_USE_VERSION } from "../imports/terms/TermsOfUse";
 
 // --- Async access helpers (the isomorphic domain classes are sync and
 // therefore client-only since Meteor 3) -------------------------------------
@@ -470,6 +471,27 @@ Meteor.startup(function () {
       } else {
         throw new Meteor.Error("403", "Access denied");
       }
+    },
+
+    /**
+     * Stempelt die Zustimmung des eingeloggten Users zur aktuellen Version
+     * der Nutzungsbedingungen (Login-Consent-Gate für Bestandskonten).
+     */
+    acceptTermsOfUse: async function (): Promise<void> {
+      if (!this.userId) {
+        throw new Meteor.Error("403", "Access denied");
+      }
+      await Meteor.users.updateAsync(
+        { _id: this.userId },
+        {
+          $set: {
+            termsOfUse: {
+              version: TERMS_OF_USE_VERSION,
+              acceptedAt: new Date(),
+            },
+          },
+        },
+      );
     },
   };
 

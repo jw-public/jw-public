@@ -20,6 +20,16 @@ export interface UserProfile {
 }
 
 /**
+ * Serverseitig gestempelte Zustimmung zu den Nutzungsbedingungen. Liegt
+ * bewusst NICHT im (client-schreibbaren) profile: gesetzt wird sie nur in
+ * Accounts.onCreateUser bzw. der acceptTerms-Method.
+ */
+export interface TermsOfUseConsent {
+  version: string;
+  acceptedAt: Date;
+}
+
+/**
  * User Data Access Object
  */
 export interface UserDAO extends Meteor.User {
@@ -30,6 +40,7 @@ export interface UserDAO extends Meteor.User {
   updatedAt?: Date;
   banned?: boolean;
   notice?: string;
+  termsOfUse?: TermsOfUseConsent;
 }
 
 export const users: Mongo.Collection<UserDAO> = <Mongo.Collection<UserDAO>>(<any>Meteor.users);

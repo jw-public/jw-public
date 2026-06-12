@@ -45,6 +45,7 @@ export interface MethodSignatures {
   };
   validatePhoneNumber: { args: [phoneNumber: string]; result: boolean };
   removeUser: { args: [userToRemoveId: string]; result: void };
+  acceptTermsOfUse: { args: []; result: void };
 }
 
 export type MethodName = keyof MethodSignatures;

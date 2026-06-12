@@ -1,19 +1,8 @@
-import { test, expect, Page } from "@playwright/test";
-import { login, uniqueName, flowGoto, clickSidebarSubmenuEntry } from "./helpers";
+import { test, expect } from "@playwright/test";
+import { login, uniqueName, flowGoto, readStandardgruppeId } from "./helpers";
 
 // Self-registration in a group (two-step wizard) followed by the coordinator
 // accepting the applicant ("Offene Gruppenbewerbungen").
-
-async function readStandardgruppeId(page: Page): Promise<string> {
-  await login(page);
-  const href = await page
-    .locator("ul#side-menu > li", { has: page.getByText("Gruppe Standardgruppe") })
-    .locator("a[href$='/registrierung']")
-    .getAttribute("href");
-  await page.goto("/logout");
-  await expect(page.locator("input#login")).toBeVisible();
-  return /\/group\/([^/]+)\/registrierung/.exec(href!)![1];
-}
 
 test.describe("Registration", () => {
   test("user registers in a group and is accepted by the coordinator", async ({ page }) => {
@@ -43,6 +32,12 @@ test.describe("Registration", () => {
     await page.locator("input[name='profile.zip']").fill("85435");
     await page.locator("input[name='password']").fill(password);
     await page.locator("input[name='passwordConfirmation']").fill(password);
+
+    // Without consenting to the terms of use the form must refuse to submit.
+    await page.locator("button.submit-change").click();
+    await expect(page.getByText("Bitte stimme den Nutzungsbedingungen zu.")).toBeVisible();
+
+    await page.locator("input#registrationTermsCheckbox").check();
     await page.locator("button.submit-change").click();
 
     // Registration logs the new user in and lands on the dashboard.
