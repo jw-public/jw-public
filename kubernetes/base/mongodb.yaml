@@ -15,7 +15,11 @@ spec:
     spec:
       containers:
         - name: mongo
-          image: mongo:3.4
+          # Upgraded 3.4/3.6 -> 7: the modernized app's MongoDB driver
+          # (npm-mongo 6) requires a server >= 4.0. mongo:7 CANNOT read the old
+          # 3.6 data files in place, so production migrates by dump & restore
+          # into a fresh volume — see docs/migration/PROD_MONGO_UPGRADE.md.
+          image: mongo:7
           resources:
             limits:
               memory: "1024Mi"

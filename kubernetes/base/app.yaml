@@ -25,7 +25,11 @@ spec:
             - containerPort: 8080
           env:
             - name: MONGO_URL
-              value: mongodb://mongo/jwpublic
+              # ?tls=false: against mongo:7 the bundled driver otherwise opens
+              # its monitoring connections with TLS to this plain MongoDB,
+              # flooding the mongo log with SSLHandshakeFailed (app works either
+              # way). Matches docker-compose.yaml.
+              value: mongodb://mongo/jwpublic?tls=false
             - name: ROOT_URL
               value: http://localhost:8080
           readinessProbe:

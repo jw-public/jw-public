@@ -1,13 +1,14 @@
 namespace: jw-public
 
-bases:
-  - ../base
-
+# Modern kustomize syntax: `bases` is folded into `resources`, and
+# strategic-merge patches use the `patches: [{path}]` form (the old bare-string
+# `patches` list no longer parses in current kubectl).
 resources:
+  - ../base
   - pvc.yaml
   - ingress.yaml
   - backup.yaml
 
 patches:
-  - mongo-patch.yaml
-  - app-patch.yaml
+  - path: mongo-patch.yaml
+  - path: app-patch.yaml
