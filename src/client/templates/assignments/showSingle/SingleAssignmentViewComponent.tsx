@@ -105,6 +105,10 @@ function AssignmentPreview(props: { assignmentDao: AssignmentDAO }): JSX.Element
 }
 
 export default function SingleAssignmentView(): JSX.Element {
+  // Coordinators read the assignment by default and open the edit form on
+  // demand, instead of seeing the detail and the full form side by side.
+  const [editing, setEditing] = useState(false);
+
   const data = useTracker(() => {
     const assignmentId = Routes.getParam(Routes.ParamNames.AssignmentId);
     const handle = Meteor.subscribe("singleAssignment", assignmentId);
@@ -185,45 +189,51 @@ export default function SingleAssignmentView(): JSX.Element {
       <div className="row">
         <div className="col-lg-12">
           <h1 className="page-header">
-            <BackButton />{" "}
-            {data.isCoordinator ? (
-              <React.Fragment>
-                <button
-                  type="button"
-                  className="btn btn-success manage-assignment"
-                  onClick={onManage}
-                >
-                  <i className="fa fa-users"></i>
-                </button>{" "}
-                {!data.isCanceled ? (
-                  <button
-                    type="button"
-                    title="Termin absagen"
-                    className="btn btn-danger cancel-assignment"
-                    onClick={onCancelAssignment}
-                  >
-                    <i className="fa fa-ban"></i>
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    title="Termin stattfinden lassen"
-                    className="btn btn-info reenable-assignment"
-                    onClick={onReenable}
-                  >
-                    <i className="fa fa-calendar-check-o"></i>
-                  </button>
-                )}
-              </React.Fragment>
-            ) : null}{" "}
-            {dao.name}
+            <BackButton /> {dao.name}
             <small> {fmt(dao.start, "Do MMMM LT")} </small>
           </h1>
+          {data.isCoordinator ? (
+            <div className="btn-toolbar mb-3" role="toolbar" aria-label="Einsatz-Aktionen">
+              <button
+                type="button"
+                className="btn btn-success manage-assignment me-2"
+                onClick={onManage}
+              >
+                <i className="fa fa-users fa-fw"></i> Teilnehmer verwalten
+              </button>
+              <button
+                type="button"
+                className={`btn me-2 toggle-edit ${editing ? "btn-secondary" : "btn-primary"}`}
+                aria-pressed={editing}
+                onClick={() => setEditing(!editing)}
+              >
+                <i className={`fa fa-fw ${editing ? "fa-times" : "fa-pencil"}`}></i>{" "}
+                {editing ? "Bearbeitung schließen" : "Bearbeiten"}
+              </button>
+              {!data.isCanceled ? (
+                <button
+                  type="button"
+                  className="btn btn-danger cancel-assignment"
+                  onClick={onCancelAssignment}
+                >
+                  <i className="fa fa-ban fa-fw"></i> Absagen
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="btn btn-info reenable-assignment"
+                  onClick={onReenable}
+                >
+                  <i className="fa fa-calendar-check-o fa-fw"></i> Stattfinden lassen
+                </button>
+              )}
+            </div>
+          ) : null}
         </div>
       </div>
 
       <div className="row">
-        <div className="col-lg-5 col-md-8">
+        <div className={editing ? "col-lg-5 col-md-8" : "col-lg-8 col-md-12"}>
           <div className="row">
             <div className="col-sm-12 col-md-6 col-lg-6">
               <div className="col-12 bg-primary assignment-head-element">
@@ -248,11 +258,7 @@ export default function SingleAssignmentView(): JSX.Element {
                   </div>
                 </div>
                 <div className="col-7 info text-center">
-                  {fmt(dao.start, "LT")}
-                  <br />
-                  <i className="fa fa-clock-o fa-fw"></i>
-                  <br />
-                  {fmt(dao.end, "LT")}
+                  {fmt(dao.start, "LT")} &ndash; {fmt(dao.end, "LT")}
                 </div>
               </div>
             </div>
@@ -280,9 +286,13 @@ export default function SingleAssignmentView(): JSX.Element {
               <i className="fa fa-users fa-fw"></i> Teilnehmer
             </div>
             <ul className="list-group">
-              {data.participants.map((u: User) => (
-                <UserEntryListElement key={u.getId()} user={u} />
-              ))}
+              {data.participants.length > 0 ? (
+                data.participants.map((u: User) => (
+                  <UserEntryListElement key={u.getId()} user={u} />
+                ))
+              ) : (
+                <li className="list-group-item text-muted">Noch keine Teilnehmer eingeteilt.</li>
+              )}
             </ul>
           </div>
 
@@ -355,7 +365,7 @@ export default function SingleAssignmentView(): JSX.Element {
           ) : null}
         </div>
 
-        {data.isCoordinator ? (
+        {data.isCoordinator && editing ? (
           <div className="col-lg-7 col-md-8">
             <AssignmentFormComponent
               key={data.assignmentId}

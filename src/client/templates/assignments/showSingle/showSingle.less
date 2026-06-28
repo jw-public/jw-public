@@ -7,18 +7,19 @@
 
   .rounded(@border-radius-small);
 
-  height: @element-height;
+  // min-height (not a fixed height): the time cell must be able to grow so its
+  // content never spills below the box (the end time used to overflow).
+  min-height: @element-height;
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
 
   margin-bottom: 20px;
 
   .icon {
     padding-top: 0px;
     padding-bottom: 0px;
-    line-height: @element-height;
-  }
-
-  .info {
-    .center-vertically();
+    line-height: 1;
   }
 
 }
