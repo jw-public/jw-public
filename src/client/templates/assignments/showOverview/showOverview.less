@@ -13,15 +13,13 @@
   margin-bottom: @line-height-computed !important;
 
   .assignment-item {
-    padding-top: 0;
-    padding-bottom: 0;
+    // No card-body padding: the date/time columns (g-0 rows) tile the full
+    // width so the blue time cell stays flush to the right edge (no white gap).
+    padding: 0;
     .huge {
       font-size: 25px;
     }
     .time {
-
-      //.border-radius(0,0,@border-radius-small, 0); // Links unten rund
-      margin-right: -2px;
       background-color: @brand-primary;
       color: #fff;
     }

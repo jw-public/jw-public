@@ -25,7 +25,9 @@ export default class DateDisplay extends React.Component<DateDisplayProps, {}> {
     const endTime = end.format("LT");
 
     return (
-      <div className="row">
+      // g-0: no gutter so the white date cell and blue time cell tile the full
+      // card width — the time cell stays flush to the right edge (no white gap).
+      <div className="row g-0">
         {/* Centre the day/month in the white cell — horizontally via text-center,
             vertically (against the taller time cell) via a flex column. The old
             BS3 markup put `.row` on these, which in BS5 turns them into flex
