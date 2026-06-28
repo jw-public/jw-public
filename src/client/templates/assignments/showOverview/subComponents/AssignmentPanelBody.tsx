@@ -88,6 +88,8 @@ class AssignmentPanelProgressBar extends React.Component<AssignmentPanelProps, {
       return null;
     }
 
-    return <div className="row">{this.renderProgressBar()}</div>;
+    // g-0 matches the date/time row so the body content stays flush to the
+    // card edges (card-body has zero horizontal padding — see showOverview.less).
+    return <div className="row g-0">{this.renderProgressBar()}</div>;
   }
 }
