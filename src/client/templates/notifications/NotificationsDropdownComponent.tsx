@@ -36,7 +36,10 @@ function NotificationItem(props: ItemData): JSX.Element {
   return (
     <React.Fragment>
       {props.divider ? <li className="divider"></li> : null}
-      <li className={props.notification.data.seen ? undefined : "bg-danger"}>
+      {/* Unread = a calm "new" highlight, not danger-red. Red is reserved for
+          actual problems; a routine "request accepted" must not look like an
+          error (and dark text on saturated red was unreadable). */}
+      <li className={props.notification.data.seen ? undefined : "notification-unread"}>
         {props.notification.hasLink ? <a href={props.notification.link}>{content}</a> : content}
       </li>
     </React.Fragment>

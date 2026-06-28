@@ -251,6 +251,16 @@ dl.dl-horizontal {
   margin-left: -6px;
 }
 
+// Unread notifications: a quiet "new" highlight (light slate tint, readable
+// dark text), NOT danger-red. Red stays reserved for actual problems so a
+// positive notification ("Anfrage angenommen") no longer looks like an error.
+.dropdown-alerts .notification-unread {
+  background-color: var(--bs-primary-bg-subtle);
+}
+.dropdown-alerts .notification-unread > a {
+  color: inherit;
+}
+
 .navbar-custom-brand {
   display: block;
   float: left;
