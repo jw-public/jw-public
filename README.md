@@ -60,8 +60,17 @@ Notes:
 
 The `Dockerfile` does **not** build the app from source — it only packages an
 already-built Meteor bundle. So `docker compose up` on its own fails with a
-`COPY src/build/src.tar.gz` error: that bundle does not exist yet. Build it
-first, then start the stack:
+`COPY src/build/src.tar.gz` error: that bundle does not exist yet.
+
+The quickest path is the convenience script, which does both steps for you:
+
+```bash
+scripts/docker-up.sh        # build the bundle, then start app + MongoDB
+scripts/docker-up.sh -d     # ... detached
+SKIP_BUILD=1 scripts/docker-up.sh   # reuse the existing bundle, just restart
+```
+
+Or run the two steps manually:
 
 ```bash
 # 1. Build the Meteor production bundle -> src/build/src.tar.gz
