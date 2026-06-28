@@ -1,14 +1,17 @@
-apiVersion: extensions/v1beta1
+# Migrated from the removed extensions/v1beta1 API (gone since k8s 1.22) to
+# networking.k8s.io/v1: ingressClassName replaces the kubernetes.io/ingress.class
+# annotation, paths gain pathType, and backends use service.name/port.number.
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: jw-public
   namespace: jw-public
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
-    kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/read-timeout: "3600" # Because of Websockets
     nginx.ingress.kubernetes.io/proxy-send-timeout: "3600" # Because of Websockets
 spec:
+  ingressClassName: nginx
   tls:
     - hosts:
         - jw-public.org
@@ -18,6 +21,9 @@ spec:
       http:
         paths:
           - path: /
+            pathType: Prefix
             backend:
-              serviceName: jw-public
-              servicePort: 8080
+              service:
+                name: jw-public
+                port:
+                  number: 8080
