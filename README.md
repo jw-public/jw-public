@@ -56,6 +56,33 @@ Notes:
 - After adding/removing Meteor packages run `npm run types` (regenerates the type stubs zodern:types places under `.meteor/local/types`; a running dev server does this automatically).
 - Commits run `eslint --fix` + Prettier on the staged files (husky + lint-staged).
 
+## Run with Docker
+
+The `Dockerfile` does **not** build the app from source — it only packages an
+already-built Meteor bundle. So `docker compose up` on its own fails with a
+`COPY src/build/src.tar.gz` error: that bundle does not exist yet. Build it
+first, then start the stack:
+
+```bash
+# 1. Build the Meteor production bundle -> src/build/src.tar.gz
+cd src
+meteor npm install
+meteor build ./build        # add --allow-superuser only when running as root (e.g. CI)
+
+# 2. Build the image around the bundle and start app + MongoDB
+cd ..
+docker compose up --build
+```
+
+The app is then at <http://localhost:8080> (MongoDB is exposed on `27777`,
+data persisted in `./database`). On the first start it seeds the same admin
+account as local development (`admin@trolley.com` / `admin3210`).
+
+This two-step split is intentional and mirrors CI (it runs `meteor build`
+before `docker build`): the image stays small and fast to build because the
+heavy Meteor toolchain never runs inside it. Re-run step 1 whenever the source
+changes, then `docker compose up --build` again.
+
 ## Manual testing
 
 A quick tour that touches every core flow (all email lands in Mailpit, <http://localhost:18025>):

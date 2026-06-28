@@ -1,25 +1,33 @@
-version: "3"
+# Local/production-like run of the packaged app.
+#
+# IMPORTANT: the image does NOT build the Meteor app from source — it only
+# packages a pre-built bundle. Produce that bundle first:
+#
+#   cd src && meteor npm install && meteor build ./build
+#
+# This writes src/build/src.tar.gz, which the Dockerfile COPYies in. Then:
+#
+#   docker compose up --build
+#
+# App: http://localhost:8080
 services:
   meteor:
     build: .
     ports:
       - 8080:8080
-    links:
+    depends_on:
       - mongo
     environment:
       - MONGO_URL=mongodb://mongo/jwpublic
       - ROOT_URL=http://localhost:8080
     restart: always
   mongo:
-    image: mongo:3.6
+    # Meteor 3's MongoDB driver requires a server >= 4.0; the old mongo:3.6
+    # would refuse the connection. mongo:7 matches the version Meteor bundles
+    # for development (needs an AVX-capable CPU; fall back to mongo:6 if not).
+    image: mongo:7
     ports:
       - 27777:27017
     volumes:
       - "./database:/data/db:rw"
     restart: always
-  # mongo-express:
-  #   image: mongo-express
-  #   ports:
-  #     - 9090:8081
-  #   links:
-  #     - mongo
