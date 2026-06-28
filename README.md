@@ -87,6 +87,11 @@ The app is then at <http://localhost:8080> (MongoDB is exposed on `27777`,
 data persisted in `./database`). On the first start it seeds the same admin
 account as local development (`admin@trolley.com` / `admin3210`).
 
+> The MongoDB URL carries `?tls=false` on purpose: the driver bundled by
+> Meteor 3.3 otherwise opens its monitoring connections with TLS against the
+> plain MongoDB, which floods the mongo container log with `SSLHandshakeFailed`
+> lines. The app works either way, but the flag keeps the log clean.
+
 This two-step split is intentional and mirrors CI (it runs `meteor build`
 before `docker build`): the image stays small and fast to build because the
 heavy Meteor toolchain never runs inside it. Re-run step 1 whenever the source

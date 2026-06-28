@@ -18,7 +18,11 @@ services:
     depends_on:
       - mongo
     environment:
-      - MONGO_URL=mongodb://mongo/jwpublic
+      # ?tls=false is required: the mongodb driver Meteor 3.3 bundles otherwise
+      # opens its monitoring connections with TLS against this plain MongoDB,
+      # which floods the mongo log with "SSLHandshakeFailed" (the app itself
+      # keeps working — only the monitor connections misbehave).
+      - MONGO_URL=mongodb://mongo/jwpublic?tls=false
       - ROOT_URL=http://localhost:8080
     restart: always
   mongo:
