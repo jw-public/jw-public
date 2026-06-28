@@ -26,14 +26,16 @@ for cmd in meteor docker; do
 done
 
 if [ "${SKIP_BUILD:-0}" != "1" ]; then
-  # `meteor build` refuses to run as root without this flag (e.g. in CI).
-  BUILD_FLAGS=()
-  if [ "$(id -u)" = "0" ]; then
-    BUILD_FLAGS+=(--allow-superuser)
-  fi
-
   echo "==> Building Meteor bundle (src/build/src.tar.gz)…"
-  (cd src && meteor npm install && meteor build "${BUILD_FLAGS[@]}" ./build)
+  cd src
+  meteor npm install
+  # `meteor build` refuses to run as root without --allow-superuser (e.g. CI).
+  if [ "$(id -u)" = "0" ]; then
+    meteor build --allow-superuser ./build
+  else
+    meteor build ./build
+  fi
+  cd "$REPO_ROOT"
 fi
 
 if [ ! -f src/build/src.tar.gz ]; then
