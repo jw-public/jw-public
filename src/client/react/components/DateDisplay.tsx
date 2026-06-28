@@ -26,9 +26,13 @@ export default class DateDisplay extends React.Component<DateDisplayProps, {}> {
 
     return (
       <div className="row">
-        <div className="col-7">
-          <div className="huge row">{dayOfMonth}</div>
-          <div className="row">{month}</div>
+        {/* Centre the day/month in the white cell — horizontally via text-center,
+            vertically (against the taller time cell) via a flex column. The old
+            BS3 markup put `.row` on these, which in BS5 turns them into flex
+            containers and left-aligns the date. */}
+        <div className="col-7 text-center d-flex flex-column justify-content-center">
+          <div className="huge">{dayOfMonth}</div>
+          <div>{month}</div>
         </div>
         <div className="col-5 time text-center">
           {startTime}
