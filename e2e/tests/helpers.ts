@@ -135,14 +135,24 @@ export async function expandWeekUntilVisible(
   panel: ReturnType<Page["locator"]>,
 ): Promise<void> {
   await expect(page.locator("#accordion")).toBeVisible({ timeout: 15_000 });
+  // Only the week cards' OWN headers — not the assignment-panel headers nested
+  // inside an expanded week (they also carry .card-header). Matching those too
+  // shifts nth() indexing the moment a week opens, and clicking an already-open
+  // week header would re-collapse it. This bit specifically when the target
+  // assignment sits in a different ISO week than week one (e.g. a "tomorrow"
+  // default-dated assignment created on a Sunday).
+  const weekHeaders = page.locator("#accordion > .card > .card-header");
   for (let round = 0; round < 10; round++) {
     if (await panel.isVisible()) return;
-    const headings = page.locator("#accordion .card-header");
-    const count = await headings.count();
+    const count = await weekHeaders.count();
     for (let i = 0; i < count; i++) {
       if (await panel.isVisible()) return;
-      await headings.nth(i).click();
-      await page.waitForTimeout(400);
+      const header = weekHeaders.nth(i);
+      // Expand collapsed weeks only (chevron points right); never re-collapse.
+      if ((await header.locator("i.fa-chevron-circle-right").count()) > 0) {
+        await header.click();
+        await page.waitForTimeout(400);
+      }
     }
     await page.waitForTimeout(500);
   }
