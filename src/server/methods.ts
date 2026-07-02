@@ -17,6 +17,9 @@ import { Notifications } from "../collections/lib/NotificationCollection";
 import * as UserNotification from "../collections/lib/classes/UserNotification";
 import * as UserCollection from "../collections/lib/UserCollection";
 import { TERMS_OF_USE_VERSION } from "../imports/terms/TermsOfUse";
+import { computeInactivityReport } from "../imports/cleanup/InactivityReport";
+import { Blueprints } from "../collections/lib/BlueprintCollection";
+import { AssignmentCopyActions } from "../collections/lib/AssignmentCopyActionsCollection";
 
 // --- Async access helpers (the isomorphic domain classes are sync and
 // therefore client-only since Meteor 3) -------------------------------------
@@ -454,7 +457,9 @@ Meteor.startup(function () {
     },
 
     /**
-     * Löscht einen Benutzer ohne Rücksicht auf Mitgliedschaft, außer er ist ein Administrator
+     * Löscht einen Benutzer ohne Rücksicht auf Mitgliedschaft, außer er ist ein
+     * Administrator. Räumt zugehörige Daten mit ab (Datenminimierung):
+     * Benachrichtigungen sowie Teilnahme-/Bewerbungs-Einträge in Terminen.
      * @param userToRemoveId ID des Benutzers, der gelöscht werden soll
      */
     removeUser: async function (userToRemoveId: string): Promise<void> {
@@ -465,12 +470,112 @@ Meteor.startup(function () {
       const isUserToRemoveAnAdmin = await RolesHelper.userIsAdminAsync(userToRemoveId);
 
       if (hasRight && !isUserToRemoveAnAdmin) {
-        // Remove user
-        console.error(userToRemoveId);
+        console.log("Removing user " + userToRemoveId + " (by " + this.userId + ")");
         await Meteor.users.removeAsync({ _id: userToRemoveId });
+        await Notifications.removeAsync({ userId: userToRemoveId });
+        // rawCollection: the schema's updatedAt autoValue must not re-stamp
+        // tens of thousands of historical assignments, and contacts (minCount
+        // 1) stay untouched.
+        await Assignments.rawCollection().updateMany(
+          {
+            $or: [{ "participants.user": userToRemoveId }, { "applicants.user": userToRemoveId }],
+          },
+          {
+            $pull: {
+              participants: { user: userToRemoveId },
+              applicants: { user: userToRemoveId },
+            } as any,
+          },
+        );
       } else {
         throw new Meteor.Error("403", "Access denied");
       }
+    },
+
+    /**
+     * Inaktivitäts-Report für die Aufräumen-Seite: Gruppen ohne Termine und
+     * Benutzer ohne Login/Aktivität seit dem Schwellwert.
+     */
+    adminInactivityReport: async function (thresholdDays: number) {
+      check(thresholdDays, Number);
+      if (!(await RolesHelper.userIsAdminAsync(this.userId))) {
+        throw new Meteor.Error("403", "Access denied");
+      }
+
+      const [users, groups, assignments, adminAssignments] = await Promise.all([
+        Meteor.users
+          .find(
+            {},
+            {
+              fields: {
+                createdAt: 1,
+                updatedAt: 1,
+                "profile.first_name": 1,
+                "profile.last_name": 1,
+                "emails.address": 1,
+                groups: 1,
+                "services.resume.loginTokens.when": 1,
+              },
+            },
+          )
+          .fetchAsync(),
+        Groups.find({}, { fields: { name: 1, createdAt: 1, updatedAt: 1 } }).fetchAsync(),
+        Assignments.find(
+          {},
+          {
+            fields: {
+              group: 1,
+              start: 1,
+              "participants.user": 1,
+              "participants.when": 1,
+              "applicants.user": 1,
+              "applicants.when": 1,
+            },
+          },
+        ).fetchAsync(),
+        Meteor.roleAssignment.find({ "role._id": "admin" }).fetchAsync(),
+      ]);
+
+      return computeInactivityReport({
+        users: users as any,
+        groups: groups as any,
+        assignments: assignments as any,
+        adminIds: adminAssignments.map((a: any) => a.user._id),
+        thresholdDays,
+        now: new Date(),
+      });
+    },
+
+    /**
+     * Löscht eine Gruppe MITSAMT ihrer Termine, Blueprints und Kopieraktionen
+     * und entfernt Mitgliedschaften/Bewerbungen der Nutzer auf diese Gruppe.
+     */
+    adminDeleteGroup: async function (groupId: string) {
+      check(groupId, String);
+      if (!(await RolesHelper.userIsAdminAsync(this.userId))) {
+        throw new Meteor.Error("403", "Access denied");
+      }
+      const group = await getGroupDoc(groupId);
+      if (!group) {
+        throw new Meteor.Error("404", "Group not found");
+      }
+
+      const removedAssignments = await Assignments.removeAsync({ group: groupId });
+      await Blueprints.removeAsync({ group: groupId } as any);
+      await AssignmentCopyActions.removeAsync({ group: groupId });
+      // rawCollection: membership pulls must not re-stamp updatedAt (it feeds
+      // the user-inactivity signal).
+      await Meteor.users
+        .rawCollection()
+        .updateMany(
+          { $or: [{ groups: groupId }, { "profile.pendingGroups": groupId }] },
+          { $pull: { groups: groupId, "profile.pendingGroups": groupId } as any },
+        );
+      await Groups.removeAsync({ _id: groupId });
+      console.log(
+        `Deleted group ${group.name} (${groupId}) with ${removedAssignments} assignments (by ${this.userId})`,
+      );
+      return { removedAssignments };
     },
 
     /**

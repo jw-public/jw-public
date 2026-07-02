@@ -20,6 +20,7 @@ import RegisterInGroup from "../../client/templates/Registration/RegisterInGroup
 import RequireTermsConsent from "../../client/templates/Terms/RequireTermsConsent";
 import TermsOfUsePage from "../../client/templates/Terms/TermsOfUsePage";
 import AdminUsers from "../../client/templates/admin/UserManagement/AdminUsersComponent";
+import Cleanup from "../../client/templates/admin/Cleanup/CleanupComponent";
 import ModifyGroups from "../../client/templates/admin/GroupManagement/ModifyGroupsComponent";
 import CopyAssignments from "../../client/templates/Group/CopyAssignmentsComponent";
 import GroupMembers from "../../client/templates/Group/GroupMembersComponent";
@@ -216,6 +217,14 @@ export const router = createBrowserRouter([
         element: (
           <RequireAdmin>
             <ModifyGroups />
+          </RequireAdmin>
+        ),
+      },
+      {
+        path: Def.Cleanup.path,
+        element: (
+          <RequireAdmin>
+            <Cleanup />
           </RequireAdmin>
         ),
       },

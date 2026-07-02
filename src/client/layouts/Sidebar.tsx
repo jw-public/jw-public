@@ -161,6 +161,11 @@ export default function Sidebar(): JSX.Element {
                   <i className="fa fa-sitemap fa-fw"></i> Gruppenverwaltung
                 </Link>
               </li>
+              <li id="toCleanup">
+                <Link to={buildPath(Def.Cleanup)} className="auto-scroll">
+                  <i className="fa fa-trash-o fa-fw"></i> Aufräumen
+                </Link>
+              </li>
             </Submenu>
           ) : null}
 

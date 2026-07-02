@@ -49,6 +49,7 @@ export class Def {
   );
   static ResetPassword = new Def("resetPassword", "/reset-password/:" + ParamNames.Token);
   static TermsOfUse = new Def("termsOfUse", "/nutzungsbedingungen");
+  static Cleanup = new Def("cleanup", "/admin/cleanup");
 
   /** Find a definition by its (FlowRouter era) route name. */
   static byName(name: string): Def | undefined {

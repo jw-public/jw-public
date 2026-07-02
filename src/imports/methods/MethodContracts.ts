@@ -1,4 +1,5 @@
 import { Meteor } from "meteor/meteor";
+import { InactivityReport } from "../cleanup/InactivityReport";
 
 /**
  * Wire contract of every Meteor method: one source of truth shared by the
@@ -46,6 +47,8 @@ export interface MethodSignatures {
   validatePhoneNumber: { args: [phoneNumber: string]; result: boolean };
   removeUser: { args: [userToRemoveId: string]; result: void };
   acceptTermsOfUse: { args: []; result: void };
+  adminInactivityReport: { args: [thresholdDays: number]; result: InactivityReport };
+  adminDeleteGroup: { args: [groupId: string]; result: { removedAssignments: number } };
 }
 
 export type MethodName = keyof MethodSignatures;
