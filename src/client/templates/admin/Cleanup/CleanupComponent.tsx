@@ -33,22 +33,32 @@ function fmt(date: Date | null): string {
 export default function Cleanup(): JSX.Element {
   const [thresholdDays, setThresholdDays] = useState(365);
   const [report, setReport] = useState<InactivityReport | null>(null);
+  // Bumped after a deletion to re-run the report effect for the same threshold.
+  const [reloadKey, setReloadKey] = useState(0);
   // Loading is derived: no report yet, or the shown report belongs to another
   // threshold (avoids synchronous setState inside the effect).
   const loading = report === null || report.thresholdDays !== thresholdDays;
 
-  const load = (days: number) => {
-    callMethod("adminInactivityReport", days)
-      .then((r) => setReport(r))
+  useEffect(() => {
+    // Stale-response guard: switching the threshold while a slower earlier
+    // request is in flight must not let that response overwrite the newer one.
+    let cancelled = false;
+    callMethod("adminInactivityReport", thresholdDays)
+      .then((r) => {
+        if (!cancelled) {
+          setReport(r);
+        }
+      })
       .catch((err) => {
         console.error(err);
         void alertDialog("Der Report konnte nicht geladen werden.", "Fehler");
       });
-  };
+    return () => {
+      cancelled = true;
+    };
+  }, [thresholdDays, reloadKey]);
 
-  useEffect(() => {
-    load(thresholdDays);
-  }, [thresholdDays]);
+  const reload = () => setReloadKey((k) => k + 1);
 
   const onDeleteGroup = (g: InactiveGroupEntry) => {
     void confirmDialog({
@@ -63,7 +73,7 @@ export default function Cleanup(): JSX.Element {
         return;
       }
       callMethod("adminDeleteGroup", g._id)
-        .then(() => load(thresholdDays))
+        .then(() => reload())
         .catch((err) => {
           console.error(err);
           void alertDialog("Die Gruppe konnte nicht gelöscht werden.", "Fehler");
@@ -84,7 +94,7 @@ export default function Cleanup(): JSX.Element {
         return;
       }
       callMethod("removeUser", u._id)
-        .then(() => load(thresholdDays))
+        .then(() => reload())
         .catch((err) => {
           console.error(err);
           void alertDialog("Der Benutzer konnte nicht gelöscht werden.", "Fehler");

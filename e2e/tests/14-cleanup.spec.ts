@@ -1,5 +1,10 @@
 import { test, expect } from "@playwright/test";
-import { login, uniqueName, readStandardgruppeId, registerUserInGroup } from "./helpers";
+import {
+  login,
+  uniqueName,
+  readStandardgruppeId,
+  registerUserInGroup,
+} from "./helpers";
 
 // Admin "Aufräumen" page: inactivity report plus deliberate deletion of
 // dormant groups and users (data minimisation). The date thresholds are unit
@@ -10,12 +15,15 @@ import { login, uniqueName, readStandardgruppeId, registerUserInGroup } from "./
 const ID_ALPHABET = "23456789ABCDEFGHJKLMNPQRSTWXYZabcdefghijkmnopqrstuvwxyz";
 function meteorId(prefix = ""): string {
   let id = prefix;
-  while (id.length < 17) id += ID_ALPHABET[Math.floor(Math.random() * ID_ALPHABET.length)];
+  while (id.length < 17)
+    id += ID_ALPHABET[Math.floor(Math.random() * ID_ALPHABET.length)];
   return id.slice(0, 17);
 }
 
 test.describe("Cleanup (Aufräumen)", () => {
-  test("dormant group shows up in the report and can be deleted", async ({ page }) => {
+  test("dormant group shows up in the report and can be deleted", async ({
+    page,
+  }) => {
     test.setTimeout(120_000);
     const groupName = uniqueName("cleanup-grp");
     const groupId = meteorId("cupG");
@@ -50,10 +58,15 @@ test.describe("Cleanup (Aufräumen)", () => {
     );
 
     await page.goto("/admin/cleanup");
-    await expect(page.locator("h1.page-header")).toContainText("Aufräumen", { timeout: 20_000 });
+    await expect(page.locator("h1.page-header")).toContainText("Aufräumen", {
+      timeout: 20_000,
+    });
 
     // The fresh fixture is not 12 months old; list everything instead.
     await page.locator("#cleanupThreshold").selectOption("0");
+    // Wait until the 0-day report replaced the initial 12-month one — panels
+    // keep showing the previous report while the new request is in flight.
+    await expect(page.getByText("Analysiere…")).toBeHidden({ timeout: 20_000 });
     const groupsPanel = page.locator("#inactiveGroupsPanel");
     await expect(groupsPanel).toBeVisible({ timeout: 20_000 });
     await groupsPanel.locator("input[type='search']").fill(groupName);
@@ -65,7 +78,9 @@ test.describe("Cleanup (Aufräumen)", () => {
     await expect(modal).toContainText("1 Terminen");
     await modal.getByRole("button", { name: "Akzeptieren" }).click();
 
-    await expect(groupsPanel.locator("tbody tr", { hasText: groupName })).toHaveCount(0, {
+    await expect(
+      groupsPanel.locator("tbody tr", { hasText: groupName }),
+    ).toHaveCount(0, {
       timeout: 15_000,
     });
     const exists = await page.evaluate(
@@ -82,13 +97,23 @@ test.describe("Cleanup (Aufräumen)", () => {
     const password = "test-passwort-123";
 
     const stdGroup = await readStandardgruppeId(page);
-    await registerUserInGroup(page, stdGroup, email, password, "Klaus", "Karteileiche");
+    await registerUserInGroup(
+      page,
+      stdGroup,
+      email,
+      password,
+      "Klaus",
+      "Karteileiche",
+    );
     await page.goto("/logout");
     await expect(page.locator("input#login")).toBeVisible();
 
     await login(page);
     await page.goto("/admin/cleanup");
     await page.locator("#cleanupThreshold").selectOption("0");
+    // Wait until the 0-day report replaced the initial 12-month one — panels
+    // keep showing the previous report while the new request is in flight.
+    await expect(page.getByText("Analysiere…")).toBeHidden({ timeout: 20_000 });
     const usersPanel = page.locator("#inactiveUsersPanel");
     await expect(usersPanel).toBeVisible({ timeout: 20_000 });
     await usersPanel.locator("input[type='search']").fill(email);
@@ -99,7 +124,9 @@ test.describe("Cleanup (Aufräumen)", () => {
     const modal = page.locator(".app-modal", { hasText: "Benutzer löschen" });
     await modal.getByRole("button", { name: "Akzeptieren" }).click();
 
-    await expect(usersPanel.locator("tbody tr", { hasText: email })).toHaveCount(0, {
+    await expect(
+      usersPanel.locator("tbody tr", { hasText: email }),
+    ).toHaveCount(0, {
       timeout: 15_000,
     });
     const exists = await page.evaluate(
@@ -113,10 +140,15 @@ test.describe("Cleanup (Aufräumen)", () => {
     await login(page);
     await page.goto("/admin/cleanup");
     await page.locator("#cleanupThreshold").selectOption("0");
+    // Wait until the 0-day report replaced the initial 12-month one — panels
+    // keep showing the previous report while the new request is in flight.
+    await expect(page.getByText("Analysiere…")).toBeHidden({ timeout: 20_000 });
     const usersPanel = page.locator("#inactiveUsersPanel");
     await expect(usersPanel).toBeVisible({ timeout: 20_000 });
     await usersPanel.locator("input[type='search']").fill("admin@trolley.com");
-    const row = usersPanel.locator("tbody tr", { hasText: "admin@trolley.com" });
+    const row = usersPanel.locator("tbody tr", {
+      hasText: "admin@trolley.com",
+    });
     await expect(row).toBeVisible({ timeout: 15_000 });
     await expect(row.locator("button.delete-user")).toHaveCount(0);
     await expect(row).toContainText("Admin");
