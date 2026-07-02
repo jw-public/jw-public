@@ -175,6 +175,26 @@ dl.dl-horizontal {
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
 }
 
+// DataTable header controls: Bootstrap 5 dropped .form-inline, so the
+// "Show [n] entries" / "Search: [ ]" labels stacked their block-level
+// form-controls onto three lines. Lay them out inline again.
+.dataTables_wrapper {
+  .dataTables_length label,
+  .dataTables_filter label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    margin-bottom: 8px;
+  }
+
+  .dataTables_length select,
+  .dataTables_filter input {
+    display: inline-block;
+    width: auto;
+  }
+}
+
 // BS3 hamburger button (mobile sidebar toggle)
 .navbar-toggle {
   position: relative;

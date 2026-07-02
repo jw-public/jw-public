@@ -163,12 +163,6 @@ function Logout(): JSX.Element {
   return <LoadingSpinner />;
 }
 
-// The old emailserver settings route rendered a missing template — an empty
-// content area. Kept for parity until the page is built or removed.
-function EmptyPage(): JSX.Element {
-  return <div />;
-}
-
 // ---------------------------------------------------------------------------
 // Router
 // ---------------------------------------------------------------------------
@@ -225,17 +219,12 @@ export const router = createBrowserRouter([
           </RequireAdmin>
         ),
       },
-      {
-        path: Def.EmailServerManagement.path,
-        element: (
-          <RequireAdmin>
-            <EmptyPage />
-          </RequireAdmin>
-        ),
-      },
     ],
   },
   { path: Def.Logout.path, element: <Logout /> },
+  // Unknown URLs (including the removed /admin/manage/emailserver dead route)
+  // land on the dashboard instead of react-router's bare error page.
+  { path: "*", element: <Navigate to={buildPath(Def.Home)} replace /> },
 ]);
 
 syncRouterState(router.state as any);

@@ -16,16 +16,15 @@ test.describe("Admin & coordinator pages render", () => {
     });
   });
 
-  test("email server settings route is dead (template missing) — layout still renders", async ({
+  test("unknown routes (incl. removed emailserver page) redirect to the dashboard", async ({
     page,
   }) => {
-    // Characterization: the route renders MainLayout with template
-    // "settingsEmailserver", which does not exist — the content area stays
-    // empty. Recorded as-is; candidate for removal during the migration.
+    // The dead /admin/manage/emailserver route was removed; unknown URLs now
+    // hit the catch-all route and land on the dashboard.
     await login(page);
     await flowGoto(page, "/admin/manage/emailserver");
-    await expect(page.locator("ul#side-menu")).toBeVisible({ timeout: 20_000 });
-    await expect(page.locator("#page-wrapper h1.page-header")).toHaveCount(0);
+    await expect(page.locator("#greeting")).toBeVisible({ timeout: 20_000 });
+    await expect(page).toHaveURL(/\/$/);
   });
 
   test("group members page renders", async ({ page }) => {

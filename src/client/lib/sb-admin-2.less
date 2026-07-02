@@ -15,7 +15,12 @@ body {
 
 #page-wrapper {
   padding: 0 15px;
-  min-height: 568px;
+  // Fill the viewport below the topbar (100px when it wraps to two rows on
+  // mobile, 50px on desktop). Replaces the JS sizing that lived in main.ts:
+  // it ran at Meteor.startup before React had mounted #page-wrapper and never
+  // re-fired on SPA navigation, so the old 568px fallback left a grey band
+  // under the content on every page.
+  min-height: calc(100vh - 100px);
   background-color: white;
 }
 
@@ -25,6 +30,7 @@ body {
     margin: 0 0 0 250px;
     padding: 0 30px;
     border-left: 1px solid darken(@gray-lightest, 6.5%);
+    min-height: calc(100vh - 50px);
   }
 }
 

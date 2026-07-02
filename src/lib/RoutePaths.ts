@@ -26,7 +26,6 @@ export class Def {
   static AssignmentSingleView = new Def("singleAssignment", "/einsatz/:" + ParamNames.AssignmentId);
   static UserManagement = new Def("adminUsers", "/admin/users");
   static GroupManagement = new Def("modifyGroups", "/admin/groups");
-  static EmailServerManagement = new Def("settingsEmailserver", "/admin/manage/emailserver");
   static MyProfile = new Def("modifyProfile", "/my-profile");
   static Login = new Def("login", "/login");
   static Logout = new Def("logout", "/logout");
