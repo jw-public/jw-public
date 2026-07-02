@@ -8,7 +8,7 @@ export interface InactivityUserInput {
   _id: string;
   createdAt?: Date;
   updatedAt?: Date;
-  profile?: { first_name?: string; last_name?: string };
+  profile?: { first_name?: string; last_name?: string; pendingGroups?: string[] };
   emails?: Array<{ address: string }>;
   groups?: string[];
   services?: { resume?: { loginTokens?: Array<{ when?: Date }> } };
@@ -48,6 +48,12 @@ export interface InactiveUserEntry {
   lastActivity: Date | null;
   /** Admins are listed but must not be deletable (removeUser refuses anyway). */
   isAdmin: boolean;
+  /**
+   * No group membership AND no pending application — typically left behind by
+   * a group deletion. Such users cannot use the app at all, so they are listed
+   * regardless of the threshold and can be removed in bulk.
+   */
+  withoutGroup: boolean;
 }
 
 export interface InactivityReport {
@@ -135,7 +141,9 @@ export function computeInactivityReport(input: {
       userLastAssignment.get(u._id),
       u.createdAt,
     );
-    if (lastActivity === null || lastActivity < cutoff) {
+    const withoutGroup =
+      (u.groups ?? []).length === 0 && (u.profile?.pendingGroups ?? []).length === 0;
+    if (lastActivity === null || lastActivity < cutoff || withoutGroup) {
       const first = u.profile?.first_name ?? "";
       const last = u.profile?.last_name ?? "";
       inactiveUsers.push({
@@ -146,6 +154,7 @@ export function computeInactivityReport(input: {
         lastLogin,
         lastActivity,
         isAdmin: adminIds.has(u._id),
+        withoutGroup,
       });
     }
   }

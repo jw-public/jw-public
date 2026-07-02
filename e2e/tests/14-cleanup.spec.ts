@@ -136,21 +136,108 @@ test.describe("Cleanup (Aufräumen)", () => {
     expect(exists).toBe(false);
   });
 
-  test("admins are listed without a delete button", async ({ page }) => {
+  test("deleting a group strands its applicants; bulk delete removes them", async ({ page }) => {
+    test.setTimeout(120_000);
+    const groupName = uniqueName("cleanup-orphan");
+    const groupId = meteorId("cupo");
+    const id = uniqueName("orphan");
+    const email = `${id}@example.org`;
+
+    // Group, then a user whose ONLY tie to the app is the application to it.
     await login(page);
+    await page.evaluate(
+      async ({ groupId, groupName }) => {
+        const M = (window as any).Meteor;
+        const uid = M.userId();
+        await M.callAsync("/groups/insertAsync", {
+          _id: groupId,
+          name: groupName,
+          additional: "cleanup orphan e2e",
+          coordinators: [uid],
+          creator: uid,
+        });
+      },
+      { groupId, groupName },
+    );
+    await page.goto("/logout");
+    await expect(page.locator("input#login")).toBeVisible();
+    await registerUserInGroup(page, groupId, email, "test-passwort-123", "Otto", "Ohnegruppe");
+    await page.goto("/logout");
+    await expect(page.locator("input#login")).toBeVisible();
+
+    // Deleting the group pulls the pending application -> user is groupless.
+    await login(page);
+    await page.evaluate(
+      (gid) => (window as any).Meteor.callAsync("adminDeleteGroup", gid),
+      groupId,
+    );
+
+    // Groupless users are listed regardless of the threshold (default 12 months).
     await page.goto("/admin/cleanup");
-    await page.locator("#cleanupThreshold").selectOption("0");
-    // Wait until the 0-day report replaced the initial 12-month one — panels
-    // keep showing the previous report while the new request is in flight.
-    await expect(page.getByText("Analysiere…")).toBeHidden({ timeout: 20_000 });
     const usersPanel = page.locator("#inactiveUsersPanel");
     await expect(usersPanel).toBeVisible({ timeout: 20_000 });
-    await usersPanel.locator("input[type='search']").fill("admin@trolley.com");
-    const row = usersPanel.locator("tbody tr", {
-      hasText: "admin@trolley.com",
-    });
+    await usersPanel.locator("input[type='search']").fill(email);
+    const row = usersPanel.locator("tbody tr", { hasText: email });
     await expect(row).toBeVisible({ timeout: 15_000 });
-    await expect(row.locator("button.delete-user")).toHaveCount(0);
-    await expect(row).toContainText("Admin");
+    await expect(row).toContainText("ohne Gruppe");
+
+    await usersPanel.locator("button.delete-all-groupless").click();
+    const modal = page.locator(".app-modal", { hasText: "Benutzer ohne Gruppe löschen" });
+    await modal.getByRole("button", { name: "Akzeptieren" }).click();
+
+    await expect(usersPanel.locator("tbody tr", { hasText: email })).toHaveCount(0, {
+      timeout: 15_000,
+    });
+    const exists = await page.evaluate(
+      (em) => (window as any).Meteor.callAsync("userExists", em),
+      email,
+    );
+    expect(exists).toBe(false);
+  });
+
+  test("admins are listed without a delete button", async ({ page }) => {
+    test.setTimeout(120_000);
+    // A fresh second admin is deterministic: unlike the seed admin it never
+    // has upcoming assignments (a future assignment counts as activity and
+    // keeps a user out of even the 0-day report).
+    const id = uniqueName("cleanupadm");
+    const email = `${id}@example.org`;
+
+    const stdGroup = await readStandardgruppeId(page);
+    await registerUserInGroup(page, stdGroup, email, "test-passwort-123", "Anna", "Admin");
+    const newUid = await page.evaluate(() => (window as any).Meteor.userId() as string);
+    await page.goto("/logout");
+    await expect(page.locator("input#login")).toBeVisible();
+
+    await login(page);
+    await page.evaluate(
+      (uid) => (window as any).Meteor.callAsync("adminSetUserRoles", uid, ["admin"]),
+      newUid,
+    );
+
+    try {
+      await page.goto("/admin/cleanup");
+      await page.locator("#cleanupThreshold").selectOption("0");
+      // Wait until the 0-day report replaced the initial 12-month one — panels
+      // keep showing the previous report while the new request is in flight.
+      await expect(page.getByText("Analysiere…")).toBeHidden({ timeout: 20_000 });
+      const usersPanel = page.locator("#inactiveUsersPanel");
+      await expect(usersPanel).toBeVisible({ timeout: 20_000 });
+      await usersPanel.locator("input[type='search']").fill(email);
+      const row = usersPanel.locator("tbody tr", { hasText: email });
+      await expect(row).toBeVisible({ timeout: 15_000 });
+      await expect(row.locator("button.delete-user")).toHaveCount(0);
+      await expect(row).toContainText("Admin");
+    } finally {
+      // demote again, then remove the fixture account
+      await page.evaluate(
+        (uid) => (window as any).Meteor.callAsync("adminSetUserRoles", uid, []),
+        newUid,
+      );
+      await page.evaluate(
+        (uid) => (window as any).Meteor.callAsync("removeUser", uid),
+        newUid,
+      );
+    }
   });
 });

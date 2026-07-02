@@ -81,6 +81,34 @@ export default function Cleanup(): JSX.Element {
     });
   };
 
+  // Users stranded without any group (typically after a group deletion) can
+  // be removed in one go instead of one confirm dialog per user.
+  const groupless = (report?.users ?? []).filter((u) => u.withoutGroup && !u.isAdmin);
+
+  const onDeleteGroupless = () => {
+    void confirmDialog({
+      title: "Benutzer ohne Gruppe löschen",
+      message:
+        `${groupless.length} Benutzer ohne Gruppenzugehörigkeit und ohne offene ` +
+        `Bewerbung werden endgültig gelöscht, mitsamt Benachrichtigungen sowie ` +
+        `Teilnahmen und Bewerbungen in Terminen.`,
+      yesVariant: "danger",
+    }).then(async (yes) => {
+      if (!yes) {
+        return;
+      }
+      try {
+        for (const u of groupless) {
+          await callMethod("removeUser", u._id);
+        }
+      } catch (err) {
+        console.error(err);
+        void alertDialog("Nicht alle Benutzer konnten gelöscht werden.", "Fehler");
+      }
+      reload();
+    });
+  };
+
   const onDeleteUser = (u: InactiveUserEntry) => {
     void confirmDialog({
       title: "Benutzer löschen",
@@ -185,6 +213,16 @@ export default function Cleanup(): JSX.Element {
                 <i className="fa fa-user-times fa-fw"></i> Inaktive Benutzer ({report.users.length})
               </div>
               <div className="card-body">
+                {groupless.length > 0 ? (
+                  <button
+                    type="button"
+                    className="btn btn-danger mb-3 delete-all-groupless"
+                    onClick={onDeleteGroupless}
+                  >
+                    <i className="fa fa-user-times fa-fw"></i> {groupless.length} Benutzer ohne
+                    Gruppe löschen
+                  </button>
+                ) : null}
                 {report.users.length === 0 ? (
                   <p className="text-muted">Keine inaktiven Benutzer im gewählten Zeitraum.</p>
                 ) : (
@@ -206,7 +244,15 @@ export default function Cleanup(): JSX.Element {
                         render: (u) => fmt(u.lastLogin),
                         sortValue: (u) => u.lastLogin ?? new Date(0),
                       },
-                      { title: "Gruppen", render: (u) => u.groupNames.join(", ") },
+                      {
+                        title: "Gruppen",
+                        render: (u) =>
+                          u.withoutGroup ? (
+                            <span className="text-danger">ohne Gruppe</span>
+                          ) : (
+                            u.groupNames.join(", ")
+                          ),
+                      },
                       {
                         title: "",
                         render: (u) =>

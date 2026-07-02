@@ -93,6 +93,7 @@ describe("computeInactivityReport", function () {
       users: [
         {
           _id: "u",
+          groups: ["g"],
           createdAt: daysAgo(2000),
           updatedAt: daysAgo(900),
           services: { resume: { loginTokens: [{ when: daysAgo(30) }] } },
@@ -105,7 +106,7 @@ describe("computeInactivityReport", function () {
     report = computeInactivityReport({
       ...base,
       assignments: [{ group: "g", start: daysAgo(20), participants: [{ user: "u" }] }],
-      users: [{ _id: "u", createdAt: daysAgo(2000) }],
+      users: [{ _id: "u", groups: ["g"], createdAt: daysAgo(2000) }],
     });
     assert.lengthOf(report.users, 0, "recent participation must keep the user active");
 
@@ -113,7 +114,7 @@ describe("computeInactivityReport", function () {
     report = computeInactivityReport({
       ...base,
       assignments: [{ group: "g", start: daysAgo(600), applicants: [{ user: "u" }] }],
-      users: [{ _id: "u", createdAt: daysAgo(2000), updatedAt: daysAgo(800) }],
+      users: [{ _id: "u", groups: ["g"], createdAt: daysAgo(2000), updatedAt: daysAgo(800) }],
     });
     assert.lengthOf(report.users, 1);
     assert.equal(report.users[0].lastActivity!.getTime(), daysAgo(600).getTime());
@@ -148,6 +149,40 @@ describe("computeInactivityReport", function () {
     assert.equal(admin.name, "Alte Adminin");
     assert.equal(admin.email, "a@x.de");
     assert.deepEqual(admin.groupNames, ["Gruppe X"]);
+  });
+
+  it("lists users without any group or pending application regardless of activity", function () {
+    const report = computeInactivityReport({
+      users: [
+        // fresh AND active, but orphaned by a group deletion -> listed
+        {
+          _id: "orphan",
+          createdAt: daysAgo(1),
+          groups: [],
+          services: { resume: { loginTokens: [{ when: daysAgo(0) }] } },
+        },
+        // fresh applicant: pending application counts as belonging somewhere
+        {
+          _id: "applicant",
+          createdAt: daysAgo(1),
+          groups: [],
+          profile: { pendingGroups: ["g"] },
+        },
+        // fresh member -> not listed
+        { _id: "member", createdAt: daysAgo(1), groups: ["g"] },
+      ],
+      adminIds: [],
+      groups: [{ _id: "g", name: "G", createdAt: daysAgo(1) }],
+      assignments: [],
+      thresholdDays: 365,
+      now: NOW,
+    });
+
+    assert.deepEqual(
+      report.users.map((u) => u._id),
+      ["orphan"],
+    );
+    assert.isTrue(report.users[0].withoutGroup);
   });
 
   it("threshold 0 lists everything not active this instant", function () {
