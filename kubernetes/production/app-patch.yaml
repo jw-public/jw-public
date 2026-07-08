@@ -14,3 +14,8 @@ spec:
               value: smtp://ses-relay.ses-relay.svc.cluster.local:25
             - name: VIRTUAL_HOST
               value: jw-public.org
+            # Heap-Obergrenze wie in der Live-Deployment (Node 22 respektiert
+            # zusätzlich das Container-Memory-Limit). Ohne dies würde ein
+            # `apply -k` die bewährte Einstellung fallen lassen.
+            - name: NODE_OPTIONS
+              value: --max_old_space_size=4096

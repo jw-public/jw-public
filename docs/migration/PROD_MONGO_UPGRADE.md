@@ -176,3 +176,51 @@ spec:
 - `production/backup.yaml`: war in `kustomization.yaml` referenziert, fehlte aber
   im Repo — jetzt ergänzt.
 - `base/app.yaml`: `MONGO_URL` mit `?tls=false` (Treiber-/mongo:7-Quirk).
+
+## Ausführungsprotokoll — 2026-07-08 (durchgeführt)
+
+Migration live durchgeführt und validiert. Abweichungen/Erkenntnisse gegenüber
+dem Plan oben:
+
+- **Cluster/kubeconfig:** Prod liegt in `~/.kube/oci`, Kontext
+  `context-cytaz7wjg5q`, ns `jw-public` (nicht die Default-kubeconfig). Alle
+  Befehle mit `KUBECONFIG=~/.kube/oci` ausgeführt.
+- **Release:** Git-Tag `v2.0.0` auf `master` (01c16d5) → CI publizierte
+  `icereed/jw-public:latest` (Digest `sha256:9a067558…`, 2026-07-08 07:37 UTC).
+- **Kein `apply -k` auf Prod** — stattdessen chirurgische Patches, weil
+  `base/app.yaml` (800Mi-Limit, Probe `/status`, `ROOT_URL=localhost`) die
+  live-bewährte App-Config verändert hätte. Konkret durchgeführt:
+  - `scale deploy/jw-public,mongo-backup --replicas=0` (Downtime-Beginn)
+  - finaler `mongodump` (App aus → konsistent), off-cluster kopiert
+  - `mongo7`-PVC (50Gi, `oci`) angelegt; alte `mongo`-PVC unberührt
+  - `patch deploy/mongo`: image `mongo:7`, Volume-claimName `mongo`→`mongo7`,
+    Memory 512Mi→1024Mi
+  - `mongorestore --gzip --archive --drop` → **73.683 Dokumente, 0 Fehler**,
+    Counts exakt = Baseline (users 536, groups 16, assignments 50697,
+    notifications 21386, assignmentCopyActions 1040, c2Migrations 7, settings 1)
+  - `set env deploy/jw-public MONGO_URL=…?tls=false`, `scale --replicas=1`
+- **`kubectl cp` bricht auf OCI bei ~1,7 MB ab** (Stream-Limit). Workaround:
+  Archiv im Pod mit `split -b 1000000` chunken, jeden Chunk per
+  `kubectl exec (-i) -- cat` kopieren/zurückschreiben, danach **md5-Abgleich**
+  gegen das Pod-Original (`663935ea…`, End-to-End identisch).
+- **Benigne Warnung** im App-Log: `Invalid MongoDB connection string in
+  MONGO_URL: …?tls=false` — stammt aus Meteor-/Treiber-Core (nicht unser Code),
+  die Verbindung kommt trotzdem zustande (14 aktive mongo-Verbindungen, Queries
+  laufen, `/status` → 200).
+- **Rollen-Migration** lief beim App-Start: Legacy-`roles`-Feld → 0,
+  `role-assignment` → 2 (die beiden Admins). Bestätigt im UI (Admin-Menü).
+- **Backup mongo:7-kompatibel:** gebündeltes `mongodump` **100.2.1** (unterstützt
+  Server 7.0), Test-Dump gegen mongo:7 erfolgreich. Der native CronJob-Ersatz
+  unten wird damit **nicht** benötigt.
+- **Validierung:** `https://jw-public.org/status` → 200 (63 ms über echten
+  Ingress); Dashboard live mit echten Daten (536 Benutzer, 16 Gruppen,
+  300 Termine Erding).
+
+### Rollback-Stand (Stand 2026-07-08)
+
+- Alte `mongo`-PVC (3.6-Daten) ist **erhalten und Bound** — NICHT löschen.
+  ⚠ Ihr PV hat Reclaim-Policy `Delete`: die 3.6-Daten überleben nur, solange die
+  `mongo`-PVC existiert. Zusätzlich md5-verifizierter off-cluster-Dump als
+  vollständiges Backup (`~/jw-public-prod-backup/jwpublic-20260708-final.archive.gz`).
+- Rollback = App auf 0, `patch deploy/mongo` zurück auf `mongo:3.6` +
+  claimName `mongo7`→`mongo`, altes App-Image, App auf 1.
