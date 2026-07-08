@@ -85,3 +85,8 @@ src/TEST-report.xml
 src/coverage
 test-results/
 graphify-out/
+
+# Prod-DB-Dumps (personenbezogene Daten) — niemals committen
+prod-backup/
+*.archive
+*.archive.gz

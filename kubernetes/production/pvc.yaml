@@ -1,3 +1,6 @@
+# NOTE: the live "mongo" PVC is 50Gi on storageClass "oci" (the 5Gi below is
+# stale repo drift; PVCs are not shrunk on apply). It holds the OLD mongo 3.6
+# data and is kept untouched as the migration rollback target.
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -10,3 +13,20 @@ spec:
   resources:
     requests:
       storage: 5Gi
+---
+# Fresh, empty volume for mongo:7. The migration restores the prod dump into
+# this (see docs/migration/PROD_MONGO_UPGRADE.md); the old "mongo" PVC stays
+# as rollback. Once mongo:7 is confirmed healthy, the old PVC can be deleted.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongo7
+  labels:
+    app: mongo
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: oci
+  resources:
+    requests:
+      storage: 50Gi

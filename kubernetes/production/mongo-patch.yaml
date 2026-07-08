@@ -13,4 +13,7 @@ spec:
       volumes:
         - name: mongo
           persistentVolumeClaim:
-            claimName: mongo
+            # mongo:7 boots on the fresh "mongo7" volume (the old "mongo" PVC
+            # with 3.6 data files would crash-loop mongo:7). Restore the dump
+            # into it before the app is scaled back up — see the runbook.
+            claimName: mongo7

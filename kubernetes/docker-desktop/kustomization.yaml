@@ -1,10 +1,9 @@
 namespace: jw-public
 
-bases:
-  - ../base
-
+# Modern kustomize syntax (see production/kustomization.yaml).
 resources:
+  - ../base
   - pvc.yaml
 
 patches:
-  - mongo-patch.yaml
+  - path: mongo-patch.yaml

@@ -1,0 +1,52 @@
+# S3 backup of the jwpublic database. This file was referenced by
+# kustomization.yaml but missing from the repo (config drift); it is recreated
+# here to match the live deployment. AWS credentials come from the existing
+# "jw-public-aws" secret (keys: access-key-id, secret-access-key) and are NOT
+# committed.
+#
+# ⚠ MONGO 7 READINESS: this image bundles its own mongodump. mongodump must
+# support server 7.0 (mongodb-database-tools >= 100.x) or backups silently
+# break after the upgrade. Verify after the migration:
+#     kubectl -n jw-public logs deploy/mongo-backup
+# If the bundled tools are too old, replace this Deployment with the mongo:7 +
+# aws-cli CronJob documented in docs/migration/PROD_MONGO_UPGRADE.md.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-backup
+  labels:
+    app: mongo-backup
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: mongo-backup
+  template:
+    metadata:
+      labels:
+        app: mongo-backup
+    spec:
+      containers:
+        - name: mongo-backup
+          image: icereed/mongodb-backup-s3:latest
+          env:
+            - name: BUCKET
+              value: jw-public-backups
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: jw-public-aws
+                  key: access-key-id
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jw-public-aws
+                  key: secret-access-key
+            - name: MONGODB_HOST
+              value: mongo
+            - name: MONGODB_PORT
+              value: "27017"
+            - name: CRON_TIME
+              value: "0 * * * *" # hourly
