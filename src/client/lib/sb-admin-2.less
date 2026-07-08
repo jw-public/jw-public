@@ -250,6 +250,19 @@ body {
   }
 }
 
+// Mobile: the topbar children (brand, top-links, hamburger) float, so the
+// sidebar — a static block here (the position:absolute above is desktop-only) —
+// must clear them onto its own full-width row. Without the clear the expanded
+// menu wraps into a narrow column beside the floated brand box (broken layout).
+// Collapsed by default; the hamburger's data-bs-toggle="collapse" reveals it.
+@media (max-width: @screen-xs-max) {
+  .sidebar {
+    clear: both;
+    float: none;
+    width: 100%;
+  }
+}
+
 // Buttons
 
 .btn-outline {
