@@ -164,6 +164,13 @@ jobs:
         run: cd src && meteor lint
       - run: cd src && meteor npm run compile
       - run: cd src && meteor npm test
+      # Versionslabel (Admin-Sidebar) mit dem Release-Tag bzw. Branch + Kurz-SHA
+      # stempeln, statt des Platzhalters "local #devBuild".
+      - name: Versionslabel stempeln
+        run: |
+          printf 'export const version = {\n  commit: "%s",\n  build: "%s",\n};\n' \
+            "${GITHUB_REF_NAME}" "${GITHUB_SHA::7}" > src/Version.ts
+          cat src/Version.ts
       - run: cd src && meteor build --allow-superuser ./build
       - name: Build and push
         uses: docker/build-push-action@v2

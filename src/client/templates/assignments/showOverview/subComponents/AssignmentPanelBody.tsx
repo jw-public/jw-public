@@ -75,10 +75,10 @@ class AssignmentPanelProgressBar extends React.Component<AssignmentPanelProps, {
         maxValue={usersWanted}
         backgroundColor={Color.GrayLighter}
         barColor={this.barColor()}
-        height="10px"
+        height="14px"
         wrapperClasses={this.progressBarWrapperClasses() ?? undefined}
-        striped={true}
-        active={true}
+        striped={false}
+        active={false}
       />
     );
   }
