@@ -147,6 +147,8 @@ export default function ManageAssignments(): JSX.Element {
       currentGroupId: groupId,
       panelClass: "card-danger",
       buttonClass: "btn-danger",
+      // Nach dem Speichern die Zeilen-Markierung wieder aufheben.
+      onSuccess: () => setSelectedId(null),
     };
     formKey = `update-${selectedAssignment._id}`;
   } else if (copiedAssignment) {
@@ -229,7 +231,7 @@ export default function ManageAssignments(): JSX.Element {
                     searchText={(a) => `${a.name} ${a.state} ${moment(a.start).format("L LT")}`}
                     defaultSort={{ column: 1, direction: "desc" }}
                     tableClassName="table table-responsive"
-                    rowClassName={(a) => (a._id === selectedId ? "active" : "")}
+                    rowClassName={(a) => (a._id === selectedId ? "assignment-row-editing" : "")}
                   />
                 </div>
               </div>

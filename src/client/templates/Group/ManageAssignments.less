@@ -1,6 +1,16 @@
 @import "../../lib/variables.less";
 @import "../../lib/mixins.less";
 
+// Terminverwaltung: die Zeile, die gerade im "Daten ändern"-Formular offen ist,
+// deutlich einfärben (passend zum roten card-danger-Panel), damit klar ist,
+// welcher Termin gerade bearbeitet wird. BS5 stylt die generische .active-Klasse
+// auf <tr> nicht; erhöhte Spezifität überschreibt sicher das --bs-table-bg der
+// Zellen. Die Markierung wird beim Speichern/Schließen wieder entfernt.
+.table > tbody > tr.assignment-row-editing > td {
+  background-color: #f7dede;
+  transition: background-color 0.2s ease-in-out;
+}
+
 .user-entry-row {
   @border-color: @gray-lighter;
   @height: @input-height-base;
