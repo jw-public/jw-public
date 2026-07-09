@@ -51,6 +51,24 @@ Dort findest du die Kontaktdaten. Bitte sende uns deinen Bericht dieser Schicht 
 export const messages: ILocale = {
   hello: "Hallo",
   assignmentEmail: assignmentLocale,
+  applicationEmail: {
+    subject(assignmentName: string, date: string): string {
+      return `Neue Bewerbung für Trolley ${assignmentName} am ${date}`;
+    },
+    message(applicantName: string, assignmentName: string, date: string): string {
+      return `${applicantName} hat sich auf den Trolleydienst ${assignmentName} am ${date} beworben.`;
+    },
+    linkToAssignment: "Link zum Termin",
+  },
+  reminderEmail: {
+    subject(assignmentName: string, date: string): string {
+      return `Erinnerung: Trolley ${assignmentName} am ${date}`;
+    },
+    message(assignmentName: string, date: string): string {
+      return `dein Trolleydienst ${assignmentName} am ${date} steht bevor. Wir freuen uns auf dich!`;
+    },
+    linkToAssignment: "Link zum Termin",
+  },
   dateFormats: {
     shortDateTime: "llll",
     longDateTime: "dddd, Do MMM [um] LT",

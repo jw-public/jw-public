@@ -53,7 +53,10 @@ export const NotificationDataSchema = new SimpleSchema({
   },
   link: {
     type: String,
-    regEx: SimpleSchema.RegEx.Url,
+    // Relative App-Pfade ODER absolute http(s)-URLs. Der frühere
+    // SimpleSchema.RegEx.Url verlangte eine TLD und lehnte damit sowohl
+    // In-App-Pfade ("/einsatz/…") als auch localhost-URLs (dev/e2e) ab.
+    regEx: /^(\/\S*|https?:\/\/\S+)$/,
     optional: true,
     custom: function (this: SchemaContext) {
       let context = <any>this;

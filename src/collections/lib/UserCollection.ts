@@ -2,6 +2,16 @@ import { Meteor } from "meteor/meteor";
 import { Mongo } from "meteor/mongo";
 import { Locale } from "../../imports/i18n/classes/I18nProvider";
 
+/**
+ * Self-Service-Einstellung eines Koordinators: bei welchen neuen Bewerbungen
+ * auf Einsätze seiner Gruppen er benachrichtigt werden möchte.
+ * - "all": immer (Default, wenn nicht gesetzt)
+ * - "nearOnly": nur wenn der Einsatz in den nächsten `applicationNotifyDays`
+ *   Tagen liegt
+ * - "none": nie
+ */
+export type ApplicationNotifyMode = "all" | "nearOnly" | "none";
+
 export interface UserProfile {
   first_name?: string;
   last_name?: string;
@@ -17,6 +27,8 @@ export interface UserProfile {
   zip?: string;
   placeName?: string;
   notificationAsEmail?: boolean;
+  applicationNotifyMode?: ApplicationNotifyMode;
+  applicationNotifyDays?: number;
 }
 
 /**
@@ -41,6 +53,13 @@ export interface UserDAO extends Meteor.User {
   banned?: boolean;
   notice?: string;
   termsOfUse?: TermsOfUseConsent;
+  /**
+   * Geheimer Token für das persönliche iCal-Kalenderabo (/api/calendar/…).
+   * Wird ausschließlich serverseitig erzeugt (getCalendarToken-Method), nie
+   * publiziert und ist über die users-Allow-Rule nicht durch den Client
+   * änderbar — wer den Token kennt, kann die Termine des Users lesen.
+   */
+  calendarToken?: string;
 }
 
 export const users: Mongo.Collection<UserDAO> = <Mongo.Collection<UserDAO>>(<any>Meteor.users);

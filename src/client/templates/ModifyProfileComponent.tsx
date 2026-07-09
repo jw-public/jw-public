@@ -1,11 +1,13 @@
-import { alertDialog } from "../react/components/dialogs";
+import { alertDialog, confirmDialog } from "../react/components/dialogs";
 import * as React from "react";
 import { useState } from "react";
 import { Accounts } from "meteor/accounts-base";
 import { Meteor } from "meteor/meteor";
 import { useTracker } from "meteor/react-meteor-data";
 
+import User from "../../collections/lib/classes/User";
 import * as UserCollection from "../../collections/lib/UserCollection";
+import { callMethod } from "../../imports/methods/MethodContracts";
 import { InlineAlert, InlineAlerts } from "../react/components/InlineAlerts";
 
 const GENDER_OPTIONS = [
@@ -195,6 +197,149 @@ function ProfileDataForm(props: { user: Meteor.User }): JSX.Element {
   );
 }
 
+// Kalender-Abo (iCal): zeigt den persönlichen Feed-Link an. Der Token wird
+// erst auf Klick per Methode erzeugt/geholt — er ist bewusst nicht publiziert.
+function CalendarSubscriptionCard(): JSX.Element {
+  const [feedUrl, setFeedUrl] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  const urlForToken = (token: string) => `${window.location.origin}/api/calendar/${token}.ics`;
+
+  const showLink = () => {
+    callMethod("getCalendarToken")
+      .then((token) => setFeedUrl(urlForToken(token)))
+      .catch((err) => {
+        console.error(err);
+        void alertDialog("Der Kalender-Link konnte nicht erzeugt werden.", "Fehler");
+      });
+  };
+
+  const resetLink = () => {
+    void confirmDialog({
+      title: "Kalender-Link erneuern",
+      message:
+        "Der bisherige Kalender-Link wird ungültig — bestehende Abos in deinen " +
+        "Kalender-Apps musst du danach neu einrichten. Fortfahren?",
+      yesVariant: "danger",
+    }).then((yes) => {
+      if (!yes) {
+        return;
+      }
+      callMethod("resetCalendarToken")
+        .then((token) => {
+          setFeedUrl(urlForToken(token));
+          setCopied(false);
+        })
+        .catch((err) => {
+          console.error(err);
+          void alertDialog("Der Kalender-Link konnte nicht erneuert werden.", "Fehler");
+        });
+    });
+  };
+
+  const copyLink = () => {
+    if (!feedUrl) {
+      return;
+    }
+    void navigator.clipboard
+      .writeText(feedUrl)
+      .then(() => setCopied(true))
+      .catch(() => setCopied(false));
+  };
+
+  return (
+    <div className="card card-primary">
+      <div className="card-header">
+        <i className="fa fa-calendar fa-fw"></i> Kalender-Abo (iCal)
+      </div>
+      <div className="card-body">
+        <p className="small">
+          Abonniere deine Einsätze in deiner Kalender-App (Google, Apple, Outlook …). Neue
+          Teilnahmen, Bewerbungen und Absagen erscheinen dort automatisch. Behandle den Link wie ein
+          Passwort — jeder, der ihn kennt, kann deine Termine sehen.
+        </p>
+        {feedUrl ? (
+          <div>
+            <div className="form-group">
+              <input
+                id="calendarFeedUrl"
+                type="text"
+                className="form-control"
+                readOnly
+                value={feedUrl}
+                onFocus={(e) => e.target.select()}
+              />
+            </div>
+            <button type="button" className="btn btn-primary copy-calendar-url" onClick={copyLink}>
+              <i className="fa fa-clipboard"></i> {copied ? "Kopiert!" : "Link kopieren"}
+            </button>{" "}
+            <button
+              type="button"
+              className="btn btn-outline-danger reset-calendar-url"
+              onClick={resetLink}
+            >
+              <i className="fa fa-refresh"></i> Link erneuern
+            </button>
+          </div>
+        ) : (
+          <button type="button" className="btn btn-primary show-calendar-url" onClick={showLink}>
+            <i className="fa fa-link"></i> Kalender-Link anzeigen
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Self-Service für Koordinatoren: bei welchen neuen Bewerbungen auf Einsätze
+// der eigenen Gruppen benachrichtigt werden soll.
+function ApplicationNotifySettings(props: {
+  profile: UserCollection.UserProfile;
+  setProfileField: (field: string, value: any) => void;
+}): JSX.Element {
+  const mode = props.profile.applicationNotifyMode ?? "all";
+  const days = props.profile.applicationNotifyDays ?? 7;
+
+  return (
+    <div style={{ marginTop: "10px" }}>
+      <div className="form-group">
+        <label htmlFor="applicationNotifyMode">
+          Bei neuen Bewerbungen auf Einsätze meiner Gruppen
+        </label>
+        <select
+          id="applicationNotifyMode"
+          className="form-control"
+          value={mode}
+          onChange={(e) => props.setProfileField("profile.applicationNotifyMode", e.target.value)}
+        >
+          <option value="all">Immer benachrichtigen</option>
+          <option value="nearOnly">Nur wenn der Einsatz bald stattfindet</option>
+          <option value="none">Nie benachrichtigen</option>
+        </select>
+      </div>
+      {mode === "nearOnly" ? (
+        <div className="form-group">
+          <label htmlFor="applicationNotifyDays">Nur wenn der Einsatz beginnt in (Tagen)</label>
+          <input
+            id="applicationNotifyDays"
+            type="number"
+            className="form-control"
+            min={1}
+            max={60}
+            value={days}
+            onChange={(e) => {
+              const value = Number(e.target.value);
+              if (Number.isFinite(value) && value >= 1 && value <= 60) {
+                props.setProfileField("profile.applicationNotifyDays", value);
+              }
+            }}
+          />
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 function ChangePasswordForm(): JSX.Element {
   const [oldPassword, setOldPassword] = useState("");
   const [password, setPassword] = useState("");
@@ -281,6 +426,17 @@ function ChangePasswordForm(): JSX.Element {
 
 export default function ModifyProfile(): JSX.Element {
   const user = useTracker(() => Meteor.user());
+  // Die Bewerbungs-Benachrichtigung betrifft nur Koordinatoren — für alle
+  // anderen bleibt die Karte unverändert schlank.
+  const isCoordinator = useTracker(() => {
+    Meteor.subscribe("coordinatingGroups");
+    const userId = Meteor.userId();
+    if (!userId) {
+      return false;
+    }
+    const current = new User(userId);
+    return current.exists() ? current.isCoordinatorInAnyGroup(true) : false;
+  });
 
   if (!user) {
     return <div />;
@@ -339,8 +495,12 @@ export default function ModifyProfile(): JSX.Element {
                   Benachrichtigungen via E-Mail bekommen
                 </label>
               </div>
+              {isCoordinator ? (
+                <ApplicationNotifySettings profile={profile} setProfileField={setProfileField} />
+              ) : null}
             </div>
           </div>
+          <CalendarSubscriptionCard />
           <div className="card card-primary">
             <div className="card-header">Sprache für E-Mail-Benachrichtigungen</div>
             <div className="card-body">

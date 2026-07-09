@@ -6,6 +6,7 @@ import { MethodImplementations } from "../imports/methods/MethodContracts";
 import * as RolesHelper from "../lib/RolesHelper";
 import { check } from "meteor/check";
 import { Meteor } from "meteor/meteor";
+import { Random } from "meteor/random";
 
 import { Email } from "meteor/email";
 import * as PhoneValidator from "../collections/lib/ValidationFunctions/PhoneValidator";
@@ -260,6 +261,18 @@ Meteor.startup(function () {
         await app
           .assignmentApplicationControllerFactory(assignmentId)
           .addUserAsApplicantById(this.userId);
+
+        // Koordinatoren über die neue Bewerbung informieren (In-App + Mail,
+        // je nach deren Self-Service-Einstellung). Fehler hier dürfen die
+        // bereits gespeicherte Bewerbung nicht rückwirkend scheitern lassen.
+        try {
+          await app.applicationCoordinatorNotifier.notifyCoordinatorsAboutApplication(
+            assignmentId,
+            this.userId,
+          );
+        } catch (error) {
+          console.error("Failed to notify coordinators about application:", error);
+        }
       } else {
         throw new Meteor.Error("403", "Access denied.");
       }
@@ -577,6 +590,48 @@ Meteor.startup(function () {
         `Deleted group ${group.name} (${groupId}) with ${removedAssignments} assignments (by ${this.userId})`,
       );
       return { removedAssignments };
+    },
+
+    /**
+     * Liefert den geheimen Token des persönlichen iCal-Kalenderabos des
+     * eingeloggten Users und erzeugt ihn beim ersten Aufruf. Der Token wird
+     * bewusst nie publiziert — nur wer ihn kennt, kann den Feed lesen.
+     */
+    getCalendarToken: async function (): Promise<string> {
+      if (!this.userId) {
+        throw new Meteor.Error("403", "Access denied");
+      }
+      const user = (await Meteor.users.findOneAsync(
+        { _id: this.userId },
+        { fields: { calendarToken: 1 } },
+      )) as UserCollection.UserDAO | undefined;
+      if (user?.calendarToken) {
+        return user.calendarToken;
+      }
+      // Nur setzen, wenn noch keiner existiert (Guard gegen parallele Calls);
+      // danach autoritativ zurücklesen.
+      await Meteor.users.updateAsync(
+        { _id: this.userId, calendarToken: { $exists: false } },
+        { $set: { calendarToken: Random.hexString(40) } },
+      );
+      const after = (await Meteor.users.findOneAsync(
+        { _id: this.userId },
+        { fields: { calendarToken: 1 } },
+      )) as UserCollection.UserDAO | undefined;
+      return after!.calendarToken!;
+    },
+
+    /**
+     * Erzeugt einen neuen Kalender-Abo-Token (macht den alten Feed-Link
+     * ungültig — z.B. wenn er versehentlich geteilt wurde).
+     */
+    resetCalendarToken: async function (): Promise<string> {
+      if (!this.userId) {
+        throw new Meteor.Error("403", "Access denied");
+      }
+      const token = Random.hexString(40);
+      await Meteor.users.updateAsync({ _id: this.userId }, { $set: { calendarToken: token } });
+      return token;
     },
 
     /**

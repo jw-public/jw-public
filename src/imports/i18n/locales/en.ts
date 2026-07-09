@@ -47,6 +47,24 @@ There you will find the contact details.`,
 export const messages: ILocale = {
   hello: "Hello",
   assignmentEmail: assignmentLocale,
+  applicationEmail: {
+    subject(assignmentName: string, date: string): string {
+      return `New application for Trolley ${assignmentName} on ${date}`;
+    },
+    message(applicantName: string, assignmentName: string, date: string): string {
+      return `${applicantName} applied for the trolley ${assignmentName} on ${date}.`;
+    },
+    linkToAssignment: "Link to assignment",
+  },
+  reminderEmail: {
+    subject(assignmentName: string, date: string): string {
+      return `Reminder: Trolley ${assignmentName} on ${date}`;
+    },
+    message(assignmentName: string, date: string): string {
+      return `your trolley ${assignmentName} on ${date} is coming up. We are looking forward to seeing you!`;
+    },
+    linkToAssignment: "Link to assignment",
+  },
   dateFormats: {
     shortDateTime: "llll",
     longDateTime: "dddd, Do MMM [at] LT",

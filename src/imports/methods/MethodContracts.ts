@@ -47,6 +47,8 @@ export interface MethodSignatures {
   validatePhoneNumber: { args: [phoneNumber: string]; result: boolean };
   removeUser: { args: [userToRemoveId: string]; result: void };
   acceptTermsOfUse: { args: []; result: void };
+  getCalendarToken: { args: []; result: string };
+  resetCalendarToken: { args: []; result: string };
   adminInactivityReport: { args: [thresholdDays: number]; result: InactivityReport };
   adminDeleteGroup: { args: [groupId: string]; result: { removedAssignments: number } };
 }
