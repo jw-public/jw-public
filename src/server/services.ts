@@ -11,8 +11,10 @@ import { SimpleCollection } from "../imports/interfaces/SimpleCollection";
 import { LoggerFactory } from "../imports/logging/LoggerFactory";
 import { SimpleConsoleLoggerFactory } from "../imports/logging/SimpleConsoleLoggerFactory";
 
+import { ApplicationCoordinatorNotifier } from "./assignments/classes/ApplicationCoordinatorNotifier";
 import { AssignmentApplicationController } from "./assignments/classes/AssignmentApplicationController";
 import { AssignmentCanceler } from "./assignments/classes/AssignmentCanceler";
+import { AssignmentReminder } from "./assignments/classes/AssignmentReminder";
 import { AssignmentCloser } from "./assignments/classes/AssignmentCloser";
 import { AssignmentDaoNotifier } from "./assignments/classes/AssignmentDaoNotifier";
 import { AssignmentDateParser } from "./assignments/classes/AssignmentDateParser";
@@ -135,6 +137,26 @@ export function buildServices(
     loggerFactory,
   );
 
+  const applicationCoordinatorNotifier = new ApplicationCoordinatorNotifier(
+    collections.assignments,
+    collections.users,
+    collections.groups,
+    collections.notifications,
+    userMailer,
+    userSettingsReaderFactory,
+    loggerFactory,
+  );
+
+  const assignmentReminder = new AssignmentReminder(
+    collections.assignments,
+    collections.users,
+    collections.groups,
+    collections.notifications,
+    userMailer,
+    userSettingsReaderFactory,
+    loggerFactory,
+  );
+
   return {
     loggerFactory,
     userFactory,
@@ -152,6 +174,8 @@ export function buildServices(
     assignmentReenabler,
     assignmentRemover,
     assignmentWeekCopyPaster,
+    applicationCoordinatorNotifier,
+    assignmentReminder,
     assignments: collections.assignments,
   };
 }

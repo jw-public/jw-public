@@ -43,6 +43,11 @@ export interface AssignmentDAO {
   year?: number;
   isoWeek?: number;
   yearOfIsoWeek?: number;
+  /**
+   * Zeitpunkt, zu dem die Teilnehmer-Erinnerungen für diesen Einsatz
+   * verschickt wurden (AssignmentReminder). Fehlt = noch nicht erinnert.
+   */
+  remindersSentAt?: Date;
 }
 
 const AssignmentStateNames = EnumUtil.getNames(AssignmentState);
@@ -240,6 +245,14 @@ export const AssignmentSchema = new SimpleSchema({
     type: String,
     optional: true,
     label: "Abholung",
+  },
+  // Erinnerungs-Stempel des Reminder-Schedulers. Wird per bypassCollection2
+  // gesetzt (kein updatedAt-Restamp), steht aber im Schema, damit das Feld
+  // dokumentiert und bei Voll-Validierungen bekannt ist.
+  remindersSentAt: {
+    type: Date,
+    label: "Erinnerungen verschickt am",
+    optional: true,
   },
   return_point: {
     type: String,

@@ -19,9 +19,25 @@ export interface IAssignmentEmailLocale {
   };
 }
 
+/** E-Mail an Koordinatoren: neue Bewerbung auf einen Einsatz ihrer Gruppe. */
+export interface IApplicationEmailLocale {
+  subject(assignmentName: string, date: string): string;
+  message(applicantName: string, assignmentName: string, date: string): string;
+  linkToAssignment: string;
+}
+
+/** Erinnerungs-E-Mail an Teilnehmer vor Beginn eines Einsatzes. */
+export interface IReminderEmailLocale {
+  subject(assignmentName: string, date: string): string;
+  message(assignmentName: string, date: string): string;
+  linkToAssignment: string;
+}
+
 export interface ILocale {
   hello: string;
   assignmentEmail: IAssignmentEmailLocale;
+  applicationEmail: IApplicationEmailLocale;
+  reminderEmail: IReminderEmailLocale;
   dateFormats: {
     shortDateTime: string;
     longDateTime: string;

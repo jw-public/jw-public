@@ -161,6 +161,22 @@ export const UserProfileSchema = new SimpleSchema({
     label: "Benachrichtigungen via E-Mail bekommen",
     optional: true,
   },
+  // Self-Service für Koordinatoren: bei welchen neuen Bewerbungen auf
+  // Einsätze der eigenen Gruppen benachrichtigt werden soll (siehe
+  // ApplicationNotifyMode in UserCollection.ts). Fehlend = "all".
+  applicationNotifyMode: {
+    type: String,
+    label: "Benachrichtigung bei neuen Bewerbungen",
+    allowedValues: ["all", "nearOnly", "none"],
+    optional: true,
+  },
+  applicationNotifyDays: {
+    type: Number,
+    label: "Nur wenn der Einsatz in den nächsten X Tagen liegt",
+    min: 1,
+    max: 365,
+    optional: true,
+  },
   pendingGroups: {
     type: Array,
     label: "Ausstehende Gruppenbewerbungen",
@@ -339,6 +355,14 @@ export const UserSchema = new SimpleSchema({
   "termsOfUse.acceptedAt": {
     type: Date,
     label: "Zeitpunkt der Zustimmung",
+  },
+  // Geheimer Token des persönlichen iCal-Kalenderabos. Nur serverseitig
+  // gesetzt (getCalendarToken/resetCalendarToken) und bewusst in keiner
+  // Publikation enthalten.
+  calendarToken: {
+    type: String,
+    label: "Kalender-Abo-Token",
+    optional: true,
   },
 });
 

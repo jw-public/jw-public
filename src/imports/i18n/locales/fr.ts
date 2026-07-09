@@ -46,6 +46,24 @@ Si tu veux contacter ton responsable, clique sur le lien ci-dessus pour y trouve
 export const messages: ILocale = {
   hello: "Bonjour",
   assignmentEmail: assignmentLocale,
+  applicationEmail: {
+    subject(assignmentName: string, date: string): string {
+      return `Nouvelle candidature pour le présentoir ${assignmentName}, le ${date}`;
+    },
+    message(applicantName: string, assignmentName: string, date: string): string {
+      return `${applicantName} a postulé pour le service du présentoir ${assignmentName} le ${date}.`;
+    },
+    linkToAssignment: "Voici le lien pour plus d’information",
+  },
+  reminderEmail: {
+    subject(assignmentName: string, date: string): string {
+      return `Rappel : présentoir ${assignmentName}, le ${date}`;
+    },
+    message(assignmentName: string, date: string): string {
+      return `ton service du présentoir ${assignmentName} le ${date} approche. Nous nous réjouissons de te voir !`;
+    },
+    linkToAssignment: "Voici le lien pour plus d’information",
+  },
   dateFormats: {
     shortDateTime: "ddd L hh[h]mm",
     longDateTime: "dddd, [le] Do MMM YYYY [à] hh[h]mm",
