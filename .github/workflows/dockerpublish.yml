@@ -69,7 +69,7 @@ jobs:
         env:
           E2E_BASE_URL: http://localhost:3000
           MAILPIT_URL: http://localhost:8025
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: playwright-report
@@ -109,7 +109,7 @@ jobs:
         run: cd src && meteor lint
       - run: cd src && meteor npm run compile
       - run: cd src && meteor build --allow-superuser ./build
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: build_package
