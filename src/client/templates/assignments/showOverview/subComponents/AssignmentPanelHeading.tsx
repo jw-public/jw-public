@@ -1,40 +1,31 @@
 import * as React from "react";
-
-import AssignmentPanelBody from "./AssignmentPanelBody";
-import { AssignmentPanelProps } from "../AssignmentPanel";
-import Assignment from "../../../../../collections/lib/classes/Assignment";
-
 import moment from "moment";
 
-export default class AssignmentPanelHeading extends React.Component<AssignmentPanelProps, {}> {
-  private panelBodyHasProgressBar(): boolean {
-    return AssignmentPanelBody.assignmentHasProgressBar(
-      Assignment.createFromDAO(this.props.assignment),
-    );
-  }
+import { AssignmentDAO } from "../../../../../collections/lib/AssignmentsCollection";
+import { readOccupancy } from "./lib/AssignmentOccupancy";
 
-  public render(): JSX.Element {
-    const assignmentName = this.props.assignment.name;
-    const assignmentDayOfWeekShort = moment(this.props.assignment.start).format("ddd");
-    const assignmentDayOfWeekLong = moment(this.props.assignment.start).format("dddd");
+interface PanelHeadingProps {
+  assignment: AssignmentDAO;
+}
 
-    let panelHeadingClassNames = "card-header";
+export default function AssignmentPanelHeading(props: PanelHeadingProps): JSX.Element {
+  const assignment = props.assignment;
+  const start = moment(assignment.start);
 
-    if (this.panelBodyHasProgressBar()) {
-      panelHeadingClassNames += " with-progress-bar";
-    }
+  const classNames = readOccupancy(assignment).hasProgressBar
+    ? "card-header with-progress-bar"
+    : "card-header";
 
-    return (
-      <div className={panelHeadingClassNames}>
-        <div className="row">
-          <div className="col-7 text-center">{assignmentName}</div>
+  return (
+    <div className={classNames}>
+      <div className="row">
+        <div className="col-7 text-center">{assignment.name}</div>
 
-          <div className="col-5 text-center">
-            <span className="d-none d-lg-inline">{assignmentDayOfWeekShort}</span>
-            <span className="d-lg-none">{assignmentDayOfWeekLong}</span>
-          </div>
+        <div className="col-5 text-center">
+          <span className="d-none d-lg-inline">{start.format("ddd")}</span>
+          <span className="d-lg-none">{start.format("dddd")}</span>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 }

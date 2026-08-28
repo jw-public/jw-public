@@ -35,10 +35,10 @@ describe("AssignmentEmailNotifier", function () {
     testCase.emailAssert.emailWasSentWith({
       recepientId: testCase.testUserId,
       replyToAddress: "test-group@jw-public.org",
-      subject: "Zusage für Trolley TestName am Mo., 24. Okt. 2016 14:00",
+      subject: "Zusage für den Termin TestName am Mo., 24. Okt. 2016 14:00",
       markdownContent: `Hallo Dummy,
 
-wir freuen uns über deine Teilnahme am Trolleydienst TestName am Montag, 24. Okt. um 14:00!
+wir freuen uns über deine Teilnahme am Termin TestName am Montag, 24. Okt. um 14:00!
 
 Link zum Termin: http://my-root-url/einsatz/sampleAssignmentId
 
@@ -66,10 +66,10 @@ Dort findest du die Kontaktdaten. Bitte sende uns deinen Bericht dieser Schicht 
     testCase.emailAssert.emailWasSentWith({
       recepientId: testCase.testUserId,
       replyToAddress: "test-group@jw-public.org",
-      subject: "Absage für Trolley TestName am Mo., 24. Okt. 2016 14:00",
+      subject: "Absage für den Termin TestName am Mo., 24. Okt. 2016 14:00",
       markdownContent: `Hallo Dummy,
 
-leider ist deine Teilnahme am Trolleydienst TestName am Montag, 24. Okt. um 14:00 nicht möglich!
+leider ist deine Teilnahme am Termin TestName am Montag, 24. Okt. um 14:00 nicht möglich!
 
 Deine Brüder der Trolleyorganisation.
 
@@ -95,10 +95,10 @@ Dort findest du die Kontaktdaten. Bitte sende uns deinen Bericht dieser Schicht 
     testCase.emailAssert.emailWasSentWith({
       recepientId: testCase.testUserId,
       replyToAddress: "test-group@jw-public.org",
-      subject: "Absage für Trolley TestName am Mo., 24. Okt. 2016 14:00",
+      subject: "Absage für den Termin TestName am Mo., 24. Okt. 2016 14:00",
       markdownContent: `Hallo Dummy,
 
-leider musste die Trolleyschicht TestName am Montag, 24. Okt. um 14:00 abgesagt werden.
+leider musste der Termin TestName am Montag, 24. Okt. um 14:00 abgesagt werden.
 Der Grund: Regen.
 
 Link zum Termin: http://my-root-url/einsatz/sampleAssignmentId
@@ -127,10 +127,10 @@ Dort findest du die Kontaktdaten. Bitte sende uns deinen Bericht dieser Schicht 
     testCase.emailAssert.emailWasSentWith({
       recepientId: testCase.testUserId,
       replyToAddress: "test-group@jw-public.org",
-      subject: "Änderung für Trolley TestName am Mo., 24. Okt. 2016 14:00",
+      subject: "Änderung für den Termin TestName am Mo., 24. Okt. 2016 14:00",
       markdownContent: `Hallo Dummy,
 
-bei der Trolleyschicht TestName am Montag, 24. Okt. um 14:00 gab es eine Änderung.
+beim Termin TestName am Montag, 24. Okt. um 14:00 gab es eine Änderung.
 Bitte informiere dich über den Status des Termins und ob er stattfinden kann.
 
 Link zum Termin: http://my-root-url/einsatz/sampleAssignmentId
@@ -160,10 +160,10 @@ Dort findest du die Kontaktdaten. Bitte sende uns deinen Bericht dieser Schicht 
     testCase.emailAssert.emailWasSentWith({
       recepientId: testCase.testUserId,
       replyToAddress: "test-group@jw-public.org",
-      subject: "Zusage für Trolley TestName am Mo., 24. Okt. 2016 14:00",
+      subject: "Zusage für den Termin TestName am Mo., 24. Okt. 2016 14:00",
       markdownContent: `Hallo Dummy,
 
-wir freuen uns, dass der Trolleydienst TestName am Montag, 24. Okt. um 14:00 nun doch statt finden kann.
+wir freuen uns, dass der Termin TestName am Montag, 24. Okt. um 14:00 nun doch stattfinden kann.
 Der Grund: Regen hat aufgehört.
 
 Link zum Termin: http://my-root-url/einsatz/sampleAssignmentId

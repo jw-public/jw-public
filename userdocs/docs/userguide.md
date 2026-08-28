@@ -23,8 +23,14 @@ Wichtig: Für die Anmeldung verwendest Du die folgende Internetadresse:
 [jw-public](https://jw-public.org)
 Tipp: Am besten Du speicherst diese Adresse als Favorit ab. So findest Du diese Anwendung schnell wieder.
 
+##Meine Termine
+Unter „Meine Termine“ in der linken Navigation findest Du alle Deine Termine auf einer Seite — über alle Monate und über alle Deine Gruppen hinweg. Angezeigt werden Deine Bewerbungen und Deine Teilnahmen: alles Anstehende sowie die letzten 30 Tage, nach Monat und Gruppe gegliedert. Das ist derselbe Ausschnitt, den auch das Kalender-Abo liefert.
+
 ##Terminübersicht
 Wenn die Freischaltung erfolgt ist, werden Dir alle Termine in der Terminübersicht angezeigt, für die Du Dich bewerben kannst.
+
+###Listen- und Kalenderansicht
+In der Terminübersicht kannst Du zwischen „Liste“ und „Kalender“ umschalten. Die Liste zeigt die Termine nach Wochen gruppiert, der Kalender als Monatsraster: farbige Balken zeigen auf einen Blick, welche Termine noch unbesetzt, teilweise besetzt oder voll sind. Ein Klick auf einen Tag zeigt darunter nur dessen Termine, ein zweiter Klick hebt die Auswahl wieder auf. Über das Feld „Tag suchen“ springst Du direkt zu einem bestimmten Datum — auch in einem späteren Monat. Deine Wahl zwischen Liste und Kalender merkt sich der Browser.
 
 ##Für einen Termin bewerben
 Wenn Du Dich für einen bestimmten Termin bewerben möchtest, dann klickst Du bei Diesem auf „Bewerben“. Dieser Termin gilt dann solange als beworben (gelb) bis Du entweder angenommen (grün) oder leider vom Koordinator abgelehnt wurdest. Das ist dann meistens der Fall, wenn nicht alle Bewerber angenommen werden können. Bitte probiere eine erneute Bewerbung für einen anderen Termin. Du kannst Dich auch für mehrere Termine gleichzeitig bewerben.
@@ -63,6 +69,10 @@ Wenn Du aus persönlichem Anlass einen bereits bestätigten Termin (grün) absag
 
 ##Benachrichtigungen
 Wichtige Benachrichtigungen zu Deinen Terminen, werden Dir über das Symbol angezeigt. Hierüber wirst Du informiert wenn Deine Bewerbung angenommen oder abgelehnt bzw. abgesagt werden musste. Wenn Du die Nachricht anklickst, kommst Du bei einem angenommenen Termin sogar Direkt zur Detailansicht des Termins. Die rote Markierung verschwindet, wenn alle neuen Termine gelesen wurden.
+
+Die Liste ist auf die neuesten Benachrichtigungen begrenzt und lässt sich scrollen; die Schaltfläche zum Entfernen bleibt dabei am unteren Rand sichtbar.
+
+Wenn Du Koordinator einer Gruppe bist, wirst Du zusätzlich benachrichtigt, sobald einer Deiner Termine voll ist — also Bewerber und Teilnehmer zusammen die gewünschte Personenzahl erreichen. In dieser Nachricht stehen die Namen der Personen, die Du noch bestätigen musst. Über einzelne Bewerbungen wird nicht mehr benachrichtigt. Unter „Meine Daten“ kannst Du einstellen, ob Du das immer, nur bei bald anstehenden Terminen oder gar nicht möchtest.
 
 ![Benachrichtigung](img/benachrichtigung.png)
 

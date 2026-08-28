@@ -25,6 +25,27 @@ Meteor.startup(async function () {
     await Meteor.users.updateAsync(user._id, { $unset: { roles: "" } });
   }
 
+  // Einmalige Übernahme der Koordinator-Einstellung: applicationNotifyMode /
+  // -Days steuerten Benachrichtigungen pro Bewerbung, fullNotifyMode / -Days
+  // steuern dieselbe Abstufung für volle Termine (ADR 0006). Die Altwerte
+  // werden 1:1 übernommen und danach entfernt; wer schon migriert ist, wird
+  // vom Selektor nicht mehr gefunden.
+  const legacyNotifyUsers = await Meteor.users
+    .find({ "profile.applicationNotifyMode": { $exists: true } })
+    .fetchAsync();
+  for (const user of legacyNotifyUsers as any[]) {
+    const set: Record<string, unknown> = {
+      "profile.fullNotifyMode": user.profile.applicationNotifyMode,
+    };
+    if (user.profile.applicationNotifyDays !== undefined) {
+      set["profile.fullNotifyDays"] = user.profile.applicationNotifyDays;
+    }
+    await Meteor.users.updateAsync(user._id, {
+      $set: set,
+      $unset: { "profile.applicationNotifyMode": "", "profile.applicationNotifyDays": "" },
+    });
+  }
+
   // Die Zustimmung zu den Nutzungsbedingungen reist als Custom-Option in
   // Accounts.createUser mit und wird hier serverseitig gestempelt — der
   // Client kann das Feld selbst nie schreiben (Allow-Rule erlaubt nur

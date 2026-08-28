@@ -19,10 +19,16 @@ export interface IAssignmentEmailLocale {
   };
 }
 
-/** E-Mail an Koordinatoren: neue Bewerbung auf einen Einsatz ihrer Gruppe. */
-export interface IApplicationEmailLocale {
+/**
+ * E-Mail an Koordinatoren: ein Termin ihrer Gruppe ist voll geworden und die
+ * Bewerber warten auf Bestätigung. Ersetzt die frühere Nachricht pro einzelner
+ * Bewerbung (ADR 0006).
+ */
+export interface IAssignmentFullEmailLocale {
   subject(assignmentName: string, date: string): string;
-  message(applicantName: string, assignmentName: string, date: string): string;
+  message(assignmentName: string, date: string): string;
+  /** Überschrift über der Namensliste der zu bestätigenden Personen. */
+  toConfirm: string;
   linkToAssignment: string;
 }
 
@@ -36,7 +42,7 @@ export interface IReminderEmailLocale {
 export interface ILocale {
   hello: string;
   assignmentEmail: IAssignmentEmailLocale;
-  applicationEmail: IApplicationEmailLocale;
+  assignmentFullEmail: IAssignmentFullEmailLocale;
   reminderEmail: IReminderEmailLocale;
   dateFormats: {
     shortDateTime: string;

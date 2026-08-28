@@ -25,7 +25,7 @@ const assignmentLocale: IAssignmentEmailLocale = {
       return `Malheureusement ta participation au service du présentoir ${assignmentName} le ${date} ne sera pas possible.`;
     },
     modified(assignmentName: string, date: string): string {
-      return `there were changes concerning the trolley ${assignmentName} on ${date}.\nPlease inform yourself if your trolley assignment can still take place.`;
+      return `il y a eu des changements concernant le service du présentoir ${assignmentName} le ${date}.\nMerci de vérifier si ce service peut toujours avoir lieu.`;
     },
     canceled(assignmentName: string, date: string, reason: string): string {
       return `Malheureusement le service du présentoir ${assignmentName} le ${date} e pourra pas avoir lieu. La raison : ${reason}.`;
@@ -46,13 +46,14 @@ Si tu veux contacter ton responsable, clique sur le lien ci-dessus pour y trouve
 export const messages: ILocale = {
   hello: "Bonjour",
   assignmentEmail: assignmentLocale,
-  applicationEmail: {
+  assignmentFullEmail: {
     subject(assignmentName: string, date: string): string {
-      return `Nouvelle candidature pour le présentoir ${assignmentName}, le ${date}`;
+      return `Le présentoir ${assignmentName}, le ${date} est complet`;
     },
-    message(applicantName: string, assignmentName: string, date: string): string {
-      return `${applicantName} a postulé pour le service du présentoir ${assignmentName} le ${date}.`;
+    message(assignmentName: string, date: string): string {
+      return `le service du présentoir ${assignmentName} le ${date} est complet. Merci de confirmer les candidats et de clôturer ce service.`;
     },
+    toConfirm: "À confirmer",
     linkToAssignment: "Voici le lien pour plus d’information",
   },
   reminderEmail: {

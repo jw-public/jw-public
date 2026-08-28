@@ -7,7 +7,9 @@ jw-public is an open source tool designed to help Jehovah's Witnesses organize p
 - **User management**: registration with group application, coordinator approval, admin user administration
 - **Group management**: create and edit groups, manage coordinators and members
 - **Assignment management**: create assignments, members apply, coordinators accept applicants and close assignments, week-by-week copying
-- **Notifications**: in-app notifications plus email (acceptance, cancellation, re-enabling), templates in German, English and French
+- **Notifications**: in-app notifications plus email (acceptance, cancellation, re-enabling, reminders, and a coordinator alert once an assignment is full), templates in German, English and French
+- **Personal view**: "Meine Termine" lists a member's own assignments across all months and groups; the assignment overview switches between a week list and a month calendar with a day filter
+- **Admin statistics**: occupancy rate and closing rate per group and month over the last 12 months, plus a CSV export of all users
 - **Kubernetes**: production deployment manifests included
 
 ## Tech stack

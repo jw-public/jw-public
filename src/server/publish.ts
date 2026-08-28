@@ -562,3 +562,74 @@ Meteor.publish("groupName", function (id) {
 
   return Groups.find({ _id: id }, { fields: { _id: 1, name: 1 } });
 });
+
+/**
+ * Persönliche Terminübersicht: alle Termine, auf die sich der angemeldete
+ * Benutzer beworben hat oder an denen er teilnimmt — gruppenübergreifend und
+ * monatsübergreifend.
+ *
+ * Ausschnitt und Grenzen sind bewusst identisch zum iCal-Kalenderabo
+ * (server/calendar/CalendarFeed.ts): was in der Kalender-App steht, steht auch
+ * auf der Seite. Auseinanderlaufende Definitionen wären für den Benutzer nicht
+ * erklärbar.
+ */
+const MY_ASSIGNMENTS_LOOKBACK_DAYS = 30;
+const MY_ASSIGNMENTS_LIMIT = 500;
+
+Meteor.publish("myAssignments", function () {
+  if (!this.userId) {
+    return this.ready();
+  }
+
+  const since = moment().subtract(MY_ASSIGNMENTS_LOOKBACK_DAYS, "days").startOf("day").toDate();
+
+  return Assignments.find(
+    {
+      $or: [{ "participants.user": this.userId }, { "applicants.user": this.userId }],
+      start: { $gte: since },
+    },
+    {
+      sort: { start: 1 },
+      limit: MY_ASSIGNMENTS_LIMIT,
+      fields: {
+        _id: 1,
+        group: 1,
+        start: 1,
+        end: 1,
+        name: 1,
+        state: 1,
+        applicants: 1,
+        participants: 1,
+        userGoal: 1,
+        yearOfIsoWeek: 1,
+        year: 1,
+        month: 1,
+        isoWeek: 1,
+      },
+    },
+  );
+});
+
+/**
+ * Die Namen aller Gruppen, in denen der Benutzer Termine hat — damit "Meine
+ * Termine" die Herkunft jedes Termins anzeigen kann, ohne die Gruppen
+ * vollständig zu veröffentlichen.
+ */
+Meteor.publish("groupNamesOfMyAssignments", async function () {
+  if (!this.userId) {
+    return this.ready();
+  }
+
+  const since = moment().subtract(MY_ASSIGNMENTS_LOOKBACK_DAYS, "days").startOf("day").toDate();
+  const assignments = await Assignments.find(
+    {
+      $or: [{ "participants.user": this.userId }, { "applicants.user": this.userId }],
+      start: { $gte: since },
+    },
+    { fields: { group: 1 }, limit: MY_ASSIGNMENTS_LIMIT },
+  ).fetchAsync();
+
+  const groupIds = _.unique(assignments.map((a) => a.group));
+
+  return Groups.find({ _id: { $in: groupIds } }, { fields: { _id: 1, name: 1 } });
+});

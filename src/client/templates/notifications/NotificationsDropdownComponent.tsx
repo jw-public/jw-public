@@ -13,6 +13,14 @@ interface ItemData {
   notification: UserNotification.Wrapper;
 }
 
+/**
+ * Es werden höchstens so viele Benachrichtigungen gerendert; ältere sind über
+ * die Zählung sichtbar, aber nicht als Eintrag. Ohne Deckel wächst die Liste
+ * unbegrenzt — das Menü scrollt zwar, baut aber trotzdem jedes Mal alle
+ * Einträge auf.
+ */
+const MAX_RENDERED_NOTIFICATIONS = 50;
+
 function NotificationItemContent(props: { notification: UserNotification.Wrapper }): JSX.Element {
   const when = props.notification.data.when;
 
@@ -62,6 +70,7 @@ export default function NotificationsDropdown(): JSX.Element {
         items: [] as ItemData[],
         hasUnread: false,
         unreadCount: 0,
+        totalCount: 0,
         hasNotifications: false,
       };
     }
@@ -71,11 +80,14 @@ export default function NotificationsDropdown(): JSX.Element {
 
     const hasUnread = user.notificationManager.hasUnreadNotifications();
     const unreadCount = user.notificationManager.getUnreadNotifications(true).count();
-    const hasNotifications = user.notificationManager.getAllNotifications(true, 0).count() > 0;
+    const totalCount = user.notificationManager.getAllNotifications(true, 0).count();
+    const hasNotifications = totalCount > 0;
 
     const items: ItemData[] = [];
     if (handle.ready()) {
-      const notifications = user.notificationManager.getAllNotifications(true).fetch();
+      const notifications = user.notificationManager
+        .getAllNotifications(true, MAX_RENDERED_NOTIFICATIONS)
+        .fetch();
       let isFirstEntry = true;
       _.forEach(notifications, (notification) => {
         const wrapped = UserNotification.wrap(notification);
@@ -86,7 +98,7 @@ export default function NotificationsDropdown(): JSX.Element {
       });
     }
 
-    return { ready: handle.ready(), items, hasUnread, unreadCount, hasNotifications };
+    return { ready: handle.ready(), items, hasUnread, unreadCount, totalCount, hasNotifications };
   });
 
   // Closing the dropdown marks everything as seen (was 'hidden.bs.dropdown').
@@ -151,8 +163,15 @@ export default function NotificationsDropdown(): JSX.Element {
             {data.items.map((item, i) => (
               <NotificationItem key={i} divider={item.divider} notification={item.notification} />
             ))}
+            {data.totalCount > data.items.length ? (
+              <li>
+                <div className="small text-muted text-center">
+                  … und {data.totalCount - data.items.length} ältere
+                </div>
+              </li>
+            ) : null}
             <li className="divider"></li>
-            <li>
+            <li className="dropdown-alerts-footer">
               <div>
                 <button
                   type="button"

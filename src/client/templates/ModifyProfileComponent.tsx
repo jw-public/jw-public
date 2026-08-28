@@ -254,7 +254,7 @@ function CalendarSubscriptionCard(): JSX.Element {
       </div>
       <div className="card-body">
         <p className="small">
-          Abonniere deine Einsätze in deiner Kalender-App (Google, Apple, Outlook …). Neue
+          Abonniere deine Termine in deiner Kalender-App (Google, Apple, Outlook …). Neue
           Teilnahmen, Bewerbungen und Absagen erscheinen dort automatisch. Behandle den Link wie ein
           Passwort — jeder, der ihn kennt, kann deine Termine sehen.
         </p>
@@ -291,37 +291,37 @@ function CalendarSubscriptionCard(): JSX.Element {
   );
 }
 
-// Self-Service für Koordinatoren: bei welchen neuen Bewerbungen auf Einsätze
-// der eigenen Gruppen benachrichtigt werden soll.
-function ApplicationNotifySettings(props: {
+// Self-Service für Koordinatoren: bei welchen voll gewordenen Terminen der
+// eigenen Gruppen benachrichtigt werden soll.
+function FullNotifySettings(props: {
   profile: UserCollection.UserProfile;
   setProfileField: (field: string, value: any) => void;
 }): JSX.Element {
-  const mode = props.profile.applicationNotifyMode ?? "all";
-  const days = props.profile.applicationNotifyDays ?? 7;
+  const mode = props.profile.fullNotifyMode ?? "all";
+  const days = props.profile.fullNotifyDays ?? 7;
 
   return (
     <div style={{ marginTop: "10px" }}>
       <div className="form-group">
-        <label htmlFor="applicationNotifyMode">
-          Bei neuen Bewerbungen auf Einsätze meiner Gruppen
+        <label htmlFor="fullNotifyMode">
+          Wenn ein Termin meiner Gruppen voll wird und Bewerber zu bestätigen sind
         </label>
         <select
-          id="applicationNotifyMode"
+          id="fullNotifyMode"
           className="form-control"
           value={mode}
-          onChange={(e) => props.setProfileField("profile.applicationNotifyMode", e.target.value)}
+          onChange={(e) => props.setProfileField("profile.fullNotifyMode", e.target.value)}
         >
           <option value="all">Immer benachrichtigen</option>
-          <option value="nearOnly">Nur wenn der Einsatz bald stattfindet</option>
+          <option value="nearOnly">Nur wenn der Termin bald stattfindet</option>
           <option value="none">Nie benachrichtigen</option>
         </select>
       </div>
       {mode === "nearOnly" ? (
         <div className="form-group">
-          <label htmlFor="applicationNotifyDays">Nur wenn der Einsatz beginnt in (Tagen)</label>
+          <label htmlFor="fullNotifyDays">Nur wenn der Termin beginnt in (Tagen)</label>
           <input
-            id="applicationNotifyDays"
+            id="fullNotifyDays"
             type="number"
             className="form-control"
             min={1}
@@ -330,7 +330,7 @@ function ApplicationNotifySettings(props: {
             onChange={(e) => {
               const value = Number(e.target.value);
               if (Number.isFinite(value) && value >= 1 && value <= 60) {
-                props.setProfileField("profile.applicationNotifyDays", value);
+                props.setProfileField("profile.fullNotifyDays", value);
               }
             }}
           />
@@ -496,7 +496,7 @@ export default function ModifyProfile(): JSX.Element {
                 </label>
               </div>
               {isCoordinator ? (
-                <ApplicationNotifySettings profile={profile} setProfileField={setProfileField} />
+                <FullNotifySettings profile={profile} setProfileField={setProfileField} />
               ) : null}
             </div>
           </div>

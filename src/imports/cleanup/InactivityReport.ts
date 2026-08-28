@@ -75,6 +75,50 @@ function maxDate(...candidates: Array<Date | null | undefined>): Date | null {
   return max;
 }
 
+/** Zeitpunkte, aus denen sich ergibt, wie lebendig ein Benutzerkonto ist. */
+export interface UserActivity {
+  /** Jüngster Login-Token-Zeitstempel; null, wenn keiner überlebt hat (Tokens verfallen). */
+  lastLogin: Date | null;
+  /** max(lastLogin, Profiländerung, Bewerbung/Teilnahme, Registrierung). */
+  lastActivity: Date | null;
+}
+
+/**
+ * Leitet zu jedem Benutzer letzte Anmeldung und letzte Aktivität her.
+ *
+ * Eigene Funktion, weil zwei Aufrufer dieselbe Herleitung brauchen: die
+ * Aufräumen-Seite (wer ist inaktiv?) und der CSV-Export (was steht in der
+ * Spalte?). Zwei Kopien würden über kurz oder lang unterschiedliche Zahlen für
+ * denselben Benutzer zeigen.
+ */
+export function computeUserActivity(input: {
+  users: InactivityUserInput[];
+  assignments: InactivityAssignmentInput[];
+}): Map<string, UserActivity> {
+  const userLastAssignment = new Map<string, Date>();
+
+  for (const a of input.assignments) {
+    for (const entry of [...(a.participants ?? []), ...(a.applicants ?? [])]) {
+      const candidate = maxDate(a.start, entry.when);
+      const prev = userLastAssignment.get(entry.user);
+      if (candidate && (!prev || candidate > prev)) {
+        userLastAssignment.set(entry.user, candidate);
+      }
+    }
+  }
+
+  const activity = new Map<string, UserActivity>();
+  for (const u of input.users) {
+    const lastLogin = maxDate(...(u.services?.resume?.loginTokens ?? []).map((t) => t.when));
+    activity.set(u._id, {
+      lastLogin,
+      lastActivity: maxDate(lastLogin, u.updatedAt, userLastAssignment.get(u._id), u.createdAt),
+    });
+  }
+
+  return activity;
+}
+
 export function computeInactivityReport(input: {
   users: InactivityUserInput[];
   groups: InactivityGroupInput[];
@@ -90,7 +134,6 @@ export function computeInactivityReport(input: {
   // --- one pass over the assignments collects both perspectives -------------
   const groupLastAssignment = new Map<string, Date>();
   const groupAssignmentCount = new Map<string, number>();
-  const userLastAssignment = new Map<string, Date>();
 
   for (const a of assignments) {
     groupAssignmentCount.set(a.group, (groupAssignmentCount.get(a.group) ?? 0) + 1);
@@ -98,14 +141,9 @@ export function computeInactivityReport(input: {
     if (a.start instanceof Date && (!prev || a.start > prev)) {
       groupLastAssignment.set(a.group, a.start);
     }
-    for (const entry of [...(a.participants ?? []), ...(a.applicants ?? [])]) {
-      const candidate = maxDate(a.start, entry.when);
-      const prevUser = userLastAssignment.get(entry.user);
-      if (candidate && (!prevUser || candidate > prevUser)) {
-        userLastAssignment.set(entry.user, candidate);
-      }
-    }
   }
+
+  const userActivity = computeUserActivity({ users, assignments });
 
   const memberCount = new Map<string, number>();
   for (const u of users) {
@@ -134,13 +172,7 @@ export function computeInactivityReport(input: {
   // --- inactive users --------------------------------------------------------
   const inactiveUsers: InactiveUserEntry[] = [];
   for (const u of users) {
-    const lastLogin = maxDate(...(u.services?.resume?.loginTokens ?? []).map((t) => t.when));
-    const lastActivity = maxDate(
-      lastLogin,
-      u.updatedAt,
-      userLastAssignment.get(u._id),
-      u.createdAt,
-    );
+    const { lastLogin, lastActivity } = userActivity.get(u._id)!;
     const withoutGroup =
       (u.groups ?? []).length === 0 && (u.profile?.pendingGroups ?? []).length === 0;
     if (lastActivity === null || lastActivity < cutoff || withoutGroup) {

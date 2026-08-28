@@ -15,25 +15,25 @@ const assignmentLocale: IAssignmentEmailLocale = {
         break;
     }
 
-    return `${begin} für Trolley ${assignmentName} am ${date}`;
+    return `${begin} für den Termin ${assignmentName} am ${date}`;
   },
   message: {
     accepted(assignmentName: string, dateTime: string): string {
-      return `wir freuen uns über deine Teilnahme am Trolleydienst ${assignmentName} am ${dateTime}!`;
+      return `wir freuen uns über deine Teilnahme am Termin ${assignmentName} am ${dateTime}!`;
     },
     removed(assignmentName: string, dateTime: string): string {
-      return `leider ist deine Teilnahme am Trolleydienst ${assignmentName} am ${dateTime} nicht möglich!`;
+      return `leider ist deine Teilnahme am Termin ${assignmentName} am ${dateTime} nicht möglich!`;
     },
     modified(assignmentName: string, dateTime: string): string {
-      return `bei der Trolleyschicht ${assignmentName} am ${dateTime} gab es eine Änderung.
+      return `beim Termin ${assignmentName} am ${dateTime} gab es eine Änderung.
 Bitte informiere dich über den Status des Termins und ob er stattfinden kann.`;
     },
     canceled(assignmentName: string, dateTime: string, reason: string): string {
-      return `leider musste die Trolleyschicht ${assignmentName} am ${dateTime} abgesagt werden.
+      return `leider musste der Termin ${assignmentName} am ${dateTime} abgesagt werden.
 Der Grund: ${reason}.`;
     },
     reenabled(assignmentName: string, dateTime: string, reason: string): string {
-      return `wir freuen uns, dass der Trolleydienst ${assignmentName} am ${dateTime} nun doch statt finden kann.
+      return `wir freuen uns, dass der Termin ${assignmentName} am ${dateTime} nun doch stattfinden kann.
 Der Grund: ${reason}.`;
     },
   },
@@ -51,21 +51,22 @@ Dort findest du die Kontaktdaten. Bitte sende uns deinen Bericht dieser Schicht 
 export const messages: ILocale = {
   hello: "Hallo",
   assignmentEmail: assignmentLocale,
-  applicationEmail: {
+  assignmentFullEmail: {
     subject(assignmentName: string, date: string): string {
-      return `Neue Bewerbung für Trolley ${assignmentName} am ${date}`;
+      return `Termin ${assignmentName} am ${date} ist voll`;
     },
-    message(applicantName: string, assignmentName: string, date: string): string {
-      return `${applicantName} hat sich auf den Trolleydienst ${assignmentName} am ${date} beworben.`;
+    message(assignmentName: string, date: string): string {
+      return `der Termin ${assignmentName} am ${date} ist voll. Bitte bestätige die Bewerber und schließe den Termin ab.`;
     },
+    toConfirm: "Zu bestätigen",
     linkToAssignment: "Link zum Termin",
   },
   reminderEmail: {
     subject(assignmentName: string, date: string): string {
-      return `Erinnerung: Trolley ${assignmentName} am ${date}`;
+      return `Erinnerung: Termin ${assignmentName} am ${date}`;
     },
     message(assignmentName: string, date: string): string {
-      return `dein Trolleydienst ${assignmentName} am ${date} steht bevor. Wir freuen uns auf dich!`;
+      return `dein Termin ${assignmentName} am ${date} steht bevor. Wir freuen uns auf dich!`;
     },
     linkToAssignment: "Link zum Termin",
   },

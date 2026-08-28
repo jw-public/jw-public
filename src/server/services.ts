@@ -11,7 +11,7 @@ import { SimpleCollection } from "../imports/interfaces/SimpleCollection";
 import { LoggerFactory } from "../imports/logging/LoggerFactory";
 import { SimpleConsoleLoggerFactory } from "../imports/logging/SimpleConsoleLoggerFactory";
 
-import { ApplicationCoordinatorNotifier } from "./assignments/classes/ApplicationCoordinatorNotifier";
+import { AssignmentFullNotifier } from "./assignments/classes/AssignmentFullNotifier";
 import { AssignmentApplicationController } from "./assignments/classes/AssignmentApplicationController";
 import { AssignmentCanceler } from "./assignments/classes/AssignmentCanceler";
 import { AssignmentReminder } from "./assignments/classes/AssignmentReminder";
@@ -137,7 +137,7 @@ export function buildServices(
     loggerFactory,
   );
 
-  const applicationCoordinatorNotifier = new ApplicationCoordinatorNotifier(
+  const assignmentFullNotifier = new AssignmentFullNotifier(
     collections.assignments,
     collections.users,
     collections.groups,
@@ -174,7 +174,7 @@ export function buildServices(
     assignmentReenabler,
     assignmentRemover,
     assignmentWeekCopyPaster,
-    applicationCoordinatorNotifier,
+    assignmentFullNotifier,
     assignmentReminder,
     assignments: collections.assignments,
   };

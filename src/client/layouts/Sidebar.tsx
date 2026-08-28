@@ -129,6 +129,11 @@ export default function Sidebar(): JSX.Element {
             </Link>
           </li>
           <li>
+            <Link to={buildPath(Def.MyAssignments)} className="auto-scroll" id="toMyAssignments">
+              <i className="fa fa-calendar fa-fw"></i> Meine Termine
+            </Link>
+          </li>
+          <li>
             <a href="https://docs.jw-public.org/userguide/" className="auto-scroll" id="toDocs">
               <i className="fa fa-book fa-fw"></i> Anleitung
             </a>
@@ -159,6 +164,11 @@ export default function Sidebar(): JSX.Element {
               <li id="toGroupManagement">
                 <Link to={buildPath(Def.GroupManagement)} className="auto-scroll">
                   <i className="fa fa-sitemap fa-fw"></i> Gruppenverwaltung
+                </Link>
+              </li>
+              <li id="toStatistics">
+                <Link to={buildPath(Def.Statistics)} className="auto-scroll">
+                  <i className="fa fa-bar-chart fa-fw"></i> Statistik
                 </Link>
               </li>
               <li id="toCleanup">
