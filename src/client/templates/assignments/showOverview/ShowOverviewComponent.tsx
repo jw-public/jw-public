@@ -409,7 +409,7 @@ export default function ShowOverview(): JSX.Element {
               dateFormat="dd.MM.yyyy"
               placeholderText="Tag suchen"
               locale="de"
-              className="form-control form-control-sm"
+              className="form-control"
               isClearable
             />
           </div>

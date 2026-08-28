@@ -94,10 +94,13 @@ test.describe("Kalenderansicht", () => {
       timeout: 10_000,
     });
 
-    // Der Tag des Termins zeigt ihn wieder.
-    const dayWithAssignment = grid
-      .locator(".assignment-calendar-day.has-assignments")
-      .first();
+    // Der Tag des Termins zeigt ihn wieder. Gezielt über den title (er listet
+    // die Termine des Tages) statt über .first(): in CI liegt zusätzlich der
+    // geseedete "Test-Termin" im Monat, und der kann an einem früheren Tag
+    // stehen.
+    const dayWithAssignment = grid.locator(
+      `.assignment-calendar-day[title*="${name}"]`,
+    );
     await dayWithAssignment.click();
     await expect(
       page.locator("div.assignment-panel", { hasText: name }),
