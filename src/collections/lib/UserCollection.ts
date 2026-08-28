@@ -3,14 +3,18 @@ import { Mongo } from "meteor/mongo";
 import { Locale } from "../../imports/i18n/classes/I18nProvider";
 
 /**
- * Self-Service-Einstellung eines Koordinators: bei welchen neuen Bewerbungen
- * auf Einsätze seiner Gruppen er benachrichtigt werden möchte.
+ * Self-Service-Einstellung eines Koordinators: bei welchen voll gewordenen
+ * Terminen seiner Gruppen er benachrichtigt werden möchte.
  * - "all": immer (Default, wenn nicht gesetzt)
- * - "nearOnly": nur wenn der Einsatz in den nächsten `applicationNotifyDays`
- *   Tagen liegt
+ * - "nearOnly": nur wenn der Termin in den nächsten `fullNotifyDays` Tagen
+ *   liegt
  * - "none": nie
+ *
+ * Hieß bis Version 2.1 `ApplicationNotifyMode` und steuerte Nachrichten pro
+ * Bewerbung; die Umstellung auf volle Termine ist in ADR 0006 beschrieben,
+ * die Übernahme der Altwerte erledigt server/startup.ts.
  */
-export type ApplicationNotifyMode = "all" | "nearOnly" | "none";
+export type FullNotifyMode = "all" | "nearOnly" | "none";
 
 export interface UserProfile {
   first_name?: string;
@@ -27,8 +31,8 @@ export interface UserProfile {
   zip?: string;
   placeName?: string;
   notificationAsEmail?: boolean;
-  applicationNotifyMode?: ApplicationNotifyMode;
-  applicationNotifyDays?: number;
+  fullNotifyMode?: FullNotifyMode;
+  fullNotifyDays?: number;
 }
 
 /**

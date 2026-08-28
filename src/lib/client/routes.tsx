@@ -21,6 +21,7 @@ import RequireTermsConsent from "../../client/templates/Terms/RequireTermsConsen
 import TermsOfUsePage from "../../client/templates/Terms/TermsOfUsePage";
 import AdminUsers from "../../client/templates/admin/UserManagement/AdminUsersComponent";
 import Cleanup from "../../client/templates/admin/Cleanup/CleanupComponent";
+import Statistics from "../../client/templates/admin/Statistics/StatisticsComponent";
 import ModifyGroups from "../../client/templates/admin/GroupManagement/ModifyGroupsComponent";
 import CopyAssignments from "../../client/templates/Group/CopyAssignmentsComponent";
 import GroupMembers from "../../client/templates/Group/GroupMembersComponent";
@@ -28,6 +29,7 @@ import InfoSite from "../../client/templates/Group/InfoSiteComponent";
 import ManageApplicants from "../../client/templates/Group/ManageApplicantsComponent";
 import ManageAssignments from "../../client/templates/Group/ManageAssignmentsComponent";
 import { ManageBlueprintsComponent } from "../../client/templates/Group/ManageBlueprintsComponent";
+import MyAssignments from "../../client/templates/assignments/myAssignments/MyAssignmentsComponent";
 import ShowOverview from "../../client/templates/assignments/showOverview/ShowOverviewComponent";
 import SingleAssignmentView from "../../client/templates/assignments/showSingle/SingleAssignmentViewComponent";
 
@@ -196,6 +198,7 @@ export const router = createBrowserRouter([
     children: [
       { path: Def.Home.path, element: <Dashboard /> },
       { path: Def.AssignmentOverview.path, element: <ShowOverview /> },
+      { path: Def.MyAssignments.path, element: <MyAssignments /> },
       { path: Def.AssignmentManagement.path, element: <ManageAssignments /> },
       { path: Def.AssignmentSingleView.path, element: <SingleAssignmentView /> },
       { path: Def.MyProfile.path, element: <ModifyProfile /> },
@@ -225,6 +228,14 @@ export const router = createBrowserRouter([
         element: (
           <RequireAdmin>
             <Cleanup />
+          </RequireAdmin>
+        ),
+      },
+      {
+        path: Def.Statistics.path,
+        element: (
+          <RequireAdmin>
+            <Statistics />
           </RequireAdmin>
         ),
       },

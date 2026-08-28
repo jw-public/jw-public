@@ -116,3 +116,135 @@
     float: left;
   }
 }
+
+// --- Kalenderansicht -------------------------------------------------------
+// Monatsraster als CSS-Grid: sieben feste Spalten, damit dieselbe Spalte über
+// alle Monate hinweg denselben Wochentag zeigt.
+
+.assignment-calendar {
+  margin-bottom: @line-height-computed;
+
+  .assignment-calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 2px;
+  }
+
+  .assignment-calendar-weekday {
+    text-align: center;
+    font-weight: 600;
+    color: @gray-light;
+    padding-bottom: 4px;
+  }
+
+  .assignment-calendar-day {
+    min-height: 62px;
+    padding: 4px;
+    border: 1px solid @gray-lighter;
+    border-radius: 3px;
+    background-color: #fff;
+    cursor: pointer;
+    .transition(0.2s);
+
+    &.is-outside {
+      // Tage der Nachbarmonate füllen nur das Raster auf.
+      opacity: 0.35;
+    }
+    &.is-today {
+      border-color: @brand-primary;
+    }
+    &.is-selected {
+      border-color: @brand-primary;
+      box-shadow: inset 0 0 0 2px @brand-primary;
+    }
+    &.has-assignments:hover {
+      background-color: @gray-lighter;
+    }
+  }
+
+  .assignment-calendar-daynumber {
+    display: block;
+    font-size: 12px;
+    line-height: 1.2;
+    color: @gray-dark;
+  }
+
+  .assignment-calendar-bars {
+    display: block;
+    margin-top: 2px;
+  }
+
+  .assignment-calendar-more {
+    font-size: 10px;
+    color: @gray-light;
+  }
+
+  .assignment-calendar-legend {
+    margin-top: 8px;
+
+    .assignment-calendar-bar {
+      display: inline-block;
+      width: 14px;
+      margin-right: 2px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+  }
+
+  // Mobil bleibt kein Platz für Balken neben der Tageszahl — die Zellen
+  // schrumpfen, die Balken werden schmaler statt umzubrechen.
+  @media (max-width: @screen-xs-max) {
+    .assignment-calendar-day {
+      min-height: 48px;
+      padding: 2px;
+    }
+  }
+}
+
+.assignment-calendar-bar {
+  display: block;
+  height: 4px;
+  margin-bottom: 2px;
+  border-radius: 2px;
+  background-color: @gray-light;
+
+  &.is-empty {
+    background-color: @brand-danger;
+  }
+  &.is-partial {
+    background-color: #eab116;
+  }
+  &.is-full {
+    background-color: @brand-success;
+  }
+  &.is-closed {
+    background-color: @gray-light;
+  }
+  &.is-canceled {
+    background-color: @gray-dark;
+  }
+}
+
+.assignment-day-picker {
+  display: inline-flex;
+  // Auf Höhe der Schaltflächen daneben: die stehen in derselben Zeile, ein
+  // niedrigeres Eingabefeld fällt sofort als schiefe Kante auf.
+  align-items: center;
+  margin: 0 20px 20px 0;
+  float: left;
+
+  .react-datepicker-wrapper {
+    width: 150px;
+  }
+}
+
+// --- Meine Termine ---------------------------------------------------------
+
+.my-assignments-month {
+  margin-top: 0;
+  font-size: 22px;
+}
+
+.my-assignments-group {
+  margin-bottom: 6px;
+}

@@ -1,5 +1,7 @@
 import { Meteor } from "meteor/meteor";
 import { InactivityReport } from "../cleanup/InactivityReport";
+import { UsageReport } from "../statistics/UsageReport";
+import { UserExportRow } from "../statistics/UserExport";
 
 /**
  * Wire contract of every Meteor method: one source of truth shared by the
@@ -51,6 +53,8 @@ export interface MethodSignatures {
   resetCalendarToken: { args: []; result: string };
   adminInactivityReport: { args: [thresholdDays: number]; result: InactivityReport };
   adminDeleteGroup: { args: [groupId: string]; result: { removedAssignments: number } };
+  adminUsageReport: { args: [monthCount: number]; result: UsageReport };
+  adminUserExport: { args: []; result: UserExportRow[] };
 }
 
 export type MethodName = keyof MethodSignatures;

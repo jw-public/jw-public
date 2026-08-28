@@ -118,11 +118,57 @@ body {
 }
 
 .navbar-top-links .dropdown-messages,
-.navbar-top-links .dropdown-tasks,
-.navbar-top-links .dropdown-alerts {
+.navbar-top-links .dropdown-tasks {
   width: 310px;
   min-width: 0;
   z-index: 1010;
+}
+
+// Benachrichtigungsmenü.
+//
+// Bootstrap 5 setzt auf .dropdown (dem <li>) position:relative — das <li> war
+// damit der Bezugsrahmen, und `right: 0` bedeutete "rechter Rand der Glocke".
+// Da rechts daneben noch das Benutzermenü sitzt, ragte ein 310px breites Menü
+// auf schmalen Geräten links aus dem Viewport heraus (alles links
+// abgeschnitten). Wird das <li> statisch und die Topbar relativ, heißt
+// `right: 0` "rechter Bildschirmrand" — auf jeder Breite.
+.navbar.sb-admin-topbar {
+  position: relative;
+}
+
+#notificationsDropdown {
+  position: static;
+}
+
+.navbar-top-links .dropdown-alerts {
+  right: 0.75rem;
+  left: auto;
+  width: ~"min(340px, calc(100vw - 1.5rem))";
+  min-width: 0;
+  max-height: 70vh;
+  overflow-y: auto;
+  // Am Listenende nicht die Seite dahinter mitscrollen.
+  overscroll-behavior: contain;
+  z-index: 1010;
+  padding-bottom: 0;
+}
+
+// Die Schaltfläche zum Entfernen bleibt beim Scrollen sichtbar am Fuß stehen.
+// position:sticky statt eines Flex-Layouts, weil die Einträge damit direkte
+// Kinder der <ul> bleiben — .dropdown-menu > li > a und > li.divider in
+// custom.less sind Kindselektoren und würden bei einer verschachtelten Liste
+// nicht mehr greifen.
+.navbar-top-links .dropdown-alerts > li.dropdown-alerts-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  background-color: #fff;
+  border-top: 1px solid @gray-lighter;
+  padding: 8px 12px;
+}
+
+.navbar-top-links .dropdown-alerts > li.dropdown-alerts-footer > div {
+  padding: 0;
 }
 
 .navbar-top-links {
@@ -133,10 +179,6 @@ body {
 
   .dropdown-tasks {
     margin-left: -59px;
-  }
-
-  .dropdown-alerts {
-    margin-left: 0px;
   }
 
   .dropdown-user {
@@ -244,8 +286,7 @@ body {
   }
 
   .navbar-top-links .dropdown-messages,
-  .navbar-top-links .dropdown-tasks,
-  .navbar-top-links .dropdown-alerts {
+  .navbar-top-links .dropdown-tasks {
     margin-left: auto;
   }
 }

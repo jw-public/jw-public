@@ -9,6 +9,7 @@ import { Groups } from "../../../../collections/lib/GroupCollection";
 import * as UserCollection from "../../../../collections/lib/UserCollection";
 import * as ServerMethodsWrapper from "../../../../lib/classes/ServerMethodsWrapper";
 
+import { buildUserCsv } from "../../../../imports/statistics/UserExport";
 import DataTable, { DataTableColumn } from "../../../react/components/DataTable";
 import MultiSelect, { SelectOption } from "../../../react/components/MultiSelect";
 import { InlineAlert, InlineAlerts } from "../../../react/components/InlineAlerts";
@@ -271,8 +272,49 @@ function removeUser(userId: string): void {
   });
 }
 
+/**
+ * CSV-Export aller Benutzer.
+ *
+ * Die Zeilen kommen aus der Methode `adminUserExport` (dort liegt die
+ * Admin-Prüfung und die Herleitung der Aktivitätsdaten), die Datei baut der
+ * Browser — so braucht es keinen zweiten HTTP-Endpunkt mit eigenem
+ * Berechtigungsmodell. Semikolon und BOM setzt buildUserCsv, damit deutsches
+ * Excel die Datei per Doppelklick spaltenrichtig öffnet.
+ */
+function useUserCsvExport(): { exporting: boolean; exportCsv: () => void; error: string | null } {
+  const [exporting, setExporting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const exportCsv = () => {
+    setExporting(true);
+    setError(null);
+
+    callMethod("adminUserExport")
+      .then((rows) => {
+        // Meteor überträgt Methodenergebnisse als EJSON — Date-Werte kommen
+        // als Date an und müssen nicht zurückverwandelt werden.
+        const csv = buildUserCsv(rows);
+
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `benutzer-${new Date().toISOString().slice(0, 10)}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      })
+      .catch((err: Meteor.Error) => setError(err.reason ?? err.message))
+      .finally(() => setExporting(false));
+  };
+
+  return { exporting, exportCsv, error };
+}
+
 export default function AdminUsers(): JSX.Element {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const csvExport = useUserCsvExport();
 
   const data = useTracker(() => {
     Meteor.subscribe("adminAllUsers");
@@ -337,7 +379,26 @@ export default function AdminUsers(): JSX.Element {
     <div>
       <div className="row">
         <div className="col-lg-12">
-          <h1 className="page-header">Benutzerverwaltung</h1>
+          <h1 className="page-header">
+            Benutzerverwaltung
+            <button
+              type="button"
+              id="exportUsersCsv"
+              className="btn btn-primary float-end"
+              disabled={csvExport.exporting}
+              onClick={csvExport.exportCsv}
+            >
+              <i
+                className={`fa ${csvExport.exporting ? "fa-spinner fa-pulse" : "fa-download"}`}
+              ></i>{" "}
+              CSV exportieren
+            </button>
+          </h1>
+          {csvExport.error ? (
+            <InlineAlerts
+              alerts={[{ message: "Export fehlgeschlagen: " + csvExport.error, type: "danger" }]}
+            />
+          ) : null}
         </div>
       </div>
       <div className="row">

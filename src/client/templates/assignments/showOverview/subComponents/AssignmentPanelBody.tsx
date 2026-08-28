@@ -1,95 +1,52 @@
 import * as React from "react";
-import { AssignmentPanelProps } from "../AssignmentPanel";
 import { SmallProgressbar } from "../../../../react/components/SmallProgressbar/SmallProgressbar";
 import DateDisplay from "../../../../react/components/DateDisplay";
-import Assignment from "../../../../../collections/lib/classes/Assignment";
 import Color from "../../../../lib/Color";
+import { AssignmentDAO } from "../../../../../collections/lib/AssignmentsCollection";
+import { readOccupancy } from "./lib/AssignmentOccupancy";
 
-export default class AssignmentPanelBody extends React.Component<AssignmentPanelProps, {}> {
-  public static assignmentHasProgressBar(assignment: Assignment): boolean {
-    let usersWanted: number = assignment.getUserGoal(true);
-    return !assignment.isClosed(true) && !assignment.isCanceled(true) && usersWanted > 0;
-  }
-
-  public render(): JSX.Element {
-    return (
-      <div className="card-body text-center assignment-item">
-        <AssignmentPanelProgressBar assignment={this.props.assignment} />
-        <DateDisplay start={this.props.assignment.start} end={this.props.assignment.end} />
-      </div>
-    );
-  }
+interface PanelBodyProps {
+  assignment: AssignmentDAO;
 }
 
-class AssignmentPanelProgressBar extends React.Component<AssignmentPanelProps, {}> {
-  public get assignment(): Assignment {
-    return Assignment.createFromDAO(this.props.assignment);
+function ProgressBar(props: PanelBodyProps): JSX.Element | null {
+  const { userGoal, totalUsers, hasProgressBar } = readOccupancy(props.assignment);
+
+  if (!hasProgressBar) {
+    return null;
   }
 
-  public hasProgressBar(): boolean {
-    return AssignmentPanelBody.assignmentHasProgressBar(this.assignment);
+  let barColor = Color.Asbestos;
+  if (totalUsers <= 0) {
+    barColor = Color.BrandDanger;
+  } else if (totalUsers >= userGoal) {
+    barColor = Color.BrandSuccess;
   }
 
-  public progressBarWrapperClasses(): string | null {
-    let wrapperClasses: string | null = null;
-    if (this.totalUsers <= 0) {
-      wrapperClasses = "bar-glow-effect";
-    }
-    return wrapperClasses;
-  }
-
-  public get totalUsers(): number {
-    let totalUsers: number;
-
-    try {
-      totalUsers = this.assignment.getTotalUsersCountReactive();
-    } catch (error) {
-      console.error(error);
-      return 0;
-    }
-    return totalUsers;
-  }
-
-  public barColor(): Color {
-    let color: Color = Color.Asbestos;
-    let totalUsers = this.totalUsers;
-    let usersWanted: number = this.assignment.getUserGoal(true);
-
-    if (totalUsers <= 0) {
-      color = Color.BrandDanger;
-    } else if (totalUsers >= usersWanted) {
-      color = Color.BrandSuccess;
-    }
-    return color;
-  }
-
-  public renderProgressBar(): React.ReactElement<any> {
-    let usersWanted: number = this.assignment.getUserGoal(true);
-
-    let totalUsers = this.totalUsers;
-
-    return (
+  // g-0 matches the date/time row so the body content stays flush to the
+  // card edges (card-body has zero horizontal padding — see showOverview.less).
+  return (
+    <div className="row g-0">
       <SmallProgressbar
         value={totalUsers}
         minValue={0}
-        maxValue={usersWanted}
+        maxValue={userGoal}
         backgroundColor={Color.GrayLighter}
-        barColor={this.barColor()}
+        barColor={barColor}
         height="14px"
-        wrapperClasses={this.progressBarWrapperClasses() ?? undefined}
+        wrapperClasses={totalUsers <= 0 ? "bar-glow-effect" : undefined}
         striped={false}
         active={false}
       />
-    );
-  }
+    </div>
+  );
+}
 
-  public render(): JSX.Element | null {
-    if (!this.hasProgressBar()) {
-      return null;
-    }
-
-    // g-0 matches the date/time row so the body content stays flush to the
-    // card edges (card-body has zero horizontal padding — see showOverview.less).
-    return <div className="row g-0">{this.renderProgressBar()}</div>;
-  }
+export default function AssignmentPanelBody(props: PanelBodyProps): JSX.Element {
+  return (
+    <div className="card-body text-center assignment-item">
+      <ProgressBar assignment={props.assignment} />
+      <DateDisplay start={props.assignment.start} end={props.assignment.end} />
+    </div>
+  );
 }

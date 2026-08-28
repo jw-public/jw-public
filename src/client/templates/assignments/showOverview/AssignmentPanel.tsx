@@ -3,99 +3,75 @@ import AssignmentAdminButton from "./subComponents/AssignmentAdminButton";
 import AssignmentPanelHeading from "./subComponents/AssignmentPanelHeading";
 import AssignmentPanelBody from "./subComponents/AssignmentPanelBody";
 import AssignmentPanelFooter from "./subComponents/AssignmentPanelFooter";
-import { AssignmentAdminButtonProps } from "./subComponents/AssignmentAdminButton";
 import { DisplayState } from "../../../../lib/classes/AssignmentDisplayStateReader";
 import { AssignmentStateReader } from "../../../../lib/classes/AssignmentStateReader";
 import { AssignmentDisplayStateReader } from "../../../../lib/classes/AssignmentDisplayStateReader";
-import { Roles } from "meteor/alanning:roles";
 import { Meteor } from "meteor/meteor";
 import { AssignmentDAO } from "../../../../collections/lib/AssignmentsCollection";
-import Group from "../../../../collections/lib/classes/Group";
 
 export interface AssignmentPanelProps {
   assignment: AssignmentDAO;
+  /**
+   * Ob der angemeldete Benutzer diesen Termin bearbeiten darf. Kommt bewusst
+   * von oben: die Prüfung (Admin-Rolle bzw. Koordinator der Gruppe) hing früher
+   * an jeder einzelnen Karte und lief damit pro Termin einmal gegen Minimongo,
+   * obwohl das Ergebnis für alle Karten derselben Gruppe gleich ist.
+   */
+  canModify: boolean;
 }
 
-export default class AssignmentPanel extends React.Component<AssignmentPanelProps, {}> {
-  private renderAdminMenu(props: AssignmentAdminButtonProps): JSX.Element | undefined {
-    if (!this.isEligibleToModifyAssignment()) {
-      return undefined;
-    }
+const COLOR_CLASSES: Record<DisplayState, string> = {
+  [DisplayState.Closed]: "closed",
+  [DisplayState.UserAccepted]: "accepted",
+  [DisplayState.Default]: "primary",
+  [DisplayState.Canceled]: "canceled",
+  [DisplayState.UserApplicant]: "applied",
+};
 
-    return (
-      <AssignmentAdminButton
-        stateReader={props.stateReader}
-        assignmentId={props.assignmentId}
-        bootstrapColorClass={props.bootstrapColorClass}
-      />
-    );
-  }
+/**
+ * Eine Terminkarte in der Übersicht.
+ *
+ * Sämtliche Anzeigedaten stammen aus dem übergebenen DAO — `userGoal`, `state`,
+ * `applicants` und `participants` liefert die Publication
+ * `assignmentsInMonthPerGroup` bereits mit. Frühere Fassungen lasen dieselben
+ * Felder über die `Assignment`-Hilfsklasse noch einmal aus Minimongo, teils
+ * mehrfach pro Rendern; das war reine Zusatzarbeit und lief obendrein außerhalb
+ * jeder Tracker-Computation, sodass die `reactive: true`-Flags wirkungslos
+ * blieben.
+ *
+ * `memo` sorgt dafür, dass eine Änderung an einem Termin nur dessen Karte neu
+ * rendert statt der gesamten Liste — was der Blaze-Vorgänger über `{{#each}}`
+ * auf einem Cursor kostenlos hatte.
+ */
+function AssignmentPanel(props: AssignmentPanelProps): JSX.Element {
+  const assignment = props.assignment;
+  const userId = Meteor.userId();
 
-  private isEligibleToModifyAssignment(): boolean {
-    return this.isAdmin() || this.isGroupCoordinator();
-  }
+  const stateReader = AssignmentStateReader.fromAssignmentDAO(assignment);
+  const displayStateReader =
+    AssignmentDisplayStateReader.fromAssignmentStateReader(stateReader).withUserId(userId);
+  const colorClass = COLOR_CLASSES[displayStateReader.getDisplayState()];
 
-  private isAdmin(): boolean {
-    return Roles.userIsInRole(Meteor.userId(), "admin");
-  }
-
-  private isGroupCoordinator(): boolean {
-    let groupId = this.props.assignment.group;
-    let group = new Group(groupId);
-
-    return group.isCoordinatorById(Meteor.userId());
-  }
-
-  public render(): JSX.Element {
-    let assignment = this.props.assignment;
-    let stateReader = AssignmentStateReader.fromAssignmentDAO(assignment);
-    let displayStateReader = AssignmentDisplayStateReader.fromAssignmentStateReader(
-      stateReader,
-    ).withUserId(Meteor.userId());
-    let colorClass = PanelConsts.getColorClassName(displayStateReader.getDisplayState());
-
-    let adminMenu = this.renderAdminMenu({
-      stateReader,
-      assignmentId: assignment._id!,
-      bootstrapColorClass: colorClass,
-    });
-
-    let panelClassNames = `card assignment-panel card-${colorClass}`;
-
-    return (
-      <div className="col-lg-3 col-md-6">
-        <div className={panelClassNames}>
-          {adminMenu}
-          <AssignmentPanelHeading assignment={assignment} />
-          <AssignmentPanelBody assignment={assignment} />
-          <AssignmentPanelFooter
-            assignment={assignment}
-            state={stateReader.getAssignmentState(Meteor.userId())}
-            displayStateReader={displayStateReader}
+  return (
+    <div className="col-lg-3 col-md-6">
+      <div className={`card assignment-panel card-${colorClass}`}>
+        {props.canModify ? (
+          <AssignmentAdminButton
+            stateReader={stateReader}
+            assignmentId={assignment._id!}
+            bootstrapColorClass={colorClass}
           />
-        </div>
+        ) : null}
+        <AssignmentPanelHeading assignment={assignment} />
+        <AssignmentPanelBody assignment={assignment} />
+        <AssignmentPanelFooter
+          assignment={assignment}
+          state={stateReader.getAssignmentState(userId)}
+          displayStateReader={displayStateReader}
+        />
       </div>
-    );
-  }
+    </div>
+  );
 }
 
-namespace PanelConsts {
-  let colorClassMap: Map<DisplayState, string> | null = null;
-
-  export function getColorClassNameMap(): Map<DisplayState, string> {
-    if (colorClassMap === null) {
-      colorClassMap = new Map();
-      colorClassMap.set(DisplayState.Closed, "closed");
-      colorClassMap.set(DisplayState.UserAccepted, "accepted");
-      colorClassMap.set(DisplayState.Default, "primary");
-      colorClassMap.set(DisplayState.Canceled, "canceled");
-      colorClassMap.set(DisplayState.UserApplicant, "applied");
-    }
-
-    return colorClassMap;
-  }
-
-  export function getColorClassName(state: DisplayState): string {
-    return getColorClassNameMap().get(state)!;
-  }
-}
+export default React.memo(AssignmentPanel);

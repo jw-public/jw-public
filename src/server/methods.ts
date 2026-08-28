@@ -18,7 +18,9 @@ import { Notifications } from "../collections/lib/NotificationCollection";
 import * as UserNotification from "../collections/lib/classes/UserNotification";
 import * as UserCollection from "../collections/lib/UserCollection";
 import { TERMS_OF_USE_VERSION } from "../imports/terms/TermsOfUse";
-import { computeInactivityReport } from "../imports/cleanup/InactivityReport";
+import { computeInactivityReport, computeUserActivity } from "../imports/cleanup/InactivityReport";
+import { buildUsageReport, recentMonths } from "../imports/statistics/UsageReport";
+import { UserExportRow } from "../imports/statistics/UserExport";
 import { Blueprints } from "../collections/lib/BlueprintCollection";
 import { AssignmentCopyActions } from "../collections/lib/AssignmentCopyActionsCollection";
 
@@ -262,16 +264,22 @@ Meteor.startup(function () {
           .assignmentApplicationControllerFactory(assignmentId)
           .addUserAsApplicantById(this.userId);
 
-        // Koordinatoren über die neue Bewerbung informieren (In-App + Mail,
-        // je nach deren Self-Service-Einstellung). Fehler hier dürfen die
-        // bereits gespeicherte Bewerbung nicht rückwirkend scheitern lassen.
+        // Koordinatoren informieren, falls dieser Termin durch die Bewerbung
+        // gerade voll geworden ist (In-App + Mail, je nach deren
+        // Self-Service-Einstellung). Der Vorher-Wert stammt aus dem Dokument,
+        // das oben schon geladen wurde — der Vergleich mit dem Nachher-Zustand
+        // erkennt den Übergang, ohne dass ein Stempel am Termin nötig wäre
+        // (ADR 0006). Fehler hier dürfen die bereits gespeicherte Bewerbung
+        // nicht rückwirkend scheitern lassen.
+        const totalUsersBefore =
+          (assignment.applicants ?? []).length + (assignment.participants ?? []).length;
         try {
-          await app.applicationCoordinatorNotifier.notifyCoordinatorsAboutApplication(
+          await app.assignmentFullNotifier.notifyCoordinatorsIfAssignmentBecameFull(
             assignmentId,
-            this.userId,
+            totalUsersBefore,
           );
         } catch (error) {
-          console.error("Failed to notify coordinators about application:", error);
+          console.error("Failed to notify coordinators about full assignment:", error);
         }
       } else {
         throw new Meteor.Error("403", "Access denied.");
@@ -632,6 +640,130 @@ Meteor.startup(function () {
       const token = Random.hexString(40);
       await Meteor.users.updateAsync({ _id: this.userId }, { $set: { calendarToken: token } });
       return token;
+    },
+
+    /**
+     * Kennzahlen für das Admin-Dashboard "Statistik": Besetzungsgrad,
+     * Abschlussquote, Termine je Zustand und Teilnahmen — je Gruppe und Monat
+     * über die letzten `monthCount` Monate.
+     *
+     * Aggregiert wird auf dem Server: eine Publication müsste sämtliche
+     * Termine eines Jahres an den Client schicken, obwohl davon nur Summen
+     * gebraucht werden.
+     */
+    adminUsageReport: async function (monthCount: number) {
+      check(monthCount, Number);
+      if (!(await RolesHelper.userIsAdminAsync(this.userId))) {
+        throw new Meteor.Error("403", "Access denied");
+      }
+      if (monthCount < 1 || monthCount > 36) {
+        throw new Meteor.Error("400", "monthCount must be between 1 and 36");
+      }
+
+      const months = recentMonths(monthCount);
+      const now = new Date();
+      // Erster Tag des ältesten berichteten Monats.
+      const since = new Date(now.getFullYear(), now.getMonth() - (monthCount - 1), 1);
+
+      const [groups, assignments] = await Promise.all([
+        Groups.find({}, { fields: { name: 1 }, sort: { name: 1 } }).fetchAsync(),
+        Assignments.find(
+          { start: { $gte: since } },
+          {
+            fields: {
+              group: 1,
+              start: 1,
+              state: 1,
+              userGoal: 1,
+              "participants.user": 1,
+              "applicants.user": 1,
+            },
+          },
+        ).fetchAsync(),
+      ]);
+
+      return buildUsageReport({
+        months,
+        groups: groups.map((g) => ({ _id: g._id!, name: g.name })),
+        assignments: assignments as any,
+      });
+    },
+
+    /**
+     * Zeilen für den CSV-Export der Benutzer. Die Datei selbst baut der Client
+     * (imports/statistics/UserExport), damit der Download ohne zusätzlichen
+     * HTTP-Endpunkt und ohne zweites Berechtigungsmodell auskommt.
+     *
+     * "Letzte Anmeldung" stammt wie im Inaktivitäts-Report aus den
+     * Login-Tokens und darf leer sein — Meteor löscht abgelaufene Tokens.
+     * "Letzte Aktivität" ist der belastbare Wert daneben.
+     */
+    adminUserExport: async function (): Promise<UserExportRow[]> {
+      if (!(await RolesHelper.userIsAdminAsync(this.userId))) {
+        throw new Meteor.Error("403", "Access denied");
+      }
+
+      const [users, groups, assignments] = await Promise.all([
+        Meteor.users
+          .find(
+            {},
+            {
+              fields: {
+                createdAt: 1,
+                updatedAt: 1,
+                "profile.first_name": 1,
+                "profile.last_name": 1,
+                "profile.pendingGroups": 1,
+                "emails.address": 1,
+                groups: 1,
+                "services.resume.loginTokens.when": 1,
+              },
+            },
+          )
+          .fetchAsync(),
+        Groups.find({}, { fields: { name: 1 } }).fetchAsync(),
+        Assignments.find(
+          {},
+          {
+            fields: {
+              group: 1,
+              start: 1,
+              "participants.user": 1,
+              "participants.when": 1,
+              "applicants.user": 1,
+              "applicants.when": 1,
+            },
+          },
+        ).fetchAsync(),
+      ]);
+
+      // Dieselbe Herleitung wie auf der Aufräumen-Seite, damit beide Ansichten
+      // nicht unterschiedliche Zahlen für denselben Benutzer zeigen.
+      const activityById = computeUserActivity({
+        users: users as any,
+        assignments: assignments as any,
+      });
+      const groupNameById = new Map(groups.map((g) => [g._id!, g.name]));
+
+      return (users as any[])
+        .map((user) => {
+          const activity = activityById.get(user._id);
+          return {
+            lastName: user.profile?.last_name ?? "",
+            firstName: user.profile?.first_name ?? "",
+            email: user.emails?.[0]?.address ?? "",
+            groupNames: (user.groups ?? [])
+              .map((id: string) => groupNameById.get(id))
+              .filter((name: string | undefined): name is string => !!name),
+            lastLogin: activity?.lastLogin ?? null,
+            lastActivity: activity?.lastActivity ?? null,
+          };
+        })
+        .sort(
+          (a, b) =>
+            a.lastName.localeCompare(b.lastName, "de") ||
+            a.firstName.localeCompare(b.firstName, "de"),
+        );
     },
 
     /**

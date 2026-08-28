@@ -1,0 +1,25 @@
+@import "../../../lib/variables.less";
+
+.statistics-table {
+  // Die Monatsspalten sind schmal und rein numerisch — rechtsbündig lassen
+  // sich Werte über die Zeilen hinweg vergleichen.
+  th,
+  td {
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .statistics-metric {
+    text-align: left;
+  }
+
+  .statistics-total {
+    border-left: 2px solid @gray-lighter;
+    font-weight: 600;
+  }
+}
+
+.statistics-metric-strong td {
+  font-weight: 600;
+  border-top: 1px solid @gray-lighter;
+}

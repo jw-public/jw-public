@@ -161,18 +161,18 @@ export const UserProfileSchema = new SimpleSchema({
     label: "Benachrichtigungen via E-Mail bekommen",
     optional: true,
   },
-  // Self-Service für Koordinatoren: bei welchen neuen Bewerbungen auf
-  // Einsätze der eigenen Gruppen benachrichtigt werden soll (siehe
-  // ApplicationNotifyMode in UserCollection.ts). Fehlend = "all".
-  applicationNotifyMode: {
+  // Self-Service für Koordinatoren: bei welchen voll gewordenen Terminen der
+  // eigenen Gruppen benachrichtigt werden soll (siehe FullNotifyMode in
+  // UserCollection.ts). Fehlend = "all".
+  fullNotifyMode: {
     type: String,
-    label: "Benachrichtigung bei neuen Bewerbungen",
+    label: "Benachrichtigung bei vollen Terminen",
     allowedValues: ["all", "nearOnly", "none"],
     optional: true,
   },
-  applicationNotifyDays: {
+  fullNotifyDays: {
     type: Number,
-    label: "Nur wenn der Einsatz in den nächsten X Tagen liegt",
+    label: "Nur wenn der Termin in den nächsten X Tagen liegt",
     min: 1,
     max: 365,
     optional: true,

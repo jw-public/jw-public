@@ -5,13 +5,13 @@ const assignmentLocale: IAssignmentEmailLocale = {
     let subject: string;
     switch (eventName) {
       case "accept":
-        subject = `Accepted for Trolley ${assignmentName} on ${date}`;
+        subject = `Accepted for assignment ${assignmentName} on ${date}`;
         break;
       case "cancellation":
-        subject = `Negative reply for Trolley ${assignmentName} on ${date}`;
+        subject = `Negative reply for assignment ${assignmentName} on ${date}`;
         break;
       case "modification":
-        subject = `Changes for Trolley ${assignmentName} on ${date}`;
+        subject = `Changes for assignment ${assignmentName} on ${date}`;
         break;
     }
 
@@ -19,19 +19,19 @@ const assignmentLocale: IAssignmentEmailLocale = {
   },
   message: {
     accepted(assignmentName: string, date: string): string {
-      return `we are happy to see you participating at the trolley ${assignmentName} on ${date}!`;
+      return `we are happy to see you participating in the assignment ${assignmentName} on ${date}!`;
     },
     removed(assignmentName: string, date: string): string {
-      return `unfortunately your participation at the trolley ${assignmentName} on ${date} is not possible.`;
+      return `unfortunately your participation in the assignment ${assignmentName} on ${date} is not possible.`;
     },
     modified(assignmentName: string, date: string): string {
-      return `there were changes concerning the trolley ${assignmentName} on ${date}.\nPlease inform yourself if your trolley assignment can still take place.`;
+      return `there were changes concerning the assignment ${assignmentName} on ${date}.\nPlease check whether it can still take place.`;
     },
     canceled(assignmentName: string, date: string, reason: string): string {
-      return `unfortunately the trolley ${assignmentName} on ${date} had to be canceled. The reason is ${reason}.`;
+      return `unfortunately the assignment ${assignmentName} on ${date} had to be canceled. The reason is ${reason}.`;
     },
     reenabled(assignmentName: string, date: string, reason: string): string {
-      return `we are happy to tell you the trolley ${assignmentName} on ${date} takes place. The reason is ${reason}`;
+      return `we are happy to tell you the assignment ${assignmentName} on ${date} takes place. The reason is ${reason}`;
     },
   },
   linkToAssignment: "Link to assignment",
@@ -47,13 +47,14 @@ There you will find the contact details.`,
 export const messages: ILocale = {
   hello: "Hello",
   assignmentEmail: assignmentLocale,
-  applicationEmail: {
+  assignmentFullEmail: {
     subject(assignmentName: string, date: string): string {
-      return `New application for Trolley ${assignmentName} on ${date}`;
+      return `Assignment ${assignmentName} on ${date} is full`;
     },
-    message(applicantName: string, assignmentName: string, date: string): string {
-      return `${applicantName} applied for the trolley ${assignmentName} on ${date}.`;
+    message(assignmentName: string, date: string): string {
+      return `the assignment ${assignmentName} on ${date} is full. Please confirm the applicants and close it.`;
     },
+    toConfirm: "To be confirmed",
     linkToAssignment: "Link to assignment",
   },
   reminderEmail: {
