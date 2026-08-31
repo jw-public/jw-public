@@ -30,7 +30,12 @@ Zustandsfeld am Termin.
 `applicationNotifyMode` / `applicationNotifyDays` heißen jetzt
 `fullNotifyMode` / `fullNotifyDays` und steuern dieselbe Abstufung (immer /
 nur wenn der Termin in X Tagen beginnt / nie) für den neuen Anlass. Eine
-einmalige Migration in `server/startup.ts` kopiert die Altwerte.
+Migration in `server/startup.ts` kopiert die Altwerte und **lässt sie
+stehen**: ein Rollback auf die Vorversion liest sie wieder, und ohne sie fiele
+jeder Koordinator auf den Default "all" zurück — genau auf die Mailflut, die
+abgestellt werden sollte. Der Selektor greift nur, solange `fullNotifyMode`
+fehlt, damit ein späterer Serverstart eine zwischenzeitlich geänderte
+Einstellung nicht wieder überschreibt.
 
 ## Verworfene Alternativen
 

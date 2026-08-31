@@ -27,11 +27,22 @@ Meteor.startup(async function () {
 
   // Einmalige Übernahme der Koordinator-Einstellung: applicationNotifyMode /
   // -Days steuerten Benachrichtigungen pro Bewerbung, fullNotifyMode / -Days
-  // steuern dieselbe Abstufung für volle Termine (ADR 0006). Die Altwerte
-  // werden 1:1 übernommen und danach entfernt; wer schon migriert ist, wird
-  // vom Selektor nicht mehr gefunden.
+  // steuern dieselbe Abstufung für volle Termine (ADR 0006).
+  //
+  // Die Altfelder bleiben bewusst stehen, statt nach dem Kopieren entfernt zu
+  // werden: ein Rollback auf die Vorversion liest sie wieder, und ohne sie
+  // fiele jeder Koordinator auf den Default "all" zurück — also genau auf die
+  // Mailflut, die abgestellt werden sollte. Zwei tote Felder im Profil sind
+  // der günstigere Preis.
+  //
+  // Wiederholbar: der Selektor greift nur, solange fullNotifyMode fehlt. Ohne
+  // diese zweite Bedingung würde jeder Serverstart eine zwischenzeitlich
+  // geänderte Einstellung wieder mit dem Altwert überschreiben.
   const legacyNotifyUsers = await Meteor.users
-    .find({ "profile.applicationNotifyMode": { $exists: true } })
+    .find({
+      "profile.applicationNotifyMode": { $exists: true },
+      "profile.fullNotifyMode": { $exists: false },
+    })
     .fetchAsync();
   for (const user of legacyNotifyUsers as any[]) {
     const set: Record<string, unknown> = {
@@ -40,10 +51,7 @@ Meteor.startup(async function () {
     if (user.profile.applicationNotifyDays !== undefined) {
       set["profile.fullNotifyDays"] = user.profile.applicationNotifyDays;
     }
-    await Meteor.users.updateAsync(user._id, {
-      $set: set,
-      $unset: { "profile.applicationNotifyMode": "", "profile.applicationNotifyDays": "" },
-    });
+    await Meteor.users.updateAsync(user._id, { $set: set });
   }
 
   // Die Zustimmung zu den Nutzungsbedingungen reist als Custom-Option in
