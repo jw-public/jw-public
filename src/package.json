@@ -21,7 +21,7 @@
     "graphql": "^15.0.0",
     "i18n-2": "^0.7.1",
     "jsnlog": "^2.22.0",
-    "marked": "^4.3.0",
+    "marked": "^18.0.5",
     "meteor-node-stubs": "^1.2.27",
     "moment": "^2.29.4",
     "moment-duration-format": "^2.0.0",
