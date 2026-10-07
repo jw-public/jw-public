@@ -4,7 +4,7 @@ WORKDIR /tmp
 RUN tar xvf /bundle/meteor.tar.gz
 
 # Meteor 3.3 bundles target Node 22 — no fibers, no bcrypt rebuild hack.
-FROM node:22
+FROM node:26
 COPY --from=prepare /tmp/bundle /bundle
 
 WORKDIR /bundle/programs/server/
